@@ -10,12 +10,17 @@ import Footer from '@/components/footer';
 
 export default function Home() {
   return (
-    <>
-      <Sidebar />
-      <main className="w-full md:ml-24 overflow-x-hidden">
+    <div className="flex h-screen w-screen">
+      {/* Sidebar - 10% width */}
+      <div className="hidden md:block md:w-[10%] md:h-screen md:overflow-y-auto">
+        <Sidebar />
+      </div>
+      
+      {/* Main content - 90% width */}
+      <main className="w-full md:w-[90%] overflow-x-hidden overflow-y-auto">
         <Header />
         <div className="w-full max-w-full px-4 sm:px-6 lg:px-8 py-8 md:pt-28">
-          <div className="max-w-7xl mx-auto">
+          <div className="w-full">
             <HeroCarousel />
           </div>
         </div>
@@ -26,6 +31,11 @@ export default function Home() {
         <ContactSection />
         <Footer />
       </main>
-    </>
+
+      {/* Mobile sidebar (separate from layout) */}
+      <div className="md:hidden">
+        <Sidebar />
+      </div>
+    </div>
   );
 }
