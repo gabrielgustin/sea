@@ -12,9 +12,9 @@ export default function Home() {
   return (
     <>
       <Sidebar />
-      <main className="w-full md:ml-24">
+      <main className="w-[calc(100vw-96px)] md:w-full md:ml-24 md:pt-0 overflow-x-hidden">
         <Header />
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 md:pt-28">
           <HeroCarousel />
         </div>
         <ProgramsSection />
