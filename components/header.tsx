@@ -3,7 +3,7 @@ import Image from 'next/image';
 export default function Header() {
   return (
     <header className="w-full bg-white border-b border-black fixed md:static top-0 left-0 right-0 z-30 md:z-auto">
-      <div className="w-full px-4 sm:px-6 lg:px-8 pl-4 md:pl-28">
+      <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 md:h-24">
           {/* Desktop Logo */}
           <div className="hidden md:flex items-center">
