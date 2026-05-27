@@ -2,7 +2,6 @@
 
 import { useState } from 'react';
 import { Menu, X, Home, BookOpen, Briefcase, Instagram, Youtube, Mail } from 'lucide-react';
-import Image from 'next/image';
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -20,11 +19,6 @@ export default function Sidebar() {
     <>
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex fixed left-0 top-0 h-screen w-24 bg-white border-r border-black z-40 flex-col items-center py-6 px-3 gap-6">
-        {/* Logo */}
-        <div className="w-20 h-20 flex items-center justify-center flex-shrink-0 border-b border-black pb-6 w-full">
-          <Image src="/logo.png" alt="Portal SEU" width={60} height={60} className="object-contain" />
-        </div>
-
         {/* Navigation Icons */}
         <nav className="flex flex-col gap-6 w-full flex-1">
           {navItems.map((item, index) => {
@@ -72,11 +66,6 @@ export default function Sidebar() {
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
       >
-        {/* Mobile Logo */}
-        <div className="mb-6 flex justify-center border-b border-black pb-6">
-          <Image src="/logo.png" alt="Portal SEU" width={80} height={80} className="object-contain" />
-        </div>
-
         {/* Navigation */}
         <nav className="flex flex-col gap-3 w-full mb-8 flex-1">
           {navItems.map((item, index) => {
