@@ -10,9 +10,9 @@ import Footer from '@/components/footer';
 
 export default function Home() {
   return (
-    <div className="flex">
+    <>
       <Sidebar />
-      <main className="flex-1 w-full">
+      <main className="w-full md:ml-24">
         <Header />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <HeroCarousel />
@@ -24,6 +24,6 @@ export default function Home() {
         <ContactSection />
         <Footer />
       </main>
-    </div>
+    </>
   );
 }
