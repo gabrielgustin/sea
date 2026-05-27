@@ -33,11 +33,11 @@ export default function Header() {
               </button>
             </div>
             <Image
-              src="/logo-boutique.png"
-              alt="ITS Boutique Logo"
-              width={100}
-              height={60}
-              className="h-12 w-auto object-contain ml-4"
+              src="/logo-villada.png"
+              alt="ITS Villada Logo"
+              width={140}
+              height={90}
+              className="h-16 w-auto object-contain ml-4"
             />
           </div>
         </div>
