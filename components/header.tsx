@@ -29,7 +29,7 @@ export default function Header() {
               alt="ITS Villada Logo"
               width={140}
               height={90}
-              className="h-16 w-auto object-contain"
+              className="h-16 w-auto object-contain ml-10"
             />
           </div>
         </div>
