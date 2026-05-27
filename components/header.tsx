@@ -2,8 +2,8 @@ import Image from 'next/image';
 
 export default function Header() {
   return (
-    <header className="w-screen bg-white border-b border-black fixed md:static top-0 left-0 right-0 z-30 md:z-auto">
-      <div className="w-full max-w-[calc(100vw-96px)] md:max-w-full px-4 sm:px-6 lg:px-8 pl-4 md:pl-28 mx-auto">
+    <header className="w-full bg-white border-b border-black fixed md:static top-0 left-0 right-0 z-30 md:z-auto">
+      <div className="w-full px-4 sm:px-6 lg:px-8 pl-4 md:pl-28">
         <div className="flex items-center justify-between h-20 md:h-24 gap-4">
           {/* Desktop Logo */}
           <div className="hidden md:flex items-center min-w-fit">
@@ -23,11 +23,11 @@ export default function Header() {
           </div>
 
           {/* Right Side - Auth Buttons Desktop */}
-          <div className="hidden md:flex items-center gap-4 ml-auto min-w-fit">
-            <button className="px-4 py-2 border border-black text-black rounded hover:bg-gray-100 transition-colors font-medium text-sm whitespace-nowrap">
+          <div className="hidden md:flex items-center gap-3 ml-auto min-w-fit">
+            <button className="px-3 py-2 border border-black text-black rounded hover:bg-gray-100 transition-colors font-medium text-sm whitespace-nowrap">
               Ingresar
             </button>
-            <button className="px-4 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors font-medium text-sm whitespace-nowrap">
+            <button className="px-3 py-2 bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors font-medium text-sm whitespace-nowrap">
               Registrarse
             </button>
           </div>
