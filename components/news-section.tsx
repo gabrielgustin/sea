@@ -31,7 +31,7 @@ const news = [
 
 export default function NewsSection() {
   return (
-    <section id="noticias" className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30">
+    <section id="noticias" className="py-16 px-4 sm:px-6 lg:px-8 bg-muted/30 overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4 text-foreground">Últimas Novedades</h2>

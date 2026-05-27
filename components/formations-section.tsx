@@ -59,7 +59,7 @@ function getTypeColor(type: string) {
 
 export default function FormationsSection() {
   return (
-    <section id="formaciones" className="py-16 px-4 sm:px-6 lg:px-8">
+    <section id="formaciones" className="py-16 px-4 sm:px-6 lg:px-8 overflow-x-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4 text-foreground">Próximas Formaciones</h2>
