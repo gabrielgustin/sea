@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Image from 'next/image';
 import { Menu, X, Home, BookOpen, Briefcase, Instagram, Youtube, Mail } from 'lucide-react';
 
 export default function Sidebar() {
@@ -87,23 +86,6 @@ export default function Sidebar() {
 
         {/* Divider */}
         <div className="w-full h-px bg-black mb-6" />
-
-        {/* Auth Buttons */}
-        <div className="flex flex-col gap-3">
-          <button className="px-4 py-2 border border-black text-black rounded hover:bg-gray-100 transition-colors font-medium text-sm">
-            Ingresar
-          </button>
-          <button className="px-4 py-2 rounded hover:opacity-90 transition-opacity font-medium text-sm flex items-center gap-2 justify-center text-white" style={{ backgroundColor: '#28235c' }}>
-            Registrarse
-            <Image
-              src="/logo-its-villada.png"
-              alt="ITS Villada Logo"
-              width={60}
-              height={20}
-              className="h-5 w-auto"
-            />
-          </button>
-        </div>
       </aside>
     </>
   );
