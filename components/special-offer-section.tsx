@@ -3,14 +3,14 @@ import { Sparkles } from 'lucide-react';
 export default function SpecialOfferSection() {
   return (
     <section className="w-full px-4 sm:px-6 lg:px-8 py-12">
-      <div className="max-w-4xl mx-auto border border-cyan-500 rounded-3xl bg-white p-8 md:p-12">
+      <div className="max-w-4xl mx-auto rounded-3xl bg-white p-8 md:p-12" style={{ border: '2px solid #08207f' }}>
         {/* Badge */}
         <div className="flex items-center justify-center gap-2 mb-6">
-          <Sparkles size={20} className="text-cyan-500" />
-          <span className="text-cyan-500 font-semibold text-sm md:text-base tracking-wider">
+          <Sparkles size={20} style={{ color: '#08207f' }} />
+          <span className="font-semibold text-sm md:text-base tracking-wider" style={{ color: '#08207f' }}>
             OFERTA ESPECIAL
           </span>
-          <Sparkles size={20} className="text-cyan-500" />
+          <Sparkles size={20} style={{ color: '#08207f' }} />
         </div>
 
         {/* Title */}
@@ -19,7 +19,7 @@ export default function SpecialOfferSection() {
         </h2>
 
         {/* Subtitle */}
-        <p className="text-lg md:text-xl text-cyan-600 text-center mb-6 font-semibold">
+        <p className="text-lg md:text-xl text-center mb-6 font-semibold" style={{ color: '#08207f' }}>
           Inicio en junio 2026 - Cupos limitados
         </p>
 
@@ -31,10 +31,10 @@ export default function SpecialOfferSection() {
 
         {/* Buttons */}
         <div className="flex flex-col md:flex-row gap-4 justify-center">
-          <button className="px-8 py-3 md:px-10 md:py-4 bg-cyan-500 hover:bg-cyan-600 text-white font-semibold rounded-full transition-colors">
+          <button className="px-8 py-3 md:px-10 md:py-4 text-white font-semibold rounded-full transition-opacity hover:opacity-90" style={{ backgroundColor: '#08207f' }}>
             Reservar mi lugar
           </button>
-          <button className="px-8 py-3 md:px-10 md:py-4 border-2 border-cyan-500 text-cyan-600 hover:bg-cyan-50 font-semibold rounded-full transition-colors">
+          <button className="px-8 py-3 md:px-10 md:py-4 font-semibold rounded-full transition-colors hover:bg-opacity-5" style={{ border: '2px solid #08207f', color: '#08207f' }}>
             Consultar por WhatsApp
           </button>
         </div>
