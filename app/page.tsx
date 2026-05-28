@@ -1,11 +1,13 @@
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/header';
+import BenefitsSection from '@/components/benefits-section';
 import LearningMethodologySection from '@/components/learning-methodology-section';
 import SpecialOfferSection from '@/components/special-offer-section';
 import TestimonialsSection from '@/components/testimonials-section';
 import FAQSection from '@/components/faq-section';
 import ContactSection from '@/components/contact-section';
 import Footer from '@/components/footer';
+import WhatsAppButton from '@/components/whatsapp-button';
 
 export default function Home() {
   return (
@@ -20,6 +22,7 @@ export default function Home() {
         <Header />
         <div className="w-full max-w-full px-4 sm:px-6 lg:px-8 py-8 md:pt-5">
         </div>
+        <BenefitsSection />
         <LearningMethodologySection />
         <TestimonialsSection />
         <SpecialOfferSection />
@@ -32,6 +35,9 @@ export default function Home() {
       <div className="md:hidden">
         <Sidebar />
       </div>
+      
+      {/* WhatsApp Button */}
+      <WhatsAppButton />
     </div>
   );
 }
