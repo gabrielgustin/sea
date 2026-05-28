@@ -1,5 +1,6 @@
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/header';
+import CoursesSection from '@/components/courses-section';
 import BenefitsSection from '@/components/benefits-section';
 import LearningMethodologySection from '@/components/learning-methodology-section';
 import SpecialOfferSection from '@/components/special-offer-section';
@@ -22,6 +23,7 @@ export default function Home() {
         <Header />
         <div className="w-full max-w-full px-4 sm:px-6 lg:px-8 py-8 md:pt-5">
         </div>
+        <CoursesSection />
         <BenefitsSection />
         <LearningMethodologySection />
         <TestimonialsSection />
