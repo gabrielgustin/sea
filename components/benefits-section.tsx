@@ -29,13 +29,6 @@ export default function BenefitsSection() {
   return (
     <section className="w-full px-4 sm:px-6 lg:px-8 py-12">
       <div className="max-w-6xl mx-auto">
-        {/* Badge */}
-        <div className="text-center mb-4">
-          <span className="text-sm md:text-base font-semibold tracking-wider" style={{ color: '#08207f' }}>
-            POR QUÉ ELEGIR VILLADA
-          </span>
-        </div>
-
         {/* Title */}
         <h2 className="text-3xl md:text-5xl font-bold text-gray-900 text-center mb-4">
           Ventajas de nuestros cursos
