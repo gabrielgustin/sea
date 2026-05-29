@@ -25,11 +25,11 @@ export default function Header() {
           {/* Right Side - Logo Desktop */}
           <div className="hidden md:flex items-center justify-end">
             <Image
-              src="/logo-villada.png"
-              alt="ITS Villada Logo"
-              width={140}
-              height={90}
-              className="h-16 w-auto object-contain ml-10"
+              src="/logo-portal-sea.png"
+              alt="Portal SEA Logo"
+              width={160}
+              height={100}
+              className="h-20 w-auto object-contain ml-10"
             />
           </div>
         </div>
