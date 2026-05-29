@@ -25,11 +25,21 @@ export default function Sidebar() {
               <a
                 key={index}
                 href={item.href}
-                className="flex justify-center items-center p-3 hover:bg-blue-50 transition-all duration-300 group relative hover:scale-110 active:scale-95"
+                className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl"
+                style={{
+                  backgroundColor: 'transparent',
+                  cursor: 'pointer'
+                }}
                 title={item.label}
               >
-                <Icon size={24} className="transition-all duration-300" style={{ color: '#08207f' }} />
-                <span className="absolute left-24 bg-blue-900 text-white px-3 py-2 rounded text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none font-medium" style={{ backgroundColor: '#08207f' }}>
+                {/* Glow effect background */}
+                <div className="absolute inset-0 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-pulse-blue" style={{ backgroundColor: 'rgba(8, 32, 127, 0.1)' }} />
+                
+                {/* Icon container */}
+                <Icon size={24} className="transition-all duration-300 group-hover:scale-125 group-hover:rotate-12 relative z-10" style={{ color: '#08207f' }} />
+                
+                {/* Tooltip */}
+                <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #08207f 0%, #1a4d99 100%)' }}>
                   {item.label}
                 </span>
               </a>
