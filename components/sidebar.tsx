@@ -18,7 +18,7 @@ export default function Sidebar() {
       {/* Desktop Sidebar - Fixed 10% width */}
       <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white z-40 flex-col items-center pt-[85px] pb-[100px] px-3 gap-6" style={{ borderRight: '2px solid #08207f' }}>
         {/* Navigation Icons */}
-        <nav className="flex flex-col gap-6 w-full flex-1">
+        <nav className="flex flex-col gap-6 w-full flex-1 justify-center">
           {navItems.map((item, index) => {
             const Icon = item.icon;
             return (
