@@ -8,11 +8,11 @@ export default function Header() {
           {/* Desktop Logo */}
           <div className="hidden md:flex items-center">
             <Image 
-              src="/logo.png" 
-              alt="Extension Académica"
-              width={140}
-              height={60}
-              className="h-14 w-auto object-contain"
+              src="/logo-portal-left.png" 
+              alt="Portal SEA"
+              width={160}
+              height={100}
+              className="h-16 w-auto object-contain"
               priority
             />
           </div>
