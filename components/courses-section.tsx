@@ -1,6 +1,7 @@
 'use client';
 
 import { Code, Gamepad2, Box, Wrench, CheckCircle2, Calendar } from 'lucide-react';
+import { useInView } from '@/hooks/useInView';
 
 const courses = [
   {
@@ -42,15 +43,17 @@ const courses = [
 ];
 
 export default function CoursesSection() {
+  const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
+
   return (
-    <section className="w-full px-4 sm:px-6 lg:px-8 py-12">
+    <section ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold text-center mb-4 animate-fade-in" style={{ color: '#08207f' }}>
+          <h2 className={`text-3xl md:text-5xl font-bold text-center mb-4 transition-all duration-700 ${isInView ? 'animate-fade-in' : 'opacity-0'}`} style={{ color: '#08207f' }}>
             Próximas Formaciones
           </h2>
-          <p className="text-gray-600 text-center text-lg animate-fade-in stagger-1">
+          <p className={`text-gray-600 text-center text-lg transition-all duration-700 ${isInView ? 'animate-fade-in stagger-1' : 'opacity-0'}`}>
             Inscripciones abiertas
           </p>
         </div>
@@ -62,11 +65,13 @@ export default function CoursesSection() {
             return (
               <div
                 key={course.id}
-                className="p-6 md:p-8 rounded-2xl border-2 transition-smooth hover-lift animate-fade-in-up"
+                className={`p-6 md:p-8 rounded-2xl border-2 transition-all duration-700 hover-lift ${
+                  isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
+                }`}
                 style={{ 
                   borderColor: '#08207f', 
                   backgroundColor: '#f8f9fb',
-                  animationDelay: `${index * 0.1}s`
+                  animationDelay: isInView ? `${index * 0.1}s` : '0s'
                 }}
               >
                 {/* Top section with icon and badge */}

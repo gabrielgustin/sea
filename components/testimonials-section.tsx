@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Star, ChevronLeft, ChevronRight } from 'lucide-react';
+import { useInView } from '@/hooks/useInView';
 
 interface Testimonial {
   id: number;
@@ -12,6 +13,7 @@ interface Testimonial {
 
 export default function TestimonialsSection() {
   const [currentIndex, setCurrentIndex] = useState(0);
+  const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
 
   const testimonials: Testimonial[] = [
     {
@@ -57,14 +59,14 @@ export default function TestimonialsSection() {
   );
 
   return (
-    <section className="w-full px-4 sm:px-6 lg:px-8 py-16">
+    <section ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-16">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 animate-fade-in" style={{ color: '#08207f' }}>
+          <h2 className={`text-4xl md:text-5xl font-bold text-gray-900 mb-4 transition-all duration-700 ${isInView ? 'animate-fade-in' : 'opacity-0'}`} style={{ color: '#08207f' }}>
             Lo que dicen nuestros estudiantes
           </h2>
-          <p className="text-lg text-gray-600 animate-fade-in stagger-1">
+          <p className={`text-lg text-gray-600 transition-all duration-700 ${isInView ? 'animate-fade-in stagger-1' : 'opacity-0'}`}>
             Transformando vidas a través de educación de calidad
           </p>
         </div>
@@ -75,10 +77,12 @@ export default function TestimonialsSection() {
             {currentTestimonials.map((testimonial, index) => (
               <div
                 key={testimonial.id}
-                className="rounded-2xl p-8 bg-white transition-smooth hover-lift animate-fade-in-up"
+                className={`rounded-2xl p-8 bg-white transition-all duration-700 hover-lift ${
+                  isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
+                }`}
                 style={{ 
                   border: '2px solid #08207f',
-                  animationDelay: `${index * 0.1}s`
+                  animationDelay: isInView ? `${index * 0.1}s` : '0s'
                 }}
               >
                 {/* Stars */}

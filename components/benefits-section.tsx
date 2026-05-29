@@ -1,8 +1,11 @@
 'use client';
 
 import { Award, Zap, Target, Users } from 'lucide-react';
+import { useInView } from '@/hooks/useInView';
 
 export default function BenefitsSection() {
+  const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
+
   const benefits = [
     {
       icon: Award,
@@ -27,15 +30,15 @@ export default function BenefitsSection() {
   ];
 
   return (
-    <section className="w-full px-4 sm:px-6 lg:px-8 py-12">
+    <section ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12">
       <div className="max-w-6xl mx-auto">
         {/* Title */}
-        <h2 className="text-3xl md:text-5xl font-bold text-gray-900 text-center mb-4 animate-fade-in" style={{ color: '#08207f' }}>
+        <h2 className={`text-3xl md:text-5xl font-bold text-gray-900 text-center mb-4 transition-all duration-700 ${isInView ? 'animate-fade-in' : 'opacity-0'}`} style={{ color: '#08207f' }}>
           Ventajas de nuestros cursos
         </h2>
 
         {/* Subtitle */}
-        <p className="text-lg text-gray-600 text-center mb-12 max-w-2xl mx-auto animate-fade-in stagger-1">
+        <p className={`text-lg text-gray-600 text-center mb-12 max-w-2xl mx-auto transition-all duration-700 ${isInView ? 'animate-fade-in stagger-1' : 'opacity-0'}`}>
           Más que educación, una transformación hacia tu futuro profesional
         </p>
 
@@ -46,10 +49,12 @@ export default function BenefitsSection() {
             return (
               <div
                 key={index}
-                className="p-8 rounded-2xl bg-white transition-smooth hover-lift animate-fade-in-up"
+                className={`p-8 rounded-2xl bg-white transition-all duration-700 hover-lift ${
+                  isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
+                }`}
                 style={{ 
                   border: '2px solid #08207f',
-                  animationDelay: `${index * 0.1}s`
+                  animationDelay: isInView ? `${index * 0.1}s` : '0s'
                 }}
               >
                 <div className="flex items-start gap-4">
