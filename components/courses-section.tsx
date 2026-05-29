@@ -47,7 +47,7 @@ export default function CoursesSection() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold text-gray-900 text-center mb-4">
+          <h2 className="text-3xl md:text-5xl font-bold text-center mb-4" style={{ color: '#08207f' }}>
             Próximas Formaciones
           </h2>
           <p className="text-gray-600 text-center text-lg">
