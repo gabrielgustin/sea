@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { Menu, X, Home, BookOpen, Briefcase, Instagram, Youtube, Mail } from 'lucide-react';
+import { Menu, X, Home, BookOpen, Instagram, Mail } from 'lucide-react';
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -9,10 +9,8 @@ export default function Sidebar() {
   const navItems = [
     { icon: Home, label: 'Inicio', href: '#' },
     { icon: BookOpen, label: 'Formaciones', href: '#formaciones' },
-    { icon: Briefcase, label: 'Programas', href: '#programas' },
     { icon: Mail, label: 'Contacto', href: '#contacto' },
     { icon: Instagram, label: 'Instagram', href: 'https://instagram.com' },
-    { icon: Youtube, label: 'YouTube', href: 'https://youtube.com' },
   ];
 
   return (
