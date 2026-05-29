@@ -22,14 +22,21 @@ export default function Header() {
             <h1 className="font-bold text-base text-foreground truncate">Extension Académica</h1>
           </div>
 
-          {/* Right Side - Logo Desktop */}
-          <div className="hidden md:flex items-center justify-end">
+          {/* Right Side - Logos Desktop */}
+          <div className="hidden md:flex items-center justify-end gap-4">
+            <Image
+              src="/logo-sea-bracket.png"
+              alt="SEA Logo"
+              width={80}
+              height={80}
+              className="h-14 w-auto object-contain"
+            />
             <Image
               src="/logo-villada.png"
               alt="ITS Villada Logo"
               width={140}
               height={90}
-              className="h-16 w-auto object-contain ml-10"
+              className="h-16 w-auto object-contain"
             />
           </div>
         </div>
