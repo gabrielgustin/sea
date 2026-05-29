@@ -16,7 +16,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Desktop Sidebar - Fixed 10% width */}
-      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white border border-black z-40 flex-col items-center pt-[85px] pb-[100px] px-3 gap-6">
+      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white z-40 flex-col items-center pt-[85px] pb-[100px] px-3 gap-6" style={{ borderRight: '2px solid #08207f' }}>
         {/* Navigation Icons */}
         <nav className="flex flex-col gap-6 w-full flex-1">
           {navItems.map((item, index) => {
@@ -29,7 +29,7 @@ export default function Sidebar() {
                 title={item.label}
               >
                 <Icon size={24} className="transition-all duration-300" style={{ color: '#08207f' }} />
-                <span className="absolute left-24 bg-black text-white px-3 py-2 rounded text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none font-medium">
+                <span className="absolute left-24 bg-blue-900 text-white px-3 py-2 rounded text-xs opacity-0 group-hover:opacity-100 transition-all duration-200 whitespace-nowrap pointer-events-none font-medium" style={{ backgroundColor: '#08207f' }}>
                   {item.label}
                 </span>
               </a>
@@ -41,7 +41,8 @@ export default function Sidebar() {
       {/* Mobile Hamburger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed left-0 top-0 z-50 p-4 hover:bg-gray-100 border-r border-b border-black bg-white transition-colors duration-200"
+        className="md:hidden fixed left-0 top-0 z-50 p-4 hover:bg-gray-100 bg-white transition-colors duration-200"
+        style={{ borderRight: '2px solid #08207f', borderBottom: '2px solid #08207f' }}
         aria-label="Toggle sidebar"
       >
         {isOpen ? <X size={24} className="transition-all duration-300" style={{ color: '#08207f' }} /> : <Menu size={24} className="transition-all duration-300" style={{ color: '#08207f' }} />}
@@ -57,9 +58,10 @@ export default function Sidebar() {
 
       {/* Mobile Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen w-64 bg-white border-r border-black z-45 flex flex-col pt-20 pb-8 px-6 transition-all duration-300 md:hidden ${
+        className={`fixed left-0 top-0 h-screen w-64 bg-white z-45 flex flex-col pt-20 pb-8 px-6 transition-all duration-300 md:hidden ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
+        style={{ borderRight: '2px solid #08207f' }}
       >
         {/* Navigation */}
         <nav className="flex flex-col gap-3 w-full mb-8 flex-1">
@@ -80,7 +82,7 @@ export default function Sidebar() {
         </nav>
 
         {/* Divider */}
-        <div className="w-full h-px bg-black mb-6" />
+        <div className="w-full h-px mb-6" style={{ backgroundColor: '#9cbadb' }} />
       </aside>
     </>
   );
