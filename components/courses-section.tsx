@@ -48,10 +48,10 @@ export default function CoursesSection() {
         {/* Header */}
         <div className="mb-12">
           <h2 className="text-3xl md:text-5xl font-bold text-gray-900 text-center mb-4">
-            Elige Tu Camino de Aprendizaje
+            Próximas Formaciones
           </h2>
           <p className="text-gray-600 text-center text-lg">
-            Cursos completos diseñados para llevarte de principiante a experto
+            Inscripciones abiertas
           </p>
         </div>
 
