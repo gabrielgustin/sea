@@ -47,28 +47,32 @@ export default function CoursesSection() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="mb-12">
-          <h2 className="text-3xl md:text-5xl font-bold text-center mb-4" style={{ color: '#08207f' }}>
+          <h2 className="text-3xl md:text-5xl font-bold text-center mb-4 animate-fade-in" style={{ color: '#08207f' }}>
             Próximas Formaciones
           </h2>
-          <p className="text-gray-600 text-center text-lg">
+          <p className="text-gray-600 text-center text-lg animate-fade-in stagger-1">
             Inscripciones abiertas
           </p>
         </div>
 
         {/* Courses Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {courses.map((course) => {
+          {courses.map((course, index) => {
             const Icon = course.icon;
             return (
               <div
                 key={course.id}
-                className="p-6 md:p-8 rounded-2xl border-2"
-                style={{ borderColor: '#08207f', backgroundColor: '#f8f9fb' }}
+                className="p-6 md:p-8 rounded-2xl border-2 transition-smooth hover-lift animate-fade-in-up"
+                style={{ 
+                  borderColor: '#08207f', 
+                  backgroundColor: '#f8f9fb',
+                  animationDelay: `${index * 0.1}s`
+                }}
               >
                 {/* Top section with icon and badge */}
                 <div className="flex justify-between items-start mb-4">
-                  <Icon size={32} style={{ color: '#08207f' }} />
-                  <span className="text-xs font-bold px-3 py-1 rounded" style={{ color: '#08207f', backgroundColor: 'rgba(8, 32, 127, 0.1)' }}>
+                  <Icon size={32} className="transition-smooth hover-scale" style={{ color: '#08207f' }} />
+                  <span className="text-xs font-bold px-3 py-1 rounded transition-smooth" style={{ color: '#08207f', backgroundColor: 'rgba(8, 32, 127, 0.1)' }}>
                     {course.badge}
                   </span>
                 </div>
@@ -100,9 +104,9 @@ export default function CoursesSection() {
                 </div>
 
                 {/* Button */}
-                <button className="text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-all" style={{ color: '#08207f' }}>
+                <button className="text-sm font-semibold flex items-center gap-2 hover:gap-3 transition-smooth line-animation group" style={{ color: '#08207f' }}>
                   Consultar
-                  <span>→</span>
+                  <span className="transition-smooth group-hover:translate-x-1">→</span>
                 </button>
               </div>
             );

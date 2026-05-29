@@ -61,10 +61,10 @@ export default function TestimonialsSection() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
+          <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 animate-fade-in" style={{ color: '#08207f' }}>
             Lo que dicen nuestros estudiantes
           </h2>
-          <p className="text-lg text-gray-600">
+          <p className="text-lg text-gray-600 animate-fade-in stagger-1">
             Transformando vidas a través de educación de calidad
           </p>
         </div>
@@ -72,11 +72,14 @@ export default function TestimonialsSection() {
         {/* Testimonials Grid */}
         <div className="relative">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            {currentTestimonials.map((testimonial) => (
+            {currentTestimonials.map((testimonial, index) => (
               <div
                 key={testimonial.id}
-                className="rounded-2xl p-8 bg-white"
-                style={{ border: '2px solid #08207f' }}
+                className="rounded-2xl p-8 bg-white transition-smooth hover-lift animate-fade-in-up"
+                style={{ 
+                  border: '2px solid #08207f',
+                  animationDelay: `${index * 0.1}s`
+                }}
               >
                 {/* Stars */}
                 <div className="flex gap-1 mb-4">
@@ -108,7 +111,7 @@ export default function TestimonialsSection() {
             {/* Left Arrow */}
             <button
               onClick={handlePrev}
-              className="w-12 h-12 rounded-full border-2 flex items-center justify-center transition-colors hover:bg-gray-100"
+              className="w-12 h-12 rounded-full border-2 flex items-center justify-center transition-smooth hover:scale-110 hover:shadow-blue-md"
               style={{ borderColor: '#08207f', color: '#08207f' }}
               aria-label="Previous testimonials"
             >
@@ -137,7 +140,7 @@ export default function TestimonialsSection() {
             {/* Right Arrow */}
             <button
               onClick={handleNext}
-              className="w-12 h-12 rounded-full border-2 flex items-center justify-center transition-colors hover:bg-gray-100"
+              className="w-12 h-12 rounded-full border-2 flex items-center justify-center transition-smooth hover:scale-110 hover:shadow-blue-md"
               style={{ borderColor: '#08207f', color: '#08207f' }}
               aria-label="Next testimonials"
             >
