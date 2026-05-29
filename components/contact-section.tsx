@@ -143,7 +143,10 @@ export default function ContactSection() {
               <Button
                 type="submit"
                 size="lg"
-                className="w-full bg-primary hover:bg-primary/90"
+                className="w-full text-white"
+                style={{ backgroundColor: '#08207f' }}
+                onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#061a5a'}
+                onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#08207f'}
               >
                 {submitted ? '¡Mensaje Enviado!' : 'Enviar Mensaje'}
               </Button>
