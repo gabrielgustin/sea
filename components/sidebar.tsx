@@ -78,25 +78,23 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Login/Logout Button - Close to Instagram */}
-        <button
-          onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
-          className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
-          style={{
-            backgroundColor: 'transparent',
-            cursor: 'pointer'
-          }}
-          title={isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
-        >
-          {isAuthenticated ? (
+        {/* Login/Logout Button - Close to Instagram (only when authenticated) */}
+        {isAuthenticated && (
+          <button
+            onClick={handleLogout}
+            className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
+            style={{
+              backgroundColor: 'transparent',
+              cursor: 'pointer'
+            }}
+            title="Cerrar sesión"
+          >
             <LogOut size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#08207f' }} />
-          ) : (
-            <LogIn size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#08207f' }} />
-          )}
-          <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #08207f 0%, #1a4d99 100%)' }}>
-            {isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
-          </span>
-        </button>
+            <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #08207f 0%, #1a4d99 100%)' }}>
+              Cerrar sesión
+            </span>
+          </button>
+        )}
 
         {/* Spacer - Bottom filler */}
         <div className="flex-1" />
@@ -200,18 +198,16 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Login/Logout Button - Close to Instagram */}
-        <button
-          onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
-          className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group w-full mb-8"
-        >
-          {isAuthenticated ? (
+        {/* Login/Logout Button - Close to Instagram (only when authenticated) */}
+        {isAuthenticated && (
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group w-full mb-8"
+          >
             <LogOut size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#08207f' }} />
-          ) : (
-            <LogIn size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#08207f' }} />
-          )}
-          <span className="text-sm font-medium">{isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}</span>
-        </button>
+            <span className="text-sm font-medium">Cerrar sesión</span>
+          </button>
+        )}
 
         {/* Spacer */}
         <div className="flex-1" />
