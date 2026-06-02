@@ -7,7 +7,6 @@ import SpecialOfferSection from '@/components/special-offer-section';
 import TestimonialsSection from '@/components/testimonials-section';
 import FAQSection from '@/components/faq-section';
 import ContactSection from '@/components/contact-section';
-import Footer from '@/components/footer';
 import WhatsAppButton from '@/components/whatsapp-button';
 
 export default function Home() {
@@ -30,7 +29,6 @@ export default function Home() {
         <SpecialOfferSection />
         <FAQSection />
         <ContactSection />
-        <Footer />
       </main>
 
       {/* Mobile sidebar (separate from layout) */}

@@ -20,7 +20,7 @@ export default function SpecialOfferSection() {
 
         {/* Subtitle */}
         <p className="text-lg md:text-xl text-center mb-6 font-semibold" style={{ color: '#08207f' }}>
-          Inicio en junio 2026 - Cupos limitados
+          Inscripciones Abiertas
         </p>
 
         {/* Description */}

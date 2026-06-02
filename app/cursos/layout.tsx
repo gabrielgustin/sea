@@ -1,6 +1,5 @@
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/header';
-import Footer from '@/components/footer';
 import WhatsAppButton from '@/components/whatsapp-button';
 
 export default function CursosLayout({
@@ -21,7 +20,6 @@ export default function CursosLayout({
         <div className="w-full">
           {children}
         </div>
-        <Footer />
       </main>
 
       {/* Mobile sidebar (separate from layout) */}
