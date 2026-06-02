@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Header() {
   return (
@@ -6,7 +7,7 @@ export default function Header() {
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 md:h-24">
           {/* Desktop Logo */}
-          <div className="hidden md:flex items-center">
+          <Link href="/" className="hidden md:flex items-center cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
               src="/logo-portal-left.png" 
               alt="Portal SEA"
@@ -15,12 +16,12 @@ export default function Header() {
               className="h-16 w-auto object-contain"
               priority
             />
-          </div>
+          </Link>
 
           {/* Center - Title for mobile */}
-          <div className="md:hidden flex-1 text-center">
+          <Link href="/" className="md:hidden flex-1 text-center cursor-pointer hover:opacity-80 transition-opacity">
             <h1 className="font-bold text-base text-foreground truncate">Extension Académica</h1>
-          </div>
+          </Link>
 
           {/* Right Side - Logos Desktop */}
           <div className="hidden md:flex items-center justify-end gap-1">
