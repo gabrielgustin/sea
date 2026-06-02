@@ -11,7 +11,6 @@ export default function ContactSection() {
     name: '',
     email: '',
     phone: '',
-    subject: '',
     message: '',
   });
   const [submitted, setSubmitted] = useState(false);
@@ -26,7 +25,7 @@ export default function ContactSection() {
     console.log('Form submitted:', formData);
     setSubmitted(true);
     setTimeout(() => {
-      setFormData({ name: '', email: '', phone: '', subject: '', message: '' });
+      setFormData({ name: '', email: '', phone: '', message: '' });
       setSubmitted(false);
     }, 3000);
   };
@@ -106,20 +105,6 @@ export default function ContactSection() {
                   value={formData.phone}
                   onChange={handleChange}
                   placeholder="+54..."
-                  className="mt-2 transition-smooth focus:ring-2 focus:ring-offset-2"
-                  style={{ '--tw-ring-color': '#031e41' } as any}
-                />
-              </div>
-
-              <div>
-                <Label htmlFor="subject">Asunto</Label>
-                <Input
-                  id="subject"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  required
-                  placeholder="Asunto del mensaje"
                   className="mt-2 transition-smooth focus:ring-2 focus:ring-offset-2"
                   style={{ '--tw-ring-color': '#031e41' } as any}
                 />
