@@ -29,7 +29,7 @@ const courses = [
     title: 'Diseño e Impresión 3D',
     subtitle: 'Diseña y crea modelos 3D profesionales',
     type: 'CERTIFICADO',
-    image: '/course-app-development.jpg',
+    image: '/course-3d-design.jpg',
     badge: 'EDUCACIÓN PRESENCIAL',
     startDate: 'Mar 3/06/2026',
     modality: 'Presencial',
