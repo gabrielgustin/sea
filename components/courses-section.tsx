@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
 import { useInView } from '@/hooks/useInView';
 
 const courses = [
@@ -8,41 +9,65 @@ const courses = [
     id: 1,
     title: 'Desarrollo de Aplicaciones',
     subtitle: 'Crea aplicaciones profesionales desde cero',
-    type: 'DIPLOMATURA',
     image: '/course-app-development.jpg',
-    badge: 'EDUCACIÓN A DISTANCIA',
+    badge: 'EDUCACIÓN PRESENCIAL',
     startDate: 'Lun 1/06/2026',
-    modality: 'Online',
+    modality: 'Presencial',
+    slug: 'desarrollo-de-aplicaciones',
+    description: 'Aprende a crear aplicaciones profesionales con las herramientas y tecnologías más demandadas en la industria. Este curso presencial te brinda experiencia práctica desde el primer día.',
+    schedule: 'Lunes a Viernes: 16:30 a 18:30',
+    location: 'Planta Baja Edificio Central',
+    teacher: 'Ing. Sebastián Oliva',
+    duration: '160 horas',
+    price: '$15.000',
   },
   {
     id: 2,
     title: 'Desarrollo de Videojuegos',
     subtitle: 'Crea tus propios videojuegos interactivos',
-    type: 'CERTIFICADO',
     image: '/course-game-development.jpg',
-    badge: 'EDUCACIÓN A DISTANCIA',
+    badge: 'EDUCACIÓN PRESENCIAL',
     startDate: 'Jue 4/06/2026',
-    modality: 'Online',
+    modality: 'Presencial',
+    slug: 'desarrollo-de-videojuegos',
+    description: 'Diseña y desarrolla videojuegos 3D profesionales utilizando motores de juego modernos. Clases prácticas en laboratorio con equipamiento profesional.',
+    schedule: 'Jueves y Viernes: 16:30 a 19:30',
+    location: 'Laboratorio de Desarrollo - Piso 3',
+    teacher: 'Lic. María González',
+    duration: '140 horas',
+    price: '$18.000',
   },
   {
     id: 3,
     title: 'Diseño e Impresión 3D',
     subtitle: 'Diseña y crea modelos 3D profesionales',
-    type: 'CERTIFICADO',
     image: '/course-3d-design.jpg',
     badge: 'EDUCACIÓN PRESENCIAL',
     startDate: 'Mar 3/06/2026',
     modality: 'Presencial',
+    slug: 'diseno-impresion-3d',
+    description: 'Domina el diseño CAD y la impresión 3D. Desde modelado hasta materialización de tus proyectos en máquinas profesionales.',
+    schedule: 'Martes y Miércoles: 17:00 a 20:00',
+    location: 'Centro de Fabricación Digital',
+    teacher: 'Arq. Carlos Ruiz',
+    duration: '120 horas',
+    price: '$16.500',
   },
   {
     id: 4,
     title: 'Mecánica Automotriz',
     subtitle: 'Domina el funcionamiento de sistemas automotrices',
-    type: 'DIPLOMATURA',
     image: '/course-app-development.jpg',
     badge: 'EDUCACIÓN PRESENCIAL',
     startDate: 'Mar 3/06/2026',
     modality: 'Presencial',
+    slug: 'mecanica-automotriz',
+    description: 'Capacitación integral en sistemas automotrices modernos. Aprende reparación, mantenimiento y diagnóstico con equipamiento profesional.',
+    schedule: 'Martes, Miércoles y Viernes: 18:00 a 20:30',
+    location: 'Taller de Mecánica - Anexo Sur',
+    teacher: 'Ing. Técnico Roberto López',
+    duration: '180 horas',
+    price: '$20.000',
   },
 ];
 
@@ -65,9 +90,10 @@ export default function CoursesSection() {
         {/* Courses Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {courses.map((course, index) => (
-            <div
+            <Link
               key={course.id}
-              className={`overflow-hidden rounded-3xl border-2 transition-all duration-700 hover-lift shadow-blue-sm hover:shadow-blue-md ${
+              href={`/cursos/${course.slug}`}
+              className={`overflow-hidden rounded-3xl border-2 transition-all duration-700 hover-lift shadow-blue-sm hover:shadow-blue-md block ${
                 isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
               }`}
               style={{ 
@@ -119,7 +145,7 @@ export default function CoursesSection() {
                   </div>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
       </div>
