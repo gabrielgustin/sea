@@ -40,7 +40,7 @@ export default function CoursePreview({ course, onClose }: CoursePreviewProps) {
             className="object-cover"
             sizes="100vw"
           />
-          <div className="absolute top-4 right-4 px-4 py-2 rounded-full text-white font-bold" style={{ backgroundColor: '#00a8cc' }}>
+          <div className="absolute top-4 right-4 px-4 py-2 rounded-full text-white font-bold" style={{ backgroundColor: '#031e41' }}>
             {course.badge}
           </div>
         </div>

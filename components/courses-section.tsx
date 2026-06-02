@@ -50,7 +50,7 @@ export default function CoursesSection() {
                 {/* Badge */}
                 <div 
                   className="absolute top-4 right-4 px-4 py-2 rounded-full text-white text-xs font-bold transition-all duration-300 group-hover:translate-y-1"
-                  style={{ backgroundColor: '#00a8cc' }}
+                  style={{ backgroundColor: '#031e41' }}
                 >
                   {course.badge}
                 </div>
@@ -59,7 +59,7 @@ export default function CoursesSection() {
               {/* Content */}
               <div className="p-4 md:p-5">
                 {/* Title */}
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight transition-colors duration-300 group-hover:text-blue-600">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight transition-colors duration-300 group-hover:text-blue-900" style={{ color: 'inherit' }}>
                   {course.title}
                 </h3>
 

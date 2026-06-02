@@ -21,7 +21,7 @@ export default function CourseDetailClient({ course }: { course: any }) {
           <div className="max-w-6xl mx-auto w-full">
             <div 
               className="inline-block px-6 py-3 rounded-full text-white font-bold text-sm md:text-base mb-6"
-              style={{ backgroundColor: '#00a8cc' }}
+              style={{ backgroundColor: '#031e41' }}
             >
               {course.badge}
             </div>

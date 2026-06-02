@@ -35,7 +35,7 @@ export default function CourseList({
               className="object-cover group-hover:scale-105 transition-transform duration-300"
               sizes="(max-width: 1024px) 100vw, 50vw"
             />
-            <div className="absolute top-3 right-3 px-3 py-1 rounded-full text-white text-xs font-bold" style={{ backgroundColor: '#00a8cc' }}>
+            <div className="absolute top-3 right-3 px-3 py-1 rounded-full text-white text-xs font-bold" style={{ backgroundColor: '#031e41' }}>
               {course.badge}
             </div>
           </div>
