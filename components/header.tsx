@@ -26,7 +26,7 @@ export default function Header() {
           </Link>
 
           {/* Right Side - Logos Desktop */}
-          <div className="hidden md:flex items-center justify-end gap-4">
+          <div className="hidden md:flex items-center justify-end gap-1">
             <Image
               src="/logo-sea.png"
               alt="SEA Logo"
