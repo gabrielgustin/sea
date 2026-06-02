@@ -124,6 +124,26 @@ export default async function CoursePage({ params }: { params: Promise<{ slug: s
 
   return (
     <div className="w-full">
+      {/* Sticky Header - Visible in both orientations */}
+      <header className="sticky top-0 z-50 w-full bg-white border-b-2 shadow-blue-sm" style={{ borderColor: '#08207f' }}>
+        <div className="px-4 sm:px-6 lg:px-8 py-4">
+          <div className="max-w-6xl mx-auto flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div 
+                className="px-3 py-1 rounded-full text-white font-bold text-xs md:text-sm"
+                style={{ backgroundColor: '#00a8cc' }}
+              >
+                {course.badge}
+              </div>
+              <h1 className="text-lg md:text-2xl font-bold text-gray-900 hidden sm:block">{course.title}</h1>
+            </div>
+            <div className="text-sm font-semibold" style={{ color: '#08207f' }}>
+              {course.startDate}
+            </div>
+          </div>
+        </div>
+      </header>
+
       {/* Hero Section with Image */}
       <section className="relative w-full h-96 md:h-[500px] overflow-hidden">
         <Image
