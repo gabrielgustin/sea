@@ -78,10 +78,30 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Spacer */}
+        {/* Login/Logout Button - Close to Instagram */}
+        <button
+          onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
+          className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
+          style={{
+            backgroundColor: 'transparent',
+            cursor: 'pointer'
+          }}
+          title={isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
+        >
+          {isAuthenticated ? (
+            <LogOut size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#08207f' }} />
+          ) : (
+            <LogIn size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#08207f' }} />
+          )}
+          <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #08207f 0%, #1a4d99 100%)' }}>
+            {isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
+          </span>
+        </button>
+
+        {/* Spacer - Bottom filler */}
         <div className="flex-1" />
 
-        {/* Admin Icon - Middle (when authenticated) with animation */}
+        {/* Admin Icon - Bottom (when authenticated) with animation */}
         {isAuthenticated && (
           <Link
             href="/admin"
@@ -180,25 +200,10 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Admin Link - Middle (when authenticated) */}
-        {isAuthenticated && (
-          <>
-            <Link
-              href="/admin"
-              className={`flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group mb-6 ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
-              onClick={() => setIsOpen(false)}
-            >
-              <Settings size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#08207f' }} />
-              <span className="text-sm font-medium">Admin</span>
-            </Link>
-            <div className="w-full h-px mb-6" style={{ backgroundColor: '#9cbadb' }} />
-          </>
-        )}
-
-        {/* Login/Logout Button - Bottom */}
+        {/* Login/Logout Button - Close to Instagram */}
         <button
           onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
-          className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group w-full"
+          className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group w-full mb-8"
         >
           {isAuthenticated ? (
             <LogOut size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#08207f' }} />
@@ -207,6 +212,24 @@ export default function Sidebar() {
           )}
           <span className="text-sm font-medium">{isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}</span>
         </button>
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Admin Link - Bottom (when authenticated) */}
+        {isAuthenticated && (
+          <>
+            <div className="w-full h-px mb-6" style={{ backgroundColor: '#9cbadb' }} />
+            <Link
+              href="/admin"
+              className={`flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
+              onClick={() => setIsOpen(false)}
+            >
+              <Settings size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#08207f' }} />
+              <span className="text-sm font-medium">Admin</span>
+            </Link>
+          </>
+        )}
       </aside>
 
       <LoginModal open={loginOpen} onOpenChange={setLoginOpen} onLoginSuccess={handleLoginSuccess} />
