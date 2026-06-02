@@ -57,7 +57,7 @@ const courses = [
     id: 4,
     title: 'Mecánica Automotriz',
     subtitle: 'Domina el funcionamiento de sistemas automotrices',
-    image: '/course-app-development.jpg',
+    image: '/course-automotive.jpg',
     badge: 'EDUCACIÓN PRESENCIAL',
     startDate: 'Mar 3/06/2026',
     modality: 'Presencial',
