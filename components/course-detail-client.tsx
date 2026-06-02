@@ -47,12 +47,12 @@ export default function CourseDetailClient({ course }: { course: any }) {
               </p>
             </div>
 
-            {/* Program - Compact Grid */}
+            {/* Program - Full Content */}
             <div className="mb-8">
               <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ color: '#08207f' }}>
                 Contenidos
               </h2>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="space-y-4">
                 {course.modules && course.modules.map((module: any, index: number) => (
                   <div key={index} className="bg-white border-l-4 p-4 rounded-lg" style={{ borderColor: '#00a8cc' }}>
                     <div className="flex items-start gap-3">
@@ -65,15 +65,12 @@ export default function CourseDetailClient({ course }: { course: any }) {
                       <div className="flex-1">
                         <h3 className="text-sm font-bold text-gray-900 mb-2">{module.title}</h3>
                         <ul className="space-y-1">
-                          {module.topics && module.topics.slice(0, 2).map((topic: string, topicIndex: number) => (
+                          {module.topics && module.topics.map((topic: string, topicIndex: number) => (
                             <li key={topicIndex} className="flex items-start gap-1 text-gray-600 text-xs">
                               <span className="text-gray-400 flex-shrink-0">•</span>
                               <span>{topic}</span>
                             </li>
                           ))}
-                          {module.topics && module.topics.length > 2 && (
-                            <li className="text-gray-500 text-xs italic">+ {module.topics.length - 2} más</li>
-                          )}
                         </ul>
                       </div>
                     </div>
