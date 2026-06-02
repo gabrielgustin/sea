@@ -11,9 +11,9 @@ export default function Header() {
           {/* Desktop Logo */}
           <Link href="/" className="hidden md:flex items-center cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
-              src="/logo-portal-left.png" 
+              src="/logo-portal-sea.png" 
               alt="Portal SEA"
-              width={160}
+              width={200}
               height={100}
               className="h-16 w-auto object-contain"
               priority
@@ -26,13 +26,13 @@ export default function Header() {
           </Link>
 
           {/* Right Side - Logos Desktop */}
-          <div className="hidden md:flex items-center justify-end gap-1">
+          <div className="hidden md:flex items-center justify-end gap-4">
             <Image
-              src="/logo-sea-bracket.png"
+              src="/logo-sea.png"
               alt="SEA Logo"
-              width={80}
-              height={80}
-              className="h-14 w-auto object-contain"
+              width={100}
+              height={100}
+              className="h-16 w-auto object-contain"
             />
             <Image
               src="/logo-villada.png"
