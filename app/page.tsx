@@ -4,7 +4,6 @@ import CoursesSection from '@/components/courses-section';
 import BenefitsSection from '@/components/benefits-section';
 import LearningMethodologySection from '@/components/learning-methodology-section';
 import SpecialOfferSection from '@/components/special-offer-section';
-import TestimonialsSection from '@/components/testimonials-section';
 import FAQSection from '@/components/faq-section';
 import ContactSection from '@/components/contact-section';
 import WhatsAppButton from '@/components/whatsapp-button';
@@ -25,7 +24,6 @@ export default function Home() {
         <CoursesSection />
         <BenefitsSection />
         <LearningMethodologySection />
-        <TestimonialsSection />
         <SpecialOfferSection />
         <FAQSection />
         <ContactSection />
