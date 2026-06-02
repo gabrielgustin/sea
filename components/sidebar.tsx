@@ -9,23 +9,34 @@ import LoginModal from './login-modal';
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [showLoginAnimation, setShowLoginAnimation] = useState(false);
   const { isAuthenticated, logout } = useAuth();
 
-  const navItems = [
+  const publicNavItems = [
     { icon: Home, label: 'Inicio', href: '/' },
     { icon: BookOpen, label: 'Formaciones', href: '/#formaciones' },
     { icon: Mail, label: 'Contacto', href: '/#contacto' },
     { icon: Instagram, label: 'Instagram', href: 'https://instagram.com' },
-    ...(isAuthenticated ? [{ icon: Settings, label: 'Admin', href: '/admin' }] : []),
   ];
+
+  const handleLogout = () => {
+    setShowLoginAnimation(false);
+    logout();
+  };
+
+  const handleLoginSuccess = () => {
+    setShowLoginAnimation(true);
+    setTimeout(() => setShowLoginAnimation(false), 600);
+  };
 
   return (
     <>
       {/* Desktop Sidebar - Fixed 10% width */}
       <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white z-40 flex-col items-center pt-[85px] pb-[100px] px-3 gap-6" style={{ borderRight: '2px solid #08207f' }}>
-        {/* Navigation Icons */}
-        <nav className="flex flex-col gap-6 w-full flex-1 justify-center">
-          {navItems.map((item, index) => {
+        
+        {/* Navigation Items - Top */}
+        <nav className="flex flex-col gap-6 w-full">
+          {publicNavItems.map((item, index) => {
             const Icon = item.icon;
             const isExternal = item.href.startsWith('http');
             
@@ -67,9 +78,33 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Login/Logout Button */}
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Admin Icon - Middle (when authenticated) with animation */}
+        {isAuthenticated && (
+          <Link
+            href="/admin"
+            className={`flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50 ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
+            style={{
+              backgroundColor: 'transparent',
+              cursor: 'pointer'
+            }}
+            title="Admin"
+          >
+            <Settings size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#08207f' }} />
+            <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #08207f 0%, #1a4d99 100%)' }}>
+              Admin
+            </span>
+          </Link>
+        )}
+
+        {/* Spacer */}
+        <div className="flex-1" />
+
+        {/* Login/Logout Button - Bottom */}
         <button
-          onClick={isAuthenticated ? logout : () => setLoginOpen(true)}
+          onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
           className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
           style={{
             backgroundColor: 'transparent',
@@ -113,9 +148,9 @@ export default function Sidebar() {
         }`}
         style={{ borderRight: '2px solid #08207f' }}
       >
-        {/* Navigation */}
+        {/* Navigation Items - Top */}
         <nav className="flex flex-col gap-3 w-full mb-8 flex-1">
-          {navItems.map((item, index) => {
+          {publicNavItems.map((item, index) => {
             const Icon = item.icon;
             const isExternal = item.href.startsWith('http');
             
@@ -145,12 +180,24 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Divider */}
-        <div className="w-full h-px mb-6" style={{ backgroundColor: '#9cbadb' }} />
+        {/* Admin Link - Middle (when authenticated) */}
+        {isAuthenticated && (
+          <>
+            <Link
+              href="/admin"
+              className={`flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group mb-6 ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
+              onClick={() => setIsOpen(false)}
+            >
+              <Settings size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#08207f' }} />
+              <span className="text-sm font-medium">Admin</span>
+            </Link>
+            <div className="w-full h-px mb-6" style={{ backgroundColor: '#9cbadb' }} />
+          </>
+        )}
 
-        {/* Mobile Login/Logout Button */}
+        {/* Login/Logout Button - Bottom */}
         <button
-          onClick={isAuthenticated ? logout : () => setLoginOpen(true)}
+          onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
           className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group w-full"
         >
           {isAuthenticated ? (
@@ -162,7 +209,7 @@ export default function Sidebar() {
         </button>
       </aside>
 
-      <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
+      <LoginModal open={loginOpen} onOpenChange={setLoginOpen} onLoginSuccess={handleLoginSuccess} />
     </>
   );
 }

@@ -10,9 +10,10 @@ import { Button } from '@/components/ui/button';
 interface LoginModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  onLoginSuccess?: () => void;
 }
 
-export default function LoginModal({ open, onOpenChange }: LoginModalProps) {
+export default function LoginModal({ open, onOpenChange, onLoginSuccess }: LoginModalProps) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
@@ -31,6 +32,7 @@ export default function LoginModal({ open, onOpenChange }: LoginModalProps) {
     if (success) {
       setUsername('');
       setPassword('');
+      onLoginSuccess?.();
       onOpenChange(false);
     } else {
       setError('Usuario o contraseña incorrectos');
