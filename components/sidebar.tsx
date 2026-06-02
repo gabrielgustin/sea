@@ -122,10 +122,10 @@ export default function Sidebar() {
         {/* Spacer */}
         <div className="flex-1" />
 
-        {/* Login/Logout Button - Bottom */}
+        {/* Login/Logout Button - Bottom (hidden to preserve layout) */}
         <button
           onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
-          className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
+          className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50 invisible"
           style={{
             backgroundColor: 'transparent',
             cursor: 'pointer'
