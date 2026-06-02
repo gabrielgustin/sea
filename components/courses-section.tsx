@@ -19,7 +19,7 @@ const courses = [
     title: 'Desarrollo de Videojuegos',
     subtitle: 'Crea tus propios videojuegos interactivos',
     type: 'CERTIFICADO',
-    image: '/course-app-development.jpg',
+    image: '/course-game-development.jpg',
     badge: 'EDUCACIÓN A DISTANCIA',
     startDate: 'Jue 4/06/2026',
     modality: 'Online',
