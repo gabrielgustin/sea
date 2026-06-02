@@ -1,4 +1,4 @@
-import { Mail, Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
+import { Phone, MapPin, Facebook, Twitter, Linkedin, Instagram } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
 export default function Footer() {
@@ -31,15 +31,11 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#08207f' }} />
-                <span className="text-gray-600">Planta Baja Edificio Central</span>
+                <span className="text-gray-600">Instituto Técnico Salesiano Villada<br />Cordoba Capital</span>
               </li>
               <li className="flex items-start gap-2">
                 <Phone className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#08207f' }} />
-                <span className="text-gray-600">+54 (0) 3514 480676</span>
-              </li>
-              <li className="flex items-start gap-2">
-                <Mail className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#08207f' }} />
-                <span className="text-gray-600">contacto@extension.edu.ar</span>
+                <span className="text-gray-600">+54 3516307002</span>
               </li>
             </ul>
           </div>

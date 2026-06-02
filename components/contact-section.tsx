@@ -48,23 +48,18 @@ export default function ContactSection() {
               <div>
                 <h3 className="font-semibold text-lg mb-2 text-foreground">Ubicación</h3>
                 <p className="text-muted-foreground">
-                  Planta Baja Edificio Central<br />
-                  Facultad Regional Córdoba<br />
-                  Universidad Tecnológica Nacional
+                  Instituto Técnico Salesiano Villada<br />
+                  Cordoba Capital
                 </p>
               </div>
               <div>
                 <h3 className="font-semibold text-lg mb-2 text-foreground">Teléfono</h3>
-                <p className="text-muted-foreground">+54 (0) 3514 480676</p>
-              </div>
-              <div>
-                <h3 className="font-semibold text-lg mb-2 text-foreground">Email</h3>
-                <p className="text-muted-foreground">contacto@extension.edu.ar</p>
+                <p className="text-muted-foreground">+54 3516307002</p>
               </div>
               <div>
                 <h3 className="font-semibold text-lg mb-2 text-foreground">Horarios</h3>
                 <p className="text-muted-foreground">
-                  Lunes a Viernes: 8:00 - 18:00<br />
+                  Lunes a Viernes: 16:30 - 18:00<br />
                   Sábados: 9:00 - 13:00
                 </p>
               </div>
