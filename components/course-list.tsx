@@ -83,7 +83,7 @@ export default function CourseList({
                 onClick={() => onEdit(course)}
                 size="sm"
                 className="flex-1 flex items-center justify-center gap-2 text-white"
-                style={{ backgroundColor: '#08207f' }}
+                style={{ backgroundColor: '#031e41' }}
               >
                 <Edit2 size={16} />
                 <span>Editar</span>

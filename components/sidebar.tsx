@@ -32,7 +32,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Desktop Sidebar - Fixed 10% width */}
-      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white z-40 flex-col items-center pt-[85px] pb-[100px] px-3 gap-6" style={{ borderRight: '2px solid #08207f' }}>
+      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white z-40 flex-col items-center pt-[85px] pb-[100px] px-3 gap-6" style={{ borderRight: '2px solid #031e41' }}>
         
         {/* Navigation Items - Top */}
         <nav className="flex flex-col gap-6 w-full">
@@ -53,8 +53,8 @@ export default function Sidebar() {
                 }}
                 title={item.label}
               >
-                <Icon size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#08207f' }} />
-                <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #08207f 0%, #1a4d99 100%)' }}>
+                <Icon size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
+                <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
                   {item.label}
                 </span>
               </a>
@@ -69,8 +69,8 @@ export default function Sidebar() {
                 }}
                 title={item.label}
               >
-                <Icon size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#08207f' }} />
-                <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #08207f 0%, #1a4d99 100%)' }}>
+                <Icon size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
+                <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
                   {item.label}
                 </span>
               </Link>
@@ -89,11 +89,11 @@ export default function Sidebar() {
           title={isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
         >
           {isAuthenticated ? (
-            <LogOut size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#08207f' }} />
+            <LogOut size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
           ) : (
-            <LogIn size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#08207f' }} />
+            <LogIn size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
           )}
-          <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #08207f 0%, #1a4d99 100%)' }}>
+          <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
             {isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
           </span>
         </button>
@@ -112,8 +112,8 @@ export default function Sidebar() {
             }}
             title="Admin"
           >
-            <Settings size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#08207f' }} />
-            <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #08207f 0%, #1a4d99 100%)' }}>
+            <Settings size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
+            <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
               Admin
             </span>
           </Link>
@@ -133,11 +133,11 @@ export default function Sidebar() {
           title={isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
         >
           {isAuthenticated ? (
-            <LogOut size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#08207f' }} />
+            <LogOut size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
           ) : (
-            <LogIn size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#08207f' }} />
+            <LogIn size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
           )}
-          <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #08207f 0%, #1a4d99 100%)' }}>
+          <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
             {isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
           </span>
         </button>
@@ -147,10 +147,10 @@ export default function Sidebar() {
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="md:hidden fixed left-0 top-0 z-50 p-4 hover:bg-gray-100 bg-white transition-colors duration-200"
-        style={{ borderRight: '2px solid #08207f', borderBottom: '2px solid #08207f' }}
+        style={{ borderRight: '2px solid #031e41', borderBottom: '2px solid #031e41' }}
         aria-label="Toggle sidebar"
       >
-        {isOpen ? <X size={24} className="transition-all duration-300" style={{ color: '#08207f' }} /> : <Menu size={24} className="transition-all duration-300" style={{ color: '#08207f' }} />}
+        {isOpen ? <X size={24} className="transition-all duration-300" style={{ color: '#031e41' }} /> : <Menu size={24} className="transition-all duration-300" style={{ color: '#031e41' }} />}
       </button>
 
       {/* Mobile Overlay */}
@@ -166,7 +166,7 @@ export default function Sidebar() {
         className={`fixed left-0 top-0 h-screen w-64 bg-white z-45 flex flex-col pt-20 pb-8 px-6 transition-all duration-300 md:hidden ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
-        style={{ borderRight: '2px solid #08207f' }}
+        style={{ borderRight: '2px solid #031e41' }}
       >
         {/* Navigation Items - Top */}
         <nav className="flex flex-col gap-3 w-full mb-8 flex-1">
@@ -183,7 +183,7 @@ export default function Sidebar() {
                 className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
                 onClick={() => setIsOpen(false)}
               >
-                <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#08207f' }} />
+                <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
                 <span className="text-sm font-medium">{item.label}</span>
               </a>
             ) : (
@@ -193,7 +193,7 @@ export default function Sidebar() {
                 className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
                 onClick={() => setIsOpen(false)}
               >
-                <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#08207f' }} />
+                <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
                 <span className="text-sm font-medium">{item.label}</span>
               </Link>
             );
@@ -206,9 +206,9 @@ export default function Sidebar() {
           className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group w-full mb-8"
         >
           {isAuthenticated ? (
-            <LogOut size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#08207f' }} />
+            <LogOut size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
           ) : (
-            <LogIn size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#08207f' }} />
+            <LogIn size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
           )}
           <span className="text-sm font-medium">{isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}</span>
         </button>
@@ -225,7 +225,7 @@ export default function Sidebar() {
               className={`flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
               onClick={() => setIsOpen(false)}
             >
-              <Settings size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#08207f' }} />
+              <Settings size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
               <span className="text-sm font-medium">Admin</span>
             </Link>
           </>

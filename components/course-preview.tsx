@@ -16,7 +16,7 @@ export default function CoursePreview({ course, onClose }: CoursePreviewProps) {
     <div className="animate-fade-in-up space-y-6">
       {/* Header with Close Button */}
       <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold" style={{ color: '#08207f' }}>
+        <h1 className="text-3xl font-bold" style={{ color: '#031e41' }}>
           Vista Previa del Curso
         </h1>
         <Button
@@ -49,7 +49,7 @@ export default function CoursePreview({ course, onClose }: CoursePreviewProps) {
         <div className="p-8 space-y-8">
           {/* Title Section */}
           <div>
-            <h2 className="text-4xl font-bold mb-2" style={{ color: '#08207f' }}>
+            <h2 className="text-4xl font-bold mb-2" style={{ color: '#031e41' }}>
               {course.title}
             </h2>
             <p className="text-lg text-gray-600">{course.subtitle}</p>
@@ -59,25 +59,25 @@ export default function CoursePreview({ course, onClose }: CoursePreviewProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 bg-blue-50 rounded-lg">
               <p className="text-xs text-gray-600 mb-1">Inicia</p>
-              <p className="font-bold" style={{ color: '#08207f' }}>{course.startDate}</p>
+              <p className="font-bold" style={{ color: '#031e41' }}>{course.startDate}</p>
             </div>
             <div className="p-4 bg-blue-50 rounded-lg">
               <p className="text-xs text-gray-600 mb-1">Horario</p>
-              <p className="font-bold text-sm" style={{ color: '#08207f' }}>{course.schedule}</p>
+              <p className="font-bold text-sm" style={{ color: '#031e41' }}>{course.schedule}</p>
             </div>
             <div className="p-4 bg-blue-50 rounded-lg">
               <p className="text-xs text-gray-600 mb-1">Duración</p>
-              <p className="font-bold" style={{ color: '#08207f' }}>{course.duration}</p>
+              <p className="font-bold" style={{ color: '#031e41' }}>{course.duration}</p>
             </div>
             <div className="p-4 bg-blue-50 rounded-lg">
               <p className="text-xs text-gray-600 mb-1">Precio</p>
-              <p className="font-bold" style={{ color: '#08207f' }}>{course.price}</p>
+              <p className="font-bold" style={{ color: '#031e41' }}>{course.price}</p>
             </div>
           </div>
 
           {/* Description Section */}
           <div>
-            <h3 className="text-2xl font-bold mb-3" style={{ color: '#08207f' }}>
+            <h3 className="text-2xl font-bold mb-3" style={{ color: '#031e41' }}>
               Sobre este curso
             </h3>
             <p className="text-gray-700 leading-relaxed whitespace-pre-wrap">
@@ -99,7 +99,7 @@ export default function CoursePreview({ course, onClose }: CoursePreviewProps) {
 
           {/* Objective */}
           <div>
-            <h3 className="text-2xl font-bold mb-3" style={{ color: '#08207f' }}>
+            <h3 className="text-2xl font-bold mb-3" style={{ color: '#031e41' }}>
               Objetivo
             </h3>
             <p className="text-gray-700">{course.objective}</p>
@@ -107,7 +107,7 @@ export default function CoursePreview({ course, onClose }: CoursePreviewProps) {
 
           {/* Modules */}
           <div>
-            <h3 className="text-2xl font-bold mb-4" style={{ color: '#08207f' }}>
+            <h3 className="text-2xl font-bold mb-4" style={{ color: '#031e41' }}>
               Contenidos
             </h3>
             <div className="space-y-4">
@@ -116,7 +116,7 @@ export default function CoursePreview({ course, onClose }: CoursePreviewProps) {
                   <div className="flex items-center gap-3 mb-2">
                     <div
                       className="w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm"
-                      style={{ backgroundColor: '#08207f' }}
+                      style={{ backgroundColor: '#031e41' }}
                     >
                       {module.number}
                     </div>
@@ -138,13 +138,13 @@ export default function CoursePreview({ course, onClose }: CoursePreviewProps) {
           {/* Methodology & Final Project */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h3 className="text-xl font-bold mb-3" style={{ color: '#08207f' }}>
+              <h3 className="text-xl font-bold mb-3" style={{ color: '#031e41' }}>
                 Metodología
               </h3>
               <p className="text-gray-700">{course.methodology}</p>
             </div>
             <div>
-              <h3 className="text-xl font-bold mb-3" style={{ color: '#08207f' }}>
+              <h3 className="text-xl font-bold mb-3" style={{ color: '#031e41' }}>
                 Proyecto Final
               </h3>
               <p className="text-gray-700">{course.finalProject}</p>
@@ -158,7 +158,7 @@ export default function CoursePreview({ course, onClose }: CoursePreviewProps) {
         <Button
           onClick={onClose}
           className="text-white"
-          style={{ backgroundColor: '#08207f' }}
+          style={{ backgroundColor: '#031e41' }}
         >
           Cerrar Vista Previa
         </Button>

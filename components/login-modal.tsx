@@ -92,7 +92,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
             <Button
               type="submit"
               className="flex-1 text-white"
-              style={{ backgroundColor: '#08207f' }}
+              style={{ backgroundColor: '#031e41' }}
             >
               Ingresar
             </Button>

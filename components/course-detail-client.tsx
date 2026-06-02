@@ -39,7 +39,7 @@ export default function CourseDetailClient({ course }: { course: any }) {
           <div className="lg:col-span-2">
             {/* Description */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-3" style={{ color: '#08207f' }}>
+              <h2 className="text-2xl font-bold text-gray-900 mb-3" style={{ color: '#031e41' }}>
                 Sobre este curso
               </h2>
               <p className="text-gray-600 text-sm leading-relaxed whitespace-pre-wrap">
@@ -49,7 +49,7 @@ export default function CourseDetailClient({ course }: { course: any }) {
 
             {/* Program - Full Content */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ color: '#08207f' }}>
+              <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ color: '#031e41' }}>
                 Contenidos
               </h2>
               <div className="space-y-4">
@@ -58,7 +58,7 @@ export default function CourseDetailClient({ course }: { course: any }) {
                     <div className="flex items-start gap-3">
                       <div 
                         className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-xs"
-                        style={{ backgroundColor: '#08207f' }}
+                        style={{ backgroundColor: '#031e41' }}
                       >
                         {module.number}
                       </div>
@@ -82,7 +82,7 @@ export default function CourseDetailClient({ course }: { course: any }) {
             {/* Methodology & Final Project - Side by side */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <h3 className="text-sm font-bold text-gray-900 mb-2" style={{ color: '#08207f' }}>
+                <h3 className="text-sm font-bold text-gray-900 mb-2" style={{ color: '#031e41' }}>
                   Metodología
                 </h3>
                 <p className="text-gray-600 text-xs leading-relaxed">
@@ -90,7 +90,7 @@ export default function CourseDetailClient({ course }: { course: any }) {
                 </p>
               </div>
               <div>
-                <h3 className="text-sm font-bold text-gray-900 mb-2" style={{ color: '#08207f' }}>
+                <h3 className="text-sm font-bold text-gray-900 mb-2" style={{ color: '#031e41' }}>
                   Proyecto Final
                 </h3>
                 <p className="text-gray-600 text-xs leading-relaxed">
@@ -102,7 +102,7 @@ export default function CourseDetailClient({ course }: { course: any }) {
 
           {/* Right Column - Info Box */}
           <div className="lg:col-span-1">
-            <div className="sticky top-24 bg-white rounded-xl p-5 border-2 space-y-4" style={{ borderColor: '#08207f' }}>
+            <div className="sticky top-24 bg-white rounded-xl p-5 border-2 space-y-4" style={{ borderColor: '#031e41' }}>
               {/* Start Date */}
               <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
                 <p className="text-xs font-semibold text-gray-600 mb-1">Inicia</p>
@@ -130,13 +130,13 @@ export default function CourseDetailClient({ course }: { course: any }) {
               {/* Price */}
               <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
                 <p className="text-xs font-semibold text-gray-600 mb-1">Inversión</p>
-                <p className="text-lg font-bold" style={{ color: '#08207f' }}>{course.price}</p>
+                <p className="text-lg font-bold" style={{ color: '#031e41' }}>{course.price}</p>
               </div>
 
               {/* Registration Button */}
               <button 
                 className="w-full py-2 rounded-lg font-bold text-white text-sm transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
-                style={{ backgroundColor: '#08207f' }}
+                style={{ backgroundColor: '#031e41' }}
               >
                 Solicitar Inscripción
               </button>

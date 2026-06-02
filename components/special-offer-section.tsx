@@ -3,14 +3,14 @@ import { Sparkles } from 'lucide-react';
 export default function SpecialOfferSection() {
   return (
     <section className="w-full px-4 sm:px-6 lg:px-8 py-12">
-      <div className="max-w-4xl mx-auto rounded-3xl bg-white p-8 md:p-12" style={{ border: '2px solid #08207f' }}>
+      <div className="max-w-4xl mx-auto rounded-3xl bg-white p-8 md:p-12" style={{ border: '2px solid #031e41' }}>
         {/* Badge */}
         <div className="flex items-center justify-center gap-2 mb-6">
-          <Sparkles size={20} style={{ color: '#08207f' }} />
-          <span className="font-semibold text-sm md:text-base tracking-wider" style={{ color: '#08207f' }}>
+          <Sparkles size={20} style={{ color: '#031e41' }} />
+          <span className="font-semibold text-sm md:text-base tracking-wider" style={{ color: '#031e41' }}>
             OFERTA ESPECIAL
           </span>
-          <Sparkles size={20} style={{ color: '#08207f' }} />
+          <Sparkles size={20} style={{ color: '#031e41' }} />
         </div>
 
         {/* Title */}
@@ -19,7 +19,7 @@ export default function SpecialOfferSection() {
         </h2>
 
         {/* Subtitle */}
-        <p className="text-lg md:text-xl text-center mb-6 font-semibold" style={{ color: '#08207f' }}>
+        <p className="text-lg md:text-xl text-center mb-6 font-semibold" style={{ color: '#031e41' }}>
           Inscripciones Abiertas
         </p>
 
@@ -31,10 +31,10 @@ export default function SpecialOfferSection() {
 
         {/* Buttons */}
         <div className="flex flex-col md:flex-row gap-4 justify-center">
-          <button className="px-8 py-3 md:px-10 md:py-4 text-white font-semibold rounded-full transition-opacity hover:opacity-90" style={{ backgroundColor: '#08207f' }}>
+          <button className="px-8 py-3 md:px-10 md:py-4 text-white font-semibold rounded-full transition-opacity hover:opacity-90" style={{ backgroundColor: '#031e41' }}>
             Reservar mi lugar
           </button>
-          <button className="px-8 py-3 md:px-10 md:py-4 font-semibold rounded-full transition-colors hover:bg-opacity-5" style={{ border: '2px solid #08207f', color: '#08207f' }}>
+          <button className="px-8 py-3 md:px-10 md:py-4 font-semibold rounded-full transition-colors hover:bg-opacity-5" style={{ border: '2px solid #031e41', color: '#031e41' }}>
             Consultar por WhatsApp
           </button>
         </div>
@@ -43,7 +43,7 @@ export default function SpecialOfferSection() {
       {/* Info Cards Section */}
       <div className="max-w-6xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Card 1 */}
-        <div className="p-8 rounded-2xl text-white text-center" style={{ backgroundColor: '#0061D5' }}>
+        <div className="p-8 rounded-2xl text-white text-center" style={{ backgroundColor: '#031e41' }}>
           <h3 className="text-2xl md:text-3xl font-bold mb-4">Centro de Formaciones</h3>
           <p className="text-base md:text-lg leading-relaxed">
             Conocé las propuestas de formaciones que tiene la SEU para vos
@@ -51,7 +51,7 @@ export default function SpecialOfferSection() {
         </div>
 
         {/* Card 2 */}
-        <div className="p-8 rounded-2xl text-white text-center" style={{ backgroundColor: '#0061D5' }}>
+        <div className="p-8 rounded-2xl text-white text-center" style={{ backgroundColor: '#031e41' }}>
           <h3 className="text-2xl md:text-3xl font-bold mb-4">Trabajá con Nosotros</h3>
           <p className="text-base md:text-lg leading-relaxed">
             Graduado/a y estudiante avanzado/a: Postulate para trabajar en nuestros proyectos o dictar cursos
@@ -59,7 +59,7 @@ export default function SpecialOfferSection() {
         </div>
 
         {/* Card 3 */}
-        <div className="p-8 rounded-2xl text-white text-center" style={{ backgroundColor: '#0061D5' }}>
+        <div className="p-8 rounded-2xl text-white text-center" style={{ backgroundColor: '#031e41' }}>
           <h3 className="text-2xl md:text-3xl font-bold mb-4">Oportunidades Laborales</h3>
           <p className="text-base md:text-lg leading-relaxed">
             Compartimos Oportunidades laborales para nuestros graduados/as y estudiantes avanzados/as

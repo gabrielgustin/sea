@@ -33,7 +33,7 @@ export default function BenefitsSection() {
     <section ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12">
       <div className="max-w-6xl mx-auto">
         {/* Title */}
-        <h2 className={`text-3xl md:text-5xl font-bold text-gray-900 text-center mb-4 transition-all duration-700 ${isInView ? 'animate-fade-in' : 'opacity-0'}`} style={{ color: '#08207f' }}>
+        <h2 className={`text-3xl md:text-5xl font-bold text-gray-900 text-center mb-4 transition-all duration-700 ${isInView ? 'animate-fade-in' : 'opacity-0'}`} style={{ color: '#031e41' }}>
           Ventajas de nuestros cursos
         </h2>
 
@@ -53,14 +53,14 @@ export default function BenefitsSection() {
                   isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
                 }`}
                 style={{ 
-                  border: '2px solid #08207f',
+                  border: '2px solid #031e41',
                   animationDelay: isInView ? `${index * 0.1}s` : '0s'
                 }}
               >
                 <div className="flex items-start gap-4">
                   <div
                     className="p-3 rounded-lg flex-shrink-0 transition-smooth hover-scale"
-                    style={{ backgroundColor: '#08207f', color: 'white' }}
+                    style={{ backgroundColor: '#031e41', color: 'white' }}
                   >
                     <Icon size={28} />
                   </div>

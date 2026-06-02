@@ -10,7 +10,7 @@
   --card-foreground: oklch(0.2 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.2 0 0);
-  --primary: #08207f;
+  --primary: #031e41;
   --primary-foreground: oklch(0.99 0 0);
   --secondary: #9cbadb;
   --secondary-foreground: oklch(1 0 0);
@@ -22,21 +22,21 @@
   --destructive-foreground: oklch(0.577 0.245 27.325);
   --border: #d4dce8;
   --input: oklch(0.95 0 0);
-  --ring: #08207f;
-  --chart-1: #08207f;
+  --ring: #031e41;
+  --chart-1: #031e41;
   --chart-2: #9cbadb;
   --chart-3: #6fa0d4;
-  --chart-4: #08207f;
+  --chart-4: #031e41;
   --chart-5: #9cbadb;
   --radius: 0.5rem;
   --sidebar: oklch(0.98 0 0);
-  --sidebar-foreground: #08207f;
-  --sidebar-primary: #08207f;
+  --sidebar-foreground: #031e41;
+  --sidebar-primary: #031e41;
   --sidebar-primary-foreground: oklch(1 0 0);
   --sidebar-accent: #9cbadb;
-  --sidebar-accent-foreground: #08207f;
+  --sidebar-accent-foreground: #031e41;
   --sidebar-border: #d4dce8;
-  --sidebar-ring: #08207f;
+  --sidebar-ring: #031e41;
 }
 
 .dark {
@@ -344,7 +344,7 @@
 
   /* Text animations */
   .text-gradient {
-    background: linear-gradient(135deg, #08207f 0%, #9cbadb 100%);
+    background: linear-gradient(135deg, #031e41 0%, #9cbadb 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
@@ -363,7 +363,7 @@
     left: 0;
     width: 0;
     height: 2px;
-    background-color: #08207f;
+    background-color: #031e41;
     transition: width 0.3s ease;
   }
 

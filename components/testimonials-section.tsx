@@ -63,7 +63,7 @@ export default function TestimonialsSection() {
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className={`text-4xl md:text-5xl font-bold text-gray-900 mb-4 transition-all duration-700 ${isInView ? 'animate-fade-in' : 'opacity-0'}`} style={{ color: '#08207f' }}>
+          <h2 className={`text-4xl md:text-5xl font-bold text-gray-900 mb-4 transition-all duration-700 ${isInView ? 'animate-fade-in' : 'opacity-0'}`} style={{ color: '#031e41' }}>
             Lo que dicen nuestros estudiantes
           </h2>
           <p className={`text-lg text-gray-600 transition-all duration-700 ${isInView ? 'animate-fade-in stagger-1' : 'opacity-0'}`}>
@@ -81,7 +81,7 @@ export default function TestimonialsSection() {
                   isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
                 }`}
                 style={{ 
-                  border: '2px solid #08207f',
+                  border: '2px solid #031e41',
                   animationDelay: isInView ? `${index * 0.1}s` : '0s'
                 }}
               >
@@ -91,8 +91,8 @@ export default function TestimonialsSection() {
                     <Star
                       key={i}
                       size={20}
-                      fill="#08207f"
-                      style={{ color: '#08207f' }}
+                      fill="#031e41"
+                      style={{ color: '#031e41' }}
                     />
                   ))}
                 </div>
@@ -103,7 +103,7 @@ export default function TestimonialsSection() {
                 </p>
 
                 {/* Name */}
-                <p className="font-semibold text-gray-900" style={{ color: '#08207f' }}>
+                <p className="font-semibold text-gray-900" style={{ color: '#031e41' }}>
                   {testimonial.name}
                 </p>
               </div>
@@ -116,7 +116,7 @@ export default function TestimonialsSection() {
             <button
               onClick={handlePrev}
               className="w-12 h-12 rounded-full border-2 flex items-center justify-center transition-smooth hover:scale-110 hover:shadow-blue-md"
-              style={{ borderColor: '#08207f', color: '#08207f' }}
+              style={{ borderColor: '#031e41', color: '#031e41' }}
               aria-label="Previous testimonials"
             >
               <ChevronLeft size={24} />
@@ -133,7 +133,7 @@ export default function TestimonialsSection() {
                     style={{
                       width: currentIndex === i ? '32px' : '8px',
                       height: '8px',
-                      backgroundColor: currentIndex === i ? '#08207f' : '#d1d5db',
+                      backgroundColor: currentIndex === i ? '#031e41' : '#d1d5db',
                     }}
                     aria-label={`Go to page ${i + 1}`}
                   />
@@ -145,7 +145,7 @@ export default function TestimonialsSection() {
             <button
               onClick={handleNext}
               className="w-12 h-12 rounded-full border-2 flex items-center justify-center transition-smooth hover:scale-110 hover:shadow-blue-md"
-              style={{ borderColor: '#08207f', color: '#08207f' }}
+              style={{ borderColor: '#031e41', color: '#031e41' }}
               aria-label="Next testimonials"
             >
               <ChevronRight size={24} />

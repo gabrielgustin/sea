@@ -147,7 +147,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
             onClick={() => toggleSection('basic')}
             className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
           >
-            <h2 className="text-xl font-bold" style={{ color: '#08207f' }}>
+            <h2 className="text-xl font-bold" style={{ color: '#031e41' }}>
               Información Básica
             </h2>
             {expandedSections.basic ? <ChevronUp /> : <ChevronDown />}
@@ -227,7 +227,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
             onClick={() => toggleSection('details')}
             className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
           >
-            <h2 className="text-xl font-bold" style={{ color: '#08207f' }}>
+            <h2 className="text-xl font-bold" style={{ color: '#031e41' }}>
               Detalles del Curso
             </h2>
             {expandedSections.details ? <ChevronUp /> : <ChevronDown />}
@@ -297,7 +297,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
             onClick={() => toggleSection('content')}
             className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
           >
-            <h2 className="text-xl font-bold" style={{ color: '#08207f' }}>
+            <h2 className="text-xl font-bold" style={{ color: '#031e41' }}>
               Contenido
             </h2>
             {expandedSections.content ? <ChevronUp /> : <ChevronDown />}
@@ -359,7 +359,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
             onClick={() => toggleSection('modules')}
             className="w-full px-6 py-4 flex items-center justify-between hover:bg-gray-50 transition-colors border-b-2 border-gray-200"
           >
-            <h2 className="text-xl font-bold" style={{ color: '#08207f' }}>
+            <h2 className="text-xl font-bold" style={{ color: '#031e41' }}>
               Módulos ({formData.modules.length})
             </h2>
             {expandedSections.modules ? <ChevronUp /> : <ChevronDown />}
@@ -468,7 +468,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
         <Button
           type="submit"
           className="text-white"
-          style={{ backgroundColor: '#08207f' }}
+          style={{ backgroundColor: '#031e41' }}
         >
           {course ? 'Actualizar Curso' : 'Crear Curso'}
         </Button>

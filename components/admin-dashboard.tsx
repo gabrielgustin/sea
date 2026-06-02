@@ -62,7 +62,7 @@ export default function AdminDashboard() {
         {/* Header */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
-            <h1 className="text-4xl font-bold" style={{ color: '#08207f' }}>
+            <h1 className="text-4xl font-bold" style={{ color: '#031e41' }}>
               Panel de Administración
             </h1>
             <p className="text-gray-600 mt-2">Gestiona los cursos disponibles</p>
@@ -72,7 +72,7 @@ export default function AdminDashboard() {
             <Button
               onClick={handleAddNew}
               className="flex items-center gap-2 text-white"
-              style={{ backgroundColor: '#08207f' }}
+              style={{ backgroundColor: '#031e41' }}
             >
               <Plus size={20} />
               Nuevo Curso
@@ -85,7 +85,7 @@ export default function AdminDashboard() {
           <div className="mb-6">
             <div className="flex items-center gap-2 text-sm text-gray-600">
               <span>Total de cursos:</span>
-              <span className="font-bold text-lg" style={{ color: '#08207f' }}>
+              <span className="font-bold text-lg" style={{ color: '#031e41' }}>
                 {courses.length}
               </span>
             </div>

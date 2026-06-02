@@ -35,7 +35,7 @@ export default function ContactSection() {
     <section className="py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12 animate-fade-in-up">
-          <h2 className="text-4xl font-bold mb-4" style={{ color: '#08207f' }}>Ponte en Contacto</h2>
+          <h2 className="text-4xl font-bold mb-4" style={{ color: '#031e41' }}>Ponte en Contacto</h2>
           <p className="text-lg text-muted-foreground">
             ¿Tienes dudas? Envíanos un mensaje y nos comunicaremos lo antes posible
           </p>
@@ -79,7 +79,7 @@ export default function ContactSection() {
                   required
                   placeholder="Tu nombre"
                   className="mt-2 transition-smooth focus:ring-2 focus:ring-offset-2"
-                  style={{ '--tw-ring-color': '#08207f' } as any}
+                  style={{ '--tw-ring-color': '#031e41' } as any}
                 />
               </div>
 
@@ -94,7 +94,7 @@ export default function ContactSection() {
                   required
                   placeholder="tu@email.com"
                   className="mt-2 transition-smooth focus:ring-2 focus:ring-offset-2"
-                  style={{ '--tw-ring-color': '#08207f' } as any}
+                  style={{ '--tw-ring-color': '#031e41' } as any}
                 />
               </div>
 
@@ -107,7 +107,7 @@ export default function ContactSection() {
                   onChange={handleChange}
                   placeholder="+54..."
                   className="mt-2 transition-smooth focus:ring-2 focus:ring-offset-2"
-                  style={{ '--tw-ring-color': '#08207f' } as any}
+                  style={{ '--tw-ring-color': '#031e41' } as any}
                 />
               </div>
 
@@ -121,7 +121,7 @@ export default function ContactSection() {
                   required
                   placeholder="Asunto del mensaje"
                   className="mt-2 transition-smooth focus:ring-2 focus:ring-offset-2"
-                  style={{ '--tw-ring-color': '#08207f' } as any}
+                  style={{ '--tw-ring-color': '#031e41' } as any}
                 />
               </div>
 
@@ -136,7 +136,7 @@ export default function ContactSection() {
                   placeholder="Cuéntanos tu consulta..."
                   rows={4}
                   className="mt-2 transition-smooth focus:ring-2 focus:ring-offset-2"
-                  style={{ '--tw-ring-color': '#08207f' } as any}
+                  style={{ '--tw-ring-color': '#031e41' } as any}
                 />
               </div>
 
@@ -144,7 +144,7 @@ export default function ContactSection() {
                 type="submit"
                 size="lg"
                 className="w-full text-white transition-all duration-300 hover:shadow-blue-lg hover-lift"
-                style={{ backgroundColor: '#08207f' }}
+                style={{ backgroundColor: '#031e41' }}
               >
                 {submitted ? '¡Mensaje Enviado!' : 'Enviar Mensaje'}
               </Button>
