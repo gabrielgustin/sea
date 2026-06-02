@@ -96,44 +96,28 @@ export default function CoursesSection() {
               </div>
 
               {/* Content */}
-              <div className="p-6 md:p-8">
-                {/* Type */}
-                <div className="mb-3">
-                  <span className="text-xs font-bold tracking-wider" style={{ color: '#00a8cc' }}>
-                    {course.type}
-                  </span>
-                </div>
-
+              <div className="p-4 md:p-5">
                 {/* Title */}
-                <h3 className="text-2xl md:text-3xl font-bold text-gray-900 mb-2 leading-tight">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight">
                   {course.title}
                 </h3>
 
                 {/* Subtitle */}
-                <p className="text-gray-600 text-sm mb-6">
+                <p className="text-gray-600 text-xs md:text-sm mb-4">
                   {course.subtitle}
                 </p>
 
                 {/* Details */}
-                <div className="space-y-2 mb-6">
+                <div className="space-y-1">
                   <div className="flex items-center gap-2 text-gray-700">
-                    <span className="font-semibold text-sm">Inicia:</span>
-                    <span className="text-sm">{course.startDate}</span>
+                    <span className="font-semibold text-xs">Inicia:</span>
+                    <span className="text-xs">{course.startDate}</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">
-                    <span className="font-semibold text-sm">Modalidad:</span>
-                    <span className="text-sm">{course.modality}</span>
+                    <span className="font-semibold text-xs">Modalidad:</span>
+                    <span className="text-xs">{course.modality}</span>
                   </div>
                 </div>
-
-                {/* Button */}
-                <button 
-                  className="text-sm font-semibold flex items-center gap-2 group transition-all duration-300 hover:gap-3"
-                  style={{ color: '#08207f' }}
-                >
-                  Consultar
-                  <span className="transition-transform duration-300 group-hover:translate-x-1">→</span>
-                </button>
               </div>
             </div>
           ))}
