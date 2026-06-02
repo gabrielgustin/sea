@@ -39,6 +39,33 @@ export default function SpecialOfferSection() {
           </button>
         </div>
       </div>
+
+      {/* Info Cards Section */}
+      <div className="max-w-6xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
+        {/* Card 1 */}
+        <div className="p-8 rounded-2xl text-white text-center" style={{ backgroundColor: '#0061D5' }}>
+          <h3 className="text-2xl md:text-3xl font-bold mb-4">Centro de Formaciones</h3>
+          <p className="text-base md:text-lg leading-relaxed">
+            Conocé las propuestas de formaciones que tiene la SEU para vos
+          </p>
+        </div>
+
+        {/* Card 2 */}
+        <div className="p-8 rounded-2xl text-white text-center" style={{ backgroundColor: '#0061D5' }}>
+          <h3 className="text-2xl md:text-3xl font-bold mb-4">Trabajá con Nosotros</h3>
+          <p className="text-base md:text-lg leading-relaxed">
+            Graduado/a y estudiante avanzado/a: Postulate para trabajar en nuestros proyectos o dictar cursos
+          </p>
+        </div>
+
+        {/* Card 3 */}
+        <div className="p-8 rounded-2xl text-white text-center" style={{ backgroundColor: '#0061D5' }}>
+          <h3 className="text-2xl md:text-3xl font-bold mb-4">Oportunidades Laborales</h3>
+          <p className="text-base md:text-lg leading-relaxed">
+            Compartimos Oportunidades laborales para nuestros graduados/as y estudiantes avanzados/as
+          </p>
+        </div>
+      </div>
     </section>
   );
 }
