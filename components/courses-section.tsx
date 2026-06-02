@@ -213,7 +213,7 @@ export default function CoursesSection() {
             <Link
               key={course.id}
               href={`/cursos/${course.slug}`}
-              className={`overflow-hidden rounded-3xl border-2 transition-all duration-700 hover-lift shadow-blue-sm hover:shadow-blue-md block ${
+              className={`overflow-hidden rounded-3xl border-2 transition-all duration-300 hover-lift shadow-blue-sm hover:shadow-blue-md block group ${
                 isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
               }`}
               style={{ 
@@ -223,18 +223,18 @@ export default function CoursesSection() {
               }}
             >
               {/* Image Container */}
-              <div className="relative h-48 md:h-56 overflow-hidden">
+              <div className="relative h-48 md:h-56 overflow-hidden bg-gray-100">
                 <Image
                   src={course.image}
                   alt={course.title}
                   fill
-                  className="object-cover transition-transform duration-500 hover:scale-110"
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
                   sizes="(max-width: 768px) 100vw, 50vw"
                 />
                 
                 {/* Badge */}
                 <div 
-                  className="absolute top-4 right-4 px-4 py-2 rounded-full text-white text-xs font-bold transition-all duration-300"
+                  className="absolute top-4 right-4 px-4 py-2 rounded-full text-white text-xs font-bold transition-all duration-300 group-hover:translate-y-1"
                   style={{ backgroundColor: '#00a8cc' }}
                 >
                   {course.badge}
@@ -244,7 +244,7 @@ export default function CoursesSection() {
               {/* Content */}
               <div className="p-4 md:p-5">
                 {/* Title */}
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight">
+                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight transition-colors duration-300 group-hover:text-blue-600">
                   {course.title}
                 </h3>
 
