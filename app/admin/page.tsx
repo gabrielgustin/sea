@@ -10,15 +10,15 @@ import WhatsAppButton from '@/components/whatsapp-button';
 
 export default function AdminPage() {
   const router = useRouter();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, userRole } = useAuth();
 
   useEffect(() => {
-    if (!isAuthenticated) {
+    if (!isAuthenticated || userRole !== 'admin') {
       router.push('/');
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, userRole, router]);
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated || userRole !== 'admin') {
     return null;
   }
 

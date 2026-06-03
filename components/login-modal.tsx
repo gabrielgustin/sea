@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
+import RoleSelectorModal from './role-selector-modal';
 
 interface LoginModalProps {
   open: boolean;
@@ -17,6 +18,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [showRoleSelector, setShowRoleSelector] = useState(false);
   const { login } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -32,77 +34,90 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
     if (success) {
       setUsername('');
       setPassword('');
+      setShowRoleSelector(true);
       onLoginSuccess?.();
-      onOpenChange(false);
     } else {
       setError('Usuario o contraseña incorrectos');
     }
   };
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="sm:max-w-md">
-        <DialogHeader>
-          <DialogTitle>Iniciar Sesión Administrador</DialogTitle>
-          <DialogDescription>
-            Ingresa tus credenciales para acceder al panel de administración
-          </DialogDescription>
-        </DialogHeader>
+    <>
+      <Dialog open={open && !showRoleSelector} onOpenChange={onOpenChange}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle>Iniciar Sesión</DialogTitle>
+            <DialogDescription>
+              Ingresa tus credenciales para acceder al sistema
+            </DialogDescription>
+          </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="username">Usuario</Label>
-            <Input
-              id="username"
-              type="text"
-              placeholder="admin"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              className="transition-smooth"
-            />
-          </div>
-
-          <div className="space-y-2">
-            <Label htmlFor="password">Contraseña</Label>
-            <Input
-              id="password"
-              type="password"
-              placeholder="••••••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="transition-smooth"
-            />
-          </div>
-
-          {error && (
-            <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-              {error}
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="username">Usuario</Label>
+              <Input
+                id="username"
+                type="text"
+                placeholder="admin"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                className="transition-smooth"
+              />
             </div>
-          )}
 
-          <div className="flex gap-2 pt-4">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => onOpenChange(false)}
-              className="flex-1"
-            >
-              Cancelar
-            </Button>
-            <Button
-              type="submit"
-              className="flex-1 text-white"
-              style={{ backgroundColor: '#031e41' }}
-            >
-              Ingresar
-            </Button>
-          </div>
+            <div className="space-y-2">
+              <Label htmlFor="password">Contraseña</Label>
+              <Input
+                id="password"
+                type="password"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="transition-smooth"
+              />
+            </div>
 
-          <div className="text-xs text-gray-500 text-center pt-2">
-            <p>Credenciales de demo: admin / admin</p>
-          </div>
-        </form>
-      </DialogContent>
-    </Dialog>
+            {error && (
+              <div className="p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+                {error}
+              </div>
+            )}
+
+            <div className="flex gap-2 pt-4">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => onOpenChange(false)}
+                className="flex-1"
+              >
+                Cancelar
+              </Button>
+              <Button
+                type="submit"
+                className="flex-1 text-white"
+                style={{ backgroundColor: '#031e41' }}
+              >
+                Ingresar
+              </Button>
+            </div>
+
+            <div className="text-xs text-gray-500 text-center pt-2">
+              <p>Credenciales de demo: admin / admin</p>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
+
+      <RoleSelectorModal 
+        open={showRoleSelector} 
+        onOpenChange={(isOpen) => {
+          setShowRoleSelector(isOpen);
+          if (!isOpen) {
+            // When role selector closes, also close login modal
+            onOpenChange(false);
+          }
+        }}
+      />
+    </>
   );
 }
