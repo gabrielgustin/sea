@@ -11,7 +11,7 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Loader2, Save, X } from 'lucide-react';
+import { Loader2, Save, X, Plus, Trash2 } from 'lucide-react';
 
 interface Student {
   fecha: string;
@@ -34,6 +34,15 @@ export default function StudentsList() {
   const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newStudent, setNewStudent] = useState<Partial<Student>>({
+    nombre: '',
+    email: '',
+    dni: '',
+    telefono: '',
+    estado: '',
+  });
+  const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
 
   useEffect(() => {
     fetchStudents();
@@ -89,7 +98,6 @@ export default function StudentsList() {
         setEditingIndex(null);
         setEditedStudent(null);
         
-        // Actualizar la lista
         setStudents((prev) =>
           prev.map((student, i) =>
             i === index ? editedStudent : student
@@ -103,6 +111,76 @@ export default function StudentsList() {
       setMessage('Error al guardar cambios');
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleAddStudent = async () => {
+    if (!newStudent.nombre || !newStudent.email) {
+      setError('Por favor completa Nombre y Email');
+      return;
+    }
+
+    try {
+      setSaving(true);
+      const response = await fetch('/api/students', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newStudent),
+      });
+
+      if (response.ok) {
+        setMessage('Estudiante agregado correctamente');
+        setNewStudent({
+          nombre: '',
+          email: '',
+          dni: '',
+          telefono: '',
+          estado: '',
+        });
+        setShowAddForm(false);
+        setError('');
+        
+        // Recargar los estudiantes
+        await fetchStudents();
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        const data = await response.json();
+        setError(data.error || 'Error al agregar estudiante');
+      }
+    } catch (error) {
+      console.error('Error adding student:', error);
+      setError('Error al agregar estudiante');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  const handleDeleteStudent = async (index: number) => {
+    if (!window.confirm('¿Estás seguro de que deseas eliminar este estudiante?')) {
+      return;
+    }
+
+    try {
+      setDeletingIndex(index);
+      const response = await fetch('/api/students', {
+        method: 'DELETE',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ studentIndex: index }),
+      });
+
+      if (response.ok) {
+        setMessage('Estudiante eliminado correctamente');
+        setStudents((prev) => prev.filter((_, i) => i !== index));
+        setTimeout(() => setMessage(''), 3000);
+      } else {
+        const data = await response.json();
+        setError(data.error || 'Error al eliminar estudiante');
+      }
+    } catch (error) {
+      console.error('Error deleting student:', error);
+      setError('Error al eliminar estudiante');
+    } finally {
+      setDeletingIndex(null);
     }
   };
 
@@ -133,6 +211,82 @@ export default function StudentsList() {
         </div>
       )}
 
+      {/* Botón Agregar Estudiante */}
+      <div className="flex gap-2">
+        {!showAddForm && (
+          <Button
+            onClick={() => setShowAddForm(true)}
+            className="text-white flex items-center gap-2"
+            style={{ backgroundColor: '#031e41' }}
+          >
+            <Plus size={18} />
+            Agregar Estudiante
+          </Button>
+        )}
+      </div>
+
+      {/* Formulario Agregar Estudiante */}
+      {showAddForm && (
+        <div className="border rounded-lg p-4 bg-gray-50 space-y-3">
+          <h3 className="font-semibold" style={{ color: '#031e41' }}>Agregar Nuevo Estudiante</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label className="text-sm font-medium">Nombre *</label>
+              <Input
+                value={newStudent.nombre || ''}
+                onChange={(e) => setNewStudent({ ...newStudent, nombre: e.target.value })}
+                placeholder="Nombre completo"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Email *</label>
+              <Input
+                value={newStudent.email || ''}
+                onChange={(e) => setNewStudent({ ...newStudent, email: e.target.value })}
+                placeholder="correo@ejemplo.com"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">DNI</label>
+              <Input
+                value={newStudent.dni || ''}
+                onChange={(e) => setNewStudent({ ...newStudent, dni: e.target.value })}
+                placeholder="DNI"
+              />
+            </div>
+            <div>
+              <label className="text-sm font-medium">Teléfono</label>
+              <Input
+                value={newStudent.telefono || ''}
+                onChange={(e) => setNewStudent({ ...newStudent, telefono: e.target.value })}
+                placeholder="Teléfono"
+              />
+            </div>
+          </div>
+          <div className="flex gap-2 pt-3">
+            <Button
+              onClick={handleAddStudent}
+              disabled={saving}
+              className="text-white flex items-center gap-2"
+              style={{ backgroundColor: '#031e41' }}
+            >
+              {saving ? <Loader2 className="animate-spin" size={16} /> : <Plus size={16} />}
+              Guardar
+            </Button>
+            <Button
+              onClick={() => {
+                setShowAddForm(false);
+                setError('');
+              }}
+              variant="outline"
+            >
+              Cancelar
+            </Button>
+          </div>
+        </div>
+      )}
+
+      {/* Tabla de Estudiantes */}
       <div className="overflow-x-auto border rounded-lg">
         <Table>
           <TableHeader>
@@ -140,7 +294,6 @@ export default function StudentsList() {
               <TableHead style={{ color: '#031e41' }}>Nombre</TableHead>
               <TableHead style={{ color: '#031e41' }}>Email</TableHead>
               <TableHead style={{ color: '#031e41' }}>DNI</TableHead>
-              <TableHead style={{ color: '#031e41' }}>Curso</TableHead>
               <TableHead style={{ color: '#031e41' }}>Teléfono</TableHead>
               <TableHead style={{ color: '#031e41' }}>Estado</TableHead>
               <TableHead style={{ color: '#031e41' }}>Junio</TableHead>
@@ -200,23 +353,6 @@ export default function StudentsList() {
                     />
                   ) : (
                     student.dni
-                  )}
-                </TableCell>
-
-                <TableCell>
-                  {editingIndex === index ? (
-                    <Input
-                      value={editedStudent?.curso || ''}
-                      onChange={(e) =>
-                        setEditedStudent({
-                          ...editedStudent!,
-                          curso: e.target.value,
-                        })
-                      }
-                      className="w-full"
-                    />
-                  ) : (
-                    student.curso
                   )}
                 </TableCell>
 
@@ -334,13 +470,28 @@ export default function StudentsList() {
                         </Button>
                       </>
                     ) : (
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleEdit(index, student)}
-                      >
-                        Editar
-                      </Button>
+                      <>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleEdit(index, student)}
+                        >
+                          Editar
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleDeleteStudent(index)}
+                          disabled={deletingIndex === index}
+                          className="text-red-600 hover:text-red-700"
+                        >
+                          {deletingIndex === index ? (
+                            <Loader2 className="animate-spin" size={16} />
+                          ) : (
+                            <Trash2 size={16} />
+                          )}
+                        </Button>
+                      </>
                     )}
                   </div>
                 </TableCell>
@@ -350,7 +501,7 @@ export default function StudentsList() {
         </Table>
       </div>
 
-      {students.length === 0 && (
+      {students.length === 0 && !showAddForm && (
         <div className="text-center p-8 text-gray-500">
           No hay estudiantes registrados
         </div>

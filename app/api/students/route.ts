@@ -84,11 +84,18 @@ export async function PUT(request: NextRequest) {
 
     const { auth, spreadsheetId } = getAuthClient();
 
+    // Obtener el nombre del sheet
+    const spreadsheetInfo = await sheets.spreadsheets.get({
+      auth,
+      spreadsheetId,
+    });
+    const sheetName = spreadsheetInfo.data.sheets?.[0]?.properties?.title || 'Sheet1';
+
     // Obtener todos los datos primero
     const response = await sheets.spreadsheets.values.get({
       auth,
       spreadsheetId,
-      range: 'Inscripciones!A:J',
+      range: `${sheetName}!A:J`,
     });
 
     const rows = response.data.values || [];
@@ -111,7 +118,7 @@ export async function PUT(request: NextRequest) {
     ];
 
     // Actualizar la fila
-    const range = `Inscripciones!A${rowIndex}:J${rowIndex}`;
+    const range = `${sheetName}!A${rowIndex}:J${rowIndex}`;
     await sheets.spreadsheets.values.update({
       auth,
       spreadsheetId,
@@ -126,7 +133,125 @@ export async function PUT(request: NextRequest) {
   } catch (error) {
     console.error('Error updating student:', error);
     return NextResponse.json(
-      { error: 'Failed to update student' },
+      { error: 'Failed to update student', details: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
+    );
+  }
+}
+
+// POST: Crear un nuevo estudiante
+export async function POST(request: NextRequest) {
+  try {
+    const newStudent = await request.json();
+
+    const { auth, spreadsheetId } = getAuthClient();
+
+    // Obtener el nombre del sheet
+    const spreadsheetInfo = await sheets.spreadsheets.get({
+      auth,
+      spreadsheetId,
+    });
+    const sheetName = spreadsheetInfo.data.sheets?.[0]?.properties?.title || 'Sheet1';
+
+    // Obtener los datos actuales para saber en qué fila insertar
+    const response = await sheets.spreadsheets.values.get({
+      auth,
+      spreadsheetId,
+      range: `${sheetName}!A:J`,
+    });
+
+    const rows = response.data.values || [];
+    const nextRowIndex = rows.length + 1; // Siguiente fila disponible
+
+    // Preparar los valores del nuevo estudiante
+    const values = [
+      [
+        newStudent.fecha || new Date().toLocaleDateString('es-ES'),
+        newStudent.curso || '',
+        newStudent.nombre || '',
+        newStudent.dni || '',
+        newStudent.email || '',
+        newStudent.telefono || '',
+        newStudent.estado || '',
+        newStudent.junio || '',
+        newStudent.julio || '',
+        newStudent.agosto || '',
+      ],
+    ];
+
+    // Insertar la nueva fila
+    const range = `${sheetName}!A${nextRowIndex}:J${nextRowIndex}`;
+    await sheets.spreadsheets.values.update({
+      auth,
+      spreadsheetId,
+      range,
+      valueInputOption: 'USER_ENTERED',
+      requestBody: {
+        values,
+      },
+    });
+
+    return NextResponse.json({ success: true, message: 'Student created' });
+  } catch (error) {
+    console.error('Error creating student:', error);
+    return NextResponse.json(
+      { error: 'Failed to create student', details: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE: Eliminar un estudiante
+export async function DELETE(request: NextRequest) {
+  try {
+    const { studentIndex } = await request.json();
+
+    if (studentIndex === undefined) {
+      return NextResponse.json(
+        { error: 'Student index required' },
+        { status: 400 }
+      );
+    }
+
+    const { auth, spreadsheetId } = getAuthClient();
+
+    // Obtener el nombre del sheet y su ID
+    const spreadsheetInfo = await sheets.spreadsheets.get({
+      auth,
+      spreadsheetId,
+    });
+    const sheet = spreadsheetInfo.data.sheets?.[0];
+    const sheetName = sheet?.properties?.title || 'Sheet1';
+    const sheetId = sheet?.properties?.sheetId || 0;
+
+    // La fila a eliminar es studentIndex + 2 (por el header)
+    const rowIndex = studentIndex + 1; // 0-based index, row 2 es índice 1
+
+    // Usar batchUpdate para eliminar la fila
+    await sheets.spreadsheets.batchUpdate({
+      auth,
+      spreadsheetId,
+      requestBody: {
+        requests: [
+          {
+            deleteDimension: {
+              range: {
+                sheetId,
+                dimension: 'ROWS',
+                startIndex: rowIndex,
+                endIndex: rowIndex + 1,
+              },
+            },
+          },
+        ],
+      },
+    });
+
+    return NextResponse.json({ success: true, message: 'Student deleted' });
+  } catch (error) {
+    console.error('Error deleting student:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete student', details: error instanceof Error ? error.message : String(error) },
       { status: 500 }
     );
   }
