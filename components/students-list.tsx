@@ -415,7 +415,6 @@ export default function StudentsList() {
               <TableHead style={{ color: '#031e41' }}>DNI</TableHead>
               <TableHead style={{ color: '#031e41' }}>Edad</TableHead>
               <TableHead style={{ color: '#031e41' }}>Teléfono</TableHead>
-              <TableHead style={{ color: '#031e41' }}>Estado</TableHead>
               <TableHead style={{ color: '#031e41' }}>Acciones</TableHead>
             </TableRow>
           </TableHeader>
@@ -496,23 +495,6 @@ export default function StudentsList() {
                       />
                     ) : (
                       student.telefono
-                    )}
-                  </TableCell>
-
-                  <TableCell>
-                    {editingIndex === studentIndexInOriginal ? (
-                      <Input
-                        value={editedStudent?.estado || ''}
-                        onChange={(e) =>
-                          setEditedStudent({
-                            ...editedStudent!,
-                            estado: e.target.value,
-                          })
-                        }
-                        className="w-full"
-                      />
-                    ) : (
-                      student.estado
                     )}
                   </TableCell>
 
