@@ -48,15 +48,15 @@ export async function GET() {
     const headers = rows[0] || [];
     const students = rows.slice(1).map((row) => ({
       fecha: row[0] || '',
-      curso: row[0] || '',
+      curso: row[1] || '', // Cambiar de row[0] a row[1] para obtener el curso real
       nombre: row[2] || '',
-      dni: row[1] || '',
-      email: row[3] || '',
-      telefono: row[4] || '',
-      estado: row[5] || '',
-      junio: row[6] || '',
-      julio: row[7] || '',
-      agosto: row[8] || '',
+      dni: row[3] || '', // Cambiar de row[1] a row[3]
+      email: row[4] || '', // Cambiar de row[3] a row[4]
+      telefono: row[5] || '', // Cambiar de row[4] a row[5]
+      estado: row[6] || '', // Cambiar de row[5] a row[6]
+      junio: row[7] || '',
+      julio: row[8] || '',
+      agosto: row[9] || '',
     }));
 
     return NextResponse.json({ students, headers });

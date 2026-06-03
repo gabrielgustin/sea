@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import {
@@ -11,7 +11,8 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
-import { Loader2, Save, X, Plus, Trash2 } from 'lucide-react';
+import { Loader2, Save, X, Plus, Trash2, Filter } from 'lucide-react';
+import { calculateAgeFromDNI, getStudentStatsByNacimiento } from '@/lib/dniUtils';
 
 interface Student {
   fecha: string;
@@ -43,10 +44,44 @@ export default function StudentsList() {
     estado: '',
   });
   const [deletingIndex, setDeletingIndex] = useState<number | null>(null);
+  const [selectedCourse, setSelectedCourse] = useState<string>('');
+  const [showStats, setShowStats] = useState(true);
 
   useEffect(() => {
     fetchStudents();
   }, []);
+
+  // Obtener cursos únicos
+  const uniqueCourses = useMemo(() => {
+    return Array.from(new Set(students.map(s => s.curso).filter(Boolean)));
+  }, [students]);
+
+  // Filtrar estudiantes por curso
+  const filteredStudents = useMemo(() => {
+    if (!selectedCourse) return students;
+    return students.filter(s => s.curso === selectedCourse);
+  }, [students, selectedCourse]);
+
+  // Estadísticas por curso
+  const courseStats = useMemo(() => {
+    const stats: { [course: string]: { total: number; ages: { [ageRange: string]: number } } } = {};
+    
+    uniqueCourses.forEach(course => {
+      const courseStudents = students.filter(s => s.curso === course);
+      const ageStats = getStudentStatsByNacimiento(courseStudents);
+      stats[course] = {
+        total: courseStudents.length,
+        ages: ageStats.byAge
+      };
+    });
+    
+    return stats;
+  }, [students, uniqueCourses]);
+
+  // Estadísticas generales
+  const generalStats = useMemo(() => {
+    return getStudentStatsByNacimiento(students);
+  }, [students]);
 
   const fetchStudents = async () => {
     try {
@@ -211,6 +246,90 @@ export default function StudentsList() {
         </div>
       )}
 
+      {/* Panel de Filtros y Estadísticas */}
+      <div className="border rounded-lg p-4 bg-gray-50 space-y-4">
+        <div className="flex items-center justify-between mb-4">
+          <h3 className="font-semibold flex items-center gap-2" style={{ color: '#031e41' }}>
+            <Filter size={18} />
+            Filtros y Estadísticas
+          </h3>
+          <button 
+            onClick={() => setShowStats(!showStats)}
+            className="text-sm text-blue-600 hover:text-blue-700"
+          >
+            {showStats ? 'Ocultar' : 'Mostrar'}
+          </button>
+        </div>
+
+        {showStats && (
+          <>
+            {/* Estadísticas Generales */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <div className="bg-white p-3 rounded border">
+                <p className="text-sm text-gray-600">Total de Inscritos</p>
+                <p className="text-2xl font-bold" style={{ color: '#031e41' }}>{students.length}</p>
+              </div>
+              <div className="bg-white p-3 rounded border">
+                <p className="text-sm text-gray-600">Cursos Activos</p>
+                <p className="text-2xl font-bold" style={{ color: '#031e41' }}>{uniqueCourses.length}</p>
+              </div>
+              <div className="bg-white p-3 rounded border">
+                <p className="text-sm text-gray-600">Edad Promedio</p>
+                <p className="text-2xl font-bold" style={{ color: '#031e41' }}>
+                  {filteredStudents.length > 0
+                    ? Math.round(
+                        filteredStudents.reduce((sum, s) => {
+                          const age = calculateAgeFromDNI(s.dni);
+                          return sum + (age || 0);
+                        }, 0) / filteredStudents.filter(s => calculateAgeFromDNI(s.dni)).length
+                      )
+                    : '-'
+                  }
+                </p>
+              </div>
+            </div>
+
+            {/* Filtro por Curso */}
+            <div className="space-y-2">
+              <label className="text-sm font-medium">Filtrar por Curso:</label>
+              <div className="flex gap-2 flex-wrap">
+                <Button
+                  onClick={() => setSelectedCourse('')}
+                  variant={selectedCourse === '' ? 'default' : 'outline'}
+                  size="sm"
+                  style={selectedCourse === '' ? { backgroundColor: '#031e41' } : {}}
+                  className={selectedCourse === '' ? 'text-white' : ''}
+                >
+                  Todos ({students.length})
+                </Button>
+                {uniqueCourses.map(course => (
+                  <Button
+                    key={course}
+                    onClick={() => setSelectedCourse(course)}
+                    variant={selectedCourse === course ? 'default' : 'outline'}
+                    size="sm"
+                    style={selectedCourse === course ? { backgroundColor: '#031e41' } : {}}
+                    className={selectedCourse === course ? 'text-white' : ''}
+                  >
+                    {course} ({courseStats[course]?.total || 0})
+                  </Button>
+                ))}
+              </div>
+            </div>
+
+            {/* Desglose por Rango de Edad */}
+            <div className="grid grid-cols-2 md:grid-cols-6 gap-2">
+              {Object.entries(filteredStudents.length > 0 ? getStudentStatsByNacimiento(filteredStudents).byAge : generalStats.byAge).map(([ageRange, count]) => (
+                <div key={ageRange} className="bg-white p-2 rounded border text-center text-sm">
+                  <p className="text-gray-600">{ageRange}</p>
+                  <p className="font-bold" style={{ color: '#031e41' }}>{count}</p>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
+      </div>
+
       {/* Botón Agregar Estudiante */}
       <div className="flex gap-2">
         {!showAddForm && (
@@ -294,162 +413,173 @@ export default function StudentsList() {
               <TableHead style={{ color: '#031e41' }}>Nombre</TableHead>
               <TableHead style={{ color: '#031e41' }}>Email</TableHead>
               <TableHead style={{ color: '#031e41' }}>DNI</TableHead>
+              <TableHead style={{ color: '#031e41' }}>Edad</TableHead>
               <TableHead style={{ color: '#031e41' }}>Teléfono</TableHead>
               <TableHead style={{ color: '#031e41' }}>Estado</TableHead>
               <TableHead style={{ color: '#031e41' }}>Acciones</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {students.map((student, index) => (
-              <TableRow key={index}>
-                <TableCell>
-                  {editingIndex === index ? (
-                    <Input
-                      value={editedStudent?.nombre || ''}
-                      onChange={(e) =>
-                        setEditedStudent({
-                          ...editedStudent!,
-                          nombre: e.target.value,
-                        })
-                      }
-                      className="w-full"
-                    />
-                  ) : (
-                    student.nombre
-                  )}
-                </TableCell>
-
-                <TableCell>
-                  {editingIndex === index ? (
-                    <Input
-                      value={editedStudent?.email || ''}
-                      onChange={(e) =>
-                        setEditedStudent({
-                          ...editedStudent!,
-                          email: e.target.value,
-                        })
-                      }
-                      className="w-full"
-                    />
-                  ) : (
-                    student.email
-                  )}
-                </TableCell>
-
-                <TableCell>
-                  {editingIndex === index ? (
-                    <Input
-                      value={editedStudent?.dni || ''}
-                      onChange={(e) =>
-                        setEditedStudent({
-                          ...editedStudent!,
-                          dni: e.target.value,
-                        })
-                      }
-                      className="w-full"
-                    />
-                  ) : (
-                    student.dni
-                  )}
-                </TableCell>
-
-                <TableCell>
-                  {editingIndex === index ? (
-                    <Input
-                      value={editedStudent?.telefono || ''}
-                      onChange={(e) =>
-                        setEditedStudent({
-                          ...editedStudent!,
-                          telefono: e.target.value,
-                        })
-                      }
-                      className="w-full"
-                    />
-                  ) : (
-                    student.telefono
-                  )}
-                </TableCell>
-
-                <TableCell>
-                  {editingIndex === index ? (
-                    <Input
-                      value={editedStudent?.estado || ''}
-                      onChange={(e) =>
-                        setEditedStudent({
-                          ...editedStudent!,
-                          estado: e.target.value,
-                        })
-                      }
-                      className="w-full"
-                    />
-                  ) : (
-                    student.estado
-                  )}
-                </TableCell>
-
-                <TableCell>
-                  <div className="flex gap-2">
-                    {editingIndex === index ? (
-                      <>
-                        <Button
-                          size="sm"
-                          onClick={() => handleSave(index)}
-                          disabled={saving}
-                          style={{ backgroundColor: '#031e41' }}
-                          className="text-white"
-                        >
-                          {saving ? (
-                            <Loader2 className="animate-spin" size={16} />
-                          ) : (
-                            <>
-                              <Save size={16} className="mr-1" />
-                              Guardar
-                            </>
-                          )}
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={handleCancel}
-                        >
-                          <X size={16} />
-                        </Button>
-                      </>
+            {filteredStudents.map((student, index) => {
+              const studentIndexInOriginal = students.indexOf(student);
+              return (
+                <TableRow key={index}>
+                  <TableCell>
+                    {editingIndex === studentIndexInOriginal ? (
+                      <Input
+                        value={editedStudent?.nombre || ''}
+                        onChange={(e) =>
+                          setEditedStudent({
+                            ...editedStudent!,
+                            nombre: e.target.value,
+                          })
+                        }
+                        className="w-full"
+                      />
                     ) : (
-                      <>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleEdit(index, student)}
-                        >
-                          Editar
-                        </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleDeleteStudent(index)}
-                          disabled={deletingIndex === index}
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          {deletingIndex === index ? (
-                            <Loader2 className="animate-spin" size={16} />
-                          ) : (
-                            <Trash2 size={16} />
-                          )}
-                        </Button>
-                      </>
+                      student.nombre
                     )}
-                  </div>
-                </TableCell>
-              </TableRow>
-            ))}
+                  </TableCell>
+
+                  <TableCell>
+                    {editingIndex === studentIndexInOriginal ? (
+                      <Input
+                        value={editedStudent?.email || ''}
+                        onChange={(e) =>
+                          setEditedStudent({
+                            ...editedStudent!,
+                            email: e.target.value,
+                          })
+                        }
+                        className="w-full"
+                      />
+                    ) : (
+                      student.email
+                    )}
+                  </TableCell>
+
+                  <TableCell>
+                    {editingIndex === studentIndexInOriginal ? (
+                      <Input
+                        value={editedStudent?.dni || ''}
+                        onChange={(e) =>
+                          setEditedStudent({
+                            ...editedStudent!,
+                            dni: e.target.value,
+                          })
+                        }
+                        className="w-full"
+                      />
+                    ) : (
+                      student.dni
+                    )}
+                  </TableCell>
+
+                  <TableCell className="font-medium" style={{ color: '#031e41' }}>
+                    {calculateAgeFromDNI(student.dni) !== null
+                      ? `${calculateAgeFromDNI(student.dni)} años`
+                      : '-'
+                    }
+                  </TableCell>
+
+                  <TableCell>
+                    {editingIndex === studentIndexInOriginal ? (
+                      <Input
+                        value={editedStudent?.telefono || ''}
+                        onChange={(e) =>
+                          setEditedStudent({
+                            ...editedStudent!,
+                            telefono: e.target.value,
+                          })
+                        }
+                        className="w-full"
+                      />
+                    ) : (
+                      student.telefono
+                    )}
+                  </TableCell>
+
+                  <TableCell>
+                    {editingIndex === studentIndexInOriginal ? (
+                      <Input
+                        value={editedStudent?.estado || ''}
+                        onChange={(e) =>
+                          setEditedStudent({
+                            ...editedStudent!,
+                            estado: e.target.value,
+                          })
+                        }
+                        className="w-full"
+                      />
+                    ) : (
+                      student.estado
+                    )}
+                  </TableCell>
+
+                  <TableCell>
+                    <div className="flex gap-2">
+                      {editingIndex === studentIndexInOriginal ? (
+                        <>
+                          <Button
+                            size="sm"
+                            onClick={() => handleSave(studentIndexInOriginal)}
+                            disabled={saving}
+                            style={{ backgroundColor: '#031e41' }}
+                            className="text-white"
+                          >
+                            {saving ? (
+                              <Loader2 className="animate-spin" size={16} />
+                            ) : (
+                              <>
+                                <Save size={16} className="mr-1" />
+                                Guardar
+                              </>
+                            )}
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={handleCancel}
+                          >
+                            <X size={16} />
+                          </Button>
+                        </>
+                      ) : (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleEdit(studentIndexInOriginal, student)}
+                          >
+                            Editar
+                          </Button>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            onClick={() => handleDeleteStudent(studentIndexInOriginal)}
+                            disabled={deletingIndex === studentIndexInOriginal}
+                            className="text-red-600 hover:text-red-700"
+                          >
+                            {deletingIndex === studentIndexInOriginal ? (
+                              <Loader2 className="animate-spin" size={16} />
+                            ) : (
+                              <Trash2 size={16} />
+                            )}
+                          </Button>
+                        </>
+                      )}
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            })}
           </TableBody>
         </Table>
       </div>
 
-      {students.length === 0 && !showAddForm && (
+      {filteredStudents.length === 0 && !showAddForm && (
         <div className="text-center p-8 text-gray-500">
-          No hay estudiantes registrados
+          {selectedCourse ? `No hay estudiantes en ${selectedCourse}` : 'No hay estudiantes registrados'}
         </div>
       )}
     </div>
