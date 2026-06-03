@@ -29,13 +29,18 @@ export default function Sidebar() {
     setTimeout(() => setShowLoginAnimation(false), 600);
   };
 
+  // Icon size for consistency
+  const iconSize = 28;
+
   return (
     <>
-      {/* Desktop Sidebar - Fixed 10% width, fully responsive */}
-      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white z-40 flex-col items-center justify-center px-3 gap-8" style={{ borderRight: '2px solid #031e41' }}>
-        
-        {/* Navigation Items - Top */}
-        <nav className="flex flex-col gap-6 w-full">
+      {/* Desktop Sidebar - Responsive, centered, professional */}
+      <aside 
+        className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white z-40 flex-col items-center justify-center px-3" 
+        style={{ borderRight: '2px solid #031e41' }}
+      >
+        <nav className="flex flex-col items-center gap-10">
+          {/* Navigation Items */}
           {publicNavItems.map((item, index) => {
             const Icon = item.icon;
             const isExternal = item.href.startsWith('http');
@@ -47,14 +52,10 @@ export default function Sidebar() {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
-                style={{
-                  backgroundColor: 'transparent',
-                  cursor: 'pointer'
-                }}
                 title={item.label}
               >
-                <Icon size={32} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
-                <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
+                <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
                   {item.label}
                 </span>
               </a>
@@ -63,78 +64,46 @@ export default function Sidebar() {
                 key={index}
                 href={item.href}
                 className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
-                style={{
-                  backgroundColor: 'transparent',
-                  cursor: 'pointer'
-                }}
                 title={item.label}
               >
-                <Icon size={32} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
-                <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
+                <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
                   {item.label}
                 </span>
               </Link>
             );
           })}
-        </nav>
 
-        {/* Login/Logout Button - Close to Instagram */}
-        <button
-          onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
-          className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
-          style={{
-            backgroundColor: 'transparent',
-            cursor: 'pointer'
-          }}
-          title={isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
-        >
-          {isAuthenticated ? (
-            <LogOut size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
-          ) : (
-            <LogIn size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
-          )}
-          <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
-            {isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
-          </span>
-        </button>
-
-        {/* Admin Icon - Bottom (when authenticated) with animation */}
-        {isAuthenticated && (
-          <Link
-            href="/admin"
-            className={`flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50 ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
-            style={{
-              backgroundColor: 'transparent',
-              cursor: 'pointer'
-            }}
-            title="Admin"
+          {/* Login/Logout Button */}
+          <button
+            onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
+            className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
+            title={isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
           >
-            <Settings size={32} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
-            <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
-              Admin
+            {isAuthenticated ? (
+              <LogOut size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+            ) : (
+              <LogIn size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+            )}
+            <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
+              {isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
             </span>
-          </Link>
-        )}
+          </button>
 
-        {/* Login/Logout Button - Bottom (hidden to preserve layout) */}
-        <button
-          onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
-          className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50 invisible"
-          style={{
-            backgroundColor: 'transparent',
-            cursor: 'pointer'
-          }}
-          title={isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
-        >
-          {isAuthenticated ? (
-            <LogOut size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
-          ) : (
-            <LogIn size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
+          {/* Admin Link (when authenticated) */}
+          {isAuthenticated && (
+            <Link
+              href="/admin"
+              className={`flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50 ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
+              title="Admin"
+            >
+              <Settings size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+              <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
+                Admin
+              </span>
+            </Link>
           )}
-          <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
-            {isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
-          </span>
-        </button>
+        </nav>
       </aside>
 
       {/* Mobile Hamburger Button */}
@@ -144,7 +113,11 @@ export default function Sidebar() {
         style={{ borderRight: '2px solid #031e41', borderBottom: '2px solid #031e41' }}
         aria-label="Toggle sidebar"
       >
-        {isOpen ? <X size={24} className="transition-all duration-300" style={{ color: '#031e41' }} /> : <Menu size={24} className="transition-all duration-300" style={{ color: '#031e41' }} />}
+        {isOpen ? (
+          <X size={24} className="transition-all duration-300" style={{ color: '#031e41' }} />
+        ) : (
+          <Menu size={24} className="transition-all duration-300" style={{ color: '#031e41' }} />
+        )}
       </button>
 
       {/* Mobile Overlay */}
@@ -162,8 +135,8 @@ export default function Sidebar() {
         }`}
         style={{ borderRight: '2px solid #031e41' }}
       >
-        {/* All Navigation Items - Centered Container */}
-        <div className="flex flex-col gap-6 items-center justify-around w-full h-full">
+        <nav className="flex flex-col items-center gap-10">
+          {/* Navigation Items */}
           {publicNavItems.map((item, index) => {
             const Icon = item.icon;
             const isExternal = item.href.startsWith('http');
@@ -174,50 +147,52 @@ export default function Sidebar() {
                 href={item.href}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
+                className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group"
                 onClick={() => setIsOpen(false)}
               >
-                <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-                <span className="text-sm font-medium">{item.label}</span>
+                <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                <span className="text-sm font-medium" style={{ color: '#031e41' }}>{item.label}</span>
               </a>
             ) : (
               <Link
                 key={index}
                 href={item.href}
-                className="flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
+                className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group"
                 onClick={() => setIsOpen(false)}
               >
-                <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-                <span className="text-sm font-medium">{item.label}</span>
+                <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                <span className="text-sm font-medium" style={{ color: '#031e41' }}>{item.label}</span>
               </Link>
             );
           })}
 
-          {/* Login/Logout Button - Centered */}
+          {/* Login/Logout Button */}
           <button
             onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
-            className="flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
+            className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group"
           >
             {isAuthenticated ? (
-              <LogOut size={32} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+              <LogOut size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
             ) : (
-              <LogIn size={32} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+              <LogIn size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
             )}
-            <span className="text-sm font-medium">{isAuthenticated ? 'Cerrar sesión' : 'Iniciar sesión'}</span>
+            <span className="text-sm font-medium" style={{ color: '#031e41' }}>
+              {isAuthenticated ? 'Cerrar sesión' : 'Iniciar sesión'}
+            </span>
           </button>
 
-          {/* Admin Link - Centered */}
+          {/* Admin Link (when authenticated) */}
           {isAuthenticated && (
             <Link
               href="/admin"
-              className={`flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
+              className={`flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
               onClick={() => setIsOpen(false)}
             >
-              <Settings size={32} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-              <span className="text-sm font-medium">Admin</span>
+              <Settings size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+              <span className="text-sm font-medium" style={{ color: '#031e41' }}>Admin</span>
             </Link>
           )}
-        </div>
+        </nav>
       </aside>
 
       <LoginModal open={loginOpen} onOpenChange={setLoginOpen} onLoginSuccess={handleLoginSuccess} />
