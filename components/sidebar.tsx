@@ -169,7 +169,7 @@ export default function Sidebar() {
         style={{ borderRight: '2px solid #031e41' }}
       >
         {/* All Navigation Items - Centered Container */}
-        <div className="flex flex-col gap-8 items-center w-full">
+        <div className="flex flex-col gap-8 items-center w-full h-full justify-center">
           {/* Navigation Links */}
           <nav className="flex flex-col gap-8 w-full items-center">
             {publicNavItems.map((item, index) => {
