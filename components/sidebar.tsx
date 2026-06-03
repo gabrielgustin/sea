@@ -168,60 +168,63 @@ export default function Sidebar() {
         }`}
         style={{ borderRight: '2px solid #031e41' }}
       >
-        {/* Navigation Items - Centered */}
-        <nav className="flex flex-col gap-8 w-full items-center">
-          {publicNavItems.map((item, index) => {
-            const Icon = item.icon;
-            const isExternal = item.href.startsWith('http');
-            
-            return isExternal ? (
-              <a
-                key={index}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
-                onClick={() => setIsOpen(false)}
-              >
-                <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-                <span className="text-sm font-medium">{item.label}</span>
-              </a>
-            ) : (
-              <Link
-                key={index}
-                href={item.href}
-                className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
-                onClick={() => setIsOpen(false)}
-              >
-                <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-                <span className="text-sm font-medium">{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
+        {/* All Navigation Items - Centered Container */}
+        <div className="flex flex-col gap-8 items-center w-full">
+          {/* Navigation Links */}
+          <nav className="flex flex-col gap-8 w-full items-center">
+            {publicNavItems.map((item, index) => {
+              const Icon = item.icon;
+              const isExternal = item.href.startsWith('http');
+              
+              return isExternal ? (
+                <a
+                  key={index}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                  <span className="text-sm font-medium">{item.label}</span>
+                </a>
+              ) : (
+                <Link
+                  key={index}
+                  href={item.href}
+                  className="flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                  <span className="text-sm font-medium">{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
 
-        {/* Login/Logout Button - Center with others */}
-        {isAuthenticated && (
-          <button
-            onClick={handleLogout}
-            className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group w-full justify-center"
-          >
-            <LogOut size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-            <span className="text-sm font-medium">Cerrar sesión</span>
-          </button>
-        )}
+          {/* Login/Logout Button - Centered */}
+          {isAuthenticated && (
+            <button
+              onClick={handleLogout}
+              className="flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
+            >
+              <LogOut size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+              <span className="text-sm font-medium">Cerrar sesión</span>
+            </button>
+          )}
 
-        {/* Admin Link - Centered */}
-        {isAuthenticated && (
-          <Link
-            href="/admin"
-            className={`flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group w-full justify-center ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
-            onClick={() => setIsOpen(false)}
-          >
-            <Settings size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-            <span className="text-sm font-medium">Admin</span>
-          </Link>
-        )}
+          {/* Admin Link - Centered */}
+          {isAuthenticated && (
+            <Link
+              href="/admin"
+              className={`flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
+              onClick={() => setIsOpen(false)}
+            >
+              <Settings size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+              <span className="text-sm font-medium">Admin</span>
+            </Link>
+          )}
+        </div>
       </aside>
 
       <LoginModal open={loginOpen} onOpenChange={setLoginOpen} onLoginSuccess={handleLoginSuccess} />
