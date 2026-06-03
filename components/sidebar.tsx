@@ -169,38 +169,35 @@ export default function Sidebar() {
         style={{ borderRight: '2px solid #031e41' }}
       >
         {/* All Navigation Items - Centered Container */}
-        <div className="flex flex-col gap-8 items-center justify-around w-full h-full">
-          {/* Navigation Links */}
-          <nav className="flex flex-col gap-8 w-full items-center">
-            {publicNavItems.map((item, index) => {
-              const Icon = item.icon;
-              const isExternal = item.href.startsWith('http');
-              
-              return isExternal ? (
-                <a
-                  key={index}
-                  href={item.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-                  <span className="text-sm font-medium">{item.label}</span>
-                </a>
-              ) : (
-                <Link
-                  key={index}
-                  href={item.href}
-                  className="flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-                  <span className="text-sm font-medium">{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
+        <div className="flex flex-col gap-6 items-center justify-around w-full h-full">
+          {publicNavItems.map((item, index) => {
+            const Icon = item.icon;
+            const isExternal = item.href.startsWith('http');
+            
+            return isExternal ? (
+              <a
+                key={index}
+                href={item.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
+                onClick={() => setIsOpen(false)}
+              >
+                <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                <span className="text-sm font-medium">{item.label}</span>
+              </a>
+            ) : (
+              <Link
+                key={index}
+                href={item.href}
+                className="flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
+                onClick={() => setIsOpen(false)}
+              >
+                <Icon size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                <span className="text-sm font-medium">{item.label}</span>
+              </Link>
+            );
+          })}
 
           {/* Login/Logout Button - Centered */}
           <button
