@@ -19,14 +19,18 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<UserRole>(null);
   const [selectedRole, setSelectedRole] = useState<'student' | 'admin'>('admin');
+  const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    const savedAuth = localStorage.getItem('userAuth');
+    // Sincronizar estado con localStorage después del mount
+    const savedAuth = localStorage.getItem('userAuth') === 'true';
     const savedRole = localStorage.getItem('userRole') as UserRole;
-    if (savedAuth === 'true' && savedRole) {
+    
+    if (savedAuth && savedRole) {
       setIsAuthenticated(true);
       setUserRole(savedRole);
     }
+    setHydrated(true);
   }, []);
 
   const login = (username: string, password: string): boolean => {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/header';
@@ -11,14 +11,19 @@ import WhatsAppButton from '@/components/whatsapp-button';
 export default function AdminPage() {
   const router = useRouter();
   const { isAuthenticated, userRole } = useAuth();
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    if (!isAuthenticated || userRole !== 'admin') {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && (!isAuthenticated || userRole !== 'admin')) {
       router.push('/');
     }
-  }, [isAuthenticated, userRole, router]);
+  }, [isAuthenticated, userRole, mounted, router]);
 
-  if (!isAuthenticated || userRole !== 'admin') {
+  if (!mounted || !isAuthenticated || userRole !== 'admin') {
     return null;
   }
 
