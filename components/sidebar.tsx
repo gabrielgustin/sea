@@ -163,13 +163,13 @@ export default function Sidebar() {
 
       {/* Mobile Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen w-64 bg-white z-45 flex flex-col items-center justify-center pt-0 pb-0 px-6 transition-all duration-300 md:hidden ${
+        className={`fixed left-0 top-0 h-screen w-64 bg-white z-45 flex flex-col items-center justify-center transition-all duration-300 md:hidden ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         style={{ borderRight: '2px solid #031e41' }}
       >
         {/* All Navigation Items - Centered Container */}
-        <div className="flex flex-col gap-8 items-center w-full h-full justify-center">
+        <div className="flex flex-col gap-8 items-center justify-center">
           {/* Navigation Links */}
           <nav className="flex flex-col gap-8 w-full items-center">
             {publicNavItems.map((item, index) => {
