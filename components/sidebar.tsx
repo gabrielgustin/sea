@@ -31,8 +31,8 @@ export default function Sidebar() {
 
   return (
     <>
-      {/* Desktop Sidebar - Fixed 10% width */}
-      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white z-40 flex-col items-center pt-[178px] pb-[100px] px-3 gap-6" style={{ borderRight: '2px solid #031e41' }}>
+      {/* Desktop Sidebar - Fixed 10% width, fully responsive */}
+      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white z-40 flex-col items-center justify-center px-3 gap-8" style={{ borderRight: '2px solid #031e41' }}>
         
         {/* Navigation Items - Top */}
         <nav className="flex flex-col gap-6 w-full">
@@ -53,7 +53,7 @@ export default function Sidebar() {
                 }}
                 title={item.label}
               >
-                <Icon size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
+                <Icon size={32} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
                 <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
                   {item.label}
                 </span>
@@ -69,7 +69,7 @@ export default function Sidebar() {
                 }}
                 title={item.label}
               >
-                <Icon size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
+                <Icon size={32} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
                 <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
                   {item.label}
                 </span>
@@ -98,9 +98,6 @@ export default function Sidebar() {
           </span>
         </button>
 
-        {/* Spacer - Bottom filler */}
-        <div className="flex-1" />
-
         {/* Admin Icon - Bottom (when authenticated) with animation */}
         {isAuthenticated && (
           <Link
@@ -112,15 +109,12 @@ export default function Sidebar() {
             }}
             title="Admin"
           >
-            <Settings size={24} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
+            <Settings size={32} className="transition-all duration-300 group-hover:scale-110 relative z-10" style={{ color: '#031e41' }} />
             <span className="absolute left-24 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold shadow-blue-lg translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
               Admin
             </span>
           </Link>
         )}
-
-        {/* Spacer */}
-        <div className="flex-1" />
 
         {/* Login/Logout Button - Bottom (hidden to preserve layout) */}
         <button
