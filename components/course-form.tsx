@@ -6,7 +6,8 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { ChevronUp, ChevronDown, Plus, Trash2 } from 'lucide-react';
+import { ChevronUp, ChevronDown, Plus, Trash2, Upload, X } from 'lucide-react';
+import Image from 'next/image';
 
 interface CourseFormProps {
   course?: Course;
@@ -48,9 +49,16 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
     content: false,
   });
 
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [uploading, setUploading] = useState(false);
+
   useEffect(() => {
     if (course) {
       setFormData(course);
+      // Si la imagen es una URL de datos (base64), usarla como preview
+      if (course.image && course.image.startsWith('data:')) {
+        setImagePreview(course.image);
+      }
     }
   }, [course]);
 
@@ -132,6 +140,50 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
     }));
   };
 
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validar tipo de archivo
+    if (!file.type.startsWith('image/')) {
+      alert('Por favor selecciona un archivo de imagen válido');
+      return;
+    }
+
+    // Validar tamaño (máx 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('La imagen no debe exceder 5MB');
+      return;
+    }
+
+    setUploading(true);
+
+    // Convertir a base64 para almacenamiento en localStorage
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const base64String = event.target?.result as string;
+      setFormData(prev => ({
+        ...prev,
+        image: base64String,
+      }));
+      setImagePreview(base64String);
+      setUploading(false);
+    };
+    reader.onerror = () => {
+      alert('Error al leer el archivo');
+      setUploading(false);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const removeImage = () => {
+    setFormData(prev => ({
+      ...prev,
+      image: '',
+    }));
+    setImagePreview(null);
+  };
+
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
@@ -187,13 +239,61 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
               </div>
 
               <div>
-                <Label>URL de Imagen *</Label>
-                <Input
-                  value={formData.image}
-                  onChange={(e) => handleInputChange('image', e.target.value)}
-                  placeholder="/course-app-development.jpg"
-                  className="mt-2 transition-smooth"
-                />
+                <Label>Imagen del Curso *</Label>
+                <div className="mt-2 space-y-4">
+                  {/* Upload Area */}
+                  <div className="relative">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageUpload}
+                      disabled={uploading}
+                      className="hidden"
+                      id="course-image-upload"
+                    />
+                    <label
+                      htmlFor="course-image-upload"
+                      className="flex flex-col items-center justify-center w-full px-6 py-8 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 transition-colors"
+                      style={{
+                        borderColor: imagePreview ? '#031e41' : '#d1d5db',
+                        backgroundColor: uploading ? '#f3f4f6' : 'transparent',
+                        opacity: uploading ? 0.6 : 1,
+                      }}
+                    >
+                      <div className="text-center">
+                        <Upload size={32} className="mx-auto mb-2" style={{ color: '#031e41' }} />
+                        <p className="text-sm font-medium" style={{ color: '#031e41' }}>
+                          {uploading ? 'Subiendo imagen...' : 'Arrastra una imagen aquí'}
+                        </p>
+                        <p className="text-xs text-gray-500 mt-1">
+                          o haz clic para seleccionar (máx 5MB)
+                        </p>
+                      </div>
+                    </label>
+                  </div>
+
+                  {/* Image Preview */}
+                  {imagePreview && (
+                    <div className="relative w-full h-48 bg-gray-100 rounded-lg overflow-hidden border border-gray-200">
+                      <Image
+                        src={imagePreview}
+                        alt="Vista previa"
+                        fill
+                        className="object-cover"
+                      />
+                      <button
+                        type="button"
+                        onClick={removeImage}
+                        className="absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                      >
+                        <X size={16} />
+                      </button>
+                      <p className="absolute bottom-2 left-2 text-xs text-white bg-black bg-opacity-50 px-2 py-1 rounded">
+                        {imagePreview.startsWith('data:') ? 'Imagen local' : 'URL'}
+                      </p>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
