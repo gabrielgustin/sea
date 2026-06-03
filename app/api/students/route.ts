@@ -43,21 +43,20 @@ export async function GET() {
     });
 
     const rows = response.data.values || [];
-    console.log('[v0] Rows fetched:', rows.length);
     
     // Headers están en la primera fila
     const headers = rows[0] || [];
     const students = rows.slice(1).map((row) => ({
       fecha: row[0] || '',
-      curso: row[1] || '',
+      curso: row[0] || '',
       nombre: row[2] || '',
-      dni: row[3] || '',
-      email: row[4] || '',
-      telefono: row[5] || '',
-      estado: row[6] || '',
-      junio: row[7] || '',
-      julio: row[8] || '',
-      agosto: row[9] || '',
+      dni: row[1] || '',
+      email: row[3] || '',
+      telefono: row[4] || '',
+      estado: row[5] || '',
+      junio: row[6] || '',
+      julio: row[7] || '',
+      agosto: row[8] || '',
     }));
 
     return NextResponse.json({ students, headers });
