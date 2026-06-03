@@ -18,11 +18,6 @@ export default function SpecialOfferSection() {
           Inscripciones Abiertas
         </h2>
 
-        {/* Subtitle */}
-        <p className="text-lg md:text-xl text-center mb-6 font-semibold" style={{ color: '#031e41' }}>
-          Inscripciones Abiertas
-        </p>
-
         {/* Description */}
         <p className="text-gray-700 text-center mb-10 max-w-2xl mx-auto leading-relaxed">
           No esperes más para transformar tu futuro. Los lugares se asignan por orden de
