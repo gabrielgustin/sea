@@ -6,7 +6,7 @@ export const coursesData = [
     image: '/course-app-development.jpg',
     badge: 'EDUCACIÓN PRESENCIAL',
     startDate: 'Lun 1/06/2026',
-    enrollmentDeadline: '2026-05-25',
+    enrollmentDeadline: '2026-06-30',
     modality: 'Presencial',
     slug: 'desarrollo-de-aplicaciones',
     description: 'El programa de Desarrollo de Aplicaciones en Python con Tkinter está diseñado para introducir al estudiante en las bases de la programación estructurada y la creación de software con entorno visual. A través de un enfoque metodológico, el alumno transitará desde la conceptualización lógica de un algoritmo hasta el despliegue de aplicaciones de escritorio funcionales e interactivas, utilizando el lenguaje de programación más demandado del mercado actual.',
@@ -53,6 +53,8 @@ export const coursesData = [
     ],
     methodology: 'Clases prácticas basadas en resolución de problemas reales, más de 20 ejercicios prácticos por unidad, trabajo práctico integrador por módulo',
     finalProject: 'Desarrollo de una aplicación funcional con interfaz gráfica',
+    whatsappGroup: 'https://chat.whatsapp.com/JG0bwECRN9lIysJUhQ59ro',
+    level: 'PRINCIPIANTE',
   },
   {
     id: 2,
@@ -67,13 +69,13 @@ export const coursesData = [
     description: 'El curso de Diseño y Desarrollo de Videojuegos ofrece una formación integral en las dinámicas fundamentales de la industria del entretenimiento digital. Utilizando Unity, el motor de desarrollo líder del mercado profesional a nivel global, los estudiantes aprenderán a estructurar las reglas, mecánicas y estéticas que componen un videojuego. El programa guía al alumno desde la conceptualización de ideas hasta la programación e implementación de entornos interactivos utilizando estándares profesionales.',
     schedule: 'Jueves: 16:30 a 18:00',
     location: 'ITS Villada, Valle Escondido',
-    teacher: 'Gabriel Muñoz',
+    teacher: 'Jose Verino',
     teachers: [
       {
-        name: 'Ing. Gabriel Muñoz',
-        photo: '/teachers/gabriel-munoz.jpg',
-        description: 'Ingeniero en Sistemas de Información, desarrollador de videojuegos con experiencia en Unity y Unreal Engine. Apasionado por la educación en tecnologías interactivas.',
-        linkedin: 'https://linkedin.com/in/gabrielmunoz'
+        name: 'Jose Verino',
+        photo: '/teachers/jose-verino.jpg',
+        description: 'Desarrollador de videojuegos con experiencia en Unity y herramientas de desarrollo modernas.',
+        linkedin: ''
       }
     ],
     duration: '6 meses',
@@ -108,6 +110,8 @@ export const coursesData = [
     ],
     methodology: 'Clases prácticas basadas en proyectos, resolución de desafíos progresivos, trabajo práctico integrador',
     finalProject: 'Desarrollo de un videojuego funcional e interactivo',
+    whatsappGroup: '',
+    level: 'PRINCIPIANTE',
   },
   {
     id: 3,
@@ -163,6 +167,8 @@ export const coursesData = [
     ],
     methodology: 'Metodología teórico-práctica orientada a recorrer el proceso completo: diseño, preparación e impresión de piezas. Aprendizaje basado en proyectos reales',
     finalProject: 'Diseño y fabricación de un producto funcional en 3D',
+    whatsappGroup: '',
+    level: 'PRINCIPIANTE',
   },
   {
     id: 4,
@@ -177,13 +183,19 @@ export const coursesData = [
     description: 'El trayecto formativo en Mecánica Automotriz brinda los conocimientos teóricos y prácticos indispensables para comprender el funcionamiento integral de los vehículos modernos. El programa aborda de manera rigurosa desde los principios termodinámicos de los motores de combustión interna hasta el diagnóstico técnico y la reparación de los sistemas de seguridad y transmisión automotriz.',
     schedule: 'Martes: 16:30 a 18:00',
     location: 'ITS Villada, Valle Escondido',
-    teacher: 'Kevin Altamirano',
+    teacher: 'Kevin Altamirano, Santiago Donalisio',
     teachers: [
       {
-        name: 'Téc. Kevin Altamirano',
+        name: 'Kevin Altamirano',
         photo: '/teachers/kevin-altamirano.jpg',
-        description: 'Técnico Superior en Mecánica Automotriz, especialista en diagnóstico y reparación de motores. Más de 15 años de experiencia en el rubro automotriz.',
-        linkedin: 'https://linkedin.com/in/kevinaltamirano'
+        description: 'Especialista en mecánica automotriz con amplia experiencia en diagnóstico y reparación de motores.',
+        linkedin: ''
+      },
+      {
+        name: 'Santiago Donalisio',
+        photo: '/teachers/santiago-donalisio.jpg',
+        description: 'Técnico mecánico con experiencia en sistemas automotrices y mantenimiento preventivo.',
+        linkedin: ''
       }
     ],
     duration: '6 meses',
@@ -218,5 +230,7 @@ export const coursesData = [
     ],
     methodology: 'Metodología teórico-práctica con comprensión de sistemas automotrices y resolución de problemas mecánicos reales',
     finalProject: 'Diagnóstico y simulación de reparación de un motor',
+    whatsappGroup: '',
+    level: 'PRINCIPIANTE',
   },
 ];

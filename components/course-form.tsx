@@ -28,6 +28,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
     image: '',
     badge: 'EDUCACIÓN PRESENCIAL',
     startDate: '',
+    enrollmentDeadline: '',
     modality: 'Presencial',
     slug: '',
     description: '',
@@ -40,6 +41,8 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
     modules: [] as Module[],
     methodology: '',
     finalProject: '',
+    whatsappGroup: '',
+    level: 'PRINCIPIANTE',
   });
 
   const [expandedSections, setExpandedSections] = useState({
@@ -298,7 +301,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label>Inicialmente</Label>
+                  <Label>Fecha de Inicio</Label>
                   <Input
                     value={formData.startDate}
                     onChange={(e) => handleInputChange('startDate', e.target.value)}
@@ -306,6 +309,18 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
                     className="mt-2 transition-smooth"
                   />
                 </div>
+                <div>
+                  <Label>Fecha Limite Inscripcion (YYYY-MM-DD)</Label>
+                  <Input
+                    value={formData.enrollmentDeadline || ''}
+                    onChange={(e) => handleInputChange('enrollmentDeadline', e.target.value)}
+                    placeholder="2026-05-25"
+                    className="mt-2 transition-smooth"
+                  />
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label>Modalidad</Label>
                   <Input
@@ -315,6 +330,32 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
                     className="mt-2 transition-smooth"
                   />
                 </div>
+                <div>
+                  <Label>Nivel del Curso</Label>
+                  <select
+                    value={formData.level || 'PRINCIPIANTE'}
+                    onChange={(e) => handleInputChange('level', e.target.value)}
+                    className="mt-2 w-full border rounded-lg px-3 py-2 transition-smooth"
+                  >
+                    <option value="PRINCIPIANTE">Principiante</option>
+                    <option value="INTERMEDIO">Intermedio</option>
+                    <option value="AVANZADO">Avanzado</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* WhatsApp Group */}
+              <div>
+                <Label>Link Grupo de WhatsApp</Label>
+                <Input
+                  value={formData.whatsappGroup || ''}
+                  onChange={(e) => handleInputChange('whatsappGroup', e.target.value)}
+                  placeholder="https://chat.whatsapp.com/..."
+                  className="mt-2 transition-smooth"
+                />
+                <p className="text-xs text-gray-500 mt-1">
+                  Este link se mostrara al finalizar la inscripcion
+                </p>
               </div>
             </div>
           )}

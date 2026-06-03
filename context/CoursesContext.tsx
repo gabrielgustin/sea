@@ -35,6 +35,8 @@ export interface Course {
   }>;
   methodology: string;
   finalProject: string;
+  whatsappGroup?: string; // Link al grupo de WhatsApp del curso
+  level?: string; // Nivel del curso (Principiante, Intermedio, Avanzado)
 }
 
 interface CoursesContextType {

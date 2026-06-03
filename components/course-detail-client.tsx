@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { ChevronDown, ChevronUp, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -40,6 +41,7 @@ interface Course {
 }
 
 export default function CourseDetailClient({ course }: { course: Course }) {
+  const router = useRouter();
   const [modulesExpanded, setModulesExpanded] = useState(false);
   const [interestForm, setInterestForm] = useState({
     nombre: '',
@@ -312,10 +314,11 @@ export default function CourseDetailClient({ course }: { course: Course }) {
               {/* Registration Button or Interest Form */}
               {!enrollmentClosed ? (
                 <button 
+                  onClick={() => router.push(`/inscripcion/${course.slug}`)}
                   className="w-full py-2 rounded-lg font-bold text-white text-sm transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
                   style={{ backgroundColor: '#031e41' }}
                 >
-                  Solicitar Inscripción
+                  Inscribirme
                 </button>
               ) : (
                 <div className="space-y-4">
