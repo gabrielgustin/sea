@@ -163,13 +163,13 @@ export default function Sidebar() {
 
       {/* Mobile Sidebar */}
       <aside
-        className={`fixed left-0 top-0 h-screen w-64 bg-white z-45 flex flex-col pt-20 pb-8 px-6 transition-all duration-300 md:hidden ${
+        className={`fixed left-0 top-0 h-screen w-64 bg-white z-45 flex flex-col items-center justify-center pt-0 pb-0 px-6 transition-all duration-300 md:hidden ${
           isOpen ? 'translate-x-0' : '-translate-x-full'
         }`}
         style={{ borderRight: '2px solid #031e41' }}
       >
-        {/* Navigation Items - Top */}
-        <nav className="flex flex-col gap-3 w-full mb-8 flex-1">
+        {/* Navigation Items - Centered */}
+        <nav className="flex flex-col gap-8 w-full items-center">
           {publicNavItems.map((item, index) => {
             const Icon = item.icon;
             const isExternal = item.href.startsWith('http');
@@ -200,35 +200,27 @@ export default function Sidebar() {
           })}
         </nav>
 
-        {/* Login/Logout Button - Close to Instagram */}
-        <button
-          onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
-          className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group w-full mb-8"
-        >
-          {isAuthenticated ? (
-            <LogOut size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-          ) : (
-            <LogIn size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-          )}
-          <span className="text-sm font-medium">{isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}</span>
-        </button>
-
-        {/* Spacer */}
-        <div className="flex-1" />
-
-        {/* Admin Link - Bottom (when authenticated) */}
+        {/* Login/Logout Button - Center with others */}
         {isAuthenticated && (
-          <>
-            <div className="w-full h-px mb-6" style={{ backgroundColor: '#9cbadb' }} />
-            <Link
-              href="/admin"
-              className={`flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
-              onClick={() => setIsOpen(false)}
-            >
-              <Settings size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-              <span className="text-sm font-medium">Admin</span>
-            </Link>
-          </>
+          <button
+            onClick={handleLogout}
+            className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group w-full justify-center"
+          >
+            <LogOut size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+            <span className="text-sm font-medium">Cerrar sesión</span>
+          </button>
+        )}
+
+        {/* Admin Link - Centered */}
+        {isAuthenticated && (
+          <Link
+            href="/admin"
+            className={`flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group w-full justify-center ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
+            onClick={() => setIsOpen(false)}
+          >
+            <Settings size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+            <span className="text-sm font-medium">Admin</span>
+          </Link>
         )}
       </aside>
 
