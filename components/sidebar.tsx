@@ -5,6 +5,7 @@ import { Menu, X, Home, BookOpen, Instagram, Mail, Settings, LogIn, LogOut } fro
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import LoginModal from './login-modal';
+import Image from 'next/image';
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -39,6 +40,17 @@ export default function Sidebar() {
         className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white z-40 flex-col items-center justify-start px-3 pt-6" 
         style={{ borderRight: '2px solid #031e41' }}
       >
+        {/* Logo SEA - Fixed at top */}
+        <div className="mb-8">
+          <Image
+            src="/logo-sea.png"
+            alt="Logo SEA"
+            width={60}
+            height={60}
+            className="w-auto h-auto"
+          />
+        </div>
+
         <nav className="flex flex-col items-center gap-10 flex-1 justify-start">
           {/* Navigation Items */}
           {publicNavItems.map((item, index) => {
@@ -135,6 +147,17 @@ export default function Sidebar() {
         }`}
         style={{ borderRight: '2px solid #031e41' }}
       >
+        {/* Logo SEA - Fixed at top for mobile */}
+        <div className="mt-6 mb-8">
+          <Image
+            src="/logo-sea.png"
+            alt="Logo SEA"
+            width={60}
+            height={60}
+            className="w-auto h-auto"
+          />
+        </div>
+
         <nav className="flex flex-col items-center gap-10 w-full">
           {/* Navigation Items */}
           {publicNavItems.map((item, index) => {

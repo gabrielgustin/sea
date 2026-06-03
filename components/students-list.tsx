@@ -296,6 +296,9 @@ export default function StudentsList() {
               <TableHead style={{ color: '#031e41' }}>DNI</TableHead>
               <TableHead style={{ color: '#031e41' }}>Teléfono</TableHead>
               <TableHead style={{ color: '#031e41' }}>Estado</TableHead>
+              <TableHead style={{ color: '#031e41' }}>Junio</TableHead>
+              <TableHead style={{ color: '#031e41' }}>Julio</TableHead>
+              <TableHead style={{ color: '#031e41' }}>Agosto</TableHead>
               <TableHead style={{ color: '#031e41' }}>Acciones</TableHead>
             </TableRow>
           </TableHeader>
@@ -384,6 +387,57 @@ export default function StudentsList() {
                     />
                   ) : (
                     student.estado
+                  )}
+                </TableCell>
+
+                <TableCell>
+                  {editingIndex === index ? (
+                    <Input
+                      value={editedStudent?.junio || ''}
+                      onChange={(e) =>
+                        setEditedStudent({
+                          ...editedStudent!,
+                          junio: e.target.value,
+                        })
+                      }
+                      className="w-full"
+                    />
+                  ) : (
+                    student.junio
+                  )}
+                </TableCell>
+
+                <TableCell>
+                  {editingIndex === index ? (
+                    <Input
+                      value={editedStudent?.julio || ''}
+                      onChange={(e) =>
+                        setEditedStudent({
+                          ...editedStudent!,
+                          julio: e.target.value,
+                        })
+                      }
+                      className="w-full"
+                    />
+                  ) : (
+                    student.julio
+                  )}
+                </TableCell>
+
+                <TableCell>
+                  {editingIndex === index ? (
+                    <Input
+                      value={editedStudent?.agosto || ''}
+                      onChange={(e) =>
+                        setEditedStudent({
+                          ...editedStudent!,
+                          agosto: e.target.value,
+                        })
+                      }
+                      className="w-full"
+                    />
+                  ) : (
+                    student.agosto
                   )}
                 </TableCell>
 
