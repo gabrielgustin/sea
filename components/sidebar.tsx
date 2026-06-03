@@ -32,7 +32,7 @@ export default function Sidebar() {
   return (
     <>
       {/* Desktop Sidebar - Fixed 10% width */}
-      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white z-40 flex-col items-center pt-[85px] pb-[100px] px-3 gap-6" style={{ borderRight: '2px solid #031e41' }}>
+      <aside className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white z-40 flex-col items-center pt-[178px] pb-[100px] px-3 gap-6" style={{ borderRight: '2px solid #031e41' }}>
         
         {/* Navigation Items - Top */}
         <nav className="flex flex-col gap-6 w-full">
