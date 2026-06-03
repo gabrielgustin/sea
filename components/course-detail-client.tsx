@@ -1,9 +1,72 @@
 'use client';
 
 import Image from 'next/image';
-import { Calendar, Clock, MapPin, DollarSign } from 'lucide-react';
+import { useState } from 'react';
+import { ChevronDown, ChevronUp, Linkedin } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
-export default function CourseDetailClient({ course }: { course: any }) {
+interface CourseTeacher {
+  name: string;
+  photo: string;
+  description: string;
+  linkedin?: string;
+}
+
+interface Course {
+  title: string;
+  subtitle: string;
+  image: string;
+  badge: string;
+  startDate: string;
+  enrollmentDeadline?: string;
+  modality: string;
+  slug: string;
+  description: string;
+  schedule: string;
+  location: string;
+  teacher: string;
+  teachers?: CourseTeacher[];
+  duration: string;
+  price: string;
+  objective: string;
+  modules: Array<{
+    number: string;
+    title: string;
+    topics: string[];
+  }>;
+  methodology: string;
+  finalProject: string;
+}
+
+export default function CourseDetailClient({ course }: { course: Course }) {
+  const [modulesExpanded, setModulesExpanded] = useState(false);
+  const [interestForm, setInterestForm] = useState({
+    nombre: '',
+    email: '',
+    telefono: '',
+  });
+  const [formSubmitted, setFormSubmitted] = useState(false);
+
+  // Verificar si la fecha límite de inscripción ha pasado
+  const isEnrollmentClosed = () => {
+    if (!course.enrollmentDeadline) return false;
+    const deadline = new Date(course.enrollmentDeadline);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    return today > deadline;
+  };
+
+  const enrollmentClosed = isEnrollmentClosed();
+
+  const handleInterestSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    // Aquí se enviaría el formulario a un backend
+    console.log('Formulario de interés enviado:', interestForm);
+    setFormSubmitted(true);
+    setTimeout(() => setFormSubmitted(false), 3000);
+  };
+
   return (
     <div className="w-full">
       {/* Hero Section with Image */}
@@ -47,40 +110,79 @@ export default function CourseDetailClient({ course }: { course: any }) {
               </p>
             </div>
 
-            {/* Program - Full Content */}
+            {/* Program - Collapsible Content */}
             <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-900 mb-4" style={{ color: '#031e41' }}>
-                Contenidos
-              </h2>
-              <div className="space-y-4">
-                {course.modules && course.modules.map((module: any, index: number) => (
-                  <div key={index} className="bg-white border-l-4 p-4 rounded-lg" style={{ borderColor: '#00a8cc' }}>
-                    <div className="flex items-start gap-3">
-                      <div 
-                        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-xs"
-                        style={{ backgroundColor: '#031e41' }}
-                      >
-                        {module.number}
-                      </div>
-                      <div className="flex-1">
-                        <h3 className="text-sm font-bold text-gray-900 mb-2">{module.title}</h3>
-                        <ul className="space-y-1">
-                          {module.topics && module.topics.map((topic: string, topicIndex: number) => (
-                            <li key={topicIndex} className="flex items-start gap-1 text-gray-600 text-xs">
-                              <span className="text-gray-400 flex-shrink-0">•</span>
-                              <span>{topic}</span>
-                            </li>
-                          ))}
-                        </ul>
+              <div className="flex items-center justify-between mb-4">
+                <h2 className="text-2xl font-bold text-gray-900" style={{ color: '#031e41' }}>
+                  Contenidos
+                </h2>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => setModulesExpanded(!modulesExpanded)}
+                  className="flex items-center gap-2 border-2 transition-all duration-300"
+                  style={{ borderColor: '#031e41', color: '#031e41' }}
+                >
+                  {modulesExpanded ? (
+                    <>
+                      <span className="text-sm font-medium">Ocultar Unidades</span>
+                      <ChevronUp size={18} />
+                    </>
+                  ) : (
+                    <>
+                      <span className="text-sm font-medium">Ver Unidades ({course.modules?.length || 0})</span>
+                      <ChevronDown size={18} />
+                    </>
+                  )}
+                </Button>
+              </div>
+
+              {/* Collapsible Modules */}
+              <div 
+                className={`overflow-hidden transition-all duration-500 ease-in-out ${
+                  modulesExpanded ? 'max-h-[2000px] opacity-100' : 'max-h-0 opacity-0'
+                }`}
+              >
+                <div className="space-y-4">
+                  {course.modules && course.modules.map((module: any, index: number) => (
+                    <div key={index} className="bg-white border-l-4 p-4 rounded-lg" style={{ borderColor: '#00a8cc' }}>
+                      <div className="flex items-start gap-3">
+                        <div 
+                          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-xs"
+                          style={{ backgroundColor: '#031e41' }}
+                        >
+                          {module.number}
+                        </div>
+                        <div className="flex-1">
+                          <h3 className="text-sm font-bold text-gray-900 mb-2">{module.title}</h3>
+                          <ul className="space-y-1">
+                            {module.topics && module.topics.map((topic: string, topicIndex: number) => (
+                              <li key={topicIndex} className="flex items-start gap-1 text-gray-600 text-xs">
+                                <span className="text-gray-400 flex-shrink-0">•</span>
+                                <span>{topic}</span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
+
+              {/* Preview when collapsed */}
+              {!modulesExpanded && course.modules && course.modules.length > 0 && (
+                <div className="bg-gray-50 rounded-lg p-4 border border-gray-200">
+                  <p className="text-sm text-gray-600">
+                    Este curso incluye <span className="font-bold" style={{ color: '#031e41' }}>{course.modules.length} unidades</span> de contenido. 
+                    Haz clic en el botón de arriba para ver el programa completo.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Methodology & Final Project - Side by side */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
               <div>
                 <h3 className="text-sm font-bold text-gray-900 mb-2" style={{ color: '#031e41' }}>
                   Metodología
@@ -98,6 +200,80 @@ export default function CourseDetailClient({ course }: { course: any }) {
                 </p>
               </div>
             </div>
+
+            {/* Teachers Section */}
+            {course.teachers && course.teachers.length > 0 && (
+              <div className="mb-8">
+                <div className="bg-white border border-gray-200 rounded-xl p-6">
+                  <h2 className="text-xl font-bold mb-6" style={{ color: '#031e41' }}>
+                    Docente/s:
+                  </h2>
+                  <div className="space-y-6">
+                    {course.teachers.map((teacher, index) => (
+                      <div key={index} className="flex items-start gap-4">
+                        {/* Teacher Photo */}
+                        <div className="relative w-20 h-20 rounded-full overflow-hidden flex-shrink-0 border-2 border-gray-200">
+                          <Image
+                            src={teacher.photo || '/placeholder-teacher.jpg'}
+                            alt={teacher.name}
+                            fill
+                            className="object-cover"
+                          />
+                        </div>
+                        
+                        {/* Teacher Info */}
+                        <div className="flex-1">
+                          <h3 className="text-lg font-bold text-gray-900">
+                            {teacher.name}
+                          </h3>
+                          <p className="text-sm text-gray-600 mt-1">
+                            {teacher.description}
+                          </p>
+                          
+                          {/* LinkedIn Link */}
+                          {teacher.linkedin && (
+                            <a
+                              href={teacher.linkedin}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-2 mt-3 text-sm font-semibold transition-colors hover:opacity-80"
+                              style={{ color: '#0077B5' }}
+                            >
+                              <Linkedin size={18} fill="#0077B5" />
+                              <span>MÁS INFO</span>
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Fallback: Show basic teacher info if no detailed teachers array */}
+            {(!course.teachers || course.teachers.length === 0) && course.teacher && (
+              <div className="mb-8">
+                <div className="bg-white border border-gray-200 rounded-xl p-6">
+                  <h2 className="text-xl font-bold mb-4" style={{ color: '#031e41' }}>
+                    Docente/s:
+                  </h2>
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0">
+                      <span className="text-2xl font-bold text-gray-500">
+                        {course.teacher.charAt(0)}
+                      </span>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold text-gray-900">
+                        {course.teacher}
+                      </h3>
+                      <p className="text-sm text-gray-600">Docente del curso</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {/* Right Column - Info Box */}
@@ -133,13 +309,79 @@ export default function CourseDetailClient({ course }: { course: any }) {
                 <p className="text-lg font-bold" style={{ color: '#031e41' }}>{course.price}</p>
               </div>
 
-              {/* Registration Button */}
-              <button 
-                className="w-full py-2 rounded-lg font-bold text-white text-sm transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
-                style={{ backgroundColor: '#031e41' }}
-              >
-                Solicitar Inscripción
-              </button>
+              {/* Registration Button or Interest Form */}
+              {!enrollmentClosed ? (
+                <button 
+                  className="w-full py-2 rounded-lg font-bold text-white text-sm transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
+                  style={{ backgroundColor: '#031e41' }}
+                >
+                  Solicitar Inscripción
+                </button>
+              ) : (
+                <div className="space-y-4">
+                  <div>
+                    <h3 className="text-lg font-bold mb-2" style={{ color: '#0077B5' }}>
+                      Me interesa esta formación:
+                    </h3>
+                    <p className="text-sm text-gray-600 mb-4">
+                      Dejanos tus datos y te contactaremos cuando se abra una nueva edición de esta formación con toda la información relacionada
+                    </p>
+                  </div>
+                  
+                  {formSubmitted ? (
+                    <div className="bg-green-50 border border-green-200 rounded-lg p-4 text-center">
+                      <p className="text-green-700 font-medium">Gracias por tu interés. Te contactaremos pronto.</p>
+                    </div>
+                  ) : (
+                    <form onSubmit={handleInterestSubmit} className="space-y-3">
+                      <Input
+                        type="text"
+                        placeholder="Nombre y Apellido"
+                        value={interestForm.nombre}
+                        onChange={(e) => setInterestForm({ ...interestForm, nombre: e.target.value })}
+                        required
+                        className="w-full border-gray-300 rounded-lg"
+                      />
+                      <Input
+                        type="email"
+                        placeholder="Email"
+                        value={interestForm.email}
+                        onChange={(e) => setInterestForm({ ...interestForm, email: e.target.value })}
+                        required
+                        className="w-full border-gray-300 rounded-lg"
+                      />
+                      <Input
+                        type="tel"
+                        placeholder="Teléfono"
+                        value={interestForm.telefono}
+                        onChange={(e) => setInterestForm({ ...interestForm, telefono: e.target.value })}
+                        required
+                        className="w-full border-gray-300 rounded-lg"
+                      />
+                      <button 
+                        type="submit"
+                        className="w-full py-2 rounded-lg font-bold text-white text-sm transition-all duration-300 hover:shadow-lg"
+                        style={{ backgroundColor: '#0077B5' }}
+                      >
+                        Enviar
+                      </button>
+                    </form>
+                  )}
+                </div>
+              )}
+
+              {/* Enrollment Deadline Notice */}
+              {course.enrollmentDeadline && !enrollmentClosed && (
+                <div className="pt-2">
+                  <p className="text-xs text-gray-500 text-center">
+                    Inscripciones hasta el {new Date(course.enrollmentDeadline).toLocaleDateString('es-AR', { 
+                      day: 'numeric', 
+                      month: 'long', 
+                      year: 'numeric' 
+                    })}
+                  </p>
+                </div>
+              )}
 
               {/* Contact Info */}
               <div className="pt-4 border-t" style={{ borderColor: '#e5e5e5' }}>

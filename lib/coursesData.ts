@@ -6,12 +6,21 @@ export const coursesData = [
     image: '/course-app-development.jpg',
     badge: 'EDUCACIÓN PRESENCIAL',
     startDate: 'Lun 1/06/2026',
+    enrollmentDeadline: '2026-05-25',
     modality: 'Presencial',
     slug: 'desarrollo-de-aplicaciones',
     description: 'El programa de Desarrollo de Aplicaciones en Python con Tkinter está diseñado para introducir al estudiante en las bases de la programación estructurada y la creación de software con entorno visual. A través de un enfoque metodológico, el alumno transitará desde la conceptualización lógica de un algoritmo hasta el despliegue de aplicaciones de escritorio funcionales e interactivas, utilizando el lenguaje de programación más demandado del mercado actual.',
     schedule: 'Lunes: 16:30 a 18:00',
     location: 'ITS Villada, Valle Escondido',
     teacher: 'Gabriel Muñoz',
+    teachers: [
+      {
+        name: 'Ing. Gabriel Muñoz',
+        photo: '/teachers/gabriel-munoz.jpg',
+        description: 'Ingeniero en Sistemas de Información, especializado en desarrollo de software y educación tecnológica. Más de 10 años de experiencia en la industria.',
+        linkedin: 'https://linkedin.com/in/gabrielmunoz'
+      }
+    ],
     duration: '6 meses',
     price: '$35.000/mes',
     objective: 'Formar a los estudiantes en los fundamentos de la programación, desarrollando habilidades para crear aplicaciones funcionales utilizando Python, incluyendo interfaces gráficas.',
@@ -52,12 +61,21 @@ export const coursesData = [
     image: '/course-game-development.jpg',
     badge: 'EDUCACIÓN PRESENCIAL',
     startDate: 'Jue 4/06/2026',
+    enrollmentDeadline: '2026-05-28',
     modality: 'Presencial',
     slug: 'desarrollo-de-videojuegos',
     description: 'El curso de Diseño y Desarrollo de Videojuegos ofrece una formación integral en las dinámicas fundamentales de la industria del entretenimiento digital. Utilizando Unity, el motor de desarrollo líder del mercado profesional a nivel global, los estudiantes aprenderán a estructurar las reglas, mecánicas y estéticas que componen un videojuego. El programa guía al alumno desde la conceptualización de ideas hasta la programación e implementación de entornos interactivos utilizando estándares profesionales.',
     schedule: 'Jueves: 16:30 a 18:00',
     location: 'ITS Villada, Valle Escondido',
     teacher: 'Gabriel Muñoz',
+    teachers: [
+      {
+        name: 'Ing. Gabriel Muñoz',
+        photo: '/teachers/gabriel-munoz.jpg',
+        description: 'Ingeniero en Sistemas de Información, desarrollador de videojuegos con experiencia en Unity y Unreal Engine. Apasionado por la educación en tecnologías interactivas.',
+        linkedin: 'https://linkedin.com/in/gabrielmunoz'
+      }
+    ],
     duration: '6 meses',
     price: '$35.000/mes',
     objective: 'Que los alumnos desarrollen videojuegos completos mientras adquieren habilidades de lógica y pensamiento computacional utilizando herramientas modernas.',
@@ -98,12 +116,21 @@ export const coursesData = [
     image: '/course-3d-design.jpg',
     badge: 'EDUCACIÓN PRESENCIAL',
     startDate: 'Mar 3/06/2026',
+    enrollmentDeadline: '2026-05-27',
     modality: 'Presencial',
     slug: 'diseno-impresion-3d',
     description: 'El curso de Diseño e Impresión 3D capacita al estudiante en las tecnologías de fabricación aditiva, un pilar fundamental de la industria 4.0. A lo largo del programa, se profundiza en todo el flujo de trabajo digital: desde la concepción geométrica de una pieza en un software de modelado paramétrico hasta su materialización física mediante la calibración precisa de maquinaria de impresión.',
     schedule: 'Martes: 16:30 a 18:00',
     location: 'ITS Villada, Valle Escondido',
     teacher: 'Santiago Henderson',
+    teachers: [
+      {
+        name: 'Ing. Sebastian Oliva',
+        photo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Captura%20de%20pantalla%202026-06-03%20a%20la%28s%29%208.30.11%E2%80%AFp.%C2%A0m.-PzJCMRhGgSIk1kgsydHeqjFh9t6mUs.png',
+        description: 'Ingeniero en Sistema de la Información, Profesor de la UTN-FRC, Esp. Ingeniería Gerencial',
+        linkedin: 'https://linkedin.com/in/sebastianoliva'
+      }
+    ],
     duration: '6 meses',
     price: '$35.000/mes',
     objective: 'Capacitar a los estudiantes en el diseño de modelos tridimensionales y su fabricación mediante impresión 3D.',
@@ -144,12 +171,21 @@ export const coursesData = [
     image: '/course-automotive.jpg',
     badge: 'EDUCACIÓN PRESENCIAL',
     startDate: 'Mar 3/06/2026',
+    enrollmentDeadline: '2026-05-27',
     modality: 'Presencial',
     slug: 'mecanica-de-motores',
     description: 'El trayecto formativo en Mecánica Automotriz brinda los conocimientos teóricos y prácticos indispensables para comprender el funcionamiento integral de los vehículos modernos. El programa aborda de manera rigurosa desde los principios termodinámicos de los motores de combustión interna hasta el diagnóstico técnico y la reparación de los sistemas de seguridad y transmisión automotriz.',
     schedule: 'Martes: 16:30 a 18:00',
     location: 'ITS Villada, Valle Escondido',
     teacher: 'Kevin Altamirano',
+    teachers: [
+      {
+        name: 'Téc. Kevin Altamirano',
+        photo: '/teachers/kevin-altamirano.jpg',
+        description: 'Técnico Superior en Mecánica Automotriz, especialista en diagnóstico y reparación de motores. Más de 15 años de experiencia en el rubro automotriz.',
+        linkedin: 'https://linkedin.com/in/kevinaltamirano'
+      }
+    ],
     duration: '6 meses',
     price: '$35.000/mes',
     objective: 'Brindar conocimientos técnicos sobre el funcionamiento, mantenimiento y reparación de motores y sistemas automotrices.',

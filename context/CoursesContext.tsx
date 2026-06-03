@@ -3,6 +3,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { coursesData } from '@/lib/coursesData';
 
+export interface CourseTeacher {
+  name: string;
+  photo: string;
+  description: string;
+  linkedin?: string;
+}
+
 export interface Course {
   id: number;
   title: string;
@@ -10,12 +17,14 @@ export interface Course {
   image: string;
   badge: string;
   startDate: string;
+  enrollmentDeadline?: string; // Fecha límite para inscripciones (formato: YYYY-MM-DD)
   modality: string;
   slug: string;
   description: string;
   schedule: string;
   location: string;
   teacher: string;
+  teachers?: CourseTeacher[]; // Array de docentes con info detallada
   duration: string;
   price: string;
   objective: string;
