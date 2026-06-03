@@ -109,8 +109,8 @@ export default function Sidebar() {
       {/* Mobile Hamburger Button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed left-0 top-0 z-50 p-4 hover:bg-gray-100 bg-white transition-colors duration-200"
-        style={{ borderRight: '2px solid #031e41', borderBottom: '2px solid #031e41' }}
+        className="md:hidden fixed left-4 top-4 z-50 p-3 rounded-xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
+        style={{ border: '2px solid #031e41' }}
         aria-label="Toggle sidebar"
       >
         {isOpen ? (
