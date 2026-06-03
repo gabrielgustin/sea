@@ -20,19 +20,15 @@ export default function Header() {
             />
           </Link>
 
-          {/* Center - Title and Logo for mobile */}
-          <Link href="/" className="md:hidden flex-1 flex items-center justify-center gap-3 cursor-pointer hover:opacity-80 transition-opacity pl-12">
+          {/* Center - Logo for mobile */}
+          <Link href="/" className="md:hidden flex-1 flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity pl-12">
             <Image 
               src="/logo-sea.png" 
               alt="SEA Logo"
-              width={40}
-              height={40}
-              className="h-10 w-auto object-contain"
+              width={56}
+              height={56}
+              className="h-14 w-auto object-contain"
             />
-            <div className="flex flex-col">
-              <span className="font-bold text-sm tracking-wide" style={{ color: '#031e41' }}>Portal SEA</span>
-              <span className="text-xs font-medium" style={{ color: '#617587' }}>Extension Académica</span>
-            </div>
           </Link>
 
           {/* Right Side - Logos Desktop */}
