@@ -7,8 +7,9 @@ export type UserRole = 'student' | 'admin' | null;
 interface AuthContextType {
   isAuthenticated: boolean;
   userRole: UserRole;
+  selectedRole: 'student' | 'admin';
+  setSelectedRole: (role: 'student' | 'admin') => void;
   login: (username: string, password: string) => boolean;
-  setUserRole: (role: UserRole) => void;
   logout: () => void;
 }
 
@@ -17,8 +18,8 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<UserRole>(null);
+  const [selectedRole, setSelectedRole] = useState<'student' | 'admin'>('admin');
 
-  // Initialize from localStorage on mount
   useEffect(() => {
     const savedAuth = localStorage.getItem('userAuth');
     const savedRole = localStorage.getItem('userRole') as UserRole;
@@ -29,22 +30,25 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const login = (username: string, password: string): boolean => {
-    // Simple hardcoded credentials for demo
-    if (username === 'admin' && password === 'admin') {
-      setIsAuthenticated(true);
-      localStorage.setItem('userAuth', 'true');
-      return true;
+    // Validar credenciales basadas en el rol seleccionado
+    if (selectedRole === 'admin') {
+      if (username === 'admin' && password === 'admin') {
+        setIsAuthenticated(true);
+        setUserRole('admin');
+        localStorage.setItem('userAuth', 'true');
+        localStorage.setItem('userRole', 'admin');
+        return true;
+      }
+    } else if (selectedRole === 'student') {
+      if (username === 'alumno' && password === 'alumno') {
+        setIsAuthenticated(true);
+        setUserRole('student');
+        localStorage.setItem('userAuth', 'true');
+        localStorage.setItem('userRole', 'student');
+        return true;
+      }
     }
     return false;
-  };
-
-  const setRole = (role: UserRole) => {
-    setUserRole(role);
-    if (role) {
-      localStorage.setItem('userRole', role);
-    } else {
-      localStorage.removeItem('userRole');
-    }
   };
 
   const logout = () => {
@@ -55,7 +59,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userRole, login, setUserRole: setRole, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, userRole, selectedRole, setSelectedRole, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

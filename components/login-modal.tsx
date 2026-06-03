@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import RoleSelectorModal from './role-selector-modal';
+import { Users, Shield } from 'lucide-react';
 
 interface LoginModalProps {
   open: boolean;
@@ -18,8 +18,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const [showRoleSelector, setShowRoleSelector] = useState(false);
-  const { login } = useAuth();
+  const { login, selectedRole, setSelectedRole } = useAuth();
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -34,23 +33,68 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
     if (success) {
       setUsername('');
       setPassword('');
-      setShowRoleSelector(true);
       onLoginSuccess?.();
+      
+      // Redirigir según el rol
+      if (selectedRole === 'admin') {
+        window.location.href = '/admin';
+      } else {
+        window.location.href = '/aula-virtual';
+      }
+      onOpenChange(false);
     } else {
-      setError('Usuario o contraseña incorrectos');
+      const credentialHint = selectedRole === 'admin' 
+        ? 'admin / admin' 
+        : 'alumno / alumno';
+      setError(`Credenciales incorrectas. Intenta con: ${credentialHint}`);
     }
   };
 
   return (
-    <>
-      <Dialog open={open && !showRoleSelector} onOpenChange={onOpenChange}>
-        <DialogContent className="sm:max-w-md">
-          <DialogHeader>
-            <DialogTitle>Iniciar Sesión</DialogTitle>
-            <DialogDescription>
-              Ingresa tus credenciales para acceder al sistema
-            </DialogDescription>
-          </DialogHeader>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-md">
+        <DialogHeader>
+          <DialogTitle>Iniciar Sesión</DialogTitle>
+          <DialogDescription>
+            Selecciona tu tipo de cuenta e ingresa tus credenciales
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-4">
+          {/* Role Selector Toggle */}
+          <div className="flex gap-3">
+            <button
+              onClick={() => setSelectedRole('admin')}
+              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all ${
+                selectedRole === 'admin'
+                  ? 'border-blue-900 bg-blue-50'
+                  : 'border-gray-200 bg-white hover:border-gray-300'
+              }`}
+              style={{
+                borderColor: selectedRole === 'admin' ? '#031e41' : undefined,
+                backgroundColor: selectedRole === 'admin' ? 'rgba(3, 30, 65, 0.05)' : undefined,
+              }}
+            >
+              <Shield size={20} style={{ color: '#031e41' }} />
+              <span className="font-semibold" style={{ color: '#031e41' }}>Administrador</span>
+            </button>
+
+            <button
+              onClick={() => setSelectedRole('student')}
+              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all ${
+                selectedRole === 'student'
+                  ? 'border-blue-900 bg-blue-50'
+                  : 'border-gray-200 bg-white hover:border-gray-300'
+              }`}
+              style={{
+                borderColor: selectedRole === 'student' ? '#031e41' : undefined,
+                backgroundColor: selectedRole === 'student' ? 'rgba(3, 30, 65, 0.05)' : undefined,
+              }}
+            >
+              <Users size={20} style={{ color: '#031e41' }} />
+              <span className="font-semibold" style={{ color: '#031e41' }}>Alumno</span>
+            </button>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
@@ -58,7 +102,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
               <Input
                 id="username"
                 type="text"
-                placeholder="admin"
+                placeholder={selectedRole === 'admin' ? 'admin' : 'alumno'}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="transition-smooth"
@@ -100,24 +144,9 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
                 Ingresar
               </Button>
             </div>
-
-            <div className="text-xs text-gray-500 text-center pt-2">
-              <p>Credenciales de demo: admin / admin</p>
-            </div>
           </form>
-        </DialogContent>
-      </Dialog>
-
-      <RoleSelectorModal 
-        open={showRoleSelector} 
-        onOpenChange={(isOpen) => {
-          setShowRoleSelector(isOpen);
-          if (!isOpen) {
-            // When role selector closes, also close login modal
-            onOpenChange(false);
-          }
-        }}
-      />
-    </>
+        </div>
+      </DialogContent>
+    </Dialog>
   );
 }
