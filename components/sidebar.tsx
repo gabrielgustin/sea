@@ -199,9 +199,9 @@ export default function Sidebar() {
             className="flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group"
           >
             {isAuthenticated ? (
-              <LogOut size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+              <LogOut size={32} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
             ) : (
-              <LogIn size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+              <LogIn size={32} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
             )}
             <span className="text-sm font-medium">{isAuthenticated ? 'Cerrar sesión' : 'Iniciar sesión'}</span>
           </button>
@@ -213,7 +213,7 @@ export default function Sidebar() {
               className={`flex items-center justify-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 text-foreground rounded group ${showLoginAnimation ? 'animate-slide-down-bounce' : ''}`}
               onClick={() => setIsOpen(false)}
             >
-              <Settings size={20} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+              <Settings size={32} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
               <span className="text-sm font-medium">Admin</span>
             </Link>
           )}
