@@ -18,35 +18,50 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   const { login, selectedRole, setSelectedRole } = useAuth();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
+    setLoading(true);
 
     if (!username || !password) {
       setError('Por favor completa todos los campos');
+      setLoading(false);
       return;
     }
 
-    const success = login(username, password);
-    if (success) {
-      setUsername('');
-      setPassword('');
-      onLoginSuccess?.();
+    try {
+      const result = await login(username, password);
       
-      // Redirigir según el rol
-      if (selectedRole === 'admin') {
-        window.location.href = '/admin';
+      if (result.success) {
+        setUsername('');
+        setPassword('');
+        onLoginSuccess?.();
+        
+        // Redirigir según el resultado
+        if (result.redirectUrl) {
+          // Si es URL externa, usar window.location.href
+          if (result.redirectUrl.startsWith('http')) {
+            window.location.href = result.redirectUrl;
+          } else {
+            // Si es ruta interna, también usar window.location.href para mejor compatibilidad
+            window.location.href = result.redirectUrl;
+          }
+        }
+        onOpenChange(false);
       } else {
-        window.location.href = '/aula-virtual';
+        const credentialHint = selectedRole === 'admin' 
+          ? 'admin / admin' 
+          : 'tu DNI (usuario y contraseña deben ser iguales)';
+        setError(result.error || `Credenciales incorrectas. Intenta con: ${credentialHint}`);
       }
-      onOpenChange(false);
-    } else {
-      const credentialHint = selectedRole === 'admin' 
-        ? 'admin / admin' 
-        : 'alumno / alumno';
-      setError(`Credenciales incorrectas. Intenta con: ${credentialHint}`);
+    } catch (err) {
+      setError('Error al procesar el login. Intenta de nuevo.');
+      console.error('[v0] Login error:', err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -102,7 +117,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
               <Input
                 id="username"
                 type="text"
-                placeholder={selectedRole === 'admin' ? 'admin' : 'alumno'}
+                placeholder={selectedRole === 'admin' ? 'admin' : 'Tu DNI'}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="transition-smooth"
@@ -114,11 +129,16 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
               <Input
                 id="password"
                 type="password"
-                placeholder="••••••••"
+                placeholder={selectedRole === 'admin' ? '••••••••' : 'Tu DNI'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="transition-smooth"
               />
+              {selectedRole === 'student' && (
+                <p className="text-xs text-gray-500 mt-1">
+                  Para alumnos: usuario y contraseña deben ser tu DNI
+                </p>
+              )}
             </div>
 
             {error && (
@@ -133,6 +153,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 className="flex-1"
+                disabled={loading}
               >
                 Cancelar
               </Button>
@@ -140,8 +161,9 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
                 type="submit"
                 className="flex-1 text-white"
                 style={{ backgroundColor: '#031e41' }}
+                disabled={loading}
               >
-                Ingresar
+                {loading ? 'Validando...' : 'Ingresar'}
               </Button>
             </div>
           </form>
