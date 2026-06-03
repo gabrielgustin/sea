@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
@@ -20,6 +20,15 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login, selectedRole, setSelectedRole } = useAuth();
+
+  // Resetear los campos cuando el modal se cierra/abre
+  useEffect(() => {
+    if (open) {
+      setUsername('');
+      setPassword('');
+      setError('');
+    }
+  }, [open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
