@@ -112,12 +112,15 @@ export default function HeroCarousel() {
 
               {/* Contenido */}
               <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 w-full h-full flex flex-col justify-between py-20">
-                {/* Título y descripción - Centrado */}
+                {/* Título */}
                 <div className="flex flex-col items-start justify-center">
-                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl mb-6 text-balance animate-slide-up" style={{ animationDelay: '0.1s' }}>
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl text-balance animate-slide-up" style={{ animationDelay: '0.1s' }}>
                     {slide.title}
                   </h1>
+                </div>
 
+                {/* Información del curso y CTA Button */}
+                <div className="flex flex-col gap-6">
                   {/* Información del curso */}
                   <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-white text-sm md:text-base border-l-2 border-l-white pl-6 md:pl-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
                     <div>
@@ -133,16 +136,16 @@ export default function HeroCarousel() {
                       <p className="font-semibold">{slide.duration}</p>
                     </div>
                   </div>
-                </div>
 
-                {/* CTA Button */}
-                <div className="flex justify-start animate-slide-up" style={{ animationDelay: '0.3s' }}>
-                  <Link
-                    href={`/cursos/${slide.redirectSlug}`}
-                    className="px-8 py-3 rounded-lg font-bold text-white transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 active:scale-95 bg-transparent border-none"
-                  >
-                    Ver más →
-                  </Link>
+                  {/* CTA Button */}
+                  <div className="flex justify-start animate-slide-up" style={{ animationDelay: '0.3s' }}>
+                    <Link
+                      href={`/cursos/${slide.redirectSlug}`}
+                      className="px-8 py-3 rounded-lg font-bold text-white transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 active:scale-95 bg-transparent border-none"
+                    >
+                      Ver más →
+                    </Link>
+                  </div>
                 </div>
               </div>
             </div>
