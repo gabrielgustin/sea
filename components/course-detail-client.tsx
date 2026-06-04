@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronDown, ChevronUp, Linkedin, MessageCircle } from 'lucide-react';
+import { ChevronDown, ChevronUp, Linkedin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -261,10 +261,12 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                                 href={`https://wa.me/${teacher.whatsapp}?text=${encodeURIComponent('Hola profe!')}`}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="transition-colors hover:opacity-70"
+                                className="transition-all duration-300 hover:scale-110 hover:drop-shadow-lg"
                                 title="Contactar por WhatsApp"
                               >
-                                <MessageCircle size={20} style={{ color: '#25D366' }} fill="#25D366" />
+                                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                  <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.67-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.076 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421-7.403h-.004c-2.759 0-5.02 2.25-5.02 5.005 0 .991.314 1.908.88 2.68l-1.386 4.06 4.208-1.382c.79.471 1.699.725 2.646.725 2.755 0 5.01-2.25 5.01-5.005 0-2.754-2.255-5.004-5.01-5.004m6.556-3.436c-2.832-2.834-7.42-3.056-10.497-.627-1.595 1.27-2.613 3.04-2.775 4.984-.18 2.179.264 4.315 1.295 6.142l-1.372 4.029 4.224-1.39c1.85.99 3.99 1.511 6.165 1.511 7.153 0 12.977-5.816 12.977-12.969 0-3.464-1.356-6.716-3.817-9.17" fill="#25D366"/>
+                                </svg>
                               </a>
                             )}
                           </div>
