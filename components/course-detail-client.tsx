@@ -334,15 +334,11 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                     Inscribirme
                   </button>
 
-                  {/* Enrollment Deadline Notice */}
-                  {course.enrollmentDeadline && (
+                  {/* Course Start Date Notice */}
+                  {course.startDate && (
                     <div className="pt-2">
                       <p className="text-xs text-gray-500 text-center">
-                        Inscripciones hasta el {new Date(course.enrollmentDeadline).toLocaleDateString('es-AR', { 
-                          day: 'numeric', 
-                          month: 'long', 
-                          year: 'numeric' 
-                        })}
+                        El curso comienza el {course.startDate}
                       </p>
                     </div>
                   )}
