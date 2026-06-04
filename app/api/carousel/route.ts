@@ -20,13 +20,13 @@ let carouselSlides: CarouselSlide[] = [
     startDate: '27 de junio, 2026',
     duration: '40 horas (10 encuentros)',
     modality: 'Modalidad Presencial',
-    image: '/carousel/robotics.png',
+    image: '/carousel/robotics-kids.png',
     redirectSlug: 'introduccion-robotica'
   },
   {
     id: '2',
-    title: 'Desarrollo de Aplicaciones Web Modernas',
-    description: 'Crea aplicaciones web profesionales con tecnología moderna',
+    title: 'Desarrollo de Aplicaciones',
+    description: 'Crea aplicaciones profesionales con tecnología moderna',
     startDate: '4 de junio, 2026',
     duration: '6 meses',
     modality: 'Educación Presencial',
