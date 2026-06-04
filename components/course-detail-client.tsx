@@ -245,11 +245,11 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                               href={teacher.linkedin}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="inline-flex items-center gap-2 mt-3 text-sm font-semibold transition-colors hover:opacity-80"
-                              style={{ color: '#0077B5' }}
+                              className="inline-flex items-center gap-1.5 mt-3 text-sm font-semibold transition-colors hover:opacity-80"
+                              style={{ color: '#9cbadb' }}
                             >
-                              <Linkedin size={18} fill="#0077B5" />
-                              <span>MÁS INFO</span>
+                              <Linkedin size={16} fill="#9cbadb" stroke="#031e41" strokeWidth={0.5} />
+                              <span style={{ color: '#031e41' }}>MÁS INFO</span>
                             </a>
                           )}
                         </div>
@@ -350,7 +350,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
               {courseHasStarted && (
                 <div className="space-y-4">
                   <div>
-                    <h3 className="text-lg font-bold mb-2" style={{ color: '#0077B5' }}>
+                    <h3 className="text-lg font-bold mb-2" style={{ color: '#031e41' }}>
                       Me interesa esta formación:
                     </h3>
                     <p className="text-sm text-gray-600 mb-4">
@@ -391,7 +391,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                       <button 
                         type="submit"
                         className="w-full py-2 rounded-lg font-bold text-white text-sm transition-all duration-300 hover:shadow-lg"
-                        style={{ backgroundColor: '#0077B5' }}
+                        style={{ backgroundColor: '#031e41' }}
                       >
                         Enviar
                       </button>
