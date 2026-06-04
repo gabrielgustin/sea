@@ -87,7 +87,7 @@ export default function HeroCarousel() {
   }
 
   return (
-    <div className="relative w-full h-screen overflow-hidden bg-black">
+    <div className="relative w-full" style={{ height: '65vh' }}>
       {/* Carrusel Container */}
       <div ref={emblaRef} className="h-full w-full">
         <div className="flex h-full">

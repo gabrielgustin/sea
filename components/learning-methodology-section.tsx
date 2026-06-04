@@ -58,7 +58,7 @@ export default function LearningMethodologySection() {
   const handleDelta = useCallback((delta: number) => {
     if (!isLocked) return;
 
-    const sensitivity = 0.003;
+    const sensitivity = 0.0015;
     progressRef.current += delta * sensitivity;
 
     // Scroll hacia arriba y progreso <= 0: desbloquear
