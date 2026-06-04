@@ -11,7 +11,7 @@ export default function FormacionesPage() {
   return (
     <div className="w-full bg-white">
       {/* Hero Section */}
-      <section className="min-h-screen flex items-center justify-center px-4 py-20 md:py-0"
+      <section className="h-screen md:h-screen lg:min-h-[80vh] flex items-center justify-center px-4 py-16 md:py-0"
         style={{
           background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)'
         }}
@@ -45,7 +45,7 @@ export default function FormacionesPage() {
       </section>
 
       {/* Value Proposition */}
-      <section className="py-20 px-4 bg-gray-50">
+      <section className="py-16 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16" style={{ color: '#031e41' }}>
             ¿Por qué elegir Centro de Formaciones?
@@ -83,7 +83,7 @@ export default function FormacionesPage() {
       </section>
 
       {/* Services Grid */}
-      <section id="servicios" className="py-20 px-4">
+      <section id="servicios" className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-4" style={{ color: '#031e41' }}>
             Nuestros Servicios
@@ -153,7 +153,7 @@ export default function FormacionesPage() {
       </section>
 
       {/* Benefits for Institutions */}
-      <section className="py-20 px-4 bg-gradient-to-r from-blue-50 to-white">
+      <section className="py-16 px-4 bg-gradient-to-r from-blue-50 to-white">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16" style={{ color: '#031e41' }}>
             Beneficios para Instituciones
@@ -191,7 +191,7 @@ export default function FormacionesPage() {
       </section>
 
       {/* Process Section */}
-      <section className="py-20 px-4">
+      <section className="py-16 px-4">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl font-bold text-center mb-16" style={{ color: '#031e41' }}>
             Cómo Funciona
@@ -241,55 +241,8 @@ export default function FormacionesPage() {
         </div>
       </section>
 
-      {/* Testimonials */}
-      <section className="py-20 px-4 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl font-bold text-center mb-16" style={{ color: '#031e41' }}>
-            Lo que dicen nuestros partners
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            {[
-              {
-                quote: 'Centro de Formaciones ha transformado la forma en que ofrecemos extensión académica. Nuestros estudiantes y la comunidad valoran profundamente los programas.',
-                author: 'Directora, Instituto Educativo Valle Verde',
-                role: 'Córdoba, Argentina'
-              },
-              {
-                quote: 'La profesionalidad y dedicación del equipo es excepcional. Los programas están perfectamente alineados con nuestros valores institucionales.',
-                author: 'Rector, Colegio San Martín',
-                role: 'Mendoza, Argentina'
-              },
-              {
-                quote: 'Hemos visto crecimiento exponencial en participación comunitaria y generación de ingresos. Altamente recomendado.',
-                author: 'Coordinador Académico, Instituto Técnico Superior',
-                role: 'Córdoba, Argentina'
-              }
-            ].map((testimonial, idx) => (
-              <div key={idx} className="p-8 bg-white rounded-2xl shadow-md hover:shadow-lg transition-shadow">
-                <div className="flex gap-1 mb-4">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} style={{ color: '#9cbadb' }}>★</span>
-                  ))}
-                </div>
-                <p className="text-gray-700 mb-6 italic leading-relaxed">
-                  "{testimonial.quote}"
-                </p>
-                <div>
-                  <p className="font-bold" style={{ color: '#031e41' }}>
-                    {testimonial.author}
-                  </p>
-                  <p className="text-sm text-gray-600">
-                    {testimonial.role}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* CTA Section */}
-      <section id="contacto" className="py-20 px-4"
+      <section id="contacto" className="py-16 px-4"
         style={{
           background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)'
         }}
