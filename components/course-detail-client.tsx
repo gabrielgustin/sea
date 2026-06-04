@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronDown, ChevronUp, Linkedin } from 'lucide-react';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -254,7 +254,12 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                               className="transition-all duration-300 hover:scale-125 hover:drop-shadow-lg transform"
                               title="Ver perfil de LinkedIn"
                             >
-                              <Linkedin size={26} style={{ color: '#9cbadb' }} fill="#9cbadb" stroke="#031e41" strokeWidth={0.5} />
+                              <Image
+                                src="/linkedin.png"
+                                alt="LinkedIn"
+                                width={26}
+                                height={26}
+                              />
                             </a>
                           )}
                           {teacher.whatsapp && (
@@ -265,10 +270,12 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                               className="transition-all duration-300 hover:scale-125 hover:drop-shadow-lg transform"
                               title="Contactar por WhatsApp"
                             >
-                              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <circle cx="12" cy="12" r="10" fill="#25D366"/>
-                                <path d="M12 2C6.48 2 2 6.48 2 12c0 1.54.36 3 .97 4.29L2 22l6.29-.97C9.5 21.62 10.75 22 12 22c5.52 0 10-4.48 10-10S17.52 2 12 2zm0 18c-1.41 0-2.73-.35-3.88-.99l-.28-.15-2.89.44.44-2.89-.15-.28C3.35 14.73 3 13.41 3 12c0-4.97 4.03-9 9-9s9 4.03 9 9-4.03 9-9 9z" fill="white"/>
-                              </svg>
+                              <Image
+                                src="/whatsapp.png"
+                                alt="WhatsApp"
+                                width={26}
+                                height={26}
+                              />
                             </a>
                           )}
                         </div>
