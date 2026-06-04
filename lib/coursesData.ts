@@ -19,7 +19,7 @@ export const coursesData = [
         photo: '/teachers/gabriel-munoz.jpg',
         description: '',
         linkedin: 'https://www.linkedin.com/in/gabiagustin',
-        whatsapp: '5493512681910'
+        whatsapp: '5493516307002'
       }
     ],
     duration: '6 meses',
@@ -77,7 +77,7 @@ export const coursesData = [
         photo: '/teachers/jose-verino.jpg',
         description: '',
         linkedin: 'https://www.linkedin.com/in/jos%C3%A9-verino-3385b0212/',
-        whatsapp: ''
+        whatsapp: '5493541571482'
       }
     ],
     duration: '6 meses',
@@ -135,7 +135,7 @@ export const coursesData = [
         photo: '/teachers/santiago-henderson.jpg',
         description: '',
         linkedin: 'https://linkedin.com/in/santiago-henderson-779777180',
-        whatsapp: ''
+        whatsapp: '5493516702784'
       }
     ],
     duration: '6 meses',
@@ -193,7 +193,7 @@ export const coursesData = [
         photo: '/teachers/kevin-altamirano.jpg',
         description: '',
         linkedin: '',
-        whatsapp: ''
+        whatsapp: '5493517160340'
       }
     ],
     duration: '6 meses',
