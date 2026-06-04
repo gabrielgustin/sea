@@ -50,16 +50,23 @@ export default function CourseDetailClient({ course }: { course: Course }) {
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  // Verificar si la fecha límite de inscripción ha pasado
-  const isEnrollmentClosed = () => {
-    if (!course.enrollmentDeadline) return false;
-    const deadline = new Date(course.enrollmentDeadline);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    return today > deadline;
+  // Verificar si el curso ya ha comenzado
+  const hasCourseStarted = () => {
+    if (!course.startDate) return false;
+    // Parseando formato: "Mar 3/06/2026" o similar
+    try {
+      const datePart = course.startDate.split(' ').slice(1).join(' '); // "3/06/2026"
+      const [day, month, year] = datePart.split('/');
+      const courseStart = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      return today > courseStart;
+    } catch {
+      return false;
+    }
   };
 
-  const enrollmentClosed = isEnrollmentClosed();
+  const courseHasStarted = hasCourseStarted();
 
   const handleInterestSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -281,46 +288,66 @@ export default function CourseDetailClient({ course }: { course: Course }) {
           {/* Right Column - Info Box */}
           <div className="lg:col-span-1">
             <div className="sticky top-24 bg-white rounded-xl p-5 border-2 space-y-4" style={{ borderColor: '#031e41' }}>
-              {/* Start Date */}
-              <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
-                <p className="text-xs font-semibold text-gray-600 mb-1">Inicia</p>
-                <p className="text-sm font-bold text-gray-900">{course.startDate}</p>
-              </div>
+              
+              {/* Si el curso NO ha comenzado: mostrar información + botón Inscribirme */}
+              {!courseHasStarted && (
+                <>
+                  {/* Start Date */}
+                  <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
+                    <p className="text-xs font-semibold text-gray-600 mb-1">Inicia</p>
+                    <p className="text-sm font-bold text-gray-900">{course.startDate}</p>
+                  </div>
 
-              {/* Schedule */}
-              <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
-                <p className="text-xs font-semibold text-gray-600 mb-1">Horario</p>
-                <p className="text-sm text-gray-900">{course.schedule}</p>
-              </div>
+                  {/* Schedule */}
+                  <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
+                    <p className="text-xs font-semibold text-gray-600 mb-1">Horario</p>
+                    <p className="text-sm text-gray-900">{course.schedule}</p>
+                  </div>
 
-              {/* Location */}
-              <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
-                <p className="text-xs font-semibold text-gray-600 mb-1">Lugar</p>
-                <p className="text-sm text-gray-900">{course.location}</p>
-              </div>
+                  {/* Location */}
+                  <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
+                    <p className="text-xs font-semibold text-gray-600 mb-1">Lugar</p>
+                    <p className="text-sm text-gray-900">{course.location}</p>
+                  </div>
 
-              {/* Duration */}
-              <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
-                <p className="text-xs font-semibold text-gray-600 mb-1">Duración</p>
-                <p className="text-sm text-gray-900">{course.duration}</p>
-              </div>
+                  {/* Duration */}
+                  <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
+                    <p className="text-xs font-semibold text-gray-600 mb-1">Duración</p>
+                    <p className="text-sm text-gray-900">{course.duration}</p>
+                  </div>
 
-              {/* Price */}
-              <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
-                <p className="text-xs font-semibold text-gray-600 mb-1">Inversión</p>
-                <p className="text-lg font-bold" style={{ color: '#031e41' }}>{course.price}</p>
-              </div>
+                  {/* Price */}
+                  <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
+                    <p className="text-xs font-semibold text-gray-600 mb-1">Inversión</p>
+                    <p className="text-lg font-bold" style={{ color: '#031e41' }}>{course.price}</p>
+                  </div>
 
-              {/* Registration Button or Interest Form */}
-              {!enrollmentClosed ? (
-                <button 
-                  onClick={() => router.push(`/inscripcion/${course.slug}`)}
-                  className="w-full py-2 rounded-lg font-bold text-white text-sm transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
-                  style={{ backgroundColor: '#031e41' }}
-                >
-                  Inscribirme
-                </button>
-              ) : (
+                  {/* Registration Button */}
+                  <button 
+                    onClick={() => router.push(`/inscripcion/${course.slug}`)}
+                    className="w-full py-2 rounded-lg font-bold text-white text-sm transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
+                    style={{ backgroundColor: '#031e41' }}
+                  >
+                    Inscribirme
+                  </button>
+
+                  {/* Enrollment Deadline Notice */}
+                  {course.enrollmentDeadline && (
+                    <div className="pt-2">
+                      <p className="text-xs text-gray-500 text-center">
+                        Inscripciones hasta el {new Date(course.enrollmentDeadline).toLocaleDateString('es-AR', { 
+                          day: 'numeric', 
+                          month: 'long', 
+                          year: 'numeric' 
+                        })}
+                      </p>
+                    </div>
+                  )}
+                </>
+              )}
+
+              {/* Si el curso YA ha comenzado: mostrar solo el formulario de interés */}
+              {courseHasStarted && (
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-lg font-bold mb-2" style={{ color: '#0077B5' }}>
@@ -372,34 +399,6 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                   )}
                 </div>
               )}
-
-              {/* Enrollment Deadline Notice */}
-              {course.enrollmentDeadline && !enrollmentClosed && (
-                <div className="pt-2">
-                  <p className="text-xs text-gray-500 text-center">
-                    Inscripciones hasta el {new Date(course.enrollmentDeadline).toLocaleDateString('es-AR', { 
-                      day: 'numeric', 
-                      month: 'long', 
-                      year: 'numeric' 
-                    })}
-                  </p>
-                </div>
-              )}
-
-              {/* Contact Info */}
-              <div className="pt-4 border-t" style={{ borderColor: '#e5e5e5' }}>
-                <p className="text-xs font-semibold text-gray-600 mb-3">Información</p>
-                <div className="space-y-2">
-                  <div>
-                    <p className="text-xs text-gray-600">Teléfono</p>
-                    <p className="text-xs font-bold text-gray-900">+54 (0) 351 5986016</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-gray-600">Email</p>
-                    <p className="text-xs font-bold text-gray-900">contacto@extension.edu.ar</p>
-                  </div>
-                </div>
-              </div>
             </div>
           </div>
         </div>
