@@ -10,58 +10,17 @@ import Link from 'next/link';
 interface CarouselSlide {
   id: string;
   title: string;
-  badge: string;
+  description: string;
   image: string;
   startDate: string;
   duration: string;
   modality: string;
-  slug: string;
+  redirectSlug: string;
 }
 
-const slides: CarouselSlide[] = [
-  {
-    id: '1',
-    title: 'Introducción a la Robótica',
-    badge: 'FORMACIÓN',
-    image: '/carousel/robotics.png',
-    startDate: '27 de junio, 2026',
-    duration: '40 horas (10 encuentros)',
-    modality: 'Modalidad Presencial',
-    slug: 'introduccion-robotica'
-  },
-  {
-    id: '2',
-    title: 'Desarrollo de Aplicaciones Web Modernas',
-    badge: 'FORMACIÓN',
-    image: '/carousel/web-development.png',
-    startDate: '4 de junio, 2026',
-    duration: '6 meses',
-    modality: 'Educación Presencial',
-    slug: 'desarrollo-de-aplicaciones'
-  },
-  {
-    id: '3',
-    title: 'Diseño e Impresión 3D',
-    badge: 'FORMACIÓN',
-    image: '/carousel/3d-design.png',
-    startDate: '4 de junio, 2026',
-    duration: '6 meses',
-    modality: 'Educación Presencial',
-    slug: 'diseno-impresion-3d'
-  },
-  {
-    id: '4',
-    title: 'Desarrollo de Videojuegos',
-    badge: 'FORMACIÓN',
-    image: '/carousel/game-development.png',
-    startDate: '4 de junio, 2026',
-    duration: '6 meses',
-    modality: 'Educación Presencial',
-    slug: 'desarrollo-de-videojuegos'
-  }
-];
-
 export default function HeroCarousel() {
+  const [slides, setSlides] = useState<CarouselSlide[]>([]);
+  const [loading, setLoading] = useState(true);
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: 'start' },
     [Autoplay({ delay: 5000, stopOnInteraction: false })]
@@ -71,8 +30,25 @@ export default function HeroCarousel() {
   const [canScrollNext, setCanScrollNext] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
 
+  // Cargar slides desde API
   useEffect(() => {
-    if (!emblaApi) return;
+    const fetchSlides = async () => {
+      try {
+        const response = await fetch('/api/carousel');
+        const data = await response.json();
+        setSlides(data.slides || []);
+      } catch (error) {
+        console.error('Error fetching carousel slides:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSlides();
+  }, []);
+
+  useEffect(() => {
+    if (!emblaApi || slides.length === 0) return;
 
     const onSelect = () => {
       setCurrentSlide(emblaApi.selectedIndex);
@@ -86,13 +62,29 @@ export default function HeroCarousel() {
     return () => {
       emblaApi.off('select', onSelect);
     };
-  }, [emblaApi]);
+  }, [emblaApi, slides]);
 
   const scroll = (direction: 'prev' | 'next') => {
     if (emblaApi) {
       direction === 'prev' ? emblaApi.scrollPrev() : emblaApi.scrollNext();
     }
   };
+
+  if (loading) {
+    return (
+      <div className="relative w-full h-screen bg-gradient-to-b from-gray-800 to-black flex items-center justify-center">
+        <div className="text-white text-2xl">Cargando formaciones...</div>
+      </div>
+    );
+  }
+
+  if (slides.length === 0) {
+    return (
+      <div className="relative w-full h-screen bg-gradient-to-b from-gray-800 to-black flex items-center justify-center">
+        <div className="text-white text-2xl">Sin slides disponibles</div>
+      </div>
+    );
+  }
 
   return (
     <div className="relative w-full h-screen overflow-hidden bg-black">
@@ -127,7 +119,7 @@ export default function HeroCarousel() {
                   </h1>
 
                   {/* Información del curso */}
-                  <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-white text-sm md:text-base border-l-2 border-l-white pl-6 md:pl-8 animate-slide-up" style={{ animationDelay: '0.3s' }}>
+                  <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-white text-sm md:text-base border-l-2 border-l-white pl-6 md:pl-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
                     <div>
                       <p className="text-gray-300 text-xs md:text-sm uppercase tracking-wide mb-1">Modalidad</p>
                       <p className="font-semibold">{slide.modality}</p>
@@ -146,7 +138,7 @@ export default function HeroCarousel() {
                 {/* CTA Button */}
                 <div className="flex justify-start animate-slide-up" style={{ animationDelay: '0.3s' }}>
                   <Link
-                    href={`/cursos/${slide.slug}`}
+                    href={`/cursos/${slide.redirectSlug}`}
                     className="px-8 py-3 rounded-lg font-bold text-white transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 active:scale-95 bg-transparent border-none"
                   >
                     Ver más →
