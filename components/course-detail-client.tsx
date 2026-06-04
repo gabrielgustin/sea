@@ -89,14 +89,17 @@ export default function CourseDetailClient({ course }: { course: Course }) {
         />
         
         {/* Overlay with Badge */}
-        <div className="absolute inset-0 bg-black/30 flex flex-col justify-center items-start px-4 sm:px-6 lg:px-8">
-          <div className="max-w-6xl mx-auto w-full">
+        <div className="absolute inset-0 bg-black/30 flex flex-col justify-between px-4 sm:px-6 lg:px-8 py-6">
+          <div>
             <div 
-              className="inline-block px-6 py-3 rounded-full text-white font-bold text-sm md:text-base mb-6"
+              className="inline-block px-6 py-3 rounded-full text-white font-bold text-sm md:text-base"
               style={{ backgroundColor: '#031e41' }}
             >
               {course.badge}
             </div>
+          </div>
+          
+          <div className="flex flex-col justify-end items-start">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl">
               {course.title}
             </h1>
