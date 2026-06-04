@@ -11,7 +11,7 @@ export default function FormacionesRoute() {
   return (
     <div className="flex h-screen w-screen bg-white overflow-hidden">
       <Sidebar />
-      <div className="flex h-screen w-full md:w-[90%]">
+      <div className="flex h-screen w-full">
         <main className="w-full overflow-x-hidden overflow-y-auto">
           <Header />
           <FormacionesPage />
