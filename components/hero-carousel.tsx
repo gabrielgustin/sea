@@ -111,16 +111,14 @@ export default function HeroCarousel() {
               </div>
 
               {/* Contenido */}
-              <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 w-full h-full flex flex-col justify-between py-20">
-                {/* Título */}
-                <div className="flex flex-col items-start justify-center">
+              <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 w-full h-full flex flex-col justify-end pb-20">
+                {/* Título y información del curso */}
+                <div className="flex flex-col gap-4">
+                  {/* Título */}
                   <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl text-balance animate-slide-up" style={{ animationDelay: '0.1s' }}>
                     {slide.title}
                   </h1>
-                </div>
 
-                {/* Información del curso y CTA Button */}
-                <div className="flex flex-col gap-6">
                   {/* Información del curso */}
                   <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-white text-sm md:text-base border-l-2 border-l-white pl-6 md:pl-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
                     <div>
