@@ -1,4 +1,5 @@
 import { Sparkles } from 'lucide-react';
+import Link from 'next/link';
 
 export default function SpecialOfferSection() {
   return (
@@ -38,12 +39,14 @@ export default function SpecialOfferSection() {
       {/* Info Cards Section */}
       <div className="max-w-6xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Card 1 */}
-        <div className="p-8 rounded-2xl text-white text-center" style={{ backgroundColor: '#031e41' }}>
-          <h3 className="text-2xl md:text-3xl font-bold mb-4">Centro de Formaciones</h3>
-          <p className="text-base md:text-lg leading-relaxed">
-            Conocé las propuestas de formaciones que tiene la SEU para vos
-          </p>
-        </div>
+        <Link href="/formaciones">
+          <div className="p-8 rounded-2xl text-white text-center transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer" style={{ backgroundColor: '#031e41' }}>
+            <h3 className="text-2xl md:text-3xl font-bold mb-4">Centro de Formaciones</h3>
+            <p className="text-base md:text-lg leading-relaxed">
+              Conocé las propuestas de formaciones que tiene la SEU para vos
+            </p>
+          </div>
+        </Link>
 
         {/* Card 2 */}
         <div className="p-8 rounded-2xl text-white text-center" style={{ backgroundColor: '#031e41' }}>
