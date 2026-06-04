@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronDown, ChevronUp, Linkedin } from 'lucide-react';
+import { ChevronDown, ChevronUp, Linkedin, MessageCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
@@ -12,6 +12,7 @@ interface CourseTeacher {
   photo: string;
   description: string;
   linkedin?: string;
+  whatsapp?: string;
 }
 
 interface Course {
@@ -242,19 +243,31 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                             {teacher.description}
                           </p>
                           
-                          {/* LinkedIn Link */}
-                          {teacher.linkedin && (
-                            <a
-                              href={teacher.linkedin}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="inline-flex items-center gap-1.5 mt-3 text-sm font-semibold transition-colors hover:opacity-80"
-                              style={{ color: '#9cbadb' }}
-                            >
-                              <Linkedin size={16} fill="#9cbadb" stroke="#031e41" strokeWidth={0.5} />
-                              <span style={{ color: '#031e41' }}>MÁS INFO</span>
-                            </a>
-                          )}
+                          {/* Social Links - LinkedIn and WhatsApp Icons Only */}
+                          <div className="flex items-center gap-3 mt-3">
+                            {teacher.linkedin && (
+                              <a
+                                href={teacher.linkedin}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="transition-colors hover:opacity-70"
+                                title="Ver perfil de LinkedIn"
+                              >
+                                <Linkedin size={20} style={{ color: '#9cbadb' }} fill="#9cbadb" stroke="#031e41" strokeWidth={0.5} />
+                              </a>
+                            )}
+                            {teacher.whatsapp && (
+                              <a
+                                href={`https://wa.me/${teacher.whatsapp}?text=${encodeURIComponent('Hola profe!')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="transition-colors hover:opacity-70"
+                                title="Contactar por WhatsApp"
+                              >
+                                <MessageCircle size={20} style={{ color: '#25D366' }} fill="#25D366" />
+                              </a>
+                            )}
+                          </div>
                         </div>
                       </div>
                     ))}

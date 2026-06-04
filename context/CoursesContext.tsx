@@ -8,6 +8,7 @@ export interface CourseTeacher {
   photo: string;
   description: string;
   linkedin?: string;
+  whatsapp?: string;
 }
 
 export interface Course {

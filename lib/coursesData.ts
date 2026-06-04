@@ -18,7 +18,8 @@ export const coursesData = [
         name: 'Gabriel Muñoz',
         photo: '/teachers/gabriel-munoz.jpg',
         description: '',
-        linkedin: 'https://www.linkedin.com/in/gabiagustin'
+        linkedin: 'https://www.linkedin.com/in/gabiagustin',
+        whatsapp: '5493512681910'
       }
     ],
     duration: '6 meses',
@@ -75,7 +76,8 @@ export const coursesData = [
         name: 'Jose Verino',
         photo: '/teachers/jose-verino.jpg',
         description: '',
-        linkedin: 'https://www.linkedin.com/in/jos%C3%A9-verino-3385b0212/'
+        linkedin: 'https://www.linkedin.com/in/jos%C3%A9-verino-3385b0212/',
+        whatsapp: ''
       }
     ],
     duration: '6 meses',
@@ -132,7 +134,8 @@ export const coursesData = [
         name: 'Santiago Henderson',
         photo: '/teachers/santiago-henderson.jpg',
         description: '',
-        linkedin: 'https://linkedin.com/in/santiago-henderson-779777180'
+        linkedin: 'https://linkedin.com/in/santiago-henderson-779777180',
+        whatsapp: ''
       }
     ],
     duration: '6 meses',
@@ -189,7 +192,8 @@ export const coursesData = [
         name: 'Kevin Altamirano',
         photo: '/teachers/kevin-altamirano.jpg',
         description: '',
-        linkedin: ''
+        linkedin: '',
+        whatsapp: ''
       }
     ],
     duration: '6 meses',
