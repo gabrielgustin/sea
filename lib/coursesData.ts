@@ -15,10 +15,10 @@ export const coursesData = [
     teacher: 'Gabriel Muñoz',
     teachers: [
       {
-        name: 'Ing. Gabriel Muñoz',
+        name: 'Gabriel Muñoz',
         photo: '/teachers/gabriel-munoz.jpg',
-        description: 'Ingeniero en Sistemas de Información, especializado en desarrollo de software y educación tecnológica. Más de 10 años de experiencia en la industria.',
-        linkedin: 'https://linkedin.com/in/gabrielmunoz'
+        description: '',
+        linkedin: 'https://www.linkedin.com/in/gabiagustin'
       }
     ],
     duration: '6 meses',
@@ -74,8 +74,8 @@ export const coursesData = [
       {
         name: 'Jose Verino',
         photo: '/teachers/jose-verino.jpg',
-        description: 'Desarrollador de videojuegos con experiencia en Unity y herramientas de desarrollo modernas.',
-        linkedin: ''
+        description: '',
+        linkedin: 'https://www.linkedin.com/in/jos%C3%A9-verino-3385b0212/'
       }
     ],
     duration: '6 meses',
@@ -129,10 +129,10 @@ export const coursesData = [
     teacher: 'Santiago Henderson',
     teachers: [
       {
-        name: 'Ing. Sebastian Oliva',
-        photo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Captura%20de%20pantalla%202026-06-03%20a%20la%28s%29%208.30.11%E2%80%AFp.%C2%A0m.-PzJCMRhGgSIk1kgsydHeqjFh9t6mUs.png',
-        description: 'Ingeniero en Sistema de la Información, Profesor de la UTN-FRC, Esp. Ingeniería Gerencial',
-        linkedin: 'https://linkedin.com/in/sebastianoliva'
+        name: 'Santiago Henderson',
+        photo: '/teachers/santiago-henderson.jpg',
+        description: '',
+        linkedin: 'https://linkedin.com/in/santiago-henderson-779777180'
       }
     ],
     duration: '6 meses',
@@ -183,18 +183,12 @@ export const coursesData = [
     description: 'El trayecto formativo en Mecánica Automotriz brinda los conocimientos teóricos y prácticos indispensables para comprender el funcionamiento integral de los vehículos modernos. El programa aborda de manera rigurosa desde los principios termodinámicos de los motores de combustión interna hasta el diagnóstico técnico y la reparación de los sistemas de seguridad y transmisión automotriz.',
     schedule: 'Martes: 16:30 a 18:00',
     location: 'ITS Villada, Valle Escondido',
-    teacher: 'Kevin Altamirano, Santiago Donalisio',
+    teacher: 'Kevin Altamirano',
     teachers: [
       {
         name: 'Kevin Altamirano',
         photo: '/teachers/kevin-altamirano.jpg',
-        description: 'Especialista en mecánica automotriz con amplia experiencia en diagnóstico y reparación de motores.',
-        linkedin: ''
-      },
-      {
-        name: 'Santiago Donalisio',
-        photo: '/teachers/santiago-donalisio.jpg',
-        description: 'Técnico mecánico con experiencia en sistemas automotrices y mantenimiento preventivo.',
+        description: '',
         linkedin: ''
       }
     ],
