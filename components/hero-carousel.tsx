@@ -21,13 +21,13 @@ interface CarouselSlide {
 const slides: CarouselSlide[] = [
   {
     id: '1',
-    title: 'PLC Controladores lógicos programables – Nivel Avanzado',
+    title: 'Introducción a la Robótica',
     badge: 'FORMACIÓN',
-    image: '/carousel/plc-advanced.png',
+    image: '/carousel/robotics.png',
     startDate: '27 de junio, 2026',
     duration: '40 horas (10 encuentros)',
     modality: 'Modalidad Presencial',
-    slug: 'plc-avanzado'
+    slug: 'introduccion-robotica'
   },
   {
     id: '2',
@@ -120,22 +120,9 @@ export default function HeroCarousel() {
 
               {/* Contenido */}
               <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 w-full h-full flex flex-col justify-between py-20">
-                {/* Badge */}
-                <div className="flex justify-start">
-                  <div
-                    className="px-6 py-2 rounded-sm text-white font-bold text-sm md:text-base animate-fade-in"
-                    style={{ backgroundColor: '#031e41' }}
-                  >
-                    {slide.badge}
-                  </div>
-                </div>
-
                 {/* Título y descripción - Centrado */}
                 <div className="flex flex-col items-start justify-center">
-                  <div className="mb-4 text-sm md:text-base font-semibold text-gray-300 opacity-90 animate-slide-up" style={{ animationDelay: '0.1s' }}>
-                    CURSO
-                  </div>
-                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl mb-6 text-balance animate-slide-up" style={{ animationDelay: '0.2s' }}>
+                  <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl mb-6 text-balance animate-slide-up" style={{ animationDelay: '0.1s' }}>
                     {slide.title}
                   </h1>
 
@@ -157,11 +144,10 @@ export default function HeroCarousel() {
                 </div>
 
                 {/* CTA Button */}
-                <div className="flex justify-start animate-slide-up" style={{ animationDelay: '0.4s' }}>
+                <div className="flex justify-start animate-slide-up" style={{ animationDelay: '0.3s' }}>
                   <Link
                     href={`/cursos/${slide.slug}`}
-                    className="px-8 py-3 rounded-lg font-bold text-white transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-1 backdrop-blur-sm hover:scale-105 active:scale-95"
-                    style={{ backgroundColor: '#031e41' }}
+                    className="px-8 py-3 rounded-lg font-bold text-white transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 active:scale-95 bg-transparent border-none"
                   >
                     Ver más →
                   </Link>
@@ -173,23 +159,7 @@ export default function HeroCarousel() {
       </div>
 
       {/* Controles de navegación */}
-      <div className="absolute bottom-8 left-8 right-8 z-20 flex items-center justify-between">
-        {/* Indicadores de slides */}
-        <div className="flex gap-2">
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              className={`h-1 rounded-full transition-all duration-300 ${
-                index === currentSlide
-                  ? 'w-8 bg-white'
-                  : 'w-2 bg-white/40 hover:bg-white/70'
-              }`}
-              onClick={() => emblaApi?.scrollTo(index)}
-              title={`Ir a slide ${index + 1}`}
-            />
-          ))}
-        </div>
-
+      <div className="absolute bottom-8 right-8 z-20 flex items-center justify-end">
         {/* Botones de navegación */}
         <div className="flex gap-4">
           <button
@@ -209,11 +179,6 @@ export default function HeroCarousel() {
             <ChevronRight size={24} className="text-white" />
           </button>
         </div>
-      </div>
-
-      {/* Número de slide actual */}
-      <div className="absolute top-8 right-8 z-20 text-white/80 text-sm font-medium backdrop-blur-sm px-4 py-2 rounded-full bg-white/5">
-        {String(currentSlide + 1).padStart(2, '0')} / {String(slides.length).padStart(2, '0')}
       </div>
     </div>
   );
