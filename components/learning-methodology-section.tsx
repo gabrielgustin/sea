@@ -55,10 +55,17 @@ export default function LearningMethodologySection() {
     const handleScroll = () => {
       if (!sectionRef.current) return;
 
+      // Obtener el contenedor scrollable (main)
+      const scrollContainer = document.querySelector('main') || window;
+      const scrollTop = scrollContainer instanceof Window 
+        ? window.scrollY 
+        : (scrollContainer as HTMLElement).scrollTop;
+      
       const sectionTop = sectionRef.current.offsetTop;
       const sectionHeight = sectionRef.current.offsetHeight;
-      const windowHeight = window.innerHeight;
-      const scrollTop = window.scrollY;
+      const windowHeight = scrollContainer instanceof Window 
+        ? window.innerHeight 
+        : (scrollContainer as HTMLElement).clientHeight;
 
       // Calcular el progreso desde que se ve la sección hasta que se pasa completamente
       const sectionStart = sectionTop - windowHeight;
@@ -71,8 +78,16 @@ export default function LearningMethodologySection() {
       setScrollProgress(progress);
     };
 
+    // Obtener el contenedor scrollable
+    const scrollContainer = document.querySelector('main') || window;
+    
+    scrollContainer.addEventListener('scroll', handleScroll);
     window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
+    
+    return () => {
+      scrollContainer.removeEventListener('scroll', handleScroll);
+      window.removeEventListener('scroll', handleScroll);
+    };
   }, [isVisible]);
 
   return (
