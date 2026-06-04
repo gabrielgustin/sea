@@ -1,65 +1,13 @@
-import { google } from 'googleapis';
 import { NextRequest, NextResponse } from 'next/server';
 
-const sheets = google.sheets('v4');
-
-// Inicializar autenticación
-function getAuthClient() {
-  const email = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL;
-  const privateKey = process.env.GOOGLE_PRIVATE_KEY?.replace(/\\n/g, '\n');
-  const spreadsheetId = process.env.GOOGLE_SPREADSHEET_ID;
-
-  if (!email || !privateKey || !spreadsheetId) {
-    throw new Error('Missing Google Sheets credentials');
-  }
-
-  const auth = new google.auth.JWT({
-    email,
-    key: privateKey,
-    scopes: ['https://www.googleapis.com/auth/spreadsheets'],
-  });
-
-  return { auth, spreadsheetId };
-}
+// Almacenamiento simulado en memoria (en producción usar base de datos)
+let students: any[] = [];
 
 // GET: Obtener todos los estudiantes
 export async function GET() {
   try {
-    const { auth, spreadsheetId } = getAuthClient();
-
-    // Primero obtener las propiedades del spreadsheet para conocer los sheet names
-    const spreadsheetInfo = await sheets.spreadsheets.get({
-      auth,
-      spreadsheetId,
-    });
-
-    const sheetName = spreadsheetInfo.data.sheets?.[0]?.properties?.title || 'Sheet1';
-    console.log('[v0] Sheet name:', sheetName);
-
-    const response = await sheets.spreadsheets.values.get({
-      auth,
-      spreadsheetId,
-      range: `${sheetName}!A:J`, // Usar el nombre del primer sheet
-    });
-
-    const rows = response.data.values || [];
-    
-    // Headers están en la primera fila
-    const headers = rows[0] || [];
-    const students = rows.slice(1).map((row) => ({
-      fecha: row[0] || '',
-      curso: row[1] || '', // Cambiar de row[0] a row[1] para obtener el curso real
-      nombre: row[2] || '',
-      dni: row[3] || '', // Cambiar de row[1] a row[3]
-      email: row[4] || '', // Cambiar de row[3] a row[4]
-      telefono: row[5] || '', // Cambiar de row[4] a row[5]
-      estado: row[6] || '', // Cambiar de row[5] a row[6]
-      junio: row[7] || '',
-      julio: row[8] || '',
-      agosto: row[9] || '',
-    }));
-
-    return NextResponse.json({ students, headers });
+    // Retornar los estudiantes almacenados en memoria
+    return NextResponse.json({ students });
   } catch (error) {
     console.error('Error fetching students:', error);
     return NextResponse.json(
@@ -81,52 +29,10 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    const { auth, spreadsheetId } = getAuthClient();
-
-    // Obtener el nombre del sheet
-    const spreadsheetInfo = await sheets.spreadsheets.get({
-      auth,
-      spreadsheetId,
-    });
-    const sheetName = spreadsheetInfo.data.sheets?.[0]?.properties?.title || 'Sheet1';
-
-    // Obtener todos los datos primero
-    const response = await sheets.spreadsheets.values.get({
-      auth,
-      spreadsheetId,
-      range: `${sheetName}!A:J`,
-    });
-
-    const rows = response.data.values || [];
-    const rowIndex = studentIndex + 2; // +1 por header, +1 por índice 0
-
-    // Preparar los valores actualizados
-    const values = [
-      [
-        updatedData.fecha || rows[rowIndex]?.[0] || '',
-        updatedData.curso || rows[rowIndex]?.[1] || '',
-        updatedData.nombre || rows[rowIndex]?.[2] || '',
-        updatedData.dni || rows[rowIndex]?.[3] || '',
-        updatedData.email || rows[rowIndex]?.[4] || '',
-        updatedData.telefono || rows[rowIndex]?.[5] || '',
-        updatedData.estado || rows[rowIndex]?.[6] || '',
-        updatedData.junio || rows[rowIndex]?.[7] || '',
-        updatedData.julio || rows[rowIndex]?.[8] || '',
-        updatedData.agosto || rows[rowIndex]?.[9] || '',
-      ],
-    ];
-
-    // Actualizar la fila
-    const range = `${sheetName}!A${rowIndex}:J${rowIndex}`;
-    await sheets.spreadsheets.values.update({
-      auth,
-      spreadsheetId,
-      range,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values,
-      },
-    });
+    // Actualizar el estudiante
+    if (students[studentIndex]) {
+      students[studentIndex] = { ...students[studentIndex], ...updatedData };
+    }
 
     return NextResponse.json({ success: true, message: 'Student updated' });
   } catch (error) {
@@ -143,52 +49,13 @@ export async function POST(request: NextRequest) {
   try {
     const newStudent = await request.json();
 
-    const { auth, spreadsheetId } = getAuthClient();
+    // Agregar fecha actual si no existe
+    if (!newStudent.fecha) {
+      newStudent.fecha = new Date().toLocaleDateString('es-ES');
+    }
 
-    // Obtener el nombre del sheet
-    const spreadsheetInfo = await sheets.spreadsheets.get({
-      auth,
-      spreadsheetId,
-    });
-    const sheetName = spreadsheetInfo.data.sheets?.[0]?.properties?.title || 'Sheet1';
-
-    // Obtener los datos actuales para saber en qué fila insertar
-    const response = await sheets.spreadsheets.values.get({
-      auth,
-      spreadsheetId,
-      range: `${sheetName}!A:J`,
-    });
-
-    const rows = response.data.values || [];
-    const nextRowIndex = rows.length + 1; // Siguiente fila disponible
-
-    // Preparar los valores del nuevo estudiante
-    const values = [
-      [
-        newStudent.fecha || new Date().toLocaleDateString('es-ES'),
-        newStudent.curso || '',
-        newStudent.nombre || '',
-        newStudent.dni || '',
-        newStudent.email || '',
-        newStudent.telefono || '',
-        newStudent.estado || '',
-        newStudent.junio || '',
-        newStudent.julio || '',
-        newStudent.agosto || '',
-      ],
-    ];
-
-    // Insertar la nueva fila
-    const range = `${sheetName}!A${nextRowIndex}:J${nextRowIndex}`;
-    await sheets.spreadsheets.values.update({
-      auth,
-      spreadsheetId,
-      range,
-      valueInputOption: 'USER_ENTERED',
-      requestBody: {
-        values,
-      },
-    });
+    // Agregar el nuevo estudiante
+    students.push(newStudent);
 
     return NextResponse.json({ success: true, message: 'Student created' });
   } catch (error) {
@@ -212,39 +79,8 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const { auth, spreadsheetId } = getAuthClient();
-
-    // Obtener el nombre del sheet y su ID
-    const spreadsheetInfo = await sheets.spreadsheets.get({
-      auth,
-      spreadsheetId,
-    });
-    const sheet = spreadsheetInfo.data.sheets?.[0];
-    const sheetName = sheet?.properties?.title || 'Sheet1';
-    const sheetId = sheet?.properties?.sheetId || 0;
-
-    // La fila a eliminar es studentIndex + 2 (por el header)
-    const rowIndex = studentIndex + 1; // 0-based index, row 2 es índice 1
-
-    // Usar batchUpdate para eliminar la fila
-    await sheets.spreadsheets.batchUpdate({
-      auth,
-      spreadsheetId,
-      requestBody: {
-        requests: [
-          {
-            deleteDimension: {
-              range: {
-                sheetId,
-                dimension: 'ROWS',
-                startIndex: rowIndex,
-                endIndex: rowIndex + 1,
-              },
-            },
-          },
-        ],
-      },
-    });
+    // Eliminar el estudiante
+    students.splice(studentIndex, 1);
 
     return NextResponse.json({ success: true, message: 'Student deleted' });
   } catch (error) {
