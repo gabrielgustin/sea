@@ -40,7 +40,7 @@ export default function SpecialOfferSection() {
       <div className="max-w-6xl mx-auto mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Card 1 */}
         <Link href="/formaciones">
-          <div className="p-8 rounded-2xl text-white text-center transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer" style={{ backgroundColor: '#031e41' }}>
+          <div className="p-8 rounded-2xl text-white text-center transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer flex flex-col justify-center min-h-80" style={{ backgroundColor: '#031e41' }}>
             <h3 className="text-2xl md:text-3xl font-bold mb-4">Centro de Formaciones</h3>
             <p className="text-base md:text-lg leading-relaxed">
               Conocé las propuestas de formaciones que tiene la SEU para vos
@@ -49,7 +49,7 @@ export default function SpecialOfferSection() {
         </Link>
 
         {/* Card 2 */}
-        <div className="p-8 rounded-2xl text-white text-center" style={{ backgroundColor: '#031e41' }}>
+        <div className="p-8 rounded-2xl text-white text-center flex flex-col justify-center min-h-80" style={{ backgroundColor: '#031e41' }}>
           <h3 className="text-2xl md:text-3xl font-bold mb-4">Trabajá con Nosotros</h3>
           <p className="text-base md:text-lg leading-relaxed">
             Graduado/a y estudiante avanzado/a: Postulate para trabajar en nuestros proyectos o dictar cursos
@@ -57,7 +57,7 @@ export default function SpecialOfferSection() {
         </div>
 
         {/* Card 3 */}
-        <div className="p-8 rounded-2xl text-white text-center" style={{ backgroundColor: '#031e41' }}>
+        <div className="p-8 rounded-2xl text-white text-center flex flex-col justify-center min-h-80" style={{ backgroundColor: '#031e41' }}>
           <h3 className="text-2xl md:text-3xl font-bold mb-4">Oportunidades Laborales</h3>
           <p className="text-base md:text-lg leading-relaxed">
             Compartimos Oportunidades laborales para nuestros graduados/as y estudiantes avanzados/as
