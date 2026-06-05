@@ -11,7 +11,7 @@ export default function SpecialOfferSection() {
           <div className="p-8 rounded-2xl text-white text-center transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer flex flex-col justify-center min-h-80" style={{ backgroundColor: '#031e41' }}>
             <h3 className="text-2xl md:text-3xl font-bold mb-4">Centro de Formación</h3>
             <p className="text-base md:text-lg leading-relaxed">
-              Ofrecemos capacitaciones extracurriculares en diferentes instituciones. Nuestros programas educativos personalizados se adaptan a las necesidades de cada organización.
+              Potenciá tu proyecto educativo y descubrí cómo adaptamos nuestros programas para convertirlos en la extensión académica que tu institución necesita
             </p>
           </div>
         </Link>
