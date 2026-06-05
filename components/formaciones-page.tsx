@@ -277,34 +277,62 @@ export default function FormacionesPage() {
       </section>
 
       {/* CTA Section */}
-      <section id="contacto" className="py-16 px-4"
+      <section id="contacto" className="py-16 md:py-24 px-4 relative overflow-hidden"
         style={{
           background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)'
         }}
       >
-        <div className="max-w-4xl mx-auto text-center text-white">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
-            ¿Listo para transformar la educación en tu institución?
+        {/* Decorative elements */}
+        <div className="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48 blur-3xl"></div>
+        <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/10 rounded-full -ml-40 -mb-40 blur-3xl"></div>
+        
+        <div className="max-w-4xl mx-auto text-center text-white relative z-10">
+          {/* Subtitle badge */}
+          <div className="inline-flex items-center gap-2 mb-6 px-4 py-2 rounded-full" style={{ backgroundColor: 'rgba(156, 186, 219, 0.2)' }}>
+            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#9cbadb' }}></span>
+            <span className="text-sm font-semibold tracking-wide" style={{ color: '#9cbadb' }}>
+              PRÓXIMO PASO
+            </span>
+          </div>
+
+          {/* Main heading */}
+          <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 leading-tight">
+            ¿Listo para transformar <br className="hidden md:block" /> la educación en tu institución?
           </h2>
-          <p className="text-xl text-blue-100 mb-8">
-            Contacta con nosotros hoy mismo para una consulta sin compromiso
+
+          {/* Description */}
+          <p className="text-lg md:text-xl text-blue-100 mb-12 max-w-2xl mx-auto leading-relaxed">
+            Da el primer paso hacia una educación más completa y certificada. Nuestro equipo está listo para asesorarte sin compromiso.
           </p>
-          <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
+
+          {/* CTA Buttons */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center flex-wrap">
             <Link
               href="https://wa.me/5493516307002?text=Hola!%20Me%20interesa%20conocer%20sobre%20Centro%20de%20Formaciones"
               target="_blank"
-              className="px-8 py-4 rounded-lg font-bold text-lg transition-all duration-300 hover:scale-105 active:scale-95 flex items-center gap-2"
+              className="px-8 py-4 rounded-lg font-bold text-base md:text-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 active:scale-95 flex items-center gap-3 whitespace-nowrap"
               style={{ backgroundColor: '#25D366', color: 'white' }}
             >
-              <span>💬 Contactar por WhatsApp</span>
+              <span>💬</span>
+              <span>Contactar por WhatsApp</span>
             </Link>
+            <div className="hidden sm:block w-px h-8 bg-white/20"></div>
             <a
               href="mailto:info@centroformaciones.com"
-              className="px-8 py-4 rounded-lg font-bold text-lg transition-all duration-300 border-2 border-blue-300 hover:bg-white/10"
+              className="px-8 py-4 rounded-lg font-bold text-base md:text-lg transition-all duration-300 hover:bg-white/10 hover:shadow-lg border-2 flex items-center gap-3 whitespace-nowrap"
+              style={{ borderColor: 'rgba(156, 186, 219, 0.5)', color: 'white' }}
             >
-              📧 Enviar Email
+              <span>📧</span>
+              <span>Enviar Email</span>
             </a>
           </div>
+
+          {/* Footer note */}
+          <p className="text-sm text-blue-100/70 mt-8">
+            Respuesta en menos de 24 horas
+          </p>
+        </div>
+      </section>
         </div>
       </section>
     </div>
