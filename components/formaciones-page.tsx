@@ -333,8 +333,6 @@ export default function FormacionesPage() {
           </p>
         </div>
       </section>
-        </div>
-      </section>
     </div>
   );
 }
