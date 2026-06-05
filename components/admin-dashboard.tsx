@@ -2,20 +2,22 @@
 
 import React, { useState } from 'react';
 import { useCourses, Course } from '@/context/CoursesContext';
-import { Plus, Edit2, Trash2, Eye, EyeOff, Users, Sliders } from 'lucide-react';
+import { Plus, Edit2, Trash2, Eye, EyeOff, Users, Sliders, HelpCircle, Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CourseForm from './course-form';
 import CourseList from './course-list';
 import CoursePreview from './course-preview';
 import StudentsList from './students-list';
 import CarouselManager from './carousel-manager';
+import FAQManager from './faq-manager';
+import SettingsManager from './settings-manager';
 
 export default function AdminDashboard() {
   const { courses, addCourse, updateCourse, deleteCourse } = useCourses();
   const [showForm, setShowForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
-  const [view, setView] = useState<'list' | 'form' | 'preview' | 'students' | 'carousel'>('list');
+  const [view, setView] = useState<'list' | 'form' | 'preview' | 'students' | 'carousel' | 'faq' | 'settings'>('list');
 
   const handleAddNew = () => {
     setEditingCourse(null);
@@ -65,13 +67,17 @@ export default function AdminDashboard() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
             <h1 className="text-4xl font-bold" style={{ color: '#031e41' }}>
-              {view === 'carousel' ? 'Gestionar Carrusel' : view === 'students' ? 'Gestionar Estudiantes' : 'Panel de Administración'}
+              {view === 'carousel' ? 'Gestionar Carrusel' : view === 'students' ? 'Gestionar Estudiantes' : view === 'faq' ? 'Preguntas Frecuentes' : view === 'settings' ? 'Configuracion' : 'Panel de Administracion'}
             </h1>
             <p className="text-gray-600 mt-2">
               {view === 'carousel' 
-                ? 'Configura las imágenes y contenido del carrusel de inicio'
+                ? 'Configura las imagenes y contenido del carrusel de inicio'
                 : view === 'students' 
-                ? 'Visualiza y edita los datos de tus estudiantes' 
+                ? 'Visualiza y edita los datos de tus estudiantes'
+                : view === 'faq'
+                ? 'Gestiona las preguntas frecuentes del sitio'
+                : view === 'settings'
+                ? 'Configura enlaces y datos de contacto'
                 : 'Gestiona los cursos disponibles'}
             </p>
           </div>
@@ -134,6 +140,36 @@ export default function AdminDashboard() {
             <Users size={18} />
             Estudiantes
           </button>
+          <button
+            onClick={() => setView('faq')}
+            className={`px-4 py-2 font-semibold transition-colors flex items-center gap-2 ${
+              view === 'faq'
+                ? 'text-blue-900 border-b-2' 
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+            style={{
+              borderBottomColor: view === 'faq' ? '#031e41' : 'transparent',
+              color: view === 'faq' ? '#031e41' : '#666',
+            }}
+          >
+            <HelpCircle size={18} />
+            FAQ
+          </button>
+          <button
+            onClick={() => setView('settings')}
+            className={`px-4 py-2 font-semibold transition-colors flex items-center gap-2 ${
+              view === 'settings'
+                ? 'text-blue-900 border-b-2' 
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+            style={{
+              borderBottomColor: view === 'settings' ? '#031e41' : 'transparent',
+              color: view === 'settings' ? '#031e41' : '#666',
+            }}
+          >
+            <Settings size={18} />
+            Configuracion
+          </button>
         </div>
 
         {/* View Switcher */}
@@ -179,6 +215,14 @@ export default function AdminDashboard() {
 
         {view === 'carousel' && (
           <CarouselManager />
+        )}
+
+        {view === 'faq' && (
+          <FAQManager />
+        )}
+
+        {view === 'settings' && (
+          <SettingsManager />
         )}
       </div>
     </div>
