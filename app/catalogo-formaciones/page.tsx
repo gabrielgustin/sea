@@ -1,20 +1,20 @@
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/header';
-import FormacionesPage from '@/components/formaciones-page';
+import FormacionesCatalog from '@/components/formaciones-catalog';
 
 export const metadata = {
-  title: 'Centro de Formacion - Capacitaciones Extracurriculares',
-  description: 'Descubre nuestro servicio de formaciones como extensión académica para instituciones educativas. Programas personalizados de calidad para tu comunidad.'
+  title: 'Catálogo de Formaciones | Centro de Formacion',
+  description: 'Explora todos nuestros cursos y programas de formación disponibles. Encuentra la capacitación que se ajuste a tus necesidades.'
 };
 
-export default function FormacionesRoute() {
+export default function CatalogoFormacionesRoute() {
   return (
     <div className="flex h-screen w-screen bg-white overflow-hidden">
       <Sidebar />
       <div className="flex h-screen w-full">
         <main className="w-full ml-[10%] overflow-x-hidden overflow-y-auto">
           <Header />
-          <FormacionesPage />
+          <FormacionesCatalog />
         </main>
       </div>
     </div>

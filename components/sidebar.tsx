@@ -15,7 +15,7 @@ export default function Sidebar() {
 
   const publicNavItems = [
     { icon: Home, label: 'Inicio', href: '/' },
-    { icon: BookOpen, label: 'Formaciones', href: '/#formaciones' },
+    { icon: BookOpen, label: 'Formaciones', href: '/catalogo-formaciones' },
     { icon: Mail, label: 'Contacto', href: '/#contacto' },
     { icon: Instagram, label: 'Instagram', href: 'https://instagram.com' },
   ];
