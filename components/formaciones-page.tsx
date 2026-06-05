@@ -21,7 +21,7 @@ export default function FormacionesPage() {
             <p className="text-sm font-semibold text-blue-200">Nuestro Servicio Principal</p>
           </div>
           <h1 className="text-5xl md:text-7xl font-bold mb-6 text-balance leading-tight">
-            Centro de Formaciones
+            Centro de Formacion
           </h1>
           <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto mb-8 text-balance">
             Capacitaciones extracurriculares diseñadas como extensión académica para instituciones educativas

@@ -41,7 +41,7 @@ export default function SpecialOfferSection() {
         {/* Card 1 */}
         <Link href="/formaciones">
           <div className="p-8 rounded-2xl text-white text-center transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer flex flex-col justify-center min-h-80" style={{ backgroundColor: '#031e41' }}>
-            <h3 className="text-2xl md:text-3xl font-bold mb-4">Centro de Formaciones</h3>
+            <h3 className="text-2xl md:text-3xl font-bold mb-4">Centro de Formacion</h3>
             <p className="text-base md:text-lg leading-relaxed">
               Conocé las propuestas de formaciones que tiene la SEU para vos
             </p>

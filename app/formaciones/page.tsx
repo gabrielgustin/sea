@@ -3,7 +3,7 @@ import Header from '@/components/header';
 import FormacionesPage from '@/components/formaciones-page';
 
 export const metadata = {
-  title: 'Centro de Formaciones - Capacitaciones Extracurriculares',
+  title: 'Centro de Formacion - Capacitaciones Extracurriculares',
   description: 'Descubre nuestro servicio de formaciones como extensión académica para instituciones educativas. Programas personalizados de calidad para tu comunidad.'
 };
 
