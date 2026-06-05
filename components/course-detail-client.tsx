@@ -74,7 +74,10 @@ export default function CourseDetailClient({ course }: { course: Course }) {
       const startOfDay = new Date(courseStartDate);
       startOfDay.setHours(0, 0, 0, 0);
       
-      if (today > startOfDay) {
+      // Calcular si el curso comenzó
+      const hasStarted = today > startOfDay;
+      
+      if (hasStarted) {
         // El curso ya comenzó
         if (canEnroll) {
           return `El curso comenzó el ${course.startDate}, pero aún puedes inscribirte!`;
@@ -87,6 +90,34 @@ export default function CourseDetailClient({ course }: { course: Course }) {
       }
     } catch (error) {
       return `El curso comienza el ${course.startDate}`;
+    }
+  };
+
+  // Verificar si el curso ya ha comenzado
+  const hasCourseStarted = () => {
+    if (!course.startDate) return false;
+    try {
+      let courseStartDate;
+      
+      // Si es formato ISO (YYYY-MM-DD)
+      if (course.startDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [year, month, day] = course.startDate.split('-');
+        courseStartDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      } else {
+        // Si es formato con día de la semana "Lun 1/06/2026"
+        const datePart = course.startDate.split(' ').slice(1).join(' ');
+        const [day, month, year] = datePart.split('/');
+        courseStartDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      }
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const startOfDay = new Date(courseStartDate);
+      startOfDay.setHours(0, 0, 0, 0);
+      
+      return today > startOfDay;
+    } catch {
+      return false;
     }
   };
 
