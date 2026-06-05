@@ -22,7 +22,7 @@ export const coursesData = [
         whatsapp: '5493516307002'
       }
     ],
-    duration: '6 meses',
+    duration: '24 clases',
     price: '$35.000/mes',
     objective: 'Formar a los estudiantes en los fundamentos de la programación, desarrollando habilidades para crear aplicaciones funcionales utilizando Python, incluyendo interfaces gráficas.',
     modules: [
@@ -80,7 +80,7 @@ export const coursesData = [
         whatsapp: '5493541571482'
       }
     ],
-    duration: '6 meses',
+    duration: '24 clases',
     price: '$35.000/mes',
     objective: 'Que los alumnos desarrollen videojuegos completos mientras adquieren habilidades de lógica y pensamiento computacional utilizando herramientas modernas.',
     modules: [
@@ -138,7 +138,7 @@ export const coursesData = [
         whatsapp: '5493516702784'
       }
     ],
-    duration: '6 meses',
+    duration: '24 clases',
     price: '$35.000/mes',
     objective: 'Capacitar a los estudiantes en el diseño de modelos tridimensionales y su fabricación mediante impresión 3D.',
     modules: [
@@ -196,7 +196,7 @@ export const coursesData = [
         whatsapp: '5493517160340'
       }
     ],
-    duration: '6 meses',
+    duration: '24 clases',
     price: '$35.000/mes',
     objective: 'Brindar conocimientos técnicos sobre el funcionamiento, mantenimiento y reparación de motores y sistemas automotrices.',
     modules: [
