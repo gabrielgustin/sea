@@ -11,7 +11,7 @@ export default function FormacionesPage() {
   return (
     <div className="w-full bg-white">
       {/* Hero Section */}
-      <section className="w-full h-screen md:h-screen lg:min-h-[80vh] flex items-center justify-center px-8 py-16 md:py-0"
+      <section className="w-full h-screen md:h-screen lg:min-h-[80vh] flex items-center justify-center px-4 py-16 md:py-0"
         style={{
           background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)'
         }}
@@ -45,7 +45,7 @@ export default function FormacionesPage() {
       </section>
 
       {/* Value Proposition */}
-      <section className="py-16 px-8 bg-gray-50">
+      <section className="py-16 px-4 bg-gray-50">
         <div className="w-full">
           <h2 className="text-4xl font-bold text-center mb-16" style={{ color: '#031e41' }}>
             ¿Por qué elegir Centro de Formaciones?
@@ -83,7 +83,7 @@ export default function FormacionesPage() {
       </section>
 
       {/* Services Grid */}
-      <section id="servicios" className="py-16 px-8">
+      <section id="servicios" className="py-16 px-4">
         <div className="w-full">
           <h2 className="text-4xl font-bold text-center mb-4" style={{ color: '#031e41' }}>
             Nuestros Servicios
@@ -153,7 +153,7 @@ export default function FormacionesPage() {
       </section>
 
       {/* Benefits for Institutions */}
-      <section className="py-16 px-8 bg-gradient-to-r from-blue-50 to-white">
+      <section className="py-16 px-4 bg-gradient-to-r from-blue-50 to-white">
         <div className="w-full">
           <h2 className="text-4xl font-bold text-center mb-16" style={{ color: '#031e41' }}>
             Beneficios para Instituciones
@@ -191,7 +191,7 @@ export default function FormacionesPage() {
       </section>
 
       {/* Process Section */}
-      <section className="py-16 px-8">
+      <section className="py-16 px-4">
         <div className="w-full">
           <h2 className="text-4xl font-bold text-center mb-16" style={{ color: '#031e41' }}>
             Cómo Funciona
