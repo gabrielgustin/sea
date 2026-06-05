@@ -59,7 +59,7 @@ const defaultSettings: SiteSettings = {
   whatsappNumber: '5493516307002',
   whatsappMessage: 'Hola! Me interesa obtener más información sobre los cursos disponibles.',
   email: 'extension@itsvillada.edu.ar',
-  address: 'Av. Vélez Sársfield 1550, Córdoba, Argentina',
+  address: 'Cno a La Calera km 7 1/2 Valle',
 };
 
 const SiteSettingsContext = createContext<SiteSettingsContextType | undefined>(undefined);
