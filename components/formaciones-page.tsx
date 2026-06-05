@@ -191,52 +191,85 @@ export default function FormacionesPage() {
       </section>
 
       {/* Process Section */}
-      <section className="py-16 px-4">
-        <div className="w-full">
-          <h2 className="text-4xl font-bold text-center mb-16" style={{ color: '#031e41' }}>
-            Cómo Funciona
-          </h2>
-          <div className="grid md:grid-cols-4 gap-8">
-            {[
-              {
-                step: '01',
-                title: 'Consulta Inicial',
-                description: 'Conocemos tus necesidades específicas y objetivos institucionales'
-              },
-              {
-                step: '02',
-                title: 'Diseño Personalizado',
-                description: 'Creamos un programa adaptado a tu comunidad e institución'
-              },
-              {
-                step: '03',
-                title: 'Ejecución',
-                description: 'Implementamos el programa con docentes especializados y seguimiento continuo'
-              },
-              {
-                step: '04',
-                title: 'Certificación',
-                description: 'Emitimos certificados de reconocimiento validados'
-              }
-            ].map((item, idx) => (
-              <div key={idx} className="relative">
-                <div
-                  className="w-16 h-16 rounded-full flex items-center justify-center font-bold text-2xl mb-6"
-                  style={{ backgroundColor: '#9cbadb', color: '#031e41' }}
-                >
-                  {item.step}
+      <section className="py-20 px-4 bg-gradient-to-b from-gray-50 to-white">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#031e41' }}>
+              Cómo Funciona
+            </h2>
+            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+              Un proceso simple y transparente diseñado para asegurar que tu institución reciba exactamente lo que necesita
+            </p>
+          </div>
+
+          {/* Timeline Container */}
+          <div className="relative">
+            {/* Connection line */}
+            <div className="hidden md:block absolute top-24 left-0 right-0 h-1" style={{
+              background: 'linear-gradient(to right, transparent, #9cbadb, transparent)',
+              zIndex: 0
+            }}></div>
+
+            {/* Steps Grid */}
+            <div className="grid md:grid-cols-4 gap-6 md:gap-0 relative z-10">
+              {[
+                {
+                  step: '01',
+                  title: 'Consulta Inicial',
+                  description: 'Conocemos tus necesidades específicas y objetivos institucionales'
+                },
+                {
+                  step: '02',
+                  title: 'Diseño Personalizado',
+                  description: 'Creamos un programa adaptado a tu comunidad e institución'
+                },
+                {
+                  step: '03',
+                  title: 'Ejecución',
+                  description: 'Implementamos el programa con docentes especializados y seguimiento continuo'
+                },
+                {
+                  step: '04',
+                  title: 'Certificación',
+                  description: 'Emitimos certificados de reconocimiento validados'
+                }
+              ].map((item, idx) => (
+                <div key={idx} className="flex flex-col items-center md:items-center">
+                  {/* Step Circle */}
+                  <div className="mb-6 relative">
+                    <div
+                      className="w-20 h-20 rounded-full flex items-center justify-center font-bold text-3xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-110"
+                      style={{ 
+                        backgroundColor: '#031e41',
+                        color: '#ffffff'
+                      }}
+                    >
+                      {item.step}
+                    </div>
+                    {/* Accent dot */}
+                    <div 
+                      className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-4 border-white"
+                      style={{ backgroundColor: '#9cbadb' }}
+                    ></div>
+                  </div>
+
+                  {/* Card Container */}
+                  <div className="w-full px-4 md:px-0">
+                    <div 
+                      className="bg-white rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition-all duration-300 border-t-4"
+                      style={{ borderTopColor: '#9cbadb' }}
+                    >
+                      <h3 className="text-xl font-bold mb-3" style={{ color: '#031e41' }}>
+                        {item.title}
+                      </h3>
+                      <p className="text-gray-600 leading-relaxed text-sm">
+                        {item.description}
+                      </p>
+                    </div>
+                  </div>
                 </div>
-                <h3 className="text-xl font-bold mb-2" style={{ color: '#031e41' }}>
-                  {item.title}
-                </h3>
-                <p className="text-gray-600">
-                  {item.description}
-                </p>
-                {idx < 3 && (
-                  <div className="hidden md:block absolute top-8 -right-4 w-8 h-1 bg-gradient-to-r from-blue-200 to-transparent"></div>
-                )}
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
         </div>
       </section>
