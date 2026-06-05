@@ -28,6 +28,15 @@ export default function Sidebar() {
     }
   };
 
+  const handleLogout = () => {
+    setShowLoginAnimation(false);
+    setShowAuthIconAnimation(true);
+    setTimeout(() => {
+      setShowAuthIconAnimation(false);
+      logout();
+    }, 400);
+  };
+
   useEffect(() => {
     // Cuando isAuthenticated cambia, disparar animación
     if (isAuthenticated) {
