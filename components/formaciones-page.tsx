@@ -16,7 +16,7 @@ export default function FormacionesPage() {
           background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)'
         }}
       >
-        <div className="w-full max-w-6xl text-center text-white px-4">
+        <div className="w-full text-center text-white px-4">
           <div className="mb-6 inline-block px-4 py-2 rounded-full" style={{ backgroundColor: 'rgba(156, 186, 219, 0.2)' }}>
             <p className="text-sm font-semibold text-blue-200">Nuestro Servicio Principal</p>
           </div>
@@ -45,8 +45,8 @@ export default function FormacionesPage() {
       </section>
 
       {/* Value Proposition */}
-      <section className="py-16 px-4 bg-gray-50">
-        <div className="max-w-6xl mx-auto">
+      <section className="py-16 px-8 bg-gray-50">
+        <div className="w-full">
           <h2 className="text-4xl font-bold text-center mb-16" style={{ color: '#031e41' }}>
             ¿Por qué elegir Centro de Formaciones?
           </h2>
@@ -83,8 +83,8 @@ export default function FormacionesPage() {
       </section>
 
       {/* Services Grid */}
-      <section id="servicios" className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section id="servicios" className="py-16 px-8">
+        <div className="w-full">
           <h2 className="text-4xl font-bold text-center mb-4" style={{ color: '#031e41' }}>
             Nuestros Servicios
           </h2>
@@ -153,8 +153,8 @@ export default function FormacionesPage() {
       </section>
 
       {/* Benefits for Institutions */}
-      <section className="py-16 px-4 bg-gradient-to-r from-blue-50 to-white">
-        <div className="max-w-6xl mx-auto">
+      <section className="py-16 px-8 bg-gradient-to-r from-blue-50 to-white">
+        <div className="w-full">
           <h2 className="text-4xl font-bold text-center mb-16" style={{ color: '#031e41' }}>
             Beneficios para Instituciones
           </h2>
@@ -191,8 +191,8 @@ export default function FormacionesPage() {
       </section>
 
       {/* Process Section */}
-      <section className="py-16 px-4">
-        <div className="max-w-6xl mx-auto">
+      <section className="py-16 px-8">
+        <div className="w-full">
           <h2 className="text-4xl font-bold text-center mb-16" style={{ color: '#031e41' }}>
             Cómo Funciona
           </h2>
