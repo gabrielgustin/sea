@@ -400,7 +400,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                 <>
                   {/* Start Date */}
                   <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
-                    <p className="text-xs font-semibold text-gray-600 mb-1">Inicia</p>
+                    <p className="text-xs font-semibold text-gray-600 mb-1">{hasCourseStarted() ? 'Inició' : 'Inicia'}</p>
                     <p className="text-sm font-bold text-gray-900">{course.startDate}</p>
                   </div>
 
