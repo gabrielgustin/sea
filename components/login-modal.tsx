@@ -85,38 +85,19 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Role Selector Toggle */}
+          {/* Role Selector - Admin Only */}
           <div className="flex gap-3">
             <button
               onClick={() => setSelectedRole('admin')}
-              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all ${
-                selectedRole === 'admin'
-                  ? 'border-blue-900 bg-blue-50'
-                  : 'border-gray-200 bg-white hover:border-gray-300'
-              }`}
+              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all border-blue-900 bg-blue-50`}
               style={{
-                borderColor: selectedRole === 'admin' ? '#031e41' : undefined,
-                backgroundColor: selectedRole === 'admin' ? 'rgba(3, 30, 65, 0.05)' : undefined,
+                borderColor: '#031e41',
+                backgroundColor: 'rgba(3, 30, 65, 0.05)',
               }}
+              disabled
             >
               <Shield size={20} style={{ color: '#031e41' }} />
               <span className="font-semibold" style={{ color: '#031e41' }}>Administrador</span>
-            </button>
-
-            <button
-              onClick={() => setSelectedRole('student')}
-              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all ${
-                selectedRole === 'student'
-                  ? 'border-blue-900 bg-blue-50'
-                  : 'border-gray-200 bg-white hover:border-gray-300'
-              }`}
-              style={{
-                borderColor: selectedRole === 'student' ? '#031e41' : undefined,
-                backgroundColor: selectedRole === 'student' ? 'rgba(3, 30, 65, 0.05)' : undefined,
-              }}
-            >
-              <Users size={20} style={{ color: '#031e41' }} />
-              <span className="font-semibold" style={{ color: '#031e41' }}>Alumno</span>
             </button>
           </div>
 
