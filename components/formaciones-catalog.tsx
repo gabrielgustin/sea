@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ChevronRight, Clock, Calendar, BookOpen } from 'lucide-react';
+import { useCourses } from '@/context/CoursesContext';
 
-interface Course {
+interface CourseDisplay {
   id: number;
   title: string;
   description: string;
@@ -13,37 +14,15 @@ interface Course {
   modality: string;
   startDate: string;
   duration: string;
-  category: string;
 }
 
 export default function FormacionesCatalog() {
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
+  const { courses } = useCourses();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  useEffect(() => {
-    const fetchCourses = async () => {
-      try {
-        const response = await fetch('/api/carousel');
-        const data = await response.json();
-        setCourses(data.slides || []);
-      } catch (error) {
-        console.error('Error fetching courses:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
+  const filteredCourses = courses;
 
-    fetchCourses();
-  }, []);
-
-  const filteredCourses = selectedCategory === 'all' 
-    ? courses 
-    : courses.filter(course => course.category === selectedCategory);
-
-  const categories = ['all', ...new Set(courses.map(c => c.category))];
-
-  if (loading) {
+  if (!courses || courses.length === 0) {
     return (
       <div className="w-full py-20 text-center">
         <p style={{ color: '#031e41' }} className="text-lg font-semibold">Cargando formaciones...</p>
@@ -62,31 +41,6 @@ export default function FormacionesCatalog() {
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
             Explora todos nuestros cursos y programas disponibles. Elige la formación que mejor se adapte a tus necesidades.
           </p>
-        </div>
-      </section>
-
-      {/* Filters */}
-      <section className="w-full py-8 px-4 border-b border-gray-200">
-        <div className="max-w-6xl mx-auto">
-          <h2 className="text-lg font-semibold mb-4" style={{ color: '#031e41' }}>Filtrar por categoría:</h2>
-          <div className="flex flex-wrap gap-3">
-            {categories.map((category) => (
-              <button
-                key={category}
-                onClick={() => setSelectedCategory(category)}
-                className={`px-6 py-2 rounded-full font-medium transition-all ${
-                  selectedCategory === category
-                    ? 'text-white'
-                    : 'bg-gray-200 text-gray-800 hover:bg-gray-300'
-                }`}
-                style={{
-                  backgroundColor: selectedCategory === category ? '#031e41' : undefined,
-                }}
-              >
-                {category === 'all' ? 'Todas' : category}
-              </button>
-            ))}
-          </div>
         </div>
       </section>
 
