@@ -134,7 +134,7 @@ export const coursesData = [
         name: 'Santiago Henderson',
         photo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Santiago%20Henderson-z1CsRFAH3mXiLvimK9mmeN7wcuJD04.png',
         description: '',
-        linkedin: 'https://linkedin.com/in/santiago-henderson-779777180',
+        linkedin: 'https://www.linkedin.com/in/santiago-henderson-779777180',
         whatsapp: '5493516702784'
       }
     ],
@@ -199,8 +199,8 @@ export const coursesData = [
         name: 'Santiago Donalisio',
         photo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Santiago%20Donalisio%20-IDz1pn8LOIQiwCJ6SoRPIZ7Uoe8dPb.png',
         description: '',
-        linkedin: '',
-        whatsapp: ''
+        linkedin: 'https://www.linkedin.com/in/santiagodonalisio',
+        whatsapp: '5493512694283'
       }
     ],
     duration: '24 clases',
