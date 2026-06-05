@@ -9,7 +9,7 @@ export default function FormacionesPage() {
   const [selectedService, setSelectedService] = useState<string | null>(null);
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full bg-white ml-20">
       {/* Hero Section */}
       <section className="h-screen md:h-screen lg:min-h-[80vh] flex items-center justify-center px-4 py-16 md:py-0"
         style={{
