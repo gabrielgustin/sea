@@ -80,7 +80,7 @@ export function DatePicker({ value, onChange, placeholder = 'Seleccionar fecha' 
         </PopoverTrigger>
         <PopoverContent className="w-auto p-0 border-0 shadow-2xl" align="start">
           <div 
-            className="p-6 rounded-lg"
+            className="p-3 rounded-lg"
             style={{ backgroundColor: '#f8f9fa' }}
           >
             <DayPicker
@@ -98,14 +98,14 @@ export function DatePicker({ value, onChange, placeholder = 'Seleccionar fecha' 
 
       <style jsx global>{`
         .calendar-picker {
-          --rdp-cell-size: 44px;
+          --rdp-cell-size: 32px;
           --rdp-accent-color: #031e41;
           --rdp-background-color: #9cbadb;
           font-family: inherit;
         }
 
         .calendar-picker .rdp {
-          --rdp-cell-size: 44px;
+          --rdp-cell-size: 32px;
           --rdp-accent-color: #031e41;
           --rdp-background-color: #9cbadb;
           margin: 0;
@@ -115,23 +115,23 @@ export function DatePicker({ value, onChange, placeholder = 'Seleccionar fecha' 
           display: flex;
           justify-content: space-between;
           align-items: center;
-          padding: 0 8px;
-          margin-bottom: 20px;
+          padding: 0 4px;
+          margin-bottom: 12px;
           font-weight: 600;
           color: #031e41;
         }
 
         .calendar-picker .rdp-caption_label {
-          font-size: 15px;
+          font-size: 13px;
           font-weight: 700;
           color: #031e41;
         }
 
         .calendar-picker .rdp-nav_button {
-          width: 36px;
-          height: 36px;
+          width: 28px;
+          height: 28px;
           border: 2px solid #9cbadb;
-          border-radius: 8px;
+          border-radius: 6px;
           background-color: white;
           color: #031e41;
           cursor: pointer;
@@ -140,7 +140,7 @@ export function DatePicker({ value, onChange, placeholder = 'Seleccionar fecha' 
           align-items: center;
           justify-content: center;
           font-weight: bold;
-          font-size: 18px;
+          font-size: 14px;
         }
 
         .calendar-picker .rdp-nav_button:hover {
@@ -152,22 +152,22 @@ export function DatePicker({ value, onChange, placeholder = 'Seleccionar fecha' 
         .calendar-picker .rdp-head_cell {
           color: #031e41;
           font-weight: 600;
-          font-size: 13px;
+          font-size: 11px;
           text-transform: uppercase;
-          padding: 12px 0;
+          padding: 8px 0;
           text-align: center;
         }
 
         .calendar-picker .rdp-cell {
-          padding: 3px;
+          padding: 2px;
           text-align: center;
         }
 
         .calendar-picker .rdp-day {
-          width: 44px;
-          height: 44px;
-          border-radius: 8px;
-          font-size: 14px;
+          width: 32px;
+          height: 32px;
+          border-radius: 6px;
+          font-size: 12px;
           color: #031e41;
           transition: all 0.2s ease;
           display: flex;
