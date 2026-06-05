@@ -83,7 +83,6 @@ export function DatePicker({ value, onChange, placeholder = 'Seleccionar fecha' 
           mode="single"
           selected={selectedDate}
           onSelect={handleSelect}
-          disabled={(date) => date > new Date()}
           initialFocus
         />
       </PopoverContent>
