@@ -20,18 +20,30 @@ export default function Header() {
             />
           </Link>
 
-          {/* Center - Logo for mobile */}
-          <Link href="/" className="md:hidden flex-1 flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity pl-12">
+          {/* Mobile - Logo SEA Left */}
+          <Link href="/" className="md:hidden flex items-center cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
               src="/logo-sea.png" 
               alt="SEA Logo"
-              width={56}
-              height={56}
-              className="h-14 w-auto object-contain"
+              width={48}
+              height={48}
+              className="h-12 w-auto object-contain"
+              priority
             />
           </Link>
 
-          {/* Right Side - Logo Desktop */}
+          {/* Mobile - Logo Villada Right */}
+          <div className="md:hidden flex items-center justify-end">
+            <Image 
+              src="/logo-villada.png" 
+              alt="ITS Villada Logo"
+              width={80}
+              height={60}
+              className="h-12 w-auto object-contain"
+            />
+          </div>
+
+          {/* Desktop - Right Side Logo */}
           <div className="hidden md:flex items-center justify-end gap-0">
             <Image
               src="/logo-villada.png"

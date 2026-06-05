@@ -134,19 +134,8 @@ export default function Sidebar() {
         </nav>
       </aside>
 
-      {/* Mobile Hamburger Button */}
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="md:hidden fixed left-4 top-4 z-50 p-3 rounded-xl bg-white shadow-lg hover:shadow-xl transition-all duration-300 hover:scale-105"
-        style={{ border: '2px solid #031e41' }}
-        aria-label="Toggle sidebar"
-      >
-        {isOpen ? (
-          <X size={24} className="transition-all duration-300" style={{ color: '#031e41' }} />
-        ) : (
-          <Menu size={24} className="transition-all duration-300" style={{ color: '#031e41' }} />
-        )}
-      </button>
+      {/* Mobile Hamburger Button - Hidden */}
+      {/* Hamburger menu hidden for improved mobile UX */}
 
       {/* Mobile Overlay */}
       {isOpen && (
