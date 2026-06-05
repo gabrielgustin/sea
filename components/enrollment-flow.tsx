@@ -83,61 +83,61 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center">
-        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-6" style={{ borderColor: '#00d4ff' }}>
-          <span style={{ color: '#00d4ff' }}>&#10024;</span>
-          <span className="text-sm font-medium" style={{ color: '#00d4ff' }}>INSCRIPCION</span>
+        <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full border mb-6" style={{ borderColor: '#9cbadb' }}>
+          <span style={{ color: '#031e41' }}>✨</span>
+          <span className="text-sm font-bold" style={{ color: '#031e41' }}>INSCRIPCIÓN</span>
         </div>
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-          Confirma tu <span style={{ color: '#00d4ff', fontStyle: 'italic' }}>Curso</span>
+        <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#031e41' }}>
+          Confirma tu <span style={{ color: '#9cbadb', fontStyle: 'italic' }}>Curso</span>
         </h1>
-        <p className="text-gray-400">Estas por inscribirte en un excelente programa</p>
+        <p className="text-gray-600">Estás a punto de inscribirte en un excelente programa</p>
       </div>
 
       {/* Course Card */}
-      <div className="rounded-2xl p-6" style={{ backgroundColor: '#1a1a2e', border: '1px solid #2a2a4a' }}>
+      <div className="rounded-2xl p-6" style={{ backgroundColor: '#ffffff', border: '2px solid #9cbadb' }}>
         <div className="flex items-start gap-4 mb-6">
-          <div className="text-4xl">&#128187;</div>
+          <div className="text-4xl">📚</div>
           <div>
             <span 
               className="inline-block px-3 py-1 rounded text-xs font-bold mb-2"
-              style={{ backgroundColor: '#00d4ff', color: '#0a0a0a' }}
+              style={{ backgroundColor: '#9cbadb', color: '#031e41' }}
             >
               {course.level || 'PRINCIPIANTE'}
             </span>
-            <h2 className="text-xl md:text-2xl font-bold text-white mb-2">{course.title}</h2>
-            <p className="text-gray-400 text-sm">{course.subtitle}</p>
+            <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: '#031e41' }}>{course.title}</h2>
+            <p className="text-gray-600 text-sm">{course.subtitle}</p>
           </div>
         </div>
 
         {/* Course Info Grid */}
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="rounded-xl p-4" style={{ backgroundColor: '#0d0d1a', border: '1px solid #2a2a4a' }}>
+          <div className="rounded-xl p-4" style={{ backgroundColor: '#f8f9fa', border: '1px solid #9cbadb' }}>
             <div className="flex items-center gap-2 mb-1">
-              <Calendar size={16} style={{ color: '#00d4ff' }} />
-              <span className="text-xs text-gray-400">Dia</span>
+              <Calendar size={16} style={{ color: '#031e41' }} />
+              <span className="text-xs text-gray-600 font-medium">Día</span>
             </div>
-            <p className="text-white font-semibold">{getDay()}</p>
+            <p className="font-semibold" style={{ color: '#031e41' }}>{getDay()}</p>
           </div>
-          <div className="rounded-xl p-4" style={{ backgroundColor: '#0d0d1a', border: '1px solid #2a2a4a' }}>
+          <div className="rounded-xl p-4" style={{ backgroundColor: '#f8f9fa', border: '1px solid #9cbadb' }}>
             <div className="flex items-center gap-2 mb-1">
-              <Clock size={16} style={{ color: '#00d4ff' }} />
-              <span className="text-xs text-gray-400">Horario</span>
+              <Clock size={16} style={{ color: '#031e41' }} />
+              <span className="text-xs text-gray-600 font-medium">Horario</span>
             </div>
-            <p className="text-white font-semibold">{getTime()}</p>
+            <p className="font-semibold" style={{ color: '#031e41' }}>{getTime()}</p>
           </div>
-          <div className="rounded-xl p-4" style={{ backgroundColor: '#0d0d1a', border: '1px solid #2a2a4a' }}>
+          <div className="rounded-xl p-4" style={{ backgroundColor: '#f8f9fa', border: '1px solid #9cbadb' }}>
             <div className="flex items-center gap-2 mb-1">
-              <User size={16} style={{ color: '#00d4ff' }} />
-              <span className="text-xs text-gray-400">Profesor</span>
+              <User size={16} style={{ color: '#031e41' }} />
+              <span className="text-xs text-gray-600 font-medium">Profesor</span>
             </div>
-            <p className="text-white font-semibold text-sm">{course.teacher}</p>
+            <p className="font-semibold text-sm" style={{ color: '#031e41' }}>{course.teacher}</p>
           </div>
         </div>
 
         {/* Certificate Badge */}
         <div className="flex items-center gap-2">
-          <CheckCircle size={18} style={{ color: '#00d4ff' }} />
-          <span className="text-gray-400 text-sm">Certificado oficial por ITS Villada</span>
+          <CheckCircle size={18} style={{ color: '#031e41' }} />
+          <span className="text-gray-700 text-sm font-medium">Certificado oficial por ITS Villada</span>
         </div>
       </div>
     </div>
@@ -148,19 +148,19 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-          Datos del <span style={{ color: '#00d4ff', fontStyle: 'italic' }}>Estudiante</span>
+        <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#031e41' }}>
+          Datos del <span style={{ color: '#9cbadb', fontStyle: 'italic' }}>Estudiante</span>
         </h1>
-        <p className="text-gray-400">Completa los datos del estudiante</p>
+        <p className="text-gray-600">Completa los datos del estudiante</p>
       </div>
 
       {/* Form */}
-      <div className="rounded-2xl p-6" style={{ backgroundColor: '#1a1a2e', border: '1px solid #2a2a4a' }}>
+      <div className="rounded-2xl p-6" style={{ backgroundColor: '#ffffff', border: '2px solid #9cbadb' }}>
         <div className="space-y-5">
           {/* Nombre Completo */}
           <div>
-            <label className="flex items-center gap-2 text-white text-sm mb-2">
-              <User size={16} style={{ color: '#00d4ff' }} />
+            <label className="flex items-center gap-2 font-medium mb-2" style={{ color: '#031e41' }}>
+              <User size={16} style={{ color: '#9cbadb' }} />
               Nombre Completo *
             </label>
             <input
@@ -168,15 +168,15 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
               value={studentData.nombre}
               onChange={(e) => handleInputChange('nombre', e.target.value)}
               placeholder="Juan Perez"
-              className="w-full px-4 py-3 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2"
-              style={{ backgroundColor: '#0d0d1a', border: '1px solid #2a2a4a', focusRingColor: '#00d4ff' }}
+              className="w-full px-4 py-3 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+              style={{ backgroundColor: '#f8f9fa', border: '1px solid #9cbadb', color: '#031e41', focusRingColor: '#9cbadb' }}
             />
           </div>
 
           {/* DNI */}
           <div>
-            <label className="flex items-center gap-2 text-white text-sm mb-2">
-              <CreditCard size={16} style={{ color: '#00d4ff' }} />
+            <label className="flex items-center gap-2 font-medium mb-2" style={{ color: '#031e41' }}>
+              <CreditCard size={16} style={{ color: '#9cbadb' }} />
               DNI *
             </label>
             <input
@@ -184,15 +184,15 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
               value={studentData.dni}
               onChange={(e) => handleInputChange('dni', e.target.value)}
               placeholder="12345678"
-              className="w-full px-4 py-3 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2"
-              style={{ backgroundColor: '#0d0d1a', border: '1px solid #2a2a4a' }}
+              className="w-full px-4 py-3 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+              style={{ backgroundColor: '#f8f9fa', border: '1px solid #9cbadb', color: '#031e41' }}
             />
           </div>
 
           {/* Email */}
           <div>
-            <label className="flex items-center gap-2 text-white text-sm mb-2">
-              <Mail size={16} style={{ color: '#00d4ff' }} />
+            <label className="flex items-center gap-2 font-medium mb-2" style={{ color: '#031e41' }}>
+              <Mail size={16} style={{ color: '#9cbadb' }} />
               Email *
             </label>
             <input
@@ -200,24 +200,24 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
               value={studentData.email}
               onChange={(e) => handleInputChange('email', e.target.value)}
               placeholder="juan@ejemplo.com"
-              className="w-full px-4 py-3 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2"
-              style={{ backgroundColor: '#0d0d1a', border: '1px solid #2a2a4a' }}
+              className="w-full px-4 py-3 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+              style={{ backgroundColor: '#f8f9fa', border: '1px solid #9cbadb', color: '#031e41' }}
             />
           </div>
 
           {/* Telefono */}
           <div>
-            <label className="flex items-center gap-2 text-white text-sm mb-2">
-              <Phone size={16} style={{ color: '#00d4ff' }} />
-              Telefono *
+            <label className="flex items-center gap-2 font-medium mb-2" style={{ color: '#031e41' }}>
+              <Phone size={16} style={{ color: '#9cbadb' }} />
+              Teléfono *
             </label>
             <input
               type="tel"
               value={studentData.telefono}
               onChange={(e) => handleInputChange('telefono', e.target.value)}
               placeholder="+54 9 11 1234-5678"
-              className="w-full px-4 py-3 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2"
-              style={{ backgroundColor: '#0d0d1a', border: '1px solid #2a2a4a' }}
+              className="w-full px-4 py-3 rounded-lg placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2"
+              style={{ backgroundColor: '#f8f9fa', border: '1px solid #9cbadb', color: '#031e41' }}
             />
           </div>
         </div>
@@ -230,49 +230,49 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
     <div className="space-y-8">
       {/* Header */}
       <div className="text-center">
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-          Revisa tu <span style={{ color: '#00d4ff', fontStyle: 'italic' }}>Inscripcion</span>
+        <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#031e41' }}>
+          Revisa tu <span style={{ color: '#9cbadb', fontStyle: 'italic' }}>Inscripción</span>
         </h1>
-        <p className="text-gray-400">Verifica que todos los datos sean correctos</p>
+        <p className="text-gray-600">Verifica que todos los datos sean correctos</p>
       </div>
 
       {/* Course Summary */}
-      <div className="rounded-2xl p-6" style={{ backgroundColor: '#1a1a2e', border: '1px solid #2a2a4a' }}>
+      <div className="rounded-2xl p-6" style={{ backgroundColor: '#ffffff', border: '2px solid #9cbadb' }}>
         <div className="flex items-center gap-2 mb-4">
-          <CheckCircle size={20} style={{ color: '#00d4ff' }} />
-          <h3 className="text-white font-bold">Curso Seleccionado</h3>
+          <CheckCircle size={20} style={{ color: '#031e41' }} />
+          <h3 className="font-bold" style={{ color: '#031e41' }}>Curso Seleccionado</h3>
         </div>
         <div className="flex items-center gap-4">
-          <div className="text-3xl">&#128187;</div>
+          <div className="text-3xl">📚</div>
           <div>
-            <p className="text-white font-bold">{course.title}</p>
-            <p className="text-gray-400 text-sm">{getDay()} - {getTime()}</p>
+            <p className="font-bold" style={{ color: '#031e41' }}>{course.title}</p>
+            <p className="text-gray-600 text-sm">{getDay()} - {getTime()}</p>
           </div>
         </div>
       </div>
 
       {/* Student Data Summary */}
-      <div className="rounded-2xl p-6" style={{ backgroundColor: '#1a1a2e', border: '1px solid #2a2a4a' }}>
+      <div className="rounded-2xl p-6" style={{ backgroundColor: '#ffffff', border: '2px solid #9cbadb' }}>
         <div className="flex items-center gap-2 mb-4">
-          <User size={20} style={{ color: '#00d4ff' }} />
-          <h3 className="text-white font-bold">Tus Datos</h3>
+          <User size={20} style={{ color: '#031e41' }} />
+          <h3 className="font-bold" style={{ color: '#031e41' }}>Tus Datos</h3>
         </div>
         <div className="space-y-3">
           <div className="flex justify-between">
-            <span className="text-gray-400">Nombre:</span>
-            <span className="text-white font-medium">{studentData.nombre}</span>
+            <span className="text-gray-600">Nombre:</span>
+            <span className="font-medium" style={{ color: '#031e41' }}>{studentData.nombre}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-400">DNI:</span>
-            <span className="text-white font-medium">{studentData.dni}</span>
+            <span className="text-gray-600">DNI:</span>
+            <span className="font-medium" style={{ color: '#031e41' }}>{studentData.dni}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-400">Email:</span>
-            <span className="text-white font-medium">{studentData.email}</span>
+            <span className="text-gray-600">Email:</span>
+            <span className="font-medium" style={{ color: '#031e41' }}>{studentData.email}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-gray-400">Telefono:</span>
-            <span className="text-white font-medium">{studentData.telefono}</span>
+            <span className="text-gray-600">Teléfono:</span>
+            <span className="font-medium" style={{ color: '#031e41' }}>{studentData.telefono}</span>
           </div>
         </div>
       </div>
@@ -286,26 +286,26 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
       <div className="flex justify-center">
         <div 
           className="w-24 h-24 rounded-full flex items-center justify-center"
-          style={{ backgroundColor: 'rgba(0, 212, 255, 0.1)', border: '2px solid #00d4ff' }}
+          style={{ backgroundColor: 'rgba(156, 186, 219, 0.1)', border: '2px solid #031e41' }}
         >
-          <CheckCircle size={48} style={{ color: '#00d4ff' }} />
+          <CheckCircle size={48} style={{ color: '#031e41' }} />
         </div>
       </div>
 
       {/* Header */}
       <div>
-        <h1 className="text-3xl md:text-4xl font-bold text-white mb-2">
-          Inscripcion <span style={{ color: '#00d4ff', fontStyle: 'italic' }}>Exitosa!</span>
+        <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#031e41' }}>
+          Inscripción <span style={{ color: '#9cbadb', fontStyle: 'italic' }}>Exitosa!</span>
         </h1>
-        <p className="text-gray-400">Tu inscripcion ha sido registrada correctamente</p>
+        <p className="text-gray-600">Tu inscripción ha sido registrada correctamente</p>
       </div>
 
       {/* WhatsApp Group Card */}
-      <div className="rounded-2xl p-6" style={{ backgroundColor: '#1a1a2e', border: '1px solid #2a2a4a' }}>
-        <div className="text-5xl mb-4">&#128172;</div>
-        <h2 className="text-xl font-bold text-white mb-2">Sumate al grupo!</h2>
-        <p className="text-gray-400 text-sm mb-6">
-          Unite al grupo de WhatsApp del curso para recibir todas las novedades y comunicarte con tus companeros
+      <div className="rounded-2xl p-6" style={{ backgroundColor: '#ffffff', border: '2px solid #9cbadb' }}>
+        <div className="text-5xl mb-4">💬</div>
+        <h2 className="text-xl font-bold mb-2" style={{ color: '#031e41' }}>¡Súmate al grupo!</h2>
+        <p className="text-gray-600 text-sm mb-6">
+          Únete al grupo de WhatsApp del curso para recibir todas las novedades y comunicarte con tus compañeros
         </p>
         
         {course.whatsappGroup ? (
@@ -313,7 +313,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
             href={course.whatsappGroup}
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-6 py-3 rounded-xl font-bold text-white transition-all hover:scale-105"
+            className="inline-flex items-center gap-3 px-6 py-3 rounded-lg font-bold text-white transition-all hover:shadow-lg"
             style={{ backgroundColor: '#25D366' }}
           >
             <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -323,7 +323,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
           </a>
         ) : (
           <p className="text-gray-500 text-sm">
-            El link del grupo sera compartido proximamente
+            El link del grupo será compartido próximamente
           </p>
         )}
       </div>
@@ -331,7 +331,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
       {/* Back to Courses */}
       <button
         onClick={() => router.push('/cursos')}
-        className="text-gray-400 hover:text-white transition-colors"
+        className="text-gray-600 hover:font-semibold transition-all"
       >
         Volver a los cursos
       </button>
@@ -339,25 +339,25 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
   );
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: '#0a0a0a' }}>
+    <div className="min-h-screen" style={{ backgroundColor: '#f8f9fa' }}>
       {/* Progress Bar */}
-      <div className="sticky top-0 z-50 px-4 py-4" style={{ backgroundColor: '#0a0a0a' }}>
+      <div className="sticky top-0 z-50 px-4 py-4" style={{ backgroundColor: '#ffffff', borderBottom: '1px solid #e5e7eb' }}>
         <div className="max-w-2xl mx-auto">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-gray-400 text-sm">Paso {currentStep} de {totalSteps}</span>
-            <span className="font-bold" style={{ color: '#00d4ff' }}>{Math.round(progress)}%</span>
+            <span className="text-gray-600 text-sm font-medium">Paso {currentStep} de {totalSteps}</span>
+            <span className="font-bold" style={{ color: '#031e41' }}>{Math.round(progress)}%</span>
           </div>
-          <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#2a2a4a' }}>
+          <div className="h-2 rounded-full overflow-hidden" style={{ backgroundColor: '#e5e7eb' }}>
             <div 
               className="h-full rounded-full transition-all duration-500"
-              style={{ width: `${progress}%`, backgroundColor: '#00d4ff' }}
+              style={{ width: `${progress}%`, backgroundColor: '#031e41' }}
             />
           </div>
         </div>
       </div>
 
       {/* Content */}
-      <div className="max-w-2xl mx-auto px-4 py-8">
+      <div className="max-w-2xl mx-auto px-4 py-8 pb-32">
         {currentStep === 1 && renderStep1()}
         {currentStep === 2 && renderStep2()}
         {currentStep === 3 && renderStep3()}
@@ -366,33 +366,33 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
 
       {/* Navigation Buttons */}
       {currentStep < 4 && (
-        <div className="fixed bottom-0 left-0 right-0 p-4" style={{ backgroundColor: '#0a0a0a', borderTop: '1px solid #2a2a4a' }}>
+        <div className="fixed bottom-0 left-0 right-0 p-4" style={{ backgroundColor: '#ffffff', borderTop: '1px solid #e5e7eb' }}>
           <div className="max-w-2xl mx-auto flex gap-4">
             <button
               onClick={handleBack}
-              className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl font-bold transition-all"
-              style={{ backgroundColor: 'transparent', border: '1px solid #2a2a4a', color: '#00d4ff' }}
+              className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold transition-all"
+              style={{ backgroundColor: '#f3f4f6', border: '2px solid #031e41', color: '#031e41' }}
             >
               <ArrowLeft size={20} />
-              {currentStep === 1 ? 'Volver al curso' : 'Atras'}
+              {currentStep === 1 ? 'Volver al curso' : 'Atrás'}
             </button>
             
             {currentStep === 3 ? (
               <button
                 onClick={handleConfirmEnrollment}
                 disabled={isSubmitting}
-                className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-black transition-all disabled:opacity-50"
-                style={{ backgroundColor: '#00d4ff' }}
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-white transition-all disabled:opacity-50"
+                style={{ backgroundColor: '#031e41' }}
               >
-                {isSubmitting ? 'Procesando...' : 'Confirmar inscripcion'}
+                {isSubmitting ? 'Procesando...' : 'Confirmar inscripción'}
                 {!isSubmitting && <CheckCircle size={20} />}
               </button>
             ) : (
               <button
                 onClick={handleNext}
                 disabled={currentStep === 2 && !validateStep2()}
-                className="flex-1 flex items-center justify-center gap-2 py-4 rounded-xl font-bold text-black transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-                style={{ backgroundColor: '#00d4ff' }}
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-lg font-bold text-white transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                style={{ backgroundColor: '#031e41' }}
               >
                 Continuar
                 <ArrowRight size={20} />
