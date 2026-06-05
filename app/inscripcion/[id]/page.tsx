@@ -6,14 +6,15 @@ import { notFound } from 'next/navigation';
 import EnrollmentFlow from '@/components/enrollment-flow';
 
 interface PageProps {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ id: string }>;
 }
 
 export default function EnrollmentPage({ params }: PageProps) {
-  const { slug } = use(params);
+  const { id } = use(params);
+  const courseId = parseInt(id);
   const { courses } = useCourses();
   
-  const course = courses.find(c => c.slug === slug);
+  const course = courses.find(c => c.id === courseId);
   
   if (!course) {
     return (

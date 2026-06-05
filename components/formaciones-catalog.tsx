@@ -37,7 +37,7 @@ export default function FormacionesCatalog() {
               {courses.map((course, index) => (
                 <Link
                   key={course.id}
-                  href={`/cursos/${course.slug}`}
+                  href={`/cursos/${course.id}`}
                   className={`overflow-hidden rounded-3xl border-2 transition-all duration-300 hover-lift shadow-blue-sm hover:shadow-blue-md block group ${
                     isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
                   }`}

@@ -55,7 +55,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     } else {
-      router.push(`/cursos/${course.slug}`);
+      router.push(`/cursos/${course.id}`);
     }
   };
 

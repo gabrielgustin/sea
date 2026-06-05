@@ -2,9 +2,10 @@ import Image from 'next/image';
 import { coursesData } from '@/lib/coursesData';
 import CourseDetailClient from '@/components/course-detail-client';
 
-export default async function CoursePage({ params }: { params: Promise<{ slug: string }> }) {
-  const { slug } = await params;
-  const course = coursesData.find(c => c.slug === slug);
+export default async function CoursePage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const courseId = parseInt(id);
+  const course = coursesData.find(c => c.id === courseId);
 
   if (!course) {
     return (

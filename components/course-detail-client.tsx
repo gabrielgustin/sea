@@ -350,7 +350,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
 
                   {/* Registration Button */}
                   <button 
-                    onClick={() => router.push(`/inscripcion/${course.slug}`)}
+                    onClick={() => router.push(`/inscripcion/${course.id}`)}
                     className="w-full py-2 rounded-lg font-bold text-white text-sm transition-all duration-300 hover:shadow-lg transform hover:-translate-y-0.5"
                     style={{ backgroundColor: '#031e41' }}
                   >
