@@ -11,7 +11,7 @@ export default function FormacionesPage() {
   return (
     <div className="w-full bg-white">
       {/* Hero Section */}
-      <section className="w-full h-screen md:h-screen lg:min-h-[80vh] flex items-center justify-center px-4 py-16 md:py-0"
+      <section className="w-full h-[50vh] md:h-[60vh] flex items-center justify-center px-4 py-16 md:py-0"
         style={{
           background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)'
         }}
