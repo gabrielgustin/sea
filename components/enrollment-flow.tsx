@@ -110,7 +110,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
         </div>
 
         {/* Course Info Grid */}
-        <div className="grid grid-cols-3 gap-4 mb-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
           <div className="rounded-xl p-4" style={{ backgroundColor: '#f8f9fa', border: '1px solid #9cbadb' }}>
             <div className="flex items-center gap-2 mb-1">
               <Calendar size={16} style={{ color: '#031e41' }} />
