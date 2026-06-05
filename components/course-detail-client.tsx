@@ -303,14 +303,14 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                   </h2>
                   <div className="space-y-6">
                     {course.teachers.map((teacher, index) => (
-                      <div key={index} className="relative flex items-start gap-4 p-4 rounded-lg border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition-all duration-300">
+                      <div key={index} className="flex flex-col md:flex-row md:items-start gap-6 p-6 rounded-lg border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition-all duration-300">
                         {/* Teacher Photo */}
-                        <div className="relative w-24 h-24 rounded-full overflow-hidden flex-shrink-0 border-3" style={{ borderColor: '#9cbadb' }}>
+                        <div className="relative w-32 h-40 md:w-40 md:h-48 rounded-lg overflow-hidden flex-shrink-0 border-3" style={{ borderColor: '#9cbadb', backgroundColor: '#f8f9fa' }}>
                           <Image
                             src={teacher.photo || '/placeholder-teacher.jpg'}
                             alt={teacher.name}
                             fill
-                            className="object-cover"
+                            className="object-cover object-center"
                           />
                         </div>
                         
@@ -319,47 +319,46 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                           <h3 className="text-lg font-bold text-gray-900">
                             {teacher.name}
                           </h3>
-                          <p className="text-sm text-gray-600 mt-1">
+                          <p className="text-sm text-gray-600 mt-2">
                             {teacher.description}
                           </p>
+                          
+                          {/* Social Links */}
+                          <div className="flex items-center gap-4 mt-4">
+                            {teacher.linkedin && (
+                              <a
+                                href={teacher.linkedin}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="transition-all duration-300 hover:scale-125 hover:drop-shadow-lg transform"
+                                title="Ver perfil de LinkedIn"
+                              >
+                                <Image
+                                  src="/linkedin.png"
+                                  alt="LinkedIn"
+                                  width={26}
+                                  height={26}
+                                />
+                              </a>
+                            )}
+                            {teacher.whatsapp && (
+                              <a
+                                href={`https://wa.me/${teacher.whatsapp}?text=${encodeURIComponent('Hola profe!')}`}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="transition-all duration-300 hover:scale-125 hover:drop-shadow-lg transform"
+                                title="Contactar por WhatsApp"
+                              >
+                                <Image
+                                  src="/whatsapp.png"
+                                  alt="WhatsApp"
+                                  width={26}
+                                  height={26}
+                                />
+                              </a>
+                            )}
+                          </div>
                         </div>
-
-                        {/* Social Links - Bottom Right Corner */}
-                        <div className="absolute bottom-4 right-4 flex items-center gap-4">
-                          {teacher.linkedin && (
-                            <a
-                              href={teacher.linkedin}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="transition-all duration-300 hover:scale-125 hover:drop-shadow-lg transform"
-                              title="Ver perfil de LinkedIn"
-                            >
-                              <Image
-                                src="/linkedin.png"
-                                alt="LinkedIn"
-                                width={26}
-                                height={26}
-                              />
-                            </a>
-                          )}
-                          {teacher.whatsapp && (
-                            <a
-                              href={`https://wa.me/${teacher.whatsapp}?text=${encodeURIComponent('Hola profe!')}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="transition-all duration-300 hover:scale-125 hover:drop-shadow-lg transform"
-                              title="Contactar por WhatsApp"
-                            >
-                              <Image
-                                src="/whatsapp.png"
-                                alt="WhatsApp"
-                                width={26}
-                                height={26}
-                              />
-                            </a>
-                          )}
-                        </div>
-                      </div>
                     ))}
                   </div>
                 </div>
