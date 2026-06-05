@@ -31,11 +31,11 @@ export default function Header() {
             />
           </Link>
 
-          {/* Right Side - Logos Desktop */}
+          {/* Right Side - Logo Desktop */}
           <div className="hidden md:flex items-center justify-end gap-0">
             <Image
-              src="/logo-villada.png"
-              alt="ITS Villada Logo"
+              src="/logo-sea.png"
+              alt="SEA Logo"
               width={140}
               height={90}
               className="h-16 w-auto object-contain"
