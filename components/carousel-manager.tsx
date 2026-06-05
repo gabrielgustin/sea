@@ -1,18 +1,16 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { ChevronDown, ChevronUp, Trash2, Edit2, Plus } from 'lucide-react';
+import { ChevronDown, ChevronUp, Trash2, Edit2, Plus, Upload } from 'lucide-react';
 import Image from 'next/image';
 
 interface CarouselSlide {
   id: string;
   title: string;
-  description: string;
   image: string;
   startDate: string;
   duration: string;
   modality: string;
-  redirectSlug: string;
 }
 
 export default function CarouselManager() {
@@ -44,7 +42,7 @@ export default function CarouselManager() {
 
   const handleSave = async () => {
     try {
-      if (!formData.title || !formData.redirectSlug) {
+      if (!formData.title || !formData.image) {
         alert('Por favor completa todos los campos requeridos');
         return;
       }
@@ -155,19 +153,6 @@ export default function CarouselManager() {
               />
             </div>
 
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Descripción
-              </label>
-              <input
-                type="text"
-                value={formData.description || ''}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Descripción del slide"
-              />
-            </div>
-
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -211,29 +196,30 @@ export default function CarouselManager() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                URL de Imagen
+                Imagen del Slide
               </label>
-              <input
-                type="text"
-                value={formData.image || ''}
-                onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Ej: /carousel/image.png"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Slug del Curso (redirección) *
-              </label>
-              <input
-                type="text"
-                value={formData.redirectSlug || ''}
-                onChange={(e) => setFormData({ ...formData, redirectSlug: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Ej: desarrollo-de-aplicaciones"
-              />
-              <p className="text-xs text-gray-500 mt-1">Este es el slug del curso al que redireccionará el click</p>
+              <div className="relative">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      const reader = new FileReader();
+                      reader.onloadend = () => {
+                        setFormData({ ...formData, image: reader.result as string });
+                      };
+                      reader.readAsDataURL(file);
+                    }
+                  }}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                />
+                {formData.image && (
+                  <div className="mt-2 text-sm text-green-600">
+                    ✓ Imagen seleccionada
+                  </div>
+                )}
+              </div>
             </div>
 
             <div className="flex gap-2 pt-4">
@@ -277,16 +263,12 @@ export default function CarouselManager() {
                 <h3 className="font-semibold text-gray-900 text-lg mb-1">
                   {slide.title}
                 </h3>
-                <p className="text-sm text-gray-600 mb-2">{slide.description}</p>
                 <div className="flex flex-wrap gap-2 text-xs text-gray-500">
                   <span className="bg-gray-100 px-2 py-1 rounded">
                     {slide.startDate}
                   </span>
                   <span className="bg-gray-100 px-2 py-1 rounded">
                     {slide.duration}
-                  </span>
-                  <span className="bg-gray-100 px-2 py-1 rounded">
-                    Redirige a: {slide.redirectSlug}
                   </span>
                 </div>
               </div>
