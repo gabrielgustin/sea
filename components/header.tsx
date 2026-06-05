@@ -34,8 +34,8 @@ export default function Header() {
           {/* Right Side - Logo Desktop */}
           <div className="hidden md:flex items-center justify-end gap-0">
             <Image
-              src="/logo-sea.png"
-              alt="SEA Logo"
+              src="/logo-villada.png"
+              alt="ITS Villada Logo"
               width={140}
               height={90}
               className="h-16 w-auto object-contain"
