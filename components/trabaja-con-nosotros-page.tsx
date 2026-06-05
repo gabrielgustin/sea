@@ -225,39 +225,6 @@ export default function TrabajaConNosotrosPage() {
           )}
         </div>
       </section>
-
-      {/* Info Section */}
-      <section className="py-16 px-4 bg-gray-50">
-        <div className="w-full max-w-2xl mx-auto">
-          <h2 className="text-3xl font-bold text-center mb-12" style={{ color: '#031e41' }}>
-            ¿Qué buscamos?
-          </h2>
-          <div className="grid md:grid-cols-2 gap-8">
-            <div className="bg-white p-6 rounded-lg border-l-4" style={{ borderColor: '#e74c3c' }}>
-              <h3 className="font-bold text-lg mb-3" style={{ color: '#031e41' }}>
-                Para Docentes
-              </h3>
-              <ul className="space-y-2 text-gray-700">
-                <li>• Pasión por la enseñanza</li>
-                <li>• Experiencia en tu área</li>
-                <li>• Capacidad de innovar</li>
-                <li>• Disponibilidad flexible</li>
-              </ul>
-            </div>
-            <div className="bg-white p-6 rounded-lg border-l-4" style={{ borderColor: '#3498db' }}>
-              <h3 className="font-bold text-lg mb-3" style={{ color: '#031e41' }}>
-                Para Colaboradores
-              </h3>
-              <ul className="space-y-2 text-gray-700">
-                <li>• Compromiso con educación</li>
-                <li>• Habilidades complementarias</li>
-                <li>• Trabajo en equipo</li>
-                <li>• Disposición a crecer</li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </section>
     </div>
   );
 }
