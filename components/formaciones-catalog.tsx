@@ -1,34 +1,13 @@
 'use client';
 
-import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ChevronRight, Clock, Calendar, BookOpen } from 'lucide-react';
+import { useInView } from '@/hooks/useInView';
 import { useCourses } from '@/context/CoursesContext';
-
-interface CourseDisplay {
-  id: number;
-  title: string;
-  description: string;
-  image: string;
-  modality: string;
-  startDate: string;
-  duration: string;
-}
 
 export default function FormacionesCatalog() {
   const { courses } = useCourses();
-  const [selectedCategory, setSelectedCategory] = useState<string>('all');
-
-  const filteredCourses = courses;
-
-  if (!courses || courses.length === 0) {
-    return (
-      <div className="w-full py-20 text-center">
-        <p style={{ color: '#031e41' }} className="text-lg font-semibold">Cargando formaciones...</p>
-      </div>
-    );
-  }
+  const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
 
   return (
     <div className="w-full bg-white">
@@ -45,66 +24,73 @@ export default function FormacionesCatalog() {
       </section>
 
       {/* Courses Grid */}
-      <section className="w-full py-16 px-4">
+      <section ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12">
         <div className="max-w-6xl mx-auto">
-          {filteredCourses.length === 0 ? (
+          {courses.length === 0 ? (
             <div className="text-center py-12">
               <p style={{ color: '#031e41' }} className="text-lg font-semibold">
-                No hay formaciones disponibles en esta categoría
+                Cargando formaciones...
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {filteredCourses.map((course) => (
-                <div
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {courses.map((course, index) => (
+                <Link
                   key={course.id}
-                  className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-xl transition-all duration-300 border border-gray-200 flex flex-col"
+                  href={`/cursos/${course.slug}`}
+                  className={`overflow-hidden rounded-3xl border-2 transition-all duration-300 hover-lift shadow-blue-sm hover:shadow-blue-md block group ${
+                    isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
+                  }`}
+                  style={{ 
+                    borderColor: '#e5e5e5',
+                    backgroundColor: '#ffffff',
+                    animationDelay: isInView ? `${index * 0.1}s` : '0s'
+                  }}
                 >
-                  {/* Image */}
-                  <div className="relative w-full h-48 bg-gray-200 overflow-hidden">
+                  {/* Image Container */}
+                  <div className="relative h-48 md:h-56 overflow-hidden bg-gray-100">
                     <Image
                       src={course.image}
                       alt={course.title}
                       fill
-                      className="object-cover hover:scale-105 transition-transform duration-300"
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
+                    
+                    {/* Badge */}
+                    <div 
+                      className="absolute top-4 right-4 px-4 py-2 rounded-full text-white text-xs font-bold transition-all duration-300 group-hover:translate-y-1"
+                      style={{ backgroundColor: '#031e41' }}
+                    >
+                      {course.badge}
+                    </div>
                   </div>
 
                   {/* Content */}
-                  <div className="p-6 flex flex-col flex-grow">
-                    <h3 className="text-xl font-bold mb-2" style={{ color: '#031e41' }}>
+                  <div className="p-4 md:p-5">
+                    {/* Title */}
+                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight transition-colors duration-300 group-hover:text-blue-900" style={{ color: 'inherit' }}>
                       {course.title}
                     </h3>
-                    <p className="text-gray-600 text-sm mb-4 flex-grow">
-                      {course.description}
+
+                    {/* Subtitle */}
+                    <p className="text-gray-600 text-xs md:text-sm mb-4">
+                      {course.subtitle}
                     </p>
 
                     {/* Details */}
-                    <div className="space-y-2 mb-6 border-t border-gray-100 pt-4">
-                      <div className="flex items-center gap-2 text-sm text-gray-700">
-                        <BookOpen size={16} style={{ color: '#1a4d7a' }} />
-                        <span>{course.modality}</span>
+                    <div className="space-y-1">
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <span className="font-semibold text-xs">Inicia:</span>
+                        <span className="text-xs">{course.startDate}</span>
                       </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-700">
-                        <Calendar size={16} style={{ color: '#1a4d7a' }} />
-                        <span>Inicia: {course.startDate}</span>
-                      </div>
-                      <div className="flex items-center gap-2 text-sm text-gray-700">
-                        <Clock size={16} style={{ color: '#1a4d7a' }} />
-                        <span>Duración: {course.duration}</span>
+                      <div className="flex items-center gap-2 text-gray-700">
+                        <span className="font-semibold text-xs">Modalidad:</span>
+                        <span className="text-xs">{course.modality}</span>
                       </div>
                     </div>
-
-                    {/* Button */}
-                    <button
-                      className="w-full py-3 rounded-lg font-semibold transition-all duration-300 text-white flex items-center justify-center gap-2 hover:gap-3"
-                      style={{ backgroundColor: '#031e41' }}
-                    >
-                      Ver Detalles
-                      <ChevronRight size={18} />
-                    </button>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           )}
@@ -112,7 +98,7 @@ export default function FormacionesCatalog() {
           {/* Total Count */}
           <div className="text-center mt-12">
             <p style={{ color: '#1a4d7a' }} className="text-lg">
-              Mostrando <span className="font-bold">{filteredCourses.length}</span> formación(es) disponible(s)
+              Mostrando <span className="font-bold">{courses.length}</span> formación(es) disponible(s)
             </p>
           </div>
         </div>
