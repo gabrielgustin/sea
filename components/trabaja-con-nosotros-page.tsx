@@ -34,7 +34,6 @@ export default function TrabajaConNosotrosPage() {
     setLoading(true);
 
     // Aquí irá la lógica para enviar el formulario a un API o email
-    console.log('[v0] Aplicación enviada:', formData);
 
     // Simular envío
     await new Promise((resolve) => setTimeout(resolve, 1500));

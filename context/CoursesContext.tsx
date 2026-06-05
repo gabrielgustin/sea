@@ -60,7 +60,7 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
       try {
         setCourses(JSON.parse(savedCourses));
       } catch (error) {
-        console.log('[v0] Error parsing courses from localStorage:', error);
+        console.error('Error parsing courses from localStorage:', error);
         setCourses(coursesData);
       }
     } else {
