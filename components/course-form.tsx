@@ -310,11 +310,11 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
                   />
                 </div>
                 <div>
-                  <Label>Fecha Limite Inscripcion (YYYY-MM-DD)</Label>
+                  <Label>Fecha Limite Inscripcion</Label>
                   <Input
                     value={formData.enrollmentDeadline || ''}
                     onChange={(e) => handleInputChange('enrollmentDeadline', e.target.value)}
-                    placeholder="2026-05-25"
+                    placeholder="Lun 25/05/2026"
                     className="mt-2 transition-smooth"
                   />
                 </div>
