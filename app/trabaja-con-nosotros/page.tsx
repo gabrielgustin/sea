@@ -12,7 +12,7 @@ export default function Page() {
     <div className="flex h-screen w-screen bg-white overflow-hidden">
       <Sidebar />
       <div className="flex h-screen w-full">
-        <main className="w-full ml-[10%] overflow-x-hidden overflow-y-auto">
+        <main className="w-full md:ml-[10%] overflow-x-hidden overflow-y-auto">
           <Header />
           <TrabajaConNosotrosPage />
         </main>
