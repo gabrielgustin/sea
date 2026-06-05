@@ -51,19 +51,42 @@ export default function CourseDetailClient({ course }: { course: Course }) {
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  // Verificar si el curso ya ha comenzado
-  const hasCourseStarted = () => {
-    if (!course.startDate) return false;
-    // Parseando formato: "Mar 3/06/2026" o similar
+  // Generar mensaje dinámico sobre la fecha de inicio del curso
+  const getStartDateMessage = () => {
+    if (!course.startDate) return null;
+    
     try {
-      const datePart = course.startDate.split(' ').slice(1).join(' '); // "3/06/2026"
-      const [day, month, year] = datePart.split('/');
-      const courseStart = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      let courseStartDate;
+      
+      // Si es formato ISO (YYYY-MM-DD)
+      if (course.startDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [year, month, day] = course.startDate.split('-');
+        courseStartDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      } else {
+        // Si es formato con día de la semana "Lun 1/06/2026"
+        const datePart = course.startDate.split(' ').slice(1).join(' ');
+        const [day, month, year] = datePart.split('/');
+        courseStartDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      }
+      
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      return today > courseStart;
-    } catch {
-      return false;
+      const startOfDay = new Date(courseStartDate);
+      startOfDay.setHours(0, 0, 0, 0);
+      
+      if (today > startOfDay) {
+        // El curso ya comenzó
+        if (canEnroll) {
+          return `El curso comenzó el ${course.startDate}, pero aún puedes inscribirte!`;
+        } else {
+          return `El curso comenzó el ${course.startDate} y ya no es posible inscribirse.`;
+        }
+      } else {
+        // El curso aún no ha comenzado
+        return `El curso comienza el ${course.startDate}`;
+      }
+    } catch (error) {
+      return `El curso comienza el ${course.startDate}`;
     }
   };
 
@@ -387,7 +410,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                   {course.startDate && (
                     <div className="pt-2">
                       <p className="text-xs text-gray-500 text-center">
-                        El curso comienza el {course.startDate}
+                        {getStartDateMessage()}
                       </p>
                     </div>
                   )}
