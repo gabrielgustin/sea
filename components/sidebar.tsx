@@ -1,17 +1,11 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { Menu, X, Home, BookOpen, Instagram, Mail, LogIn, LogOut } from 'lucide-react';
-import { useAuth } from '@/context/AuthContext';
+import { useState } from 'react';
+import { Menu, X, Home, BookOpen, Instagram, Mail } from 'lucide-react';
 import Link from 'next/link';
-import LoginModal from './login-modal';
 
 export default function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
-  const [loginOpen, setLoginOpen] = useState(false);
-  const [showLoginAnimation, setShowLoginAnimation] = useState(false);
-  const [showAuthIconAnimation, setShowAuthIconAnimation] = useState(false);
-  const { isAuthenticated, logout } = useAuth();
 
   const publicNavItems = [
     { icon: Home, label: 'Inicio', href: '/' },
@@ -26,28 +20,6 @@ export default function Sidebar() {
     if (contactSection) {
       contactSection.scrollIntoView({ behavior: 'smooth' });
     }
-  };
-
-  const handleLogout = () => {
-    setShowLoginAnimation(false);
-    setShowAuthIconAnimation(true);
-    setTimeout(() => {
-      setShowAuthIconAnimation(false);
-      logout();
-    }, 400);
-  };
-
-  useEffect(() => {
-    // Cuando isAuthenticated cambia, disparar animación
-    if (isAuthenticated) {
-      setShowAuthIconAnimation(true);
-      setTimeout(() => setShowAuthIconAnimation(false), 400);
-    }
-  }, [isAuthenticated]);
-
-  const handleLoginSuccess = () => {
-    setShowLoginAnimation(true);
-    setTimeout(() => setShowLoginAnimation(false), 600);
   };
 
   // Icon size for consistency
@@ -115,23 +87,6 @@ export default function Sidebar() {
               </Link>
             );
           })}
-
-          {/* Login/Logout Button */}
-          <button
-            onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
-            className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
-            title={isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
-          >
-            {isAuthenticated ? (
-              <LogOut size={iconSize} className={`transition-all duration-300 group-hover:scale-110 ${showAuthIconAnimation ? 'animate-icon-flip' : ''}`} style={{ color: '#031e41' }} />
-            ) : (
-              <LogIn size={iconSize} className={`transition-all duration-300 group-hover:scale-110 ${showAuthIconAnimation ? 'animate-icon-flip' : ''}`} style={{ color: '#031e41' }} />
-            )}
-            <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
-              {isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
-            </span>
-          </button>
-
 
         </nav>
       </aside>
@@ -217,24 +172,8 @@ export default function Sidebar() {
             );
           })}
 
-          {/* Login/Logout Button */}
-          <button
-            onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
-            className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group"
-          >
-            {isAuthenticated ? (
-              <LogOut size={iconSize} className={`transition-all duration-300 group-hover:scale-110 ${showAuthIconAnimation ? 'animate-icon-flip' : ''}`} style={{ color: '#031e41' }} />
-            ) : (
-              <LogIn size={iconSize} className={`transition-all duration-300 group-hover:scale-110 ${showAuthIconAnimation ? 'animate-icon-flip' : ''}`} style={{ color: '#031e41' }} />
-            )}
-            <span className="text-sm font-medium" style={{ color: '#031e41' }}>
-              {isAuthenticated ? 'Cerrar sesión' : 'Iniciar sesión'}
-            </span>
-          </button>
         </nav>
       </aside>
-
-      <LoginModal open={loginOpen} onOpenChange={setLoginOpen} onLoginSuccess={handleLoginSuccess} />
     </>
   );
 }
