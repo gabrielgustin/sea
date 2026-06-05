@@ -303,9 +303,9 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                   </h2>
                   <div className="space-y-6">
                     {course.teachers.map((teacher, index) => (
-                      <div key={index} className="flex flex-col md:flex-row md:items-start gap-6 p-6 rounded-lg border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition-all duration-300">
+                      <div key={index} className="flex flex-col md:flex-row md:items-center gap-4 p-4 rounded-lg border border-gray-100 hover:border-gray-200 hover:bg-gray-50 transition-all duration-300">
                         {/* Teacher Photo */}
-                        <div className="relative w-32 h-40 md:w-40 md:h-48 rounded-lg overflow-hidden flex-shrink-0 border-3" style={{ borderColor: '#9cbadb', backgroundColor: '#f8f9fa' }}>
+                        <div className="relative w-24 h-24 rounded-full overflow-hidden flex-shrink-0 border-3 mx-auto md:mx-0" style={{ borderColor: '#9cbadb', backgroundColor: '#f8f9fa' }}>
                           <Image
                             src={teacher.photo || '/placeholder-teacher.jpg'}
                             alt={teacher.name}
@@ -315,16 +315,16 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                         </div>
                         
                         {/* Teacher Info */}
-                        <div className="flex-1">
+                        <div className="flex-1 text-center md:text-left">
                           <h3 className="text-lg font-bold text-gray-900">
                             {teacher.name}
                           </h3>
-                          <p className="text-sm text-gray-600 mt-2">
+                          <p className="text-sm text-gray-600 mt-1">
                             {teacher.description}
                           </p>
                           
                           {/* Social Links */}
-                          <div className="flex items-center gap-4 mt-4">
+                          <div className="flex items-center gap-4 mt-3 justify-center md:justify-start">
                             {teacher.linkedin && (
                               <a
                                 href={teacher.linkedin}
