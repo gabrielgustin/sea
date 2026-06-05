@@ -180,7 +180,7 @@ export default function LearningMethodologySection() {
         </div>
 
         {/* Progress Bar Container */}
-        <div className="relative mb-8">
+        <div className="relative mb-8 hidden md:block">
           {/* Step Labels */}
           <div className="flex justify-between mb-3">
             {steps.map((step, index) => (
