@@ -191,27 +191,27 @@ export default function FormacionesPage() {
       </section>
 
       {/* Process Section */}
-      <section className="py-20 px-4 bg-gradient-to-b from-gray-50 to-white">
+      <section className="py-16 md:py-20 px-4 bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4" style={{ color: '#031e41' }}>
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-3xl md:text-5xl font-bold mb-3 md:mb-4" style={{ color: '#031e41' }}>
               Cómo Funciona
             </h2>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto px-2">
               Un proceso simple y transparente diseñado para asegurar que tu institución reciba exactamente lo que necesita
             </p>
           </div>
 
           {/* Timeline Container */}
           <div className="relative">
-            {/* Connection line */}
-            <div className="hidden md:block absolute top-24 left-0 right-0 h-1" style={{
+            {/* Connection line - Desktop only */}
+            <div className="hidden lg:block absolute top-[100px] left-[5%] right-[5%] h-1" style={{
               background: 'linear-gradient(to right, transparent, #9cbadb, transparent)',
               zIndex: 0
             }}></div>
 
             {/* Steps Grid */}
-            <div className="grid md:grid-cols-4 gap-6 md:gap-0 relative z-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 md:gap-4 lg:gap-2 relative z-10">
               {[
                 {
                   step: '01',
@@ -234,11 +234,11 @@ export default function FormacionesPage() {
                   description: 'Emitimos certificados de reconocimiento validados'
                 }
               ].map((item, idx) => (
-                <div key={idx} className="flex flex-col items-center md:items-center">
+                <div key={idx} className="flex flex-col items-center h-full">
                   {/* Step Circle */}
-                  <div className="mb-6 relative">
+                  <div className="mb-6 flex-shrink-0 relative">
                     <div
-                      className="w-20 h-20 rounded-full flex items-center justify-center font-bold text-3xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-110"
+                      className="w-20 h-20 md:w-24 md:h-24 rounded-full flex items-center justify-center font-bold text-2xl md:text-3xl shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-110 flex-shrink-0"
                       style={{ 
                         backgroundColor: '#031e41',
                         color: '#ffffff'
@@ -248,23 +248,25 @@ export default function FormacionesPage() {
                     </div>
                     {/* Accent dot */}
                     <div 
-                      className="absolute -bottom-1 -right-1 w-6 h-6 rounded-full border-4 border-white"
+                      className="absolute -bottom-2 -right-2 w-6 h-6 md:w-7 md:h-7 rounded-full border-4 border-white"
                       style={{ backgroundColor: '#9cbadb' }}
                     ></div>
                   </div>
 
-                  {/* Card Container */}
-                  <div className="w-full px-4 md:px-0">
+                  {/* Card Container - Flex grow to fill available space */}
+                  <div className="w-full px-2 sm:px-0 flex flex-col flex-grow">
                     <div 
-                      className="bg-white rounded-2xl p-6 text-center shadow-md hover:shadow-xl transition-all duration-300 border-t-4"
+                      className="bg-white rounded-xl md:rounded-2xl p-5 md:p-6 text-center shadow-md hover:shadow-lg transition-all duration-300 border-t-4 h-full flex flex-col justify-between"
                       style={{ borderTopColor: '#9cbadb' }}
                     >
-                      <h3 className="text-xl font-bold mb-3" style={{ color: '#031e41' }}>
-                        {item.title}
-                      </h3>
-                      <p className="text-gray-600 leading-relaxed text-sm">
-                        {item.description}
-                      </p>
+                      <div>
+                        <h3 className="text-lg md:text-xl font-bold mb-3 md:mb-4" style={{ color: '#031e41' }}>
+                          {item.title}
+                        </h3>
+                        <p className="text-gray-600 leading-relaxed text-sm md:text-base">
+                          {item.description}
+                        </p>
+                      </div>
                     </div>
                   </div>
                 </div>
