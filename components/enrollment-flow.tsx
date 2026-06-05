@@ -375,7 +375,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
 
       {/* Back to Courses */}
       <button
-        onClick={() => router.push('/cursos')}
+        onClick={() => router.push('/')}
         className="text-gray-600 hover:font-semibold transition-all"
       >
         Volver a los cursos
