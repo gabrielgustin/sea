@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { ChevronUp, ChevronDown, Plus, Trash2, Upload, X } from 'lucide-react';
 import Image from 'next/image';
+import { DatePicker } from '@/components/date-picker';
 
 interface CourseFormProps {
   course?: Course;
@@ -302,20 +303,18 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <Label>Fecha de Inicio</Label>
-                  <Input
+                  <DatePicker
                     value={formData.startDate}
-                    onChange={(e) => handleInputChange('startDate', e.target.value)}
-                    placeholder="Lun 1/06/2026"
-                    className="mt-2 transition-smooth"
+                    onChange={(date) => handleInputChange('startDate', date)}
+                    placeholder="Seleccionar fecha de inicio"
                   />
                 </div>
                 <div>
                   <Label>Fecha Limite Inscripcion</Label>
-                  <Input
+                  <DatePicker
                     value={formData.enrollmentDeadline || ''}
-                    onChange={(e) => handleInputChange('enrollmentDeadline', e.target.value)}
-                    placeholder="Lun 25/05/2026"
-                    className="mt-2 transition-smooth"
+                    onChange={(date) => handleInputChange('enrollmentDeadline', date)}
+                    placeholder="Seleccionar fecha límite"
                   />
                 </div>
               </div>
