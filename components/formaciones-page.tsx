@@ -59,8 +59,8 @@ export default function FormacionesPage() {
               },
               {
                 icon: Award,
-                title: 'Certificaciones Reconocidas',
-                description: 'Nuestras certificaciones son validadas y reconocidas en el sector educativo y laboral.'
+                title: 'Certificaciones',
+                description: 'Entregamos constancias de participación que respaldan el conocimiento adquirido y enriquecen el portfolio de cada estudiante.'
               },
               {
                 icon: Users,
