@@ -16,7 +16,7 @@ export const coursesData = [
     teachers: [
       {
         name: 'Gabriel Muñoz',
-        photo: '/teachers/gabriel-munoz.jpg',
+        photo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Gabriel%20Mun%CC%83oz%20-aQMeW95ur6rqkVhtQS3Rl905V7MrM6.png',
         description: '',
         linkedin: 'https://www.linkedin.com/in/gabiagustin',
         whatsapp: '5493516307002'
@@ -74,8 +74,8 @@ export const coursesData = [
     teachers: [
       {
         name: 'Jose Verino',
-        photo: '/teachers/jose-verino.jpg',
-        description: '',
+        photo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/JoseVerino-JXEQKUWgaDRut1jLxMvyYuPYNjAn4c.jpeg',
+        description: 'Soy un desarrollador de videojuegos con 4 años de experiencia en el rubro',
         linkedin: 'https://www.linkedin.com/in/jos%C3%A9-verino-3385b0212/',
         whatsapp: '5493541571482'
       }
@@ -132,7 +132,7 @@ export const coursesData = [
     teachers: [
       {
         name: 'Santiago Henderson',
-        photo: '/teachers/santiago-henderson.jpg',
+        photo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Santiago%20Henderson-z1CsRFAH3mXiLvimK9mmeN7wcuJD04.png',
         description: '',
         linkedin: 'https://linkedin.com/in/santiago-henderson-779777180',
         whatsapp: '5493516702784'
@@ -194,6 +194,13 @@ export const coursesData = [
         description: '',
         linkedin: '',
         whatsapp: '5493517160340'
+      },
+      {
+        name: 'Santiago Donalisio',
+        photo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Santiago%20Donalisio%20-IDz1pn8LOIQiwCJ6SoRPIZ7Uoe8dPb.png',
+        description: '',
+        linkedin: '',
+        whatsapp: ''
       }
     ],
     duration: '24 clases',
