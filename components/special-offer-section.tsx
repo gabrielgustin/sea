@@ -59,7 +59,7 @@ export default function SpecialOfferSection() {
         </Link>
 
         {/* Card 3 */}
-        <Link href="/nuestras-formaciones">
+        <Link href="/catalogo-formaciones">
           <div className="p-8 rounded-2xl text-white text-center transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer flex flex-col justify-center min-h-80" style={{ backgroundColor: '#031e41' }}>
             <h3 className="text-2xl md:text-3xl font-bold mb-4">Nuestras Formaciones</h3>
             <p className="text-base md:text-lg leading-relaxed">
