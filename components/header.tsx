@@ -7,15 +7,15 @@ export default function Header() {
   return (
     <header className="w-full bg-white fixed md:static top-0 left-0 right-0 z-30 md:z-auto" style={{ borderBottom: '2px solid #031e41' }}>
       <div className="w-full px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20 md:h-24">
+        <div className="flex items-center justify-between h-20 md:h-32">
           {/* Desktop Logo - SEA */}
           <Link href="/" className="hidden md:flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
               src="/logo-sea.png" 
               alt="SEA Logo"
-              width={100}
-              height={100}
-              className="h-16 w-auto object-contain"
+              width={120}
+              height={120}
+              className="h-24 w-auto object-contain"
               priority
             />
           </Link>
@@ -36,9 +36,9 @@ export default function Header() {
             <Image
               src="/logo-villada.png"
               alt="ITS Villada Logo"
-              width={140}
-              height={90}
-              className="h-16 w-auto object-contain"
+              width={160}
+              height={110}
+              className="h-24 w-auto object-contain"
             />
           </div>
         </div>
