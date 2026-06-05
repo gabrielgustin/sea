@@ -16,17 +16,16 @@ export default function Sidebar() {
   const publicNavItems = [
     { icon: Home, label: 'Inicio', href: '/' },
     { icon: BookOpen, label: 'Formaciones', href: '/catalogo-formaciones' },
-    { icon: Mail, label: 'Contacto', href: '/#contacto' },
-    { icon: Instagram, label: 'Instagram', href: 'https://instagram.com' },
+    { icon: Mail, label: 'Contacto', href: '#contacto', scroll: true },
+    { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/itsvillada/?hl=es' },
   ];
 
-  const handleLogout = () => {
-    setShowLoginAnimation(false);
-    setShowAuthIconAnimation(true);
-    setTimeout(() => {
-      setShowAuthIconAnimation(false);
-      logout();
-    }, 400);
+  const handleContactClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const contactSection = document.querySelector('#contacto');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
   };
 
   useEffect(() => {
@@ -57,22 +56,43 @@ export default function Sidebar() {
           {publicNavItems.map((item, index) => {
             const Icon = item.icon;
             const isExternal = item.href.startsWith('http');
+            const isScroll = (item as any).scroll;
             
-            return isExternal ? (
-              <a
-                key={index}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
-                title={item.label}
-              >
-                <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-                <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
-                  {item.label}
-                </span>
-              </a>
-            ) : (
+            if (isExternal) {
+              return (
+                <a
+                  key={index}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
+                  title={item.label}
+                >
+                  <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                  <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
+                    {item.label}
+                  </span>
+                </a>
+              );
+            }
+            
+            if (isScroll) {
+              return (
+                <button
+                  key={index}
+                  onClick={handleContactClick}
+                  className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
+                  title={item.label}
+                >
+                  <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                  <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
+                    {item.label}
+                  </span>
+                </button>
+              );
+            }
+            
+            return (
               <Link
                 key={index}
                 href={item.href}
@@ -141,20 +161,41 @@ export default function Sidebar() {
           {publicNavItems.map((item, index) => {
             const Icon = item.icon;
             const isExternal = item.href.startsWith('http');
+            const isScroll = (item as any).scroll;
             
-            return isExternal ? (
-              <a
-                key={index}
-                href={item.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group"
-                onClick={() => setIsOpen(false)}
-              >
-                <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
-                <span className="text-sm font-medium" style={{ color: '#031e41' }}>{item.label}</span>
-              </a>
-            ) : (
+            if (isExternal) {
+              return (
+                <a
+                  key={index}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group"
+                  onClick={() => setIsOpen(false)}
+                >
+                  <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                  <span className="text-sm font-medium" style={{ color: '#031e41' }}>{item.label}</span>
+                </a>
+              );
+            }
+            
+            if (isScroll) {
+              return (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    handleContactClick(e);
+                    setIsOpen(false);
+                  }}
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group w-full"
+                >
+                  <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                  <span className="text-sm font-medium" style={{ color: '#031e41' }}>{item.label}</span>
+                </button>
+              );
+            }
+            
+            return (
               <Link
                 key={index}
                 href={item.href}

@@ -31,7 +31,7 @@ export default function ContactSection() {
   };
 
   return (
-    <section className="py-16 px-4 sm:px-6 lg:px-8">
+    <section id="contacto" className="py-16 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12 animate-fade-in-up">
           <h2 className="text-4xl font-bold mb-4" style={{ color: '#031e41' }}>Ponte en Contacto</h2>
