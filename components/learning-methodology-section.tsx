@@ -86,6 +86,10 @@ export default function LearningMethodologySection() {
     const container = getScrollContainer();
     if (!section || !container) return;
 
+    // Desabilitar efecto de scroll en móvil
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) return;
+
     const checkPosition = () => {
       if (hasCompleted || isLocked) return;
 
@@ -111,6 +115,10 @@ export default function LearningMethodologySection() {
   // Wheel handler
   useEffect(() => {
     if (!isLocked) return;
+    
+    // Desabilitar en móvil
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) return;
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
@@ -131,6 +139,10 @@ export default function LearningMethodologySection() {
   // Touch handlers
   useEffect(() => {
     if (!isLocked) return;
+    
+    // Desabilitar en móvil
+    const isMobile = window.innerWidth < 768;
+    if (isMobile) return;
 
     const handleTouchStart = (e: TouchEvent) => {
       touchStartY.current = e.touches[0].clientY;
