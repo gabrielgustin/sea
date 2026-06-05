@@ -11,12 +11,12 @@ export default function FormacionesPage() {
   return (
     <div className="w-full bg-white">
       {/* Hero Section */}
-      <section className="h-screen md:h-screen lg:min-h-[80vh] flex items-center justify-center px-4 py-16 md:py-0"
+      <section className="w-full h-screen md:h-screen lg:min-h-[80vh] flex items-center justify-center px-8 py-16 md:py-0"
         style={{
           background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)'
         }}
       >
-        <div className="max-w-6xl mx-auto text-center text-white">
+        <div className="w-full max-w-6xl text-center text-white px-4">
           <div className="mb-6 inline-block px-4 py-2 rounded-full" style={{ backgroundColor: 'rgba(156, 186, 219, 0.2)' }}>
             <p className="text-sm font-semibold text-blue-200">Nuestro Servicio Principal</p>
           </div>
