@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Course } from '@/context/CoursesContext';
-import { ArrowLeft, ArrowRight, Calendar, Clock, User, CheckCircle, Monitor, Mail, Phone, CreditCard } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Calendar, Clock, User, CheckCircle, Monitor, Mail, Phone, CreditCard, AlertCircle } from 'lucide-react';
 import Image from 'next/image';
 
 interface EnrollmentFlowProps {
@@ -27,6 +27,14 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
     telefono: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [whatsappLinkSent, setWhatsappLinkSent] = useState(false);
+
+  const handleResendWhatsappLink = () => {
+    // Simular envío del link
+    setWhatsappLinkSent(true);
+    // Resetear después de 2 segundos
+    setTimeout(() => setWhatsappLinkSent(false), 3000);
+  };
 
   const totalSteps = 4;
   const progress = (currentStep / totalSteps) * 100;
@@ -64,7 +72,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
   };
 
   const validateStep2 = () => {
-    return studentData.nombre && studentData.dni && studentData.email && studentData.telefono;
+    return studentData.nombre && studentData.dni && studentData.email && studentData.telefono && isStudentDataVerified;
   };
 
   const handleConfirmEnrollment = async () => {
@@ -149,9 +157,18 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
       {/* Header */}
       <div className="text-center">
         <h1 className="text-3xl md:text-4xl font-bold mb-2" style={{ color: '#031e41' }}>
-          Datos del <span style={{ color: '#9cbadb', fontStyle: 'italic' }}>Estudiante</span>
+          Datos del <span style={{ color: '#e74c3c', fontStyle: 'italic' }}>Estudiante</span>
         </h1>
         <p className="text-gray-600">Completa los datos del estudiante</p>
+      </div>
+
+      {/* Important Notice */}
+      <div className="rounded-xl p-4 flex gap-3" style={{ backgroundColor: '#fef2f2', border: '2px solid #e74c3c' }}>
+        <AlertCircle size={20} style={{ color: '#e74c3c', flexShrink: 0 }} />
+        <div>
+          <p className="font-bold" style={{ color: '#e74c3c' }}>Datos de la Persona que se Inscribe</p>
+          <p className="text-sm text-gray-700">Por favor, ingresa los datos de la persona que asistirá al curso. Estos datos serán utilizados para el certificado oficial.</p>
+        </div>
       </div>
 
       {/* Form */}
@@ -221,6 +238,22 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
             />
           </div>
         </div>
+      </div>
+
+      {/* Verification Checkbox */}
+      <div className="rounded-xl p-4 flex items-start gap-3" style={{ backgroundColor: '#f0f9ff', border: '2px solid #031e41' }}>
+        <input
+          type="checkbox"
+          id="verify-student"
+          checked={isStudentDataVerified}
+          onChange={(e) => setIsStudentDataVerified(e.target.checked)}
+          className="w-5 h-5 mt-0.5 cursor-pointer rounded"
+          style={{ accentColor: '#e74c3c' }}
+        />
+        <label htmlFor="verify-student" className="cursor-pointer flex-1">
+          <p className="font-semibold" style={{ color: '#031e41' }}>Confirmo que los datos ingresados son del estudiante</p>
+          <p className="text-sm text-gray-600">Estos datos serán utilizados para emitir el certificado oficial del curso.</p>
+        </label>
       </div>
     </div>
   );
@@ -309,18 +342,32 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
         </p>
         
         {course.whatsappGroup ? (
-          <a
-            href={course.whatsappGroup}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center gap-3 px-6 py-3 rounded-lg font-bold text-white transition-all hover:shadow-lg"
-            style={{ backgroundColor: '#25D366' }}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-            </svg>
-            Unirse al Grupo de WhatsApp
-          </a>
+          <div className="space-y-3">
+            <a
+              href={course.whatsappGroup}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center justify-center gap-3 px-6 py-3 rounded-lg font-bold text-white transition-all hover:shadow-lg w-full"
+              style={{ backgroundColor: '#25D366' }}
+            >
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+              </svg>
+              Unirse al Grupo de WhatsApp
+            </a>
+            
+            <button
+              onClick={handleResendWhatsappLink}
+              className="w-full px-6 py-3 rounded-lg font-bold transition-all"
+              style={{ 
+                backgroundColor: whatsappLinkSent ? '#e8f5e9' : '#f3f4f6',
+                border: '2px solid #031e41',
+                color: whatsappLinkSent ? '#2e7d32' : '#031e41'
+              }}
+            >
+              {whatsappLinkSent ? '✓ Link reenviado a tu email' : 'Reenviar link por email'}
+            </button>
+          </div>
         ) : (
           <p className="text-gray-500 text-sm">
             El link del grupo será compartido próximamente
