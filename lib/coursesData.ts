@@ -122,7 +122,7 @@ export const coursesData = [
     image: '/course-3d-design.jpg',
     badge: 'EDUCACIÓN PRESENCIAL',
     startDate: 'Mar 3/06/2026',
-    enrollmentDeadline: '2026-05-27',
+    enrollmentDeadline: '2026-06-15',
     modality: 'Presencial',
     slug: 'diseno-impresion-3d',
     description: 'El curso de Diseño e Impresión 3D capacita al estudiante en las tecnologías de fabricación aditiva, un pilar fundamental de la industria 4.0. A lo largo del programa, se profundiza en todo el flujo de trabajo digital: desde la concepción geométrica de una pieza en un software de modelado paramétrico hasta su materialización física mediante la calibración precisa de maquinaria de impresión.',

@@ -71,13 +71,23 @@ export default function CourseDetailClient({ course }: { course: Course }) {
   const isEnrollmentOpen = () => {
     if (!course.enrollmentDeadline) return true; // Si no hay fecha límite, las inscripciones están abiertas
     try {
-      const datePart = course.enrollmentDeadline.split(' ').slice(1).join(' '); // "3/06/2026"
-      const [day, month, year] = datePart.split('/');
-      const enrollmentDeadline = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      let enrollmentDeadline;
+      
+      // Si es formato ISO (YYYY-MM-DD)
+      if (course.enrollmentDeadline.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [year, month, day] = course.enrollmentDeadline.split('-');
+        enrollmentDeadline = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      } else {
+        // Si es formato con día de la semana "Mar 3/06/2026"
+        const datePart = course.enrollmentDeadline.split(' ').slice(1).join(' '); // "3/06/2026"
+        const [day, month, year] = datePart.split('/');
+        enrollmentDeadline = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      }
+      
       enrollmentDeadline.setHours(23, 59, 59, 999); // Fin del día
       const today = new Date();
       return today <= enrollmentDeadline;
-    } catch {
+    } catch (error) {
       return true; // Si hay error en parsing, asumir que está abierto
     }
   };
