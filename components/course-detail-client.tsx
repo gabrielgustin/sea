@@ -67,7 +67,23 @@ export default function CourseDetailClient({ course }: { course: Course }) {
     }
   };
 
+  // Verificar si estamos dentro del período de inscripción
+  const isEnrollmentOpen = () => {
+    if (!course.enrollmentDeadline) return true; // Si no hay fecha límite, las inscripciones están abiertas
+    try {
+      const datePart = course.enrollmentDeadline.split(' ').slice(1).join(' '); // "3/06/2026"
+      const [day, month, year] = datePart.split('/');
+      const enrollmentDeadline = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      enrollmentDeadline.setHours(23, 59, 59, 999); // Fin del día
+      const today = new Date();
+      return today <= enrollmentDeadline;
+    } catch {
+      return true; // Si hay error en parsing, asumir que está abierto
+    }
+  };
+
   const courseHasStarted = hasCourseStarted();
+  const canEnroll = isEnrollmentOpen();
 
   const handleInterestSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -315,8 +331,8 @@ export default function CourseDetailClient({ course }: { course: Course }) {
           <div className="lg:col-span-1">
             <div className="sticky top-24 bg-white rounded-xl p-5 border-2 space-y-4" style={{ borderColor: '#031e41' }}>
               
-              {/* Si el curso NO ha comenzado: mostrar información + botón Inscribirme */}
-              {!courseHasStarted && (
+              {/* Si el curso NO ha comenzado Y las inscripciones están abiertas: mostrar información + botón Inscribirme */}
+              {!courseHasStarted && canEnroll && (
                 <>
                   {/* Start Date */}
                   <div className="pb-4 border-b" style={{ borderColor: '#e5e5e5' }}>
@@ -368,8 +384,8 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                 </>
               )}
 
-              {/* Si el curso YA ha comenzado: mostrar solo el formulario de interés */}
-              {courseHasStarted && (
+              {/* Si el curso YA ha comenzado O las inscripciones cerraron: mostrar solo el formulario de interés */}
+              {(courseHasStarted || !canEnroll) && (
                 <div className="space-y-4">
                   <div>
                     <h3 className="text-lg font-bold mb-2" style={{ color: '#031e41' }}>
