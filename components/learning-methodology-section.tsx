@@ -98,7 +98,7 @@ export default function LearningMethodologySection() {
       const viewportCenter = viewportHeight / 2;
       const distanceFromCenter = Math.abs(sectionCenterY - viewportCenter);
 
-      if (distanceFromCenter < viewportHeight * 0.3 && sectionRect.top < viewportHeight * 0.4) {
+      if (distanceFromCenter < viewportHeight * 0.15 && sectionRect.top < viewportHeight * 0.2) {
         lock();
         progressRef.current = progress;
       }
