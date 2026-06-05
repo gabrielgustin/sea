@@ -27,6 +27,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
     telefono: '',
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isStudentDataVerified, setIsStudentDataVerified] = useState(false);
   const [whatsappLinkSent, setWhatsappLinkSent] = useState(false);
 
   const handleResendWhatsappLink = () => {
