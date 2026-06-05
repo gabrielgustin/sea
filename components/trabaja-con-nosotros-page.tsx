@@ -8,7 +8,7 @@ export default function TrabajaConNosotrosPage() {
     nombre: '',
     email: '',
     telefono: '',
-    perfil: 'estudiante',
+    perfil: '',
     experiencia: '',
     cv: null as File | null,
     mensaje: '',
@@ -49,7 +49,7 @@ export default function TrabajaConNosotrosPage() {
         nombre: '',
         email: '',
         telefono: '',
-        perfil: 'estudiante',
+        perfil: '',
         experiencia: '',
         cv: null,
         mensaje: '',
@@ -145,16 +145,15 @@ export default function TrabajaConNosotrosPage() {
                 <label className="block text-sm font-semibold mb-2" style={{ color: '#031e41' }}>
                   ¿Cuál es tu perfil? *
                 </label>
-                <select
+                <textarea
                   name="perfil"
                   value={formData.perfil}
                   onChange={handleChange}
+                  required
+                  rows={3}
                   className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                >
-                  <option value="estudiante">Estudiante Avanzado/a</option>
-                  <option value="graduado">Graduado/a</option>
-                  <option value="profesional">Profesional Externo</option>
-                </select>
+                  placeholder="Cuéntanos sobre tu perfil: ¿eres estudiante avanzado/a, graduado/a o profesional? Describe brevemente tu situación académica o profesional..."
+                />
               </div>
 
               {/* Experiencia */}
