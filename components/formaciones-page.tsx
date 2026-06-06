@@ -128,12 +128,6 @@ export default function FormacionesPage() {
             >
               Solicitar Consulta Gratuita
             </Link>
-            <Link
-              href="#servicios"
-              className="px-6 md:px-8 py-2.5 md:py-4 rounded-lg font-bold text-sm md:text-base lg:text-lg transition-all duration-300 border-2 border-blue-200 hover:bg-white/10 text-white"
-            >
-              Conocer Servicios
-            </Link>
           </div>
         </div>
       </section>
@@ -293,16 +287,6 @@ export default function FormacionesPage() {
         <div className="absolute bottom-0 left-0 w-80 h-80 bg-blue-500/10 rounded-full -ml-40 -mb-40 blur-3xl" />
 
         <div className="max-w-4xl mx-auto text-center text-white relative z-10">
-          <div
-            className="inline-flex items-center gap-2 mb-4 md:mb-6 px-3 md:px-4 py-1 md:py-2 rounded-full"
-            style={{ backgroundColor: 'rgba(156, 186, 219, 0.2)' }}
-          >
-            <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#9cbadb' }} />
-            <span className="text-xs md:text-sm font-semibold tracking-wide" style={{ color: '#9cbadb' }}>
-              PRÓXIMO PASO
-            </span>
-          </div>
-
           <h2 className="text-2xl md:text-4xl lg:text-5xl font-bold mb-4 md:mb-6 leading-tight px-2">
             ¿Listo para transformar{' '}
             <br className="hidden md:block" />
