@@ -62,48 +62,7 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 2500 }: SeaPreload
           height: auto;
         }
 
-        /* 1. Dibujado de Órbitas */
-        .sea-orbit {
-          stroke-dasharray: 1200;
-          stroke-dashoffset: 1200;
-          animation: seaDrawStroke 1.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-        }
-
-        @keyframes seaDrawStroke {
-          to { stroke-dashoffset: 0; }
-        }
-
-        /* 2. Entrada y Brillo de Nodos */
-        .sea-node {
-          transform-origin: center;
-          transform: scale(0);
-          animation: seaPopNode 1.2s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-        }
-        .sea-node-1 { animation-delay: 0.1s; }
-        .sea-node-2 { animation-delay: 0.3s; }
-        .sea-node-3 { animation-delay: 0.45s; }
-
-        @keyframes seaPopNode {
-          0% { transform: scale(0); filter: drop-shadow(0 0 0px transparent); }
-          80% { transform: scale(1.15); }
-          100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.5)); }
-        }
-
-        /* 3. Anillos de pulso concéntrico */
-        .sea-pulse-ring {
-          transform-origin: center;
-          animation: seaRingExpand 2s ease-out infinite;
-        }
-        .sea-ring-1 { animation-delay: 0.3s; }
-        .sea-ring-2 { animation-delay: 0.5s; }
-        .sea-ring-3 { animation-delay: 0.7s; }
-
-        @keyframes seaRingExpand {
-          0% { transform: scale(0.6); opacity: 0.8; }
-          50%, 100% { transform: scale(1.8); opacity: 0; }
-        }
-
-        /* 4. Entrada Desplazada hacia arriba de las Letras */
+        /* 1. Entrada Desplazada hacia arriba de las Letras */
         .sea-letter {
           opacity: 0;
           transform: translateY(25px);
@@ -146,49 +105,12 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 2500 }: SeaPreload
       `}} />
 
       {/* SVG del Logo de SEA */}
-      <svg id="sea-preloader-svg" viewBox="0 0 600 600" xmlns="http://www.w3.org/2000/svg">
+      <svg id="sea-preloader-svg" viewBox="0 0 600 530" xmlns="http://www.w3.org/2000/svg">
         <g>
-          {/* Órbita Exterior con curvatura y nodo superior reubicados para máxima redondez */}
-          <path 
-            className="sea-orbit" 
-            d="M 180,240 C 180,150 220,120 295,120 C 370,120 450,180 450,340" 
-            fill="none" 
-            stroke="#ffffff" 
-            strokeWidth="10" 
-            strokeLinecap="round" 
-          />
-          {/* Órbita Interior */}
-          <path 
-            className="sea-orbit" 
-            d="M 180,240 C 230,205 320,205 375,245" 
-            fill="none" 
-            stroke="#ffffff" 
-            strokeWidth="10" 
-            strokeLinecap="round" 
-          />
-        </g>
-        
-        <g>
-          {/* Nodos Orbitantes */}
-          <g transform="translate(180, 240)">
-            <circle className="sea-pulse-ring sea-ring-1" r="22" fill="#ffffff" opacity="0.3" />
-            <circle className="sea-node sea-node-1" r="16" fill="#ffffff" />
-          </g>
-          <g transform="translate(295, 120)">
-            <circle className="sea-pulse-ring sea-ring-2" r="22" fill="#ffffff" opacity="0.3" />
-            <circle className="sea-node sea-node-2" r="16" fill="#ffffff" />
-          </g>
-          <g transform="translate(375, 245)">
-            <circle className="sea-pulse-ring sea-ring-3" r="22" fill="#ffffff" opacity="0.3" />
-            <circle className="sea-node sea-node-3" r="16" fill="#ffffff" />
-          </g>
-        </g>
-        
-        <g>
-          {/* Siglas "SEA" con Proporciones Estilizadas */}
+          {/* Siglas "SEA" */}
           <text 
             x="185" 
-            y="440" 
+            y="340" 
             fontFamily="system-ui, -apple-system, sans-serif" 
             fontWeight="700" 
             fontSize="185" 
@@ -200,7 +122,7 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 2500 }: SeaPreload
           </text>
           <text 
             x="300" 
-            y="440" 
+            y="340" 
             fontFamily="system-ui, -apple-system, sans-serif" 
             fontWeight="700" 
             fontSize="185" 
@@ -210,19 +132,19 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 2500 }: SeaPreload
           >
             E
           </text>
-          
-          {/* Polígono de la letra "A" estilizada con grosor balanceado */}
+
+          {/* Polígono de la letra "A" */}
           <polygon 
-            points="364,440 420,305 476,440 452,440 420,363 388,440" 
+            points="364,340 420,205 476,340 452,340 420,263 388,340" 
             fill="#ffffff" 
             className="sea-letter sea-letter-a" 
           />
-          
-          {/* Círculo central en la letra "A" */}
-          <circle cx="420" cy="405" r="12" fill="#ffffff" className="sea-dot" />
-          
-          {/* Línea Organizadora Horizontal Inferior */}
-          <line x1="130" y1="465" x2="350" y2="465" stroke="#ffffff" strokeWidth="8" strokeLinecap="round" className="sea-divider" />
+
+          {/* Punto flotante interior de la 'A' */}
+          <circle cx="420" cy="305" r="12" fill="#ffffff" className="sea-dot" />
+
+          {/* Línea horizontal inferior */}
+          <line x1="130" y1="370" x2="460" y2="370" stroke="#ffffff" strokeWidth="8" strokeLinecap="round" className="sea-divider" />
         </g>
       </svg>
     </div>
