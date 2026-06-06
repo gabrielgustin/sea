@@ -194,8 +194,8 @@ export const coursesData = [
       {
         name: 'Kevin Altamirano',
         photo: '/teachers/kevin-altamirano.jpg',
-        description: '',
-        linkedin: '',
+        description: 'Ingeniero especializado en sistemas automotrices y tecnología de motores de combustión interna con experiencia práctica en diagnóstico y reparación.',
+        linkedin: 'https://www.linkedin.com/in/kevin-mauricio-altamirano-010202253/',
         whatsapp: '5493517160340'
       },
       {
