@@ -47,9 +47,6 @@ export default function FAQSection() {
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-12">
           <h2 className="text-4xl font-bold mb-4 text-foreground">Preguntas Frecuentes</h2>
-          <p className="text-lg text-muted-foreground">
-            Encontrá respuestas a las preguntas más comunes sobre nuestros programas
-          </p>
         </div>
 
         <Accordion type="single" collapsible className="w-full">
