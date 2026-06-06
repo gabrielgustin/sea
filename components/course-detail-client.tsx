@@ -7,6 +7,71 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
+// Componente extraído fuera del padre para evitar que se re-monte en cada render
+// y así no perder el foco del input al escribir
+function InterestForm() {
+  const [interestForm, setInterestForm] = useState({ nombre: '', email: '', telefono: '' });
+  const [formSubmitted, setFormSubmitted] = useState(false);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setFormSubmitted(true);
+    setTimeout(() => setFormSubmitted(false), 3000);
+  };
+
+  return (
+    <div className="p-4 md:p-6 space-y-4">
+      <div>
+        <h3 className="text-base md:text-lg font-bold mb-1" style={{ color: '#031e41' }}>
+          Me interesa esta formación
+        </h3>
+        <p className="text-xs md:text-sm text-gray-500 leading-relaxed">
+          Dejanos tus datos y te avisamos cuando se abra una nueva edición.
+        </p>
+      </div>
+      {formSubmitted ? (
+        <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+          <p className="text-green-700 text-sm font-medium">Gracias por tu interés. Te contactaremos pronto.</p>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-3">
+          <Input
+            type="text"
+            placeholder="Nombre y Apellido"
+            value={interestForm.nombre}
+            onChange={(e) => setInterestForm(prev => ({ ...prev, nombre: e.target.value }))}
+            required
+            className="w-full border-gray-300 rounded-lg text-sm"
+          />
+          <Input
+            type="email"
+            placeholder="Email"
+            value={interestForm.email}
+            onChange={(e) => setInterestForm(prev => ({ ...prev, email: e.target.value }))}
+            required
+            className="w-full border-gray-300 rounded-lg text-sm"
+          />
+          <Input
+            type="tel"
+            placeholder="Teléfono"
+            value={interestForm.telefono}
+            onChange={(e) => setInterestForm(prev => ({ ...prev, telefono: e.target.value }))}
+            required
+            className="w-full border-gray-300 rounded-lg text-sm"
+          />
+          <button
+            type="submit"
+            className="w-full py-3 rounded-xl font-bold text-white text-sm transition-all duration-300 hover:shadow-lg hover:opacity-90 active:scale-95"
+            style={{ backgroundColor: '#031e41' }}
+          >
+            Enviar
+          </button>
+        </form>
+      )}
+    </div>
+  );
+}
+
 interface CourseTeacher {
   name: string;
   photo: string;
@@ -44,12 +109,6 @@ interface Course {
 export default function CourseDetailClient({ course }: { course: Course }) {
   const router = useRouter();
   const [modulesExpanded, setModulesExpanded] = useState(false);
-  const [interestForm, setInterestForm] = useState({
-    nombre: '',
-    email: '',
-    telefono: '',
-  });
-  const [formSubmitted, setFormSubmitted] = useState(false);
 
   // Parsear una fecha en formato ISO "YYYY-MM-DD" o "Lun 1/06/2026"
   const parseDate = (dateStr: string): Date | null => {
@@ -114,12 +173,6 @@ export default function CourseDetailClient({ course }: { course: Course }) {
         : `El curso comenzó el ${course.startDate} y ya no es posible inscribirse.`;
     }
     return `El curso comienza el ${course.startDate}`;
-  };
-
-  const handleInterestSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormSubmitted(true);
-    setTimeout(() => setFormSubmitted(false), 3000);
   };
 
   // Info box content — reutilizado en móvil y desktop
@@ -192,55 +245,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
         </>
       ) : (
         /* Inscripciones cerradas: formulario de interés */
-        <div className="p-4 md:p-6 space-y-4">
-          <div>
-            <h3 className="text-base md:text-lg font-bold mb-1" style={{ color: '#031e41' }}>
-              Me interesa esta formación
-            </h3>
-            <p className="text-xs md:text-sm text-gray-500 leading-relaxed">
-              Dejanos tus datos y te avisamos cuando se abra una nueva edición.
-            </p>
-          </div>
-          {formSubmitted ? (
-            <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
-              <p className="text-green-700 text-sm font-medium">Gracias por tu interés. Te contactaremos pronto.</p>
-            </div>
-          ) : (
-            <form onSubmit={handleInterestSubmit} className="space-y-3">
-              <Input
-                type="text"
-                placeholder="Nombre y Apellido"
-                value={interestForm.nombre}
-                onChange={(e) => setInterestForm({ ...interestForm, nombre: e.target.value })}
-                required
-                className="w-full border-gray-300 rounded-lg text-sm"
-              />
-              <Input
-                type="email"
-                placeholder="Email"
-                value={interestForm.email}
-                onChange={(e) => setInterestForm({ ...interestForm, email: e.target.value })}
-                required
-                className="w-full border-gray-300 rounded-lg text-sm"
-              />
-              <Input
-                type="tel"
-                placeholder="Teléfono"
-                value={interestForm.telefono}
-                onChange={(e) => setInterestForm({ ...interestForm, telefono: e.target.value })}
-                required
-                className="w-full border-gray-300 rounded-lg text-sm"
-              />
-              <button
-                type="submit"
-                className="w-full py-3 rounded-xl font-bold text-white text-sm transition-all duration-300 hover:shadow-lg hover:opacity-90 active:scale-95"
-                style={{ backgroundColor: '#031e41' }}
-              >
-                Enviar
-              </button>
-            </form>
-          )}
-        </div>
+        <InterestForm />
       )}
     </div>
   );
