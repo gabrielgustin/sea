@@ -27,7 +27,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
     title: '',
     subtitle: '',
     image: '',
-    badge: 'EDUCACIÓN PRESENCIAL',
+    badge: 'PRESENCIAL',
     startDate: '',
     enrollmentDeadline: '',
     modality: 'Presencial',
