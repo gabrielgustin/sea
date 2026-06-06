@@ -9,12 +9,35 @@ interface SeaPreloaderProps {
 export default function SeaPreloader({ minimumLoadingTimeMs = 1400 }: SeaPreloaderProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [shouldRender, setShouldRender] = useState(true);
+  const [hasShown, setHasShown] = useState(false);
 
   useEffect(() => {
+    // Verificar si el preloader ya se ha mostrado en esta sesión
+    if (typeof window === 'undefined') return;
+
+    const preloaderShown = sessionStorage.getItem('sea-preloader-shown') === 'true';
+    
+    if (preloaderShown) {
+      // Si ya se mostró, no renderizar
+      setShouldRender(false);
+      setHasShown(true);
+      return;
+    }
+
+    setHasShown(false);
+  }, []);
+
+  useEffect(() => {
+    // Si ya se mostró el preloader o no debería renderizar, salir
+    if (hasShown || !shouldRender) return;
+
     // Bloquear el scroll del body mientras carga
     document.body.style.overflow = "hidden";
 
     const handleLoadingComplete = () => {
+      // Marcar que el preloader ya fue mostrado
+      sessionStorage.setItem('sea-preloader-shown', 'true');
+      
       // Desvanecer cargador
       setIsVisible(false);
       
@@ -43,7 +66,7 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 1400 }: SeaPreload
       window.removeEventListener("load", handleLoadingComplete);
       document.body.style.overflow = "";
     };
-  }, [minimumLoadingTimeMs]);
+  }, [minimumLoadingTimeMs, hasShown, shouldRender]);
 
   if (!shouldRender) return null;
 
