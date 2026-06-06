@@ -84,6 +84,9 @@ export default function CourseDetailClient({ course }: { course: Course }) {
       return null;
     }
   };
+
+  // Generar mensaje dinámico sobre la fecha de inicio del curso
+  const getStartDateMessage = () => {
     if (!course.startDate) return null;
     
     try {
