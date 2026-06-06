@@ -16,8 +16,12 @@ function InterestForm() {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setFormSubmitted(true);
-    // Mantener el modal abierto por más tiempo para que el usuario lo lea
-    setTimeout(() => setFormSubmitted(false), 5000);
+  };
+
+  const handleCloseModal = () => {
+    setFormSubmitted(false);
+    // Limpiar los datos del formulario al cerrar el modal
+    setInterestForm({ nombre: '', email: '', telefono: '' });
   };
 
   return (
@@ -72,7 +76,7 @@ function InterestForm() {
       {formSubmitted && (
         <div className="fixed inset-0 flex items-center justify-center z-50 p-4">
           {/* Overlay oscuro */}
-          <div className="absolute inset-0 bg-black/50" onClick={() => setFormSubmitted(false)} />
+          <div className="absolute inset-0 bg-black/50" />
           
           {/* Modal */}
           <div className="relative bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-md w-full text-center space-y-4 animate-in fade-in zoom-in-95">
@@ -97,7 +101,7 @@ function InterestForm() {
 
             {/* Botón cerrar */}
             <button
-              onClick={() => setFormSubmitted(false)}
+              onClick={handleCloseModal}
               className="w-full py-3 rounded-xl font-semibold text-white text-sm transition-all duration-300 hover:shadow-lg hover:opacity-90 active:scale-95"
               style={{ backgroundColor: '#031e41' }}
             >
