@@ -23,38 +23,13 @@ export default function FormacionesCatalog() {
 
           {/* Title and Subtitle */}
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 mb-4 md:mb-6 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-blue-100">
-              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#9cbadb' }}></span>
-              <span className="text-xs md:text-sm font-semibold" style={{ color: '#031e41' }}>
-                NUESTRO CATÁLOGO
-              </span>
-            </div>
-            
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-6 text-balance leading-tight" style={{ color: '#031e41' }}>
               Catálogo de Formaciones
             </h1>
             
-            <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto mb-6 md:mb-8 leading-relaxed">
+            <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
               Explora todos nuestros cursos y programas disponibles. Elige la formación que mejor se adapte a tus necesidades y comienza tu camino hacia el éxito.
             </p>
-
-            {/* Call to Action */}
-            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
-              <a
-                href="#cursos"
-                className="px-6 md:px-8 py-2.5 md:py-3 rounded-lg font-semibold text-sm md:text-base transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95"
-                style={{ backgroundColor: '#031e41', color: 'white' }}
-              >
-                Explorar Formaciones
-              </a>
-              <Link
-                href="/formaciones"
-                className="px-6 md:px-8 py-2.5 md:py-3 rounded-lg font-semibold text-sm md:text-base transition-all duration-300 border-2 hover:shadow-lg"
-                style={{ borderColor: '#031e41', color: '#031e41' }}
-              >
-                Más Información
-              </Link>
-            </div>
           </div>
         </div>
       </section>
@@ -62,15 +37,6 @@ export default function FormacionesCatalog() {
       {/* Courses Grid */}
       <section id="cursos" ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20">
         <div className="max-w-6xl mx-auto">
-          {/* Section Title */}
-          <div className="text-center mb-12 md:mb-16">
-            <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4" style={{ color: '#031e41' }}>
-              Nuestras Formaciones Disponibles
-            </h2>
-            <p className="text-sm md:text-base text-gray-600 max-w-2xl mx-auto">
-              Selecciona una formación para conocer más detalles, horarios y cómo inscribirte
-            </p>
-          </div>
 
           {courses.length === 0 ? (
             <div className="text-center py-16 md:py-24">
@@ -80,7 +46,6 @@ export default function FormacionesCatalog() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-              {courses.map((course, index) => (
                 <Link
                   key={course.id}
                   href={`/cursos/${course.id}`}
@@ -162,15 +127,6 @@ export default function FormacionesCatalog() {
               ))}
             </div>
           )}
-
-          {/* Total Count */}
-          <div className="text-center mt-12 md:mt-16">
-            <div className="inline-block px-6 py-3 rounded-full bg-gray-50 border border-gray-200">
-              <p style={{ color: '#1a4d7a' }} className="text-sm md:text-base font-semibold">
-                Mostrando <span className="font-bold" style={{ color: '#031e41' }}>{courses.length}</span> formación(es) disponible(s)
-              </p>
-            </div>
-          </div>
         </div>
       </section>
     </div>
