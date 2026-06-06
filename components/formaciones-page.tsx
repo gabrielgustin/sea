@@ -15,31 +15,33 @@ export default function FormacionesPage() {
     const section = processRef.current;
     if (!section) return;
 
-    const container = section.closest('[class*="overflow"]') || window;
-    
     const handleScroll = () => {
       const cards = section.querySelectorAll('[data-step-card]');
-      const visibleIds: number[] = [];
 
       cards.forEach((card) => {
         const rect = card.getBoundingClientRect();
         const windowHeight = window.innerHeight;
+        const stepId = parseInt(card.getAttribute('data-step-id') || '0');
         
-        // Si el elemento está en el viewport, lo marcamos como visible
-        if (rect.top < windowHeight * 0.85 && rect.bottom > windowHeight * 0.15) {
-          const stepId = parseInt(card.getAttribute('data-step-id') || '0');
-          visibleIds.push(stepId);
+        // Calcular cuándo el elemento debe activarse
+        // Se activa cuando está en el 70% inferior del viewport
+        const isVisible = rect.top < windowHeight * 0.7 && rect.bottom > 0;
+        
+        if (isVisible) {
+          card.classList.add('animate-in');
+        } else {
+          card.classList.remove('animate-in');
         }
       });
-
-      setVisibleSteps(visibleIds);
     };
 
-    // Listener en la ventana principal
-    window.addEventListener('scroll', handleScroll, { passive: true });
+    // Obtener el contenedor de scroll (puede ser window o un elemento con overflow)
+    const scrollContainer = document.querySelector('main') || window;
+    
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll(); // Ejecutar al montar
     
-    return () => window.removeEventListener('scroll', handleScroll);
+    return () => scrollContainer.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
@@ -264,65 +266,62 @@ export default function FormacionesPage() {
                   title: 'Certificación',
                   description: 'Emitimos certificados de reconocimiento validados'
                 }
-              ].map((item, idx) => {
-                const isVisible = visibleSteps.includes(idx);
-                return (
-                  <div 
-                    key={idx} 
-                    className="flex flex-col items-center h-full"
-                    data-step-card
-                    data-step-id={idx}
-                  >
-                    {/* Step Circle */}
-                    <div className="mb-4 md:mb-6 flex-shrink-0 relative transform transition-all duration-500" style={{
-                      opacity: isVisible ? 1 : 0.3,
-                      transform: isVisible ? 'scale(1)' : 'scale(0.8)',
-                      transitionDelay: `${idx * 100}ms`
-                    }}>
-                      <div
-                        className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full flex items-center justify-center font-bold text-xl md:text-2xl lg:text-3xl shadow-lg transition-all duration-500 hover:shadow-2xl hover:scale-110 flex-shrink-0"
-                        style={{ 
-                          backgroundColor: '#031e41',
-                          color: '#ffffff'
-                        }}
-                      >
-                        {item.step}
-                      </div>
-                      {/* Accent dot */}
-                      <div 
-                        className="absolute -bottom-1 -right-1 md:-bottom-2 md:-right-2 w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 rounded-full border-3 md:border-4 border-white transition-all duration-500"
-                        style={{ 
-                          backgroundColor: '#9cbadb',
-                          transform: isVisible ? 'scale(1)' : 'scale(0.5)',
-                          transitionDelay: `${idx * 100}ms`
-                        }}
-                      ></div>
+              ].map((item, idx) => (
+                <div 
+                  key={idx} 
+                  className="flex flex-col items-center h-full opacity-30 transition-all duration-700 ease-out translate-y-4"
+                  data-step-card
+                  data-step-id={idx}
+                  style={{
+                    transitionDelay: `${idx * 150}ms`
+                  }}
+                >
+                  {/* Step Circle */}
+                  <div className="mb-4 md:mb-6 flex-shrink-0 relative transform transition-all duration-700 ease-out scale-75">
+                    <div
+                      className="w-16 h-16 md:w-20 md:h-20 lg:w-24 lg:h-24 rounded-full flex items-center justify-center font-bold text-xl md:text-2xl lg:text-3xl shadow-lg transition-all duration-700 hover:shadow-2xl hover:scale-110 flex-shrink-0"
+                      style={{ 
+                        backgroundColor: '#031e41',
+                        color: '#ffffff'
+                      }}
+                    >
+                      {item.step}
                     </div>
+                    {/* Accent dot */}
+                    <div 
+                      className="absolute -bottom-1 -right-1 md:-bottom-2 md:-right-2 w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 rounded-full border-3 md:border-4 border-white transition-all duration-700"
+                      style={{ 
+                        backgroundColor: '#9cbadb',
+                        transform: 'scale(0.5)'
+                      }}
+                    ></div>
+                  </div>
 
-                    {/* Card Container */}
-                    <div className="w-full px-1 sm:px-0 flex flex-col flex-grow">
-                      <div 
-                        className="bg-white rounded-lg md:rounded-xl lg:rounded-2xl p-3 md:p-4 lg:p-6 text-center shadow-md hover:shadow-lg transition-all duration-500 border-t-4 h-full flex flex-col justify-between transform"
-                        style={{ 
-                          borderTopColor: '#9cbadb',
-                          opacity: isVisible ? 1 : 0.4,
-                          transform: isVisible ? 'translateY(0) scale(1)' : 'translateY(20px) scale(0.95)',
-                          transitionDelay: `${idx * 100}ms`
-                        }}
-                      >
-                        <div>
-                          <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3 lg:mb-4" style={{ color: '#031e41' }}>
-                            {item.title}
-                          </h3>
-                          <p className="text-xs md:text-sm lg:text-base text-gray-600 leading-relaxed">
-                            {item.description}
-                          </p>
-                        </div>
+                  {/* Card Container */}
+                  <div className="w-full px-1 sm:px-0 flex flex-col flex-grow">
+                    <div 
+                      className="bg-white rounded-lg md:rounded-xl lg:rounded-2xl p-3 md:p-4 lg:p-6 text-center shadow-md hover:shadow-lg transition-all duration-700 border-t-4 h-full flex flex-col justify-between transform"
+                      style={{ 
+                        borderTopColor: '#9cbadb',
+                        transform: 'translateY(20px) scale(0.95)'
+                      }}
+                    >
+                      <div>
+                        <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3 lg:mb-4" style={{ color: '#031e41' }}>
+                          {item.title}
+                        </h3>
+                        <p className="text-xs md:text-sm lg:text-base text-gray-600 leading-relaxed">
+                          {item.description}
+                        </p>
                       </div>
                     </div>
                   </div>
-                );
-              })}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
             </div>
           </div>
         </div>
