@@ -12,7 +12,7 @@ export default function FormacionesCatalog() {
   return (
     <div className="w-full bg-white">
       {/* Hero Section */}
-      <section className="w-full py-8 md:py-16 lg:py-20 px-4 bg-gradient-to-b from-blue-50 to-white">
+      <section className="w-full pt-10 pb-10 md:pt-14 md:pb-12 px-4">
         <div className="max-w-6xl mx-auto">
           {/* Breadcrumb */}
           <div className="mb-6 md:mb-8 flex items-center gap-2 text-sm md:text-base text-gray-600">

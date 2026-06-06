@@ -38,14 +38,10 @@ export default function NuestrasFormacionesPage() {
   return (
     <div className="w-full bg-white">
       {/* Hero Section */}
-      <section className="min-h-[60vh] flex items-center justify-center px-4 py-16"
-        style={{
-          background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)'
-        }}
-      >
-        <div className="max-w-4xl mx-auto text-center text-white">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">Nuestras Formaciones</h1>
-          <p className="text-xl md:text-2xl text-blue-100 mb-8">
+      <section className="w-full px-4 pt-10 pb-10 md:pt-14 md:pb-12">
+        <div className="max-w-4xl mx-auto text-center">
+          <h1 className="text-4xl md:text-6xl font-bold mb-6 text-balance" style={{ color: '#031e41' }}>Nuestras Formaciones</h1>
+          <p className="text-lg md:text-xl text-gray-600 leading-relaxed">
             Descubre todos nuestros cursos y programas diseñados para tu desarrollo profesional
           </p>
         </div>
