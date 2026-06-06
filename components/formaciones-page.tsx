@@ -7,7 +7,6 @@ import { useState, useEffect, useRef } from 'react';
 
 export default function FormacionesPage() {
   const [selectedService, setSelectedService] = useState<string | null>(null);
-  const [visibleSteps, setVisibleSteps] = useState<number[]>([]);
   const processRef = useRef<HTMLDivElement>(null);
 
   // Animación de scroll para los pasos
@@ -21,10 +20,8 @@ export default function FormacionesPage() {
       cards.forEach((card) => {
         const rect = card.getBoundingClientRect();
         const windowHeight = window.innerHeight;
-        const stepId = parseInt(card.getAttribute('data-step-id') || '0');
         
-        // Calcular cuándo el elemento debe activarse
-        // Se activa cuando está en el 70% inferior del viewport
+        // Se activa cuando está en el 70% del viewport
         const isVisible = rect.top < windowHeight * 0.7 && rect.bottom > 0;
         
         if (isVisible) {
@@ -35,13 +32,31 @@ export default function FormacionesPage() {
       });
     };
 
-    // Obtener el contenedor de scroll (puede ser window o un elemento con overflow)
-    const scrollContainer = document.querySelector('main') || window;
+    // Crear un observer de intersección para mejor performance
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-in');
+        } else {
+          entry.target.classList.remove('animate-in');
+        }
+      });
+    }, {
+      threshold: 0.1,
+      rootMargin: '0px 0px -30% 0px'
+    });
+
+    const cards = section.querySelectorAll('[data-step-card]');
+    cards.forEach((card) => observer.observe(card));
+
+    // También escuchar scroll como fallback
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
     
-    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
-    handleScroll(); // Ejecutar al montar
-    
-    return () => scrollContainer.removeEventListener('scroll', handleScroll);
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+      observer.disconnect();
+    };
   }, []);
 
   return (
@@ -269,7 +284,7 @@ export default function FormacionesPage() {
               ].map((item, idx) => (
                 <div 
                   key={idx} 
-                  className="flex flex-col items-center h-full opacity-30 transition-all duration-700 ease-out translate-y-4"
+                  className="flex flex-col items-center h-full opacity-30 transition-all duration-700 ease-out translate-y-4 [data-step-card]"
                   data-step-card
                   data-step-id={idx}
                   style={{
@@ -300,10 +315,9 @@ export default function FormacionesPage() {
                   {/* Card Container */}
                   <div className="w-full px-1 sm:px-0 flex flex-col flex-grow">
                     <div 
-                      className="bg-white rounded-lg md:rounded-xl lg:rounded-2xl p-3 md:p-4 lg:p-6 text-center shadow-md hover:shadow-lg transition-all duration-700 border-t-4 h-full flex flex-col justify-between transform"
+                      className="bg-white rounded-lg md:rounded-xl lg:rounded-2xl p-3 md:p-4 lg:p-6 text-center shadow-md hover:shadow-lg transition-all duration-700 border-t-4 h-full flex flex-col justify-between"
                       style={{ 
-                        borderTopColor: '#9cbadb',
-                        transform: 'translateY(20px) scale(0.95)'
+                        borderTopColor: '#9cbadb'
                       }}
                     >
                       <div>
