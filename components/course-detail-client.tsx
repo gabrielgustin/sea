@@ -51,8 +51,39 @@ export default function CourseDetailClient({ course }: { course: Course }) {
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  // Generar mensaje dinámico sobre la fecha de inicio del curso
-  const getStartDateMessage = () => {
+  // Calcular días faltantes para el inicio del curso
+  const getDaysUntilStart = () => {
+    if (!course.startDate || hasCourseStarted()) return null;
+    
+    try {
+      let courseStartDate;
+      
+      // Si es formato ISO (YYYY-MM-DD)
+      if (course.startDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [year, month, day] = course.startDate.split('-');
+        courseStartDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      } else {
+        // Si es formato con día de la semana "Lun 1/06/2026"
+        const datePart = course.startDate.split(' ').slice(1).join(' ');
+        const [day, month, year] = datePart.split('/');
+        courseStartDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      }
+      
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const startOfDay = new Date(courseStartDate);
+      startOfDay.setHours(0, 0, 0, 0);
+      
+      const daysUntilStart = Math.ceil((startOfDay.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+      
+      if (daysUntilStart > 0) {
+        return daysUntilStart;
+      }
+      return null;
+    } catch {
+      return null;
+    }
+  };
     if (!course.startDate) return null;
     
     try {
@@ -164,6 +195,15 @@ export default function CourseDetailClient({ course }: { course: Course }) {
         <>
           {/* Datos del curso en bloques apilados */}
           <div className="space-y-1">
+            {/* Días faltantes - solo si el curso NO ha comenzado */}
+            {!hasCourseStarted() && getDaysUntilStart() !== null && (
+              <div className="p-4 bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500">
+                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 mb-1">Comienza en</p>
+                <p className="text-lg font-bold text-blue-900">
+                  {getDaysUntilStart()} {getDaysUntilStart() === 1 ? 'día' : 'días'}
+                </p>
+              </div>
+            )}
             <div className="p-4 border-b border-gray-100">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">
                 {hasCourseStarted() ? 'Inició' : 'Inicia'}
