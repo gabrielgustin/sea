@@ -3,6 +3,9 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
 import { coursesData } from '@/lib/coursesData';
 
+// Versión de los datos — incrementar cuando se actualicen datos en coursesData.ts
+const COURSES_DATA_VERSION = '2';
+
 export interface CourseTeacher {
   name: string;
   photo: string;
@@ -56,7 +59,17 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize from localStorage on mount
   useEffect(() => {
+    const savedVersion = localStorage.getItem('courses_data_version');
     const savedCourses = localStorage.getItem('courses');
+
+    // Si la versión no coincide, resetear con los datos actualizados del código
+    if (savedVersion !== COURSES_DATA_VERSION) {
+      setCourses(coursesData);
+      localStorage.setItem('courses', JSON.stringify(coursesData));
+      localStorage.setItem('courses_data_version', COURSES_DATA_VERSION);
+      return;
+    }
+
     if (savedCourses) {
       try {
         setCourses(JSON.parse(savedCourses));
