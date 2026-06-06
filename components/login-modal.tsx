@@ -126,7 +126,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
               />
               {selectedRole === 'student' && (
                 <p className="text-xs text-gray-500 mt-1">
-                  Para alumnos: usuario y contraseña deben ser tu DNI
+                  Para estudiantes: usuario y contraseña deben ser tu DNI
                 </p>
               )}
             </div>

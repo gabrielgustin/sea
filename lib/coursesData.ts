@@ -9,7 +9,7 @@ export const coursesData = [
     enrollmentDeadline: '2026-06-30',
     modality: 'Presencial',
     slug: 'desarrollo-de-aplicaciones',
-    description: 'El programa de Desarrollo de Aplicaciones en Python con Tkinter está diseñado para introducir al estudiante en las bases de la programación estructurada y la creación de software con entorno visual. A través de un enfoque metodológico, el alumno transitará desde la conceptualización lógica de un algoritmo hasta el despliegue de aplicaciones de escritorio funcionales e interactivas, utilizando el lenguaje de programación más demandado del mercado actual.',
+    description: 'El programa de Desarrollo de Aplicaciones en Python con Tkinter está diseñado para introducir al estudiante en las bases de la programación estructurada y la creación de software con entorno visual. A través de un enfoque metodológico, el estudiante transitará desde la conceptualización lógica de un algoritmo hasta el despliegue de aplicaciones de escritorio funcionales e interactivas, utilizando el lenguaje de programación más demandado del mercado actual.',
     schedule: 'Lunes: 16:30 a 18:00',
     location: 'ITS Villada, Valle Escondido',
     teacher: 'Gabriel Muñoz',
@@ -67,7 +67,7 @@ export const coursesData = [
     enrollmentDeadline: '2026-05-28',
     modality: 'Presencial',
     slug: 'desarrollo-de-videojuegos',
-    description: 'El curso de Diseño y Desarrollo de Videojuegos ofrece una formación integral en las dinámicas fundamentales de la industria del entretenimiento digital. Utilizando Unity, el motor de desarrollo líder del mercado profesional a nivel global, los estudiantes aprenderán a estructurar las reglas, mecánicas y estéticas que componen un videojuego. El programa guía al alumno desde la conceptualización de ideas hasta la programación e implementación de entornos interactivos utilizando estándares profesionales.',
+    description: 'El curso de Diseño y Desarrollo de Videojuegos ofrece una formación integral en las dinámicas fundamentales de la industria del entretenimiento digital. Utilizando Unity, el motor de desarrollo líder del mercado profesional a nivel global, los estudiantes aprenderán a estructurar las reglas, mecánicas y estéticas que componen un videojuego. El programa guía al estudiante desde la conceptualización de ideas hasta la programación e implementación de entornos interactivos utilizando estándares profesionales.',
     schedule: 'Jueves: 16:30 a 18:00',
     location: 'ITS Villada, Valle Escondido',
     teacher: 'Jose Verino',
@@ -82,7 +82,7 @@ export const coursesData = [
     ],
     duration: '24 clases',
     price: '$35.000/mes',
-    objective: 'Que los alumnos desarrollen videojuegos completos mientras adquieren habilidades de lógica y pensamiento computacional utilizando herramientas modernas.',
+    objective: 'Que los estudiantes desarrollen videojuegos completos mientras adquieren habilidades de lógica y pensamiento computacional utilizando herramientas modernas.',
     modules: [
       {
         number: '01',
