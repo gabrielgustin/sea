@@ -12,7 +12,7 @@ export default function FormacionesCatalog() {
   return (
     <div className="w-full bg-white">
       {/* Hero Section */}
-      <section className="w-full pt-10 pb-10 md:pt-14 md:pb-12 px-4">
+      <section className="w-full pt-10 px-4">
         <div className="max-w-6xl mx-auto">
           {/* Breadcrumb */}
           <div className="mb-6 md:mb-8 flex items-center gap-2 text-sm md:text-base text-gray-600">
@@ -27,7 +27,7 @@ export default function FormacionesCatalog() {
               Catálogo de Formaciones
             </h1>
             
-            <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mt-12">
               Explora todos nuestros cursos y programas disponibles. Elige la formación que mejor se adapte a tus necesidades y comienza tu camino hacia el éxito.
             </p>
           </div>
