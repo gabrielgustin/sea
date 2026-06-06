@@ -198,15 +198,6 @@ export default function CourseDetailClient({ course }: { course: Course }) {
         <>
           {/* Datos del curso en bloques apilados */}
           <div className="space-y-1">
-            {/* Días faltantes - solo si el curso NO ha comenzado */}
-            {!hasCourseStarted() && getDaysUntilStart() !== null && (
-              <div className="p-4 bg-gradient-to-r from-blue-50 to-blue-100 border-l-4 border-blue-500">
-                <p className="text-xs font-semibold uppercase tracking-wide text-blue-700 mb-1">Comienza en</p>
-                <p className="text-lg font-bold text-blue-900">
-                  {getDaysUntilStart()} {getDaysUntilStart() === 1 ? 'día' : 'días'}
-                </p>
-              </div>
-            )}
             <div className="p-4 border-b border-gray-100">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">
                 {hasCourseStarted() ? 'Inició' : 'Inicia'}
@@ -240,10 +231,25 @@ export default function CourseDetailClient({ course }: { course: Course }) {
             >
               Inscribirme
             </button>
+
+            {/* Mensaje dinámico: días faltantes o curso ya comenzado */}
             {course.startDate && (
-              <p className="text-xs text-gray-400 text-center mt-3 leading-relaxed">
-                {getStartDateMessage()}
-              </p>
+              <div className="mt-3">
+                {!hasCourseStarted() && getDaysUntilStart() !== null ? (
+                  /* Curso no comenzado: mostrar días faltantes */
+                  <div className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-amber-50 border border-amber-200">
+                    <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0" />
+                    <p className="text-xs font-semibold text-amber-700 text-center">
+                      Faltan <span className="text-amber-900 font-bold">{getDaysUntilStart()} {getDaysUntilStart() === 1 ? 'día' : 'días'}</span> para que comience
+                    </p>
+                  </div>
+                ) : (
+                  /* Curso ya comenzado: mostrar mensaje actual */
+                  <p className="text-xs text-gray-400 text-center leading-relaxed">
+                    {getStartDateMessage()}
+                  </p>
+                )}
+              </div>
             )}
           </div>
         </>
