@@ -86,9 +86,7 @@ export default function LearningMethodologySection() {
     const container = getScrollContainer();
     if (!section || !container) return;
 
-    // Desabilitar efecto de scroll en móvil
     const isMobile = window.innerWidth < 768;
-    if (isMobile) return;
 
     const checkPosition = () => {
       if (hasCompleted || isLocked) return;
@@ -108,8 +106,38 @@ export default function LearningMethodologySection() {
       }
     };
 
-    container.addEventListener('scroll', checkPosition, { passive: true });
-    return () => container.removeEventListener('scroll', checkPosition);
+    // En móvil: no bloquear el scroll, solo actualizar progreso según scroll
+    if (isMobile) {
+      const handleMobileScroll = () => {
+        const sectionRect = section.getBoundingClientRect();
+        const containerRect = container.getBoundingClientRect();
+        
+        // Calcular posición del section en relación al viewport
+        const sectionTop = sectionRect.top - containerRect.top;
+        const sectionHeight = sectionRect.height;
+        const viewportHeight = containerRect.height;
+        
+        // Cuando el section sale del viewport por arriba (es scrolleado hacia arriba)
+        if (sectionTop < 0 && sectionTop > -sectionHeight) {
+          // Calcular progreso basado en cuánto se ha scrolleado del section
+          const scrolledAmount = Math.abs(sectionTop);
+          const maxScroll = sectionHeight * 0.5;
+          const mobileProgress = Math.min(scrolledAmount / maxScroll, 1);
+          setProgress(mobileProgress);
+        } else if (sectionTop >= 0) {
+          setProgress(0);
+        } else {
+          setProgress(1);
+        }
+      };
+
+      container.addEventListener('scroll', handleMobileScroll, { passive: true });
+      return () => container.removeEventListener('scroll', handleMobileScroll);
+    } else {
+      // Desktop: comportamiento original
+      container.addEventListener('scroll', checkPosition, { passive: true });
+      return () => container.removeEventListener('scroll', checkPosition);
+    }
   }, [hasCompleted, isLocked, lock, progress, getScrollContainer]);
 
   // Wheel handler
@@ -253,8 +281,11 @@ export default function LearningMethodologySection() {
         {/* Steps Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
           {steps.map((step, index) => {
-            const isActive = activeStep >= index;
-            const isCurrent = activeStep === index;
+            const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
+            const isActive = isMobile ? progress > index * 0.25 : activeStep >= index;
+            const isCurrent = isMobile 
+              ? Math.floor(progress * 4) === index 
+              : activeStep === index;
 
             return (
               <div
