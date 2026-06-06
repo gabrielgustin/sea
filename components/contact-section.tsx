@@ -35,9 +35,6 @@ export default function ContactSection() {
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-12 animate-fade-in-up">
           <h2 className="text-4xl font-bold mb-4" style={{ color: '#031e41' }}>Ponte en Contacto</h2>
-          <p className="text-lg text-muted-foreground">
-            ¿Tienes dudas? Envíanos un mensaje y nos comunicaremos lo antes posible
-          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
