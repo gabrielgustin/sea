@@ -3,10 +3,10 @@
 import React, { useEffect, useState } from "react";
 
 interface SeaPreloaderProps {
-  minimumLoadingTimeMs?: number; // Tiempo mínimo visible en milisegundos (2500ms recomendado)
+  minimumLoadingTimeMs?: number; // Tiempo mínimo visible en milisegundos
 }
 
-export default function SeaPreloader({ minimumLoadingTimeMs = 2500 }: SeaPreloaderProps) {
+export default function SeaPreloader({ minimumLoadingTimeMs = 1400 }: SeaPreloaderProps) {
   const [isVisible, setIsVisible] = useState(true);
   const [shouldRender, setShouldRender] = useState(true);
 
@@ -21,10 +21,10 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 2500 }: SeaPreload
       // Permitir el scroll nuevamente
       document.body.style.overflow = "";
 
-      // Eliminar del DOM después de terminar la transición de desvanecimiento (800ms)
+      // Eliminar del DOM después de terminar la transición de desvanecimiento (500ms)
       const timeout = setTimeout(() => {
         setShouldRender(false);
-      }, 800);
+      }, 500);
 
       return () => clearTimeout(timeout);
     };
@@ -50,7 +50,7 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 2500 }: SeaPreload
   return (
     <div
       id="sea-preloader-wrapper"
-      className={`fixed inset-0 flex items-center justify-center z-[99999] bg-[#090d16] transition-opacity duration-[800ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
+      className={`fixed inset-0 flex items-center justify-center z-[99999] bg-[#090d16] transition-opacity duration-[500ms] ease-[cubic-bezier(0.25,1,0.5,1)] ${
         isVisible ? "opacity-100" : "opacity-0 pointer-events-none"
       }`}
     >
@@ -66,11 +66,11 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 2500 }: SeaPreload
         .sea-letter {
           opacity: 0;
           transform: translateY(25px);
-          animation: seaFadeUp 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+          animation: seaFadeUp 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
         }
-        .sea-letter-s { animation-delay: 0.4s; }
-        .sea-letter-e { animation-delay: 0.5s; }
-        .sea-letter-a { animation-delay: 0.6s; }
+        .sea-letter-s { animation-delay: 0.15s; }
+        .sea-letter-e { animation-delay: 0.25s; }
+        .sea-letter-a { animation-delay: 0.35s; }
 
         @keyframes seaFadeUp {
           to { opacity: 1; transform: translateY(0); }
@@ -80,8 +80,8 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 2500 }: SeaPreload
         .sea-dot {
           opacity: 0;
           transform: translateY(-80px);
-          animation: seaDotDrop 1.4s cubic-bezier(0.25, 1.5, 0.5, 1) forwards;
-          animation-delay: 0.7s;
+          animation: seaDotDrop 0.8s cubic-bezier(0.25, 1.5, 0.5, 1) forwards;
+          animation-delay: 0.4s;
         }
 
         @keyframes seaDotDrop {
@@ -95,8 +95,8 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 2500 }: SeaPreload
         .sea-divider {
           transform-origin: left;
           transform: scaleX(0);
-          animation: seaDivider 1.2s cubic-bezier(0.25, 1, 0.5, 1) forwards;
-          animation-delay: 0.5s;
+          animation: seaDivider 0.7s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+          animation-delay: 0.25s;
         }
 
         @keyframes seaDivider {

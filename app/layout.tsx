@@ -41,7 +41,7 @@ export default function RootLayout({
   return (
     <html lang="es" className="bg-background overflow-x-hidden">
       <body className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
-        <SeaPreloader minimumLoadingTimeMs={2500} />
+        <SeaPreloader minimumLoadingTimeMs={1400} />
         <AuthProvider>
           <CoursesProvider>
             <SiteSettingsProvider>
