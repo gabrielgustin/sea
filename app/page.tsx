@@ -18,22 +18,20 @@ export default function Home() {
       </div>
       
       {/* Main content - 90% width */}
-      <main className="w-full md:w-[90%] overflow-x-hidden overflow-y-auto flex flex-col">
+      <main className="w-full md:w-[90%] overflow-x-hidden overflow-y-auto">
         <Header />
         <HeroCarousel />
         <CoursesSection />
         <BenefitsSection />
         <LearningMethodologySection />
-        <div className="flex flex-col order-last md:order-none">
-          <div className="order-1 md:order-2">
-            <FAQSection />
-          </div>
-          <div className="order-2 md:order-3">
-            <SpecialOfferSection />
-          </div>
-          <div className="order-3 md:order-4">
-            <ContactSection />
-          </div>
+        <div className="hidden md:block">
+          <FAQSection />
+          <SpecialOfferSection />
+          <ContactSection />
+        </div>
+        <div className="md:hidden flex flex-col">
+          <FAQSection />
+          <ContactSection />
         </div>
       </main>
 
