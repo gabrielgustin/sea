@@ -290,7 +290,7 @@ export default function LearningMethodologySection() {
             return (
               <div
                 key={index}
-                className="relative p-6 rounded-xl transition-all duration-300"
+                className="relative p-6 rounded-xl transition-all duration-700"
                 style={{
                   backgroundColor: isActive ? '#f3f4f6' : '#ffffff',
                   border: isCurrent ? '2px solid #031e41' : '1px solid #e5e7eb',
@@ -299,7 +299,7 @@ export default function LearningMethodologySection() {
                 }}
               >
                 <div
-                  className="text-4xl font-bold mb-3 transition-colors duration-300"
+                  className="text-4xl font-bold mb-3 transition-colors duration-700"
                   style={{ color: isActive ? '#9cbadb' : '#031e41' }}
                 >
                   {step.number}
@@ -307,7 +307,7 @@ export default function LearningMethodologySection() {
 
                 <div className="h-1 w-full bg-gray-200 rounded-full mb-4 overflow-hidden">
                   <div
-                    className="h-full transition-all duration-300"
+                    className="h-full transition-all duration-700"
                     style={{
                       width: isActive ? '100%' : '0%',
                       backgroundColor: '#031e41',
@@ -316,7 +316,7 @@ export default function LearningMethodologySection() {
                 </div>
 
                 <h3
-                  className="text-lg font-bold mb-2 transition-colors duration-300"
+                  className="text-lg font-bold mb-2 transition-colors duration-700"
                   style={{ color: isCurrent ? '#031e41' : '#1f2937' }}
                 >
                   {step.title}
