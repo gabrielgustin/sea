@@ -24,15 +24,9 @@ export default function Home() {
         <CoursesSection />
         <BenefitsSection />
         <LearningMethodologySection />
-        <div className="hidden md:block">
-          <FAQSection />
-          <SpecialOfferSection />
-          <ContactSection />
-        </div>
-        <div className="md:hidden flex flex-col">
-          <FAQSection />
-          <ContactSection />
-        </div>
+        <SpecialOfferSection />
+        <FAQSection />
+        <ContactSection />
       </main>
 
       {/* Mobile sidebar (separate from layout) */}
