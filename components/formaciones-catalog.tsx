@@ -46,6 +46,7 @@ export default function FormacionesCatalog() {
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+              {courses.map((course, index) => (
                 <Link
                   key={course.id}
                   href={`/cursos/${course.id}`}
