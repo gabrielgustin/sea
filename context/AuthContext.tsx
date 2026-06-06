@@ -26,32 +26,26 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    // Cerrar sesión al recargar la página (primera carga del componente)
-    const isPageReload = sessionStorage.getItem('sessionActive') === null;
-    
-    if (isPageReload) {
-      // Primera carga/recarga - limpiar sesión
-      localStorage.removeItem('userAuth');
-      localStorage.removeItem('userRole');
-      localStorage.removeItem('userDNI');
-      localStorage.removeItem('userCourse');
-      sessionStorage.setItem('sessionActive', 'true');
+    // Solo ejecutar en cliente
+    if (typeof window === 'undefined') {
       setHydrated(true);
-    } else {
-      // Misma sesión de navegación - restaurar estado
-      const savedAuth = localStorage.getItem('userAuth') === 'true';
-      const savedRole = localStorage.getItem('userRole') as UserRole;
-      const savedDNI = localStorage.getItem('userDNI');
-      const savedCourse = localStorage.getItem('userCourse');
-      
-      if (savedAuth && savedRole) {
-        setIsAuthenticated(true);
-        setUserRole(savedRole);
-        setUserDNI(savedDNI || undefined);
-        setUserCourse(savedCourse || undefined);
-      }
-      setHydrated(true);
+      return;
     }
+
+    // Restaurar estado de autenticación del localStorage
+    const savedAuth = localStorage.getItem('userAuth') === 'true';
+    const savedRole = localStorage.getItem('userRole') as UserRole;
+    const savedDNI = localStorage.getItem('userDNI');
+    const savedCourse = localStorage.getItem('userCourse');
+    
+    if (savedAuth && savedRole) {
+      setIsAuthenticated(true);
+      setUserRole(savedRole);
+      setUserDNI(savedDNI || undefined);
+      setUserCourse(savedCourse || undefined);
+    }
+
+    setHydrated(true);
   }, []);
 
   const login = async (username: string, password: string): Promise<{ success: boolean; redirectUrl?: string; error?: string }> => {

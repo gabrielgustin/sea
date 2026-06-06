@@ -1,17 +1,29 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { Menu, X, Home, BookOpen, Instagram, Mail, LogIn, LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import Link from 'next/link';
 import LoginModal from './login-modal';
 
 export default function Sidebar() {
+  const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [showLoginAnimation, setShowLoginAnimation] = useState(false);
   const [showAuthIconAnimation, setShowAuthIconAnimation] = useState(false);
   const { isAuthenticated, logout } = useAuth();
+
+  const handleAuthIconClick = () => {
+    if (isAuthenticated) {
+      // Si está autenticado, redirigir al panel de administración
+      router.push('/admin');
+    } else {
+      // Si no está autenticado, abrir modal de login
+      setLoginOpen(true);
+    }
+  };
 
   const publicNavItems = [
     { icon: Home, label: 'Inicio', href: '/' },
@@ -115,19 +127,21 @@ export default function Sidebar() {
             );
           })}
 
-          {/* Login Button - Solo abre modal, no cierra sesión */}
-          {!isAuthenticated && (
-            <button
-              onClick={() => setLoginOpen(true)}
-              className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
-              title="Iniciar sesión"
-            >
-              <LogIn size={iconSize} className={`transition-all duration-300 group-hover:scale-110`} style={{ color: '#031e41' }} />
-              <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
-                Iniciar sesión
-              </span>
-            </button>
-          )}
+          {/* Login/Admin Button */}
+          <button
+            onClick={handleAuthIconClick}
+            className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
+            title={isAuthenticated ? "Panel de Administración" : "Iniciar sesión"}
+          >
+            {isAuthenticated ? (
+              <LogOut size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+            ) : (
+              <LogIn size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+            )}
+            <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
+              {isAuthenticated ? "Panel de Admin" : "Iniciar sesión"}
+            </span>
+          </button>
 
         </nav>
       </aside>
@@ -202,18 +216,20 @@ export default function Sidebar() {
             );
           })}
 
-          {/* Login Button - Solo abre modal, no cierra sesión */}
-          {!isAuthenticated && (
-            <button
-              onClick={() => setLoginOpen(true)}
-              className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group"
-            >
-              <LogIn size={iconSize} className={`transition-all duration-300 group-hover:scale-110`} style={{ color: '#031e41' }} />
-              <span className="text-sm font-medium" style={{ color: '#031e41' }}>
-                Iniciar sesión
-              </span>
-            </button>
-          )}
+          {/* Login/Admin Button */}
+          <button
+            onClick={handleAuthIconClick}
+            className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group w-full"
+          >
+            {isAuthenticated ? (
+              <LogOut size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+            ) : (
+              <LogIn size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+            )}
+            <span className="text-sm font-medium" style={{ color: '#031e41' }}>
+              {isAuthenticated ? "Panel de Admin" : "Iniciar sesión"}
+            </span>
+          </button>
         </nav>
       </aside>
 
