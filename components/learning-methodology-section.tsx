@@ -6,6 +6,7 @@ export default function LearningMethodologySection() {
   const [progress, setProgress] = useState(0);
   const [isLocked, setIsLocked] = useState(false);
   const [hasCompleted, setHasCompleted] = useState(false);
+  const [isMobileView, setIsMobileView] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
   const touchStartY = useRef(0);
@@ -80,13 +81,22 @@ export default function LearningMethodologySection() {
     }
   }, [isLocked, unlock]);
 
+  // Detectar y actualizar tamaño de ventana (móvil vs desktop)
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+    
+    handleResize(); // Llamar al montar
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // Detectar entrada a la sección
   useEffect(() => {
     const section = sectionRef.current;
     const container = getScrollContainer();
     if (!section || !container) return;
-
-    const isMobile = window.innerWidth < 768;
 
     const checkPosition = () => {
       if (hasCompleted || isLocked) return;
@@ -107,7 +117,7 @@ export default function LearningMethodologySection() {
     };
 
     // En móvil: no bloquear el scroll, solo actualizar progreso según scroll
-    if (isMobile) {
+    if (isMobileView) {
       const handleMobileScroll = () => {
         const sectionRect = section.getBoundingClientRect();
         const containerRect = container.getBoundingClientRect();
@@ -138,7 +148,7 @@ export default function LearningMethodologySection() {
       container.addEventListener('scroll', checkPosition, { passive: true });
       return () => container.removeEventListener('scroll', checkPosition);
     }
-  }, [hasCompleted, isLocked, lock, progress, getScrollContainer]);
+  }, [hasCompleted, isLocked, lock, progress, getScrollContainer, isMobileView]);
 
   // Wheel handler
   useEffect(() => {
