@@ -325,33 +325,6 @@ export default function FormacionesPage() {
               })}
             </div>
           </div>
-                    {/* Accent dot */}
-                    <div 
-                      className="absolute -bottom-1 -right-1 md:-bottom-2 md:-right-2 w-5 h-5 md:w-6 md:h-6 lg:w-7 lg:h-7 rounded-full border-3 md:border-4 border-white"
-                      style={{ backgroundColor: '#9cbadb' }}
-                    ></div>
-                  </div>
-
-                  {/* Card Container */}
-                  <div className="w-full px-1 sm:px-0 flex flex-col flex-grow">
-                    <div 
-                      className="bg-white rounded-lg md:rounded-xl lg:rounded-2xl p-3 md:p-4 lg:p-6 text-center shadow-md hover:shadow-lg transition-all duration-300 border-t-4 h-full flex flex-col justify-between"
-                      style={{ borderTopColor: '#9cbadb' }}
-                    >
-                      <div>
-                        <h3 className="text-base md:text-lg lg:text-xl font-bold mb-2 md:mb-3 lg:mb-4" style={{ color: '#031e41' }}>
-                          {item.title}
-                        </h3>
-                        <p className="text-xs md:text-sm lg:text-base text-gray-600 leading-relaxed">
-                          {item.description}
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </section>
 
