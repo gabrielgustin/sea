@@ -17,9 +17,6 @@ export default function FormacionesPage() {
         }}
       >
         <div className="w-full text-center text-white">
-          <div className="mb-4 md:mb-6 inline-block px-3 md:px-4 py-1.5 md:py-2 rounded-full" style={{ backgroundColor: 'rgba(156, 186, 219, 0.2)' }}>
-            <p className="text-xs md:text-sm font-semibold text-blue-200">Nuestro Servicio Principal</p>
-          </div>
           <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold mb-3 md:mb-6 text-balance leading-tight">
             Centro de Formacion
           </h1>
@@ -48,7 +45,7 @@ export default function FormacionesPage() {
       <section className="py-8 md:py-16 px-4 bg-gray-50">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-2xl md:text-4xl font-bold text-center mb-8 md:mb-12 lg:mb-16" style={{ color: '#031e41' }}>
-            ¿Por qué elegir Centro de Formaciones?
+            ¿Porque elegirnos?
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 lg:gap-8">
             {[
@@ -117,9 +114,9 @@ export default function FormacionesPage() {
               {
                 id: 'talleres',
                 icon: Lightbulb,
-                title: 'Talleres Especializados',
-                description: 'Workshops cortos e intensivos en áreas específicas para desarrollo profesional rápido.',
-                features: ['Formato intensivo', 'Contenido actual', 'Red de contactos']
+                title: 'Formaciones de Oficio',
+                description: 'Formaciones especializadas en oficios técnicos y prácticos que demanda el mercado laboral actual.',
+                features: ['Aprendizaje práctico', 'Inserción laboral', 'Certificación profesional']
               }
             ].map((service) => (
               <div
