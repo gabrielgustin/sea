@@ -12,33 +12,79 @@ export default function FormacionesCatalog() {
   return (
     <div className="w-full bg-white">
       {/* Hero Section */}
-      <section className="w-full py-16 px-4 bg-gray-50">
-        <div className="max-w-6xl mx-auto text-center">
-          <h1 className="text-5xl md:text-6xl font-bold mb-4 text-balance" style={{ color: '#031e41' }}>
-            Catálogo de Formaciones
-          </h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Explora todos nuestros cursos y programas disponibles. Elige la formación que mejor se adapte a tus necesidades.
-          </p>
+      <section className="w-full py-8 md:py-16 lg:py-20 px-4 bg-gradient-to-b from-blue-50 to-white">
+        <div className="max-w-6xl mx-auto">
+          {/* Breadcrumb */}
+          <div className="mb-6 md:mb-8 flex items-center gap-2 text-sm md:text-base text-gray-600">
+            <Link href="/" className="hover:text-blue-600 transition-colors">Inicio</Link>
+            <span>/</span>
+            <span style={{ color: '#031e41' }} className="font-semibold">Catálogo de Formaciones</span>
+          </div>
+
+          {/* Title and Subtitle */}
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 mb-4 md:mb-6 px-3 md:px-4 py-1.5 md:py-2 rounded-full bg-blue-100">
+              <span className="w-2 h-2 rounded-full" style={{ backgroundColor: '#9cbadb' }}></span>
+              <span className="text-xs md:text-sm font-semibold" style={{ color: '#031e41' }}>
+                NUESTRO CATÁLOGO
+              </span>
+            </div>
+            
+            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-6 text-balance leading-tight" style={{ color: '#031e41' }}>
+              Catálogo de Formaciones
+            </h1>
+            
+            <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto mb-6 md:mb-8 leading-relaxed">
+              Explora todos nuestros cursos y programas disponibles. Elige la formación que mejor se adapte a tus necesidades y comienza tu camino hacia el éxito.
+            </p>
+
+            {/* Call to Action */}
+            <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
+              <a
+                href="#cursos"
+                className="px-6 md:px-8 py-2.5 md:py-3 rounded-lg font-semibold text-sm md:text-base transition-all duration-300 hover:shadow-lg hover:scale-105 active:scale-95"
+                style={{ backgroundColor: '#031e41', color: 'white' }}
+              >
+                Explorar Formaciones
+              </a>
+              <Link
+                href="/formaciones"
+                className="px-6 md:px-8 py-2.5 md:py-3 rounded-lg font-semibold text-sm md:text-base transition-all duration-300 border-2 hover:shadow-lg"
+                style={{ borderColor: '#031e41', color: '#031e41' }}
+              >
+                Más Información
+              </Link>
+            </div>
+          </div>
         </div>
       </section>
 
       {/* Courses Grid */}
-      <section ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12">
+      <section id="cursos" ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20">
         <div className="max-w-6xl mx-auto">
+          {/* Section Title */}
+          <div className="text-center mb-12 md:mb-16">
+            <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4" style={{ color: '#031e41' }}>
+              Nuestras Formaciones Disponibles
+            </h2>
+            <p className="text-sm md:text-base text-gray-600 max-w-2xl mx-auto">
+              Selecciona una formación para conocer más detalles, horarios y cómo inscribirte
+            </p>
+          </div>
+
           {courses.length === 0 ? (
-            <div className="text-center py-12">
+            <div className="text-center py-16 md:py-24">
               <p style={{ color: '#031e41' }} className="text-lg font-semibold">
                 Cargando formaciones...
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {courses.map((course, index) => (
                 <Link
                   key={course.id}
                   href={`/cursos/${course.id}`}
-                  className={`overflow-hidden rounded-3xl border-2 transition-all duration-300 hover-lift shadow-blue-sm hover:shadow-blue-md block group ${
+                  className={`overflow-hidden rounded-2xl md:rounded-3xl border-2 transition-all duration-500 hover:shadow-2xl block group ${
                     isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
                   }`}
                   style={{ 
@@ -48,45 +94,67 @@ export default function FormacionesCatalog() {
                   }}
                 >
                   {/* Image Container */}
-                  <div className="relative h-48 md:h-56 overflow-hidden bg-gray-100">
+                  <div className="relative h-40 md:h-56 overflow-hidden bg-gray-100 group-hover:bg-gray-200 transition-colors">
                     <Image
                       src={course.image}
                       alt={course.title}
                       fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                      className="object-cover transition-transform duration-500 group-hover:scale-110"
                       sizes="(max-width: 768px) 100vw, 50vw"
                     />
                     
                     {/* Badge */}
                     <div 
-                      className="absolute top-4 right-4 px-4 py-2 rounded-full text-white text-xs font-bold transition-all duration-300 group-hover:translate-y-1"
+                      className="absolute top-3 md:top-4 right-3 md:right-4 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-white text-xs font-bold transition-all duration-300 group-hover:translate-y-0 group-hover:shadow-lg transform hover:scale-105"
                       style={{ backgroundColor: '#031e41' }}
                     >
                       {course.badge}
                     </div>
+
+                    {/* Overlay on Hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4 md:p-5">
+                      <span className="text-white text-sm font-semibold">Ver detalles →</span>
+                    </div>
                   </div>
 
                   {/* Content */}
-                  <div className="p-4 md:p-5">
+                  <div className="p-4 md:p-6">
                     {/* Title */}
-                    <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight transition-colors duration-300 group-hover:text-blue-900" style={{ color: 'inherit' }}>
+                    <h3 className="text-lg md:text-2xl font-bold mb-2 leading-snug transition-colors duration-300 line-clamp-2" style={{ color: '#031e41' }}>
                       {course.title}
                     </h3>
 
                     {/* Subtitle */}
-                    <p className="text-gray-600 text-xs md:text-sm mb-4">
+                    <p className="text-gray-600 text-xs md:text-sm mb-4 line-clamp-2">
                       {course.subtitle}
                     </p>
 
+                    {/* Divider */}
+                    <div className="h-px bg-gray-200 my-4"></div>
+
                     {/* Details */}
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 text-gray-700">
-                        <span className="font-semibold text-xs">Inicia:</span>
-                        <span className="text-xs">{course.startDate}</span>
+                    <div className="space-y-2.5 md:space-y-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#9cbadb' }}></div>
+                        <div className="flex-1">
+                          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Inicia</span>
+                          <p className="text-sm md:text-base font-medium text-gray-900">{course.startDate}</p>
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2 text-gray-700">
-                        <span className="font-semibold text-xs">Modalidad:</span>
-                        <span className="text-xs">{course.modality}</span>
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#9cbadb' }}></div>
+                        <div className="flex-1">
+                          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Modalidad</span>
+                          <p className="text-sm md:text-base font-medium text-gray-900">{course.modality}</p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Footer */}
+                    <div className="mt-4 md:mt-5 pt-4 md:pt-5 border-t border-gray-100">
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-semibold" style={{ color: '#9cbadb' }}>Más información</span>
+                        <span className="text-lg transition-transform group-hover:translate-x-1">→</span>
                       </div>
                     </div>
                   </div>
@@ -96,10 +164,12 @@ export default function FormacionesCatalog() {
           )}
 
           {/* Total Count */}
-          <div className="text-center mt-12">
-            <p style={{ color: '#1a4d7a' }} className="text-lg">
-              Mostrando <span className="font-bold">{courses.length}</span> formación(es) disponible(s)
-            </p>
+          <div className="text-center mt-12 md:mt-16">
+            <div className="inline-block px-6 py-3 rounded-full bg-gray-50 border border-gray-200">
+              <p style={{ color: '#1a4d7a' }} className="text-sm md:text-base font-semibold">
+                Mostrando <span className="font-bold" style={{ color: '#031e41' }}>{courses.length}</span> formación(es) disponible(s)
+              </p>
+            </div>
           </div>
         </div>
       </section>
