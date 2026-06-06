@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { CheckCircle, Users, Award, Zap, TrendingUp, Building2, Lightbulb, Code } from 'lucide-react';
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 export default function FormacionesPage() {
   const [selectedService, setSelectedService] = useState<string | null>(null);
