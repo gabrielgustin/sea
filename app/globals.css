@@ -421,24 +421,15 @@
     width: 100%;
   }
 
-  /* Animación de scroll para los pasos */
-  [data-step-card] {
-    animation: stepIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  /* Animación de scroll para la sección "Cómo Funciona" */
+  .step-card {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.6s ease-out, transform 0.6s ease-out;
   }
 
-  [data-step-card].animate-in {
-    opacity: 1 !important;
-    transform: translateY(0) scale(1) !important;
-  }
-
-  @keyframes stepIn {
-    from {
-      opacity: 0.3;
-      transform: translateY(20px) scale(0.95);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0) scale(1);
-    }
+  .step-card.step-visible {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
