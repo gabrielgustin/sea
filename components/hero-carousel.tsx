@@ -134,16 +134,6 @@ export default function HeroCarousel() {
                       <p className="font-semibold">{slide.duration}</p>
                     </div>
                   </div>
-
-                  {/* CTA Button */}
-                  <div className="flex justify-start animate-slide-up" style={{ animationDelay: '0.3s' }}>
-                    <Link
-                      href={`/cursos/${slide.redirectSlug}`}
-                      className="px-8 py-3 rounded-lg font-bold text-white transition-all duration-300 hover:shadow-2xl transform hover:-translate-y-1 hover:scale-105 active:scale-95 bg-transparent border-none"
-                    >
-                      Ver más →
-                    </Link>
-                  </div>
                 </div>
               </div>
             </div>
@@ -151,8 +141,18 @@ export default function HeroCarousel() {
         </div>
       </div>
 
-      {/* Controles de navegación */}
-      <div className="absolute bottom-8 right-8 z-20 flex items-center justify-end">
+      {/* Controles de navegación + Ver más — mismo nivel */}
+      <div className="absolute bottom-8 right-8 z-20 flex items-center gap-6">
+        {/* Ver más — vinculado al slide activo */}
+        {slides[currentSlide]?.redirectSlug && (
+          <Link
+            href={`/cursos/${slides[currentSlide].redirectSlug}`}
+            className="text-white font-bold text-sm md:text-base transition-all duration-300 hover:underline underline-offset-4 animate-slide-up"
+          >
+            Ver mas →
+          </Link>
+        )}
+
         {/* Botones de navegación */}
         <div className="flex gap-4">
           <button
