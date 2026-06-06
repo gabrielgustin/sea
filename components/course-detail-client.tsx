@@ -304,6 +304,18 @@ export default function CourseDetailClient({ course }: { course: Course }) {
               </div>
             )}
 
+            {/* Requisitos */}
+            {course.requirements && (
+              <div className="mb-8 p-4 md:p-5 rounded-xl bg-amber-50 border border-amber-100">
+                <h2 className="text-base md:text-lg font-bold mb-2" style={{ color: '#031e41' }}>
+                  Requisitos de inscripción
+                </h2>
+                <p className="text-sm md:text-base text-gray-700 leading-relaxed">
+                  {course.requirements}
+                </p>
+              </div>
+            )}
+
             {/* Contenidos colapsables */}
             <div className="mb-8">
               <div className="flex items-center justify-between mb-4">

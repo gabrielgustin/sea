@@ -24,6 +24,7 @@ export const coursesData = [
     ],
     duration: '24 clases',
     price: '$35.000/mes',
+    requirements: 'Edad mínima: 15 años',
     objective: 'Formar a los estudiantes en los fundamentos de la programación, desarrollando habilidades para crear aplicaciones funcionales utilizando Python, incluyendo interfaces gráficas.',
     modules: [
       {
@@ -82,6 +83,7 @@ export const coursesData = [
     ],
     duration: '24 clases',
     price: '$35.000/mes',
+    requirements: 'Edad mínima: 12 años',
     objective: 'Que los estudiantes desarrollen videojuegos completos mientras adquieren habilidades de lógica y pensamiento computacional utilizando herramientas modernas.',
     modules: [
       {
@@ -140,6 +142,7 @@ export const coursesData = [
     ],
     duration: '24 clases',
     price: '$35.000/mes',
+    requirements: 'Edad mínima: 12 años',
     objective: 'Capacitar a los estudiantes en el diseño de modelos tridimensionales y su fabricación mediante impresión 3D.',
     modules: [
       {
@@ -205,6 +208,7 @@ export const coursesData = [
     ],
     duration: '24 clases',
     price: '$35.000/mes',
+    requirements: 'Edad mínima: 15 años',
     objective: 'Brindar conocimientos técnicos sobre el funcionamiento, mantenimiento y reparación de motores y sistemas automotrices.',
     modules: [
       {

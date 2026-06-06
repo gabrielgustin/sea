@@ -28,6 +28,7 @@ export interface Course {
   teachers?: CourseTeacher[]; // Array de docentes con info detallada
   duration: string;
   price: string;
+  requirements?: string; // Requisitos para inscribirse
   objective: string;
   modules: Array<{
     number: string;

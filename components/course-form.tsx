@@ -38,6 +38,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
     teacher: '',
     duration: '6 meses',
     price: '',
+    requirements: '',
     objective: '',
     modules: [] as Module[],
     methodology: '',
@@ -452,6 +453,17 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
                   onChange={(e) => handleInputChange('objective', e.target.value)}
                   placeholder="Describe el objetivo principal del curso..."
                   rows={3}
+                  className="mt-2 transition-smooth"
+                />
+              </div>
+
+              <div>
+                <Label>Requisitos de Inscripción</Label>
+                <Textarea
+                  value={formData.requirements}
+                  onChange={(e) => handleInputChange('requirements', e.target.value)}
+                  placeholder="Describe los requisitos para inscribirse (ej: Edad mínima, conocimientos previos, etc.)"
+                  rows={2}
                   className="mt-2 transition-smooth"
                 />
               </div>
