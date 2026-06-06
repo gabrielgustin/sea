@@ -9,18 +9,18 @@ export default function BenefitsSection() {
   const benefits = [
     {
       icon: Award,
-      title: 'Certificación Oficial ITS Villada',
-      description: 'Todos nuestros cursos cuentan con certificación oficial reconocida por ITS Villada',
+      title: 'Certificación Oficial',
+      description: 'Todos nuestros cursos cuentan con certificación oficial de ITS Villada',
     },
     {
       icon: Zap,
-      title: 'Formación práctica desde el primer día',
-      description: 'No solo teoría: desde la primera clase empezás a hacer proyectos reales',
+      title: 'Formación práctica',
+      description: 'Desde la primera clase empezás a hacer proyectos reales',
     },
     {
       icon: Target,
       title: 'Proyectos reales',
-      description: 'Trabajás en casos verdaderos que podés mostrar en tu portfolio profesional',
+      description: 'Trabajaremos en casos reales que luego podras sumar a tu portfolio profesional',
     },
     {
       icon: Users,
