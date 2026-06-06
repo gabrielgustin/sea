@@ -111,7 +111,7 @@ export default function HeroCarousel() {
               </div>
 
               {/* Contenido */}
-              <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 w-full h-full flex flex-col justify-end pb-20">
+              <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 w-full h-full flex flex-col justify-end pb-16">
                 {/* Título y información del curso */}
                 <div className="flex flex-col gap-4">
                   {/* Título */}
@@ -141,35 +141,33 @@ export default function HeroCarousel() {
         </div>
       </div>
 
-      {/* Controles de navegación + Ver más — mismo nivel */}
-      <div className="absolute bottom-8 right-8 z-20 flex items-center gap-6">
+      {/* Barra inferior: "Ver mas" a la izquierda + flechas a la derecha */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-4 md:px-8 py-4" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)' }}>
         {/* Ver más — vinculado al slide activo */}
-        {slides[currentSlide]?.redirectSlug && (
-          <Link
-            href={`/cursos/${slides[currentSlide].redirectSlug}`}
-            className="text-white font-bold text-sm md:text-base transition-all duration-300 hover:underline underline-offset-4 animate-slide-up"
-          >
-            Ver mas →
-          </Link>
-        )}
+        <Link
+          href={slides[currentSlide]?.redirectSlug ? `/cursos/${slides[currentSlide].redirectSlug}` : '/catalogo-formaciones'}
+          className="text-white font-bold text-sm md:text-base transition-all duration-300 hover:underline underline-offset-4"
+        >
+          Ver mas &rarr;
+        </Link>
 
-        {/* Botones de navegación */}
-        <div className="flex gap-4">
+        {/* Botones de navegacion */}
+        <div className="flex gap-3">
           <button
             onClick={() => scroll('prev')}
             disabled={!canScrollPrev}
-            className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm hover:scale-110 active:scale-95"
+            className="p-2.5 rounded-full bg-white/10 hover:bg-white/25 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed backdrop-blur-sm hover:scale-110 active:scale-95"
             title="Slide anterior"
           >
-            <ChevronLeft size={24} className="text-white" />
+            <ChevronLeft size={22} className="text-white" />
           </button>
           <button
             onClick={() => scroll('next')}
             disabled={!canScrollNext}
-            className="p-3 rounded-full bg-white/10 hover:bg-white/20 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed backdrop-blur-sm hover:scale-110 active:scale-95"
+            className="p-2.5 rounded-full bg-white/10 hover:bg-white/25 transition-all duration-300 disabled:opacity-40 disabled:cursor-not-allowed backdrop-blur-sm hover:scale-110 active:scale-95"
             title="Siguiente slide"
           >
-            <ChevronRight size={24} className="text-white" />
+            <ChevronRight size={22} className="text-white" />
           </button>
         </div>
       </div>
