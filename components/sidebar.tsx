@@ -115,19 +115,15 @@ export default function Sidebar() {
             );
           })}
 
-          {/* Login/Logout Button for Admin */}
+          {/* Login Button - Solo abre modal, no cierra sesión */}
           <button
-            onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
+            onClick={() => setLoginOpen(true)}
             className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
-            title={isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
+            title="Iniciar sesión"
           >
-            {isAuthenticated ? (
-              <LogOut size={iconSize} className={`transition-all duration-300 group-hover:scale-110 ${showAuthIconAnimation ? 'animate-icon-flip' : ''}`} style={{ color: '#031e41' }} />
-            ) : (
-              <LogIn size={iconSize} className={`transition-all duration-300 group-hover:scale-110 ${showAuthIconAnimation ? 'animate-icon-flip' : ''}`} style={{ color: '#031e41' }} />
-            )}
+            <LogIn size={iconSize} className={`transition-all duration-300 group-hover:scale-110`} style={{ color: '#031e41' }} />
             <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
-              {isAuthenticated ? "Cerrar sesión" : "Iniciar sesión"}
+              Iniciar sesión
             </span>
           </button>
 
@@ -204,18 +200,14 @@ export default function Sidebar() {
             );
           })}
 
-          {/* Login/Logout Button for Admin */}
+          {/* Login Button - Solo abre modal, no cierra sesión */}
           <button
-            onClick={isAuthenticated ? handleLogout : () => setLoginOpen(true)}
+            onClick={() => setLoginOpen(true)}
             className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group"
           >
-            {isAuthenticated ? (
-              <LogOut size={iconSize} className={`transition-all duration-300 group-hover:scale-110 ${showAuthIconAnimation ? 'animate-icon-flip' : ''}`} style={{ color: '#031e41' }} />
-            ) : (
-              <LogIn size={iconSize} className={`transition-all duration-300 group-hover:scale-110 ${showAuthIconAnimation ? 'animate-icon-flip' : ''}`} style={{ color: '#031e41' }} />
-            )}
+            <LogIn size={iconSize} className={`transition-all duration-300 group-hover:scale-110`} style={{ color: '#031e41' }} />
             <span className="text-sm font-medium" style={{ color: '#031e41' }}>
-              {isAuthenticated ? 'Cerrar sesión' : 'Iniciar sesión'}
+              Iniciar sesión
             </span>
           </button>
         </nav>

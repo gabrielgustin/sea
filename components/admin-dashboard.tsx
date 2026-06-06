@@ -1,8 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useCourses, Course } from '@/context/CoursesContext';
-import { Plus, Edit2, Trash2, Eye, EyeOff, Users, Sliders, HelpCircle, Settings } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
+import { Plus, Edit2, Trash2, Eye, EyeOff, Users, Sliders, HelpCircle, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CourseForm from './course-form';
 import CourseList from './course-list';
@@ -13,11 +15,18 @@ import FAQManager from './faq-manager';
 import SettingsManager from './settings-manager';
 
 export default function AdminDashboard() {
+  const router = useRouter();
+  const { logout } = useAuth();
   const { courses, addCourse, updateCourse, deleteCourse } = useCourses();
   const [showForm, setShowForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
   const [view, setView] = useState<'list' | 'form' | 'preview' | 'students' | 'carousel' | 'faq' | 'settings'>('list');
+
+  const handleLogout = () => {
+    logout();
+    router.push('/');
+  };
 
   const handleAddNew = () => {
     setEditingCourse(null);
@@ -82,16 +91,26 @@ export default function AdminDashboard() {
             </p>
           </div>
           
-          {view === 'list' && (
+          <div className="flex gap-3 flex-wrap">
+            {view === 'list' && (
+              <Button
+                onClick={handleAddNew}
+                className="flex items-center gap-2 text-white"
+                style={{ backgroundColor: '#031e41' }}
+              >
+                <Plus size={20} />
+                Nuevo Curso
+              </Button>
+            )}
+            
             <Button
-              onClick={handleAddNew}
-              className="flex items-center gap-2 text-white"
-              style={{ backgroundColor: '#031e41' }}
+              onClick={handleLogout}
+              className="flex items-center gap-2 text-white bg-red-600 hover:bg-red-700 transition-colors"
             >
-              <Plus size={20} />
-              Nuevo Curso
+              <LogOut size={20} />
+              Cerrar Sesión
             </Button>
-          )}
+          </div>
         </div>
 
         {/* Tab Navigation */}
