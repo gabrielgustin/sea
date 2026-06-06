@@ -51,142 +51,73 @@ export default function CourseDetailClient({ course }: { course: Course }) {
   });
   const [formSubmitted, setFormSubmitted] = useState(false);
 
-  // Calcular días faltantes para el inicio del curso
-  const getDaysUntilStart = () => {
-    if (!course.startDate || hasCourseStarted()) return null;
-    
+  // Parsear una fecha en formato ISO "YYYY-MM-DD" o "Lun 1/06/2026"
+  const parseDate = (dateStr: string): Date | null => {
     try {
-      let courseStartDate;
-      
-      // Si es formato ISO (YYYY-MM-DD)
-      if (course.startDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        const [year, month, day] = course.startDate.split('-');
-        courseStartDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      if (dateStr.match(/^\d{4}-\d{2}-\d{2}$/)) {
+        const [year, month, day] = dateStr.split('-').map(Number);
+        return new Date(year, month - 1, day);
       } else {
-        // Si es formato con día de la semana "Lun 1/06/2026"
-        const datePart = course.startDate.split(' ').slice(1).join(' ');
-        const [day, month, year] = datePart.split('/');
-        courseStartDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        const datePart = dateStr.split(' ').slice(1).join(' ');
+        const [day, month, year] = datePart.split('/').map(Number);
+        return new Date(year, month - 1, day);
       }
-      
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const startOfDay = new Date(courseStartDate);
-      startOfDay.setHours(0, 0, 0, 0);
-      
-      const daysUntilStart = Math.ceil((startOfDay.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
-      
-      if (daysUntilStart > 0) {
-        return daysUntilStart;
-      }
-      return null;
     } catch {
       return null;
-    }
-  };
-
-  // Generar mensaje dinámico sobre la fecha de inicio del curso
-  const getStartDateMessage = () => {
-    if (!course.startDate) return null;
-    
-    try {
-      let courseStartDate;
-      
-      // Si es formato ISO (YYYY-MM-DD)
-      if (course.startDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        const [year, month, day] = course.startDate.split('-');
-        courseStartDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-      } else {
-        // Si es formato con día de la semana "Lun 1/06/2026"
-        const datePart = course.startDate.split(' ').slice(1).join(' ');
-        const [day, month, year] = datePart.split('/');
-        courseStartDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-      }
-      
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const startOfDay = new Date(courseStartDate);
-      startOfDay.setHours(0, 0, 0, 0);
-      
-      // Calcular si el curso comenzó
-      const hasStarted = today > startOfDay;
-      
-      if (hasStarted) {
-        // El curso ya comenzó
-        if (canEnroll) {
-          return `El curso comenzó el ${course.startDate}, pero aún puedes inscribirte!`;
-        } else {
-          return `El curso comenzó el ${course.startDate} y ya no es posible inscribirse.`;
-        }
-      } else {
-        // El curso aún no ha comenzado
-        return `El curso comienza el ${course.startDate}`;
-      }
-    } catch (error) {
-      return `El curso comienza el ${course.startDate}`;
     }
   };
 
   // Verificar si el curso ya ha comenzado
-  const hasCourseStarted = () => {
+  const hasCourseStarted = (): boolean => {
     if (!course.startDate) return false;
-    try {
-      let courseStartDate;
-      
-      // Si es formato ISO (YYYY-MM-DD)
-      if (course.startDate.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        const [year, month, day] = course.startDate.split('-');
-        courseStartDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-      } else {
-        // Si es formato con día de la semana "Lun 1/06/2026"
-        const datePart = course.startDate.split(' ').slice(1).join(' ');
-        const [day, month, year] = datePart.split('/');
-        courseStartDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-      }
-      
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
-      const startOfDay = new Date(courseStartDate);
-      startOfDay.setHours(0, 0, 0, 0);
-      
-      return today > startOfDay;
-    } catch {
-      return false;
-    }
+    const startDate = parseDate(course.startDate);
+    if (!startDate) return false;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    startDate.setHours(0, 0, 0, 0);
+    return today > startDate;
   };
 
   // Verificar si estamos dentro del período de inscripción
-  const isEnrollmentOpen = () => {
-    if (!course.enrollmentDeadline) return true;
-    try {
-      let enrollmentDeadline;
-      
-      // Si es formato ISO (YYYY-MM-DD)
-      if (course.enrollmentDeadline.match(/^\d{4}-\d{2}-\d{2}$/)) {
-        const [year, month, day] = course.enrollmentDeadline.split('-');
-        enrollmentDeadline = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-      } else {
-        // Si es formato con día de la semana "Mar 3/06/2026"
-        const datePart = course.enrollmentDeadline.split(' ').slice(1).join(' ');
-        const [day, month, year] = datePart.split('/');
-        enrollmentDeadline = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-      }
-      
-      enrollmentDeadline.setHours(23, 59, 59, 999);
-      const today = new Date();
-      return today <= enrollmentDeadline;
-    } catch {
-      return true;
+  const isEnrollmentOpen = (): boolean => {
+    if (!course.enrollmentDeadline) {
+      // Sin deadline explícito: abierto solo si el curso no comenzó
+      return !hasCourseStarted();
     }
+    const deadline = parseDate(course.enrollmentDeadline);
+    if (!deadline) return true;
+    deadline.setHours(23, 59, 59, 999);
+    return new Date() <= deadline;
+  };
+
+  // Calcular días faltantes para el inicio del curso
+  const getDaysUntilStart = (): number | null => {
+    if (!course.startDate || hasCourseStarted()) return null;
+    const startDate = parseDate(course.startDate);
+    if (!startDate) return null;
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    startDate.setHours(0, 0, 0, 0);
+    const days = Math.ceil((startDate.getTime() - today.getTime()) / (1000 * 60 * 60 * 24));
+    return days > 0 ? days : null;
   };
 
   const courseHasStarted = hasCourseStarted();
   const canEnroll = isEnrollmentOpen();
 
+  // Generar mensaje dinámico sobre la fecha de inicio del curso
+  const getStartDateMessage = (): string | null => {
+    if (!course.startDate) return null;
+    if (courseHasStarted) {
+      return canEnroll
+        ? `El curso comenzó el ${course.startDate}, pero aún puedes inscribirte!`
+        : `El curso comenzó el ${course.startDate} y ya no es posible inscribirse.`;
+    }
+    return `El curso comienza el ${course.startDate}`;
+  };
+
   const handleInterestSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Aquí se enviaría el formulario a un backend
-    console.log('Formulario de interés enviado:', interestForm);
     setFormSubmitted(true);
     setTimeout(() => setFormSubmitted(false), 3000);
   };
