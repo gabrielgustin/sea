@@ -162,19 +162,19 @@ export default function CourseDetailClient({ course }: { course: Course }) {
     <div className="bg-white rounded-2xl border-2 overflow-hidden" style={{ borderColor: '#031e41' }}>
       {canEnroll ? (
         <>
-          {/* Grid de datos del curso */}
-          <div className="grid grid-cols-2 divide-x divide-y divide-gray-100">
-            <div className="p-4">
+          {/* Datos del curso en bloques apilados */}
+          <div className="space-y-1">
+            <div className="p-4 border-b border-gray-100">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">
                 {hasCourseStarted() ? 'Inició' : 'Inicia'}
               </p>
               <p className="text-sm font-bold text-gray-900">{course.startDate}</p>
             </div>
-            <div className="p-4">
+            <div className="p-4 border-b border-gray-100">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Duración</p>
               <p className="text-sm font-bold text-gray-900">{course.duration}</p>
             </div>
-            <div className="p-4">
+            <div className="p-4 border-b border-gray-100">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Horario</p>
               <p className="text-sm font-bold text-gray-900">{course.schedule}</p>
             </div>
