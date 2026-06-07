@@ -1,6 +1,7 @@
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/header';
 import HeroCarousel from '@/components/hero-carousel';
+import TrainingCenterSection from '@/components/training-center-section';
 import CoursesSection from '@/components/courses-section';
 import BenefitsSection from '@/components/benefits-section';
 import LearningMethodologySection from '@/components/learning-methodology-section';
@@ -21,6 +22,7 @@ export default function Home() {
       <main className="w-full md:w-[90%] overflow-x-hidden overflow-y-auto">
         <Header />
         <HeroCarousel />
+        <TrainingCenterSection />
         <CoursesSection />
         <BenefitsSection />
         <LearningMethodologySection />
