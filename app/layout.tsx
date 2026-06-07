@@ -11,8 +11,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: 'Extension Académica - Portal Universitario',
-  description: 'Portal de extensión académica de la Universidad',
+  title: 'Secretaría de Extensión Académica - Portal SEA',
+  description: 'Portal de formaciones y extensión académica de la Secretaría de Extensión Académica',
   generator: 'v0.app',
   icons: {
     icon: [
