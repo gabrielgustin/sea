@@ -110,25 +110,23 @@ export default function FormacionesPage() {
 
       {/* Hero Section */}
       <section
-        className="w-full min-h-[50vh] md:min-h-[60vh] flex items-center justify-center px-4 py-12 md:py-16"
+        className="w-full pt-24 md:pt-16 pb-8 md:pb-16 md:min-h-[70vh] flex items-center justify-center px-4"
         style={{ background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)' }}
       >
         <div className="w-full text-center text-white max-w-4xl mx-auto">
-          <h1 className="text-3xl md:text-5xl lg:text-7xl font-bold mb-3 md:mb-6 text-balance leading-tight">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance">
             Centro de Formacion
           </h1>
-          <p className="text-base md:text-lg lg:text-2xl text-blue-100 max-w-3xl mx-auto mb-6 md:mb-8 text-balance px-2">
+          <p className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto mb-8">
             Capacitaciones extracurriculares diseñadas como extensión académica para instituciones educativas
           </p>
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
-            <Link
-              href="#contacto"
-              className="px-6 md:px-8 py-2.5 md:py-4 rounded-lg font-bold text-sm md:text-base lg:text-lg transition-all duration-300 hover:scale-105 active:scale-95"
-              style={{ backgroundColor: '#9cbadb', color: '#031e41' }}
-            >
-              Solicitar Consulta Gratuita
-            </Link>
-          </div>
+          <Link
+            href="#contacto"
+            className="inline-block px-6 md:px-8 py-3 md:py-4 rounded-lg font-bold text-sm md:text-base transition-all duration-300 hover:scale-105 active:scale-95"
+            style={{ backgroundColor: '#9cbadb', color: '#031e41' }}
+          >
+            Solicitar Consulta Gratuita
+          </Link>
         </div>
       </section>
 
