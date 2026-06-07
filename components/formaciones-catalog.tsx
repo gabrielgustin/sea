@@ -10,32 +10,26 @@ export default function FormacionesCatalog() {
   const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
 
   return (
-    <div className="w-full bg-white">
+    <div className="w-full">
       {/* Hero Section */}
-      <section className="w-full pt-10 px-4">
-        <div className="max-w-6xl mx-auto">
-          {/* Breadcrumb */}
-          <div className="mb-6 md:mb-8 flex items-center gap-2 text-sm md:text-base text-gray-600">
-            <Link href="/" className="hover:text-blue-600 transition-colors">Inicio</Link>
-            <span>/</span>
-            <span style={{ color: '#031e41' }} className="font-semibold">Catálogo de Formaciones</span>
-          </div>
-
-          {/* Title and Subtitle */}
-          <div className="text-center">
-            <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-3 md:mb-6 text-balance leading-tight" style={{ color: '#031e41' }}>
-              Catálogo de Formaciones
-            </h1>
-            
-            <p className="text-base md:text-lg lg:text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed mt-12">
-              Explora todos nuestros cursos y programas disponibles. Elige la formación que mejor se adapte a tus necesidades y comienza tu camino hacia el éxito.
-            </p>
-          </div>
+      <section
+        className="w-full pt-24 md:pt-16 pb-8 md:pb-16 md:min-h-[70vh] flex items-center justify-center px-4"
+        style={{
+          background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)',
+        }}
+      >
+        <div className="w-full text-center text-white">
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance">
+            Catálogo de Formaciones
+          </h1>
+          <p className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto">
+            Explora todos nuestros cursos y programas disponibles. Elige la formación que mejor se adapte a tus necesidades y comienza tu camino hacia el éxito.
+          </p>
         </div>
       </section>
 
       {/* Courses Grid */}
-      <section id="cursos" ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20">
+      <section id="cursos" ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20 bg-white">
         <div className="max-w-6xl mx-auto">
 
           {courses.length === 0 ? (
