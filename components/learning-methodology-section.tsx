@@ -219,20 +219,20 @@ export default function LearningMethodologySection() {
   return (
     <section ref={sectionRef} className="w-full px-4 sm:px-6 lg:px-8 py-16 relative min-h-[650px]">
       <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-12">
+        {/* Header - OCULTO */}
+        {/* <div className="text-center mb-12">
           <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#031e41' }}>
             Nuestra ruta de aprendizaje
           </h2>
           <p className="text-gray-600 text-lg max-w-2xl mx-auto">
             Un camino probado diseñado para construir habilidades reales y confianza
           </p>
-        </div>
+        </div> */}
 
-        {/* Progress Bar Container */}
-        <div className="relative mb-8 hidden md:block">
+        {/* Progress Bar Container - OCULTO */}
+        {/* <div className="relative mb-8 hidden md:block">
           {/* Step Labels */}
-          <div className="flex justify-between mb-3">
+          {/* <div className="flex justify-between mb-3">
             {steps.map((step, index) => (
               <span
                 key={index}
@@ -248,7 +248,7 @@ export default function LearningMethodologySection() {
           </div>
 
           {/* Progress Bar */}
-          <div className="h-3 bg-gray-200 rounded-full overflow-hidden relative">
+          {/* <div className="h-3 bg-gray-200 rounded-full overflow-hidden relative">
             <div
               className="h-full rounded-full transition-all duration-100 ease-out relative"
               style={{
@@ -268,7 +268,7 @@ export default function LearningMethodologySection() {
             </div>
 
             {/* Step Markers */}
-            <div className="absolute inset-0 flex justify-between items-center">
+            {/* <div className="absolute inset-0 flex justify-between items-center">
               {steps.map((_, index) => {
                 const markerPosition = (index / (steps.length - 1)) * 100;
                 const isReached = progress * 100 >= markerPosition;
@@ -286,7 +286,7 @@ export default function LearningMethodologySection() {
               })}
             </div>
           </div>
-        </div>
+        </div> */}
 
         {/* Steps Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
