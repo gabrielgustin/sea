@@ -8,9 +8,9 @@ export default function TrainingCenterCards() {
         {/* Card 1 */}
         <Link href="/formaciones">
           <div className="p-4 md:p-8 rounded-2xl text-white text-center transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer flex flex-col justify-center min-h-64 md:min-h-80" style={{ backgroundColor: '#031e41' }}>
-            <h3 className="text-xl md:text-3xl font-bold mb-3 md:mb-4">Centro de Formación</h3>
+            <h3 className="text-xl md:text-3xl font-bold mb-3 md:mb-4">Lleva SEA a tu Institución</h3>
             <p className="text-sm md:text-lg leading-relaxed">
-              Potenciá tu proyecto educativo y descubrí cómo adaptamos nuestros programas para convertirlos en la extensión académica que tu institución necesita
+              Creamos tu Centro de Formación junto a la Secretaría de Extensión Académica.
             </p>
           </div>
         </Link>
