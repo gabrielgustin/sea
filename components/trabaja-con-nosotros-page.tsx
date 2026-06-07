@@ -60,7 +60,7 @@ export default function TrabajaConNosotrosPage() {
     <div className="w-full bg-white">
       {/* Hero Section */}
       <section
-        className="w-full py-8 md:py-16 md:min-h-[70vh] flex items-center justify-center px-4"
+        className="w-full pt-24 md:pt-16 pb-8 md:pb-16 md:min-h-[70vh] flex items-center justify-center px-4"
         style={{
           background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)',
         }}
