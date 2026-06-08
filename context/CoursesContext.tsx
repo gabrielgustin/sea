@@ -85,11 +85,18 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateCourse = async (id: string, updatedData: Partial<Course>) => {
-    await fetch('/api/courses', {
+    console.log('[v0] updateCourse called with id:', id)
+    console.log('[v0] updateCourse data:', updatedData)
+    const res = await fetch('/api/courses', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, ...updatedData }),
-    });
+    })
+    const resData = await res.json()
+    console.log('[v0] updateCourse response:', resData, 'status:', res.status)
+    if (!res.ok) {
+      throw new Error(resData.error || 'Failed to update course')
+    }
     await fetchCourses();
   };
 

@@ -5,10 +5,6 @@ import { eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 import { revalidatePath } from 'next/cache'
 
-export const config = {
-  api: { bodyParser: { sizeLimit: '10mb' } },
-}
-
 export async function GET() {
   try {
     const data = await db.select().from(courses).orderBy(courses.createdAt)
@@ -91,8 +87,21 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const { id, ...body } = await request.json()
+    console.log('[v0] PUT /api/courses - id:', id)
+    console.log('[v0] PUT /api/courses - title:', body.title)
+    
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
-    await db.update(courses).set({
+    
+    // Check if course exists first
+    const existing = await db.select().from(courses).where(eq(courses.id, String(id)))
+    console.log('[v0] PUT /api/courses - existing course found:', existing.length > 0, 'id:', existing[0]?.id)
+    
+    if (existing.length === 0) {
+      console.log('[v0] PUT /api/courses - course not found with id:', String(id))
+      return NextResponse.json({ error: 'Course not found' }, { status: 404 })
+    }
+    
+    const result = await db.update(courses).set({
       title: body.title,
       subtitle: body.subtitle,
       description: body.description ?? body.subtitle ?? '',
@@ -120,12 +129,14 @@ export async function PUT(request: NextRequest) {
       teachers: body.teachers,
       updatedAt: new Date(),
     }).where(eq(courses.id, String(id)))
+    
+    console.log('[v0] PUT /api/courses - update completed')
     revalidatePath('/')
     revalidatePath('/catalogo-formaciones')
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] PUT /api/courses error:', error)
-    return NextResponse.json({ error: 'Failed to update course' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to update course', details: String(error) }, { status: 500 })
   }
 }
 
