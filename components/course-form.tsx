@@ -12,7 +12,7 @@ import { DatePicker } from '@/components/date-picker';
 
 interface CourseFormProps {
   course?: Course;
-  onSave: (courseData: any) => void;
+  onSave: (courseData: any) => Promise<void> | void;
   onCancel: () => void;
 }
 
@@ -196,9 +196,16 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
     setImagePreview(null);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [saving, setSaving] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+    setSaving(true);
+    try {
+      await onSave(formData);
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -626,10 +633,11 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
         </Button>
         <Button
           type="submit"
+          disabled={saving}
           className="text-white"
           style={{ backgroundColor: '#031e41' }}
         >
-          {course ? 'Actualizar Curso' : 'Crear Curso'}
+          {saving ? 'Guardando...' : course ? 'Actualizar Curso' : 'Crear Curso'}
         </Button>
       </div>
     </form>

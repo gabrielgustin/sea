@@ -51,11 +51,15 @@ export default function AdminDashboard() {
     setView('preview');
   };
 
-  const handleSave = (courseData: any) => {
-    if (editingCourse) {
-      updateCourse(editingCourse.id, courseData);
-    } else {
-      addCourse(courseData);
+  const handleSave = async (courseData: any) => {
+    try {
+      if (editingCourse) {
+        await updateCourse(editingCourse.id, courseData);
+      } else {
+        await addCourse(courseData);
+      }
+    } catch (err) {
+      console.error('[v0] handleSave error:', err);
     }
     setView('list');
     setEditingCourse(null);
