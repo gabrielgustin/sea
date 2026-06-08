@@ -1,171 +1,58 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server'
+import { db } from '@/lib/db'
+import { carouselSlides } from '@/lib/db/schema'
+import { eq, asc } from 'drizzle-orm'
+import { revalidatePath } from 'next/cache'
 
-export interface CarouselSlide {
-  id: string;
-  title: string;
-  description: string;
-  startDate: string;
-  duration: string;
-  modality: string;
-  image: string;
-  redirectSlug: string;
-}
-
-// Almacenamiento simulado en memoria
-let carouselSlides: CarouselSlide[] = [
-  {
-    id: '1',
-    title: 'Introducción a la Robótica',
-    description: 'Aprende los fundamentos de robótica y automatización',
-    startDate: '27 de junio, 2026',
-    duration: '40 horas (10 encuentros)',
-    modality: 'Modalidad Presencial',
-    image: '/carousel/robotics-kids.png',
-    redirectSlug: 'introduccion-robotica'
-  },
-  {
-    id: '2',
-    title: 'Desarrollo de Aplicaciones',
-    description: 'Crea aplicaciones profesionales con tecnología moderna',
-    startDate: '4 de junio, 2026',
-    duration: '6 meses',
-    modality: 'Educación Presencial',
-    image: '/carousel/web-development.png',
-    redirectSlug: 'desarrollo-de-aplicaciones'
-  },
-  {
-    id: '3',
-    title: 'Diseño e Impresión 3D',
-    description: 'Domina el diseño 3D y la impresión de modelos',
-    startDate: '4 de junio, 2026',
-    duration: '6 meses',
-    modality: 'Educación Presencial',
-    image: '/carousel/3d-design.png',
-    redirectSlug: 'diseno-impresion-3d'
-  },
-  {
-    id: '4',
-    title: 'Desarrollo de Videojuegos',
-    description: 'Crea videojuegos profesionales desde cero',
-    startDate: '4 de junio, 2026',
-    duration: '6 meses',
-    modality: 'Educación Presencial',
-    image: '/carousel/game-development.png',
-    redirectSlug: 'desarrollo-de-videojuegos'
-  }
-];
-
-// GET: Obtener todos los slides del carrusel
 export async function GET() {
   try {
-    return NextResponse.json({ slides: carouselSlides });
+    const data = await db.select().from(carouselSlides).where(eq(carouselSlides.active, true)).orderBy(asc(carouselSlides.order))
+    return NextResponse.json({ slides: data })
   } catch (error) {
-    console.error('Error fetching carousel slides:', error);
-    return NextResponse.json(
-      { error: 'Failed to fetch carousel slides' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch slides' }, { status: 500 })
   }
 }
 
-// POST: Crear un nuevo slide
 export async function POST(request: NextRequest) {
   try {
-    const newSlide = await request.json();
-
-    if (!newSlide.title || !newSlide.redirectSlug) {
-      return NextResponse.json(
-        { error: 'Title and redirectSlug are required' },
-        { status: 400 }
-      );
-    }
-
-    const slide: CarouselSlide = {
-      id: String(Date.now()),
-      title: newSlide.title,
-      description: newSlide.description || '',
-      startDate: newSlide.startDate || '',
-      duration: newSlide.duration || '',
-      modality: newSlide.modality || '',
-      image: newSlide.image || '/carousel/placeholder.png',
-      redirectSlug: newSlide.redirectSlug
-    };
-
-    carouselSlides.push(slide);
-    return NextResponse.json({ success: true, slide });
+    const body = await request.json()
+    const result = await db.insert(carouselSlides).values({
+      title: body.title,
+      subtitle: body.subtitle ?? body.description,
+      image: body.image ?? '/carousel/placeholder.png',
+      badge: body.badge,
+      ctaText: body.ctaText,
+      ctaLink: body.ctaLink ?? (body.redirectSlug ? `/cursos/${body.redirectSlug}` : undefined),
+      order: body.order ?? 0,
+      active: body.active ?? true,
+    }).returning()
+    revalidatePath('/')
+    return NextResponse.json({ success: true, slide: result[0] })
   } catch (error) {
-    console.error('Error creating carousel slide:', error);
-    return NextResponse.json(
-      { error: 'Failed to create carousel slide' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to create slide' }, { status: 500 })
   }
 }
 
-// PUT: Actualizar un slide
 export async function PUT(request: NextRequest) {
   try {
-    const { id, ...updatedData } = await request.json();
-
-    if (!id) {
-      return NextResponse.json(
-        { error: 'Slide ID is required' },
-        { status: 400 }
-      );
-    }
-
-    const slideIndex = carouselSlides.findIndex(slide => slide.id === id);
-    
-    if (slideIndex === -1) {
-      return NextResponse.json(
-        { error: 'Slide not found' },
-        { status: 404 }
-      );
-    }
-
-    carouselSlides[slideIndex] = {
-      ...carouselSlides[slideIndex],
-      ...updatedData
-    };
-
-    return NextResponse.json({ success: true, slide: carouselSlides[slideIndex] });
+    const { id, ...data } = await request.json()
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
+    const result = await db.update(carouselSlides).set(data).where(eq(carouselSlides.id, id)).returning()
+    revalidatePath('/')
+    return NextResponse.json({ success: true, slide: result[0] })
   } catch (error) {
-    console.error('Error updating carousel slide:', error);
-    return NextResponse.json(
-      { error: 'Failed to update carousel slide' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to update slide' }, { status: 500 })
   }
 }
 
-// DELETE: Eliminar un slide
 export async function DELETE(request: NextRequest) {
   try {
-    const { id } = await request.json();
-
-    if (!id) {
-      return NextResponse.json(
-        { error: 'Slide ID is required' },
-        { status: 400 }
-      );
-    }
-
-    const slideIndex = carouselSlides.findIndex(slide => slide.id === id);
-    
-    if (slideIndex === -1) {
-      return NextResponse.json(
-        { error: 'Slide not found' },
-        { status: 404 }
-      );
-    }
-
-    carouselSlides.splice(slideIndex, 1);
-    return NextResponse.json({ success: true, message: 'Slide deleted' });
+    const { id } = await request.json()
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
+    await db.delete(carouselSlides).where(eq(carouselSlides.id, id))
+    revalidatePath('/')
+    return NextResponse.json({ success: true })
   } catch (error) {
-    console.error('Error deleting carousel slide:', error);
-    return NextResponse.json(
-      { error: 'Failed to delete carousel slide' },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to delete slide' }, { status: 500 })
   }
 }

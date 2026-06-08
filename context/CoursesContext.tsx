@@ -1,10 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { coursesData } from '@/lib/coursesData';
-
-// Versión de los datos — incrementar cuando se actualicen datos en coursesData.ts
-const COURSES_DATA_VERSION = '2';
 
 export interface CourseTeacher {
   name: string;
@@ -21,17 +17,17 @@ export interface Course {
   image: string;
   badge: string;
   startDate: string;
-  enrollmentDeadline?: string; // Fecha límite para inscripciones (formato: YYYY-MM-DD)
+  enrollmentDeadline?: string;
   modality: string;
   slug: string;
   description: string;
   schedule: string;
   location: string;
   teacher: string;
-  teachers?: CourseTeacher[]; // Array de docentes con info detallada
+  teachers?: CourseTeacher[];
   duration: string;
   price: string;
-  requirements?: string; // Requisitos para inscribirse
+  requirements?: string;
   objective: string;
   modules: Array<{
     number: string;
@@ -40,70 +36,70 @@ export interface Course {
   }>;
   methodology: string;
   finalProject: string;
-  whatsappGroup?: string; // Link al grupo de WhatsApp del curso
-  level?: string; // Nivel del curso (Principiante, Intermedio, Avanzado)
+  whatsappGroup?: string;
+  level?: string;
 }
 
 interface CoursesContextType {
   courses: Course[];
-  addCourse: (course: Omit<Course, 'id'>) => void;
-  updateCourse: (id: number, course: Partial<Course>) => void;
-  deleteCourse: (id: number) => void;
+  loading: boolean;
+  addCourse: (course: Omit<Course, 'id'>) => Promise<void>;
+  updateCourse: (id: number, course: Partial<Course>) => Promise<void>;
+  deleteCourse: (id: number) => Promise<void>;
   getCourseById: (id: number) => Course | undefined;
+  refreshCourses: () => Promise<void>;
 }
 
 const CoursesContext = createContext<CoursesContextType | undefined>(undefined);
 
 export function CoursesProvider({ children }: { children: React.ReactNode }) {
   const [courses, setCourses] = useState<Course[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  // Initialize from localStorage on mount
-  useEffect(() => {
-    const savedVersion = localStorage.getItem('courses_data_version');
-    const savedCourses = localStorage.getItem('courses');
-
-    // Si la versión no coincide, resetear con los datos actualizados del código
-    if (savedVersion !== COURSES_DATA_VERSION) {
-      setCourses(coursesData);
-      localStorage.setItem('courses', JSON.stringify(coursesData));
-      localStorage.setItem('courses_data_version', COURSES_DATA_VERSION);
-      return;
-    }
-
-    if (savedCourses) {
-      try {
-        setCourses(JSON.parse(savedCourses));
-      } catch (error) {
-        console.error('Error parsing courses from localStorage:', error);
-        setCourses(coursesData);
+  const fetchCourses = async () => {
+    try {
+      setLoading(true);
+      const res = await fetch('/api/courses');
+      if (res.ok) {
+        const data = await res.json();
+        setCourses(data.courses ?? []);
       }
-    } else {
-      setCourses(coursesData);
-      localStorage.setItem('courses', JSON.stringify(coursesData));
+    } catch (err) {
+      console.error('Error loading courses:', err);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
+    fetchCourses();
   }, []);
 
-  // Save to localStorage whenever courses change
-  useEffect(() => {
-    if (courses.length > 0) {
-      localStorage.setItem('courses', JSON.stringify(courses));
-    }
-  }, [courses]);
-
-  const addCourse = (course: Omit<Course, 'id'>) => {
-    const newId = Math.max(...courses.map(c => c.id), 0) + 1;
-    const newCourse: Course = { ...course, id: newId } as Course;
-    setCourses([...courses, newCourse]);
+  const addCourse = async (course: Omit<Course, 'id'>) => {
+    await fetch('/api/courses', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(course),
+    });
+    await fetchCourses();
   };
 
-  const updateCourse = (id: number, updatedData: Partial<Course>) => {
-    setCourses(courses.map(course =>
-      course.id === id ? { ...course, ...updatedData } : course
-    ));
+  const updateCourse = async (id: number, updatedData: Partial<Course>) => {
+    await fetch('/api/courses', {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: String(id), ...updatedData }),
+    });
+    await fetchCourses();
   };
 
-  const deleteCourse = (id: number) => {
-    setCourses(courses.filter(course => course.id !== id));
+  const deleteCourse = async (id: number) => {
+    await fetch('/api/courses', {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ id: String(id) }),
+    });
+    await fetchCourses();
   };
 
   const getCourseById = (id: number) => {
@@ -111,7 +107,7 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <CoursesContext.Provider value={{ courses, addCourse, updateCourse, deleteCourse, getCourseById }}>
+    <CoursesContext.Provider value={{ courses, loading, addCourse, updateCourse, deleteCourse, getCourseById, refreshCourses: fetchCourses }}>
       {children}
     </CoursesContext.Provider>
   );

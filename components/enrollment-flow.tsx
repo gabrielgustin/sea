@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Course } from '@/context/CoursesContext';
 import { ArrowLeft, ArrowRight, Calendar, Clock, User, CheckCircle, Mail, Phone, CreditCard, AlertCircle } from 'lucide-react';
+import { submitEnrollment } from '@/app/actions/enrollments';
 
 interface EnrollmentFlowProps {
   course: Course;
@@ -69,13 +70,26 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
 
   const handleConfirmEnrollment = async () => {
     setIsSubmitting(true);
-    
-    // Simular envío de datos
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    
-    // Ir al paso 4 (Confirmación con WhatsApp)
-    setCurrentStep(4);
-    setIsSubmitting(false);
+    try {
+      const parts = studentData.nombre.trim().split(' ');
+      const nombre = parts[0] ?? '';
+      const apellido = parts.slice(1).join(' ') || '';
+
+      await submitEnrollment({
+        courseId: String(course.id),
+        courseName: course.title,
+        nombre,
+        apellido,
+        email: studentData.email,
+        telefono: studentData.telefono,
+        dni: studentData.dni,
+      });
+    } catch (err) {
+      console.error('Error submitting enrollment:', err);
+    } finally {
+      setCurrentStep(4);
+      setIsSubmitting(false);
+    }
   };
 
   // Paso 1: Confirma tu Curso

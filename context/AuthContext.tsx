@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { authClient } from '@/lib/auth-client';
 
 export type UserRole = 'student' | 'admin' | null;
 
@@ -51,14 +52,22 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const login = async (username: string, password: string): Promise<{ success: boolean; redirectUrl?: string; error?: string }> => {
     // Validar credenciales basadas en el rol seleccionado
     if (selectedRole === 'admin') {
-      if (username === 'admin' && password === 'admin') {
+      try {
+        const result = await authClient.signIn.email({
+          email: username.includes('@') ? username : `${username}@sea-admin.local`,
+          password,
+        });
+        if (result.error) {
+          return { success: false, error: 'Credenciales incorrectas' };
+        }
         setIsAuthenticated(true);
         setUserRole('admin');
         localStorage.setItem('userAuth', 'true');
         localStorage.setItem('userRole', 'admin');
         return { success: true, redirectUrl: '/admin' };
+      } catch {
+        return { success: false, error: 'Credenciales incorrectas' };
       }
-      return { success: false, error: 'Credenciales incorrectas' };
     } else if (selectedRole === 'student') {
       // Validar DNI como usuario y contraseña
       if (!username || !password || username !== password) {
@@ -103,6 +112,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
+    // Sign out from Better Auth if admin
+    if (userRole === 'admin') {
+      authClient.signOut().catch(() => {});
+    }
     setIsAuthenticated(false);
     setUserRole(null);
     setUserDNI(undefined);

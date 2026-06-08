@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { Mail, Phone, FileText, User } from 'lucide-react';
+import { submitJobApplication } from '@/app/actions/job-applications';
 
 export default function TrabajaConNosotrosPage() {
   const [formData, setFormData] = useState({
@@ -33,13 +34,28 @@ export default function TrabajaConNosotrosPage() {
     e.preventDefault();
     setLoading(true);
 
-    // Aquí irá la lógica para enviar el formulario a un API o email
+    try {
+      // Split nombre into nombre + apellido (first word = nombre, rest = apellido)
+      const parts = formData.nombre.trim().split(' ');
+      const nombre = parts[0] ?? '';
+      const apellido = parts.slice(1).join(' ') || '';
 
-    // Simular envío
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+      await submitJobApplication({
+        nombre,
+        apellido,
+        email: formData.email,
+        telefono: formData.telefono || undefined,
+        especialidad: formData.perfil || undefined,
+        experiencia: formData.experiencia || undefined,
+        motivacion: formData.mensaje || undefined,
+      });
 
-    setSubmitted(true);
-    setLoading(false);
+      setSubmitted(true);
+    } catch (err) {
+      console.error('Error submitting job application:', err);
+    } finally {
+      setLoading(false);
+    }
 
     // Resetear después de 3 segundos
     setTimeout(() => {

@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
+import { submitContactMessage } from '@/app/actions/contact';
 
 export default function ContactSection() {
   const [formData, setFormData] = useState({
@@ -20,14 +21,28 @@ export default function ContactSection() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [loading, setLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    setSubmitted(true);
-    setTimeout(() => {
-      setFormData({ name: '', email: '', phone: '', message: '' });
-      setSubmitted(false);
-    }, 3000);
+    setLoading(true);
+    try {
+      await submitContactMessage({
+        nombre: formData.name,
+        email: formData.email,
+        telefono: formData.phone || undefined,
+        mensaje: formData.message,
+      });
+      setSubmitted(true);
+      setTimeout(() => {
+        setFormData({ name: '', email: '', phone: '', message: '' });
+        setSubmitted(false);
+      }, 3000);
+    } catch (err) {
+      console.error('Error submitting contact form:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -125,10 +140,11 @@ export default function ContactSection() {
               <Button
                 type="submit"
                 size="lg"
+                disabled={loading}
                 className="w-full text-white transition-all duration-300 hover:shadow-blue-lg hover-lift"
                 style={{ backgroundColor: '#031e41' }}
               >
-                {submitted ? '¡Mensaje Enviado!' : 'Enviar Mensaje'}
+                {loading ? 'Enviando...' : submitted ? '¡Mensaje Enviado!' : 'Enviar Mensaje'}
               </Button>
 
               {submitted && (
