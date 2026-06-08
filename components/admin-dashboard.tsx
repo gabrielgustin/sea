@@ -40,7 +40,7 @@ export default function AdminDashboard() {
     setView('form');
   };
 
-  const handleDelete = (courseId: number) => {
+  const handleDelete = (courseId: string) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este curso?')) {
       deleteCourse(courseId);
     }

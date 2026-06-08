@@ -5,38 +5,44 @@ import { eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 import { revalidatePath } from 'next/cache'
 
+export const config = {
+  api: { bodyParser: { sizeLimit: '10mb' } },
+}
+
 export async function GET() {
   try {
     const data = await db.select().from(courses).orderBy(courses.createdAt)
-    // Map DB rows to the Course interface shape expected by the frontend
     const mapped = data.map((c) => ({
       id: c.id,
       title: c.title,
-      subtitle: c.description,
+      subtitle: c.subtitle ?? '',
       description: c.description,
       image: c.image ?? '',
       badge: c.badge,
       startDate: c.startDate ?? '',
-      modality: c.badge,
-      slug: c.id,
+      enrollmentDeadline: c.enrollmentDeadline ?? '',
+      modality: c.modality ?? c.badge,
+      slug: c.slug ?? c.id,
       schedule: c.schedule ?? '',
       location: c.location ?? '',
-      teacher: Array.isArray(c.teachers) ? (c.teachers as any[])[0]?.name ?? '' : '',
-      teachers: c.teachers as any[] | undefined,
+      teacher: c.teacher ?? '',
+      teachers: (c.teachers as any[]) ?? [],
       duration: c.duration ?? '',
       price: c.price ?? '',
-      requirements: '',
-      objective: '',
-      modules: c.modules as any[] ?? [],
-      methodology: '',
-      finalProject: '',
-      level: undefined,
+      requirements: c.requirements ?? '',
+      objective: c.objective ?? '',
+      methodology: c.methodology ?? '',
+      finalProject: c.finalProject ?? '',
+      whatsappGroup: c.whatsappGroup ?? '',
+      level: c.level ?? 'PRINCIPIANTE',
+      modules: (c.modules as any[]) ?? [],
       status: c.status,
       category: c.category,
       maxStudents: c.maxStudents,
     }))
     return NextResponse.json({ courses: mapped })
   } catch (error) {
+    console.error('[v0] GET /api/courses error:', error)
     return NextResponse.json({ error: 'Failed to fetch courses' }, { status: 500 })
   }
 }
@@ -47,37 +53,78 @@ export async function POST(request: NextRequest) {
     const id = body.slug ?? nanoid()
     await db.insert(courses).values({
       id,
-      title: body.title,
+      title: body.title ?? '',
+      subtitle: body.subtitle ?? '',
       description: body.description ?? body.subtitle ?? '',
       badge: body.badge ?? 'PRESENCIAL',
       status: body.status ?? 'open',
       category: body.category ?? 'general',
-      image: body.image,
-      price: body.price,
-      duration: body.duration,
-      startDate: body.startDate,
-      schedule: body.schedule,
-      location: body.location,
-      maxStudents: body.maxStudents,
-      modules: body.modules,
-      teachers: body.teachers,
+      image: body.image ?? null,
+      price: body.price ?? null,
+      duration: body.duration ?? null,
+      startDate: body.startDate ?? null,
+      enrollmentDeadline: body.enrollmentDeadline ?? null,
+      schedule: body.schedule ?? null,
+      location: body.location ?? null,
+      teacher: body.teacher ?? null,
+      modality: body.modality ?? null,
+      slug: body.slug ?? id,
+      level: body.level ?? 'PRINCIPIANTE',
+      objective: body.objective ?? null,
+      methodology: body.methodology ?? null,
+      finalProject: body.finalProject ?? null,
+      whatsappGroup: body.whatsappGroup ?? null,
+      requirements: body.requirements ?? null,
+      maxStudents: body.maxStudents ?? null,
+      modules: body.modules ?? [],
+      teachers: body.teachers ?? [],
     })
     revalidatePath('/')
     revalidatePath('/catalogo-formaciones')
     return NextResponse.json({ success: true, id })
   } catch (error) {
+    console.error('[v0] POST /api/courses error:', error)
     return NextResponse.json({ error: 'Failed to create course' }, { status: 500 })
   }
 }
 
 export async function PUT(request: NextRequest) {
   try {
-    const { id, ...data } = await request.json()
+    const { id, ...body } = await request.json()
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
-    await db.update(courses).set({ ...data, updatedAt: new Date() }).where(eq(courses.id, String(id)))
+    await db.update(courses).set({
+      title: body.title,
+      subtitle: body.subtitle,
+      description: body.description ?? body.subtitle ?? '',
+      badge: body.badge,
+      status: body.status,
+      category: body.category,
+      image: body.image ?? null,
+      price: body.price,
+      duration: body.duration,
+      startDate: body.startDate,
+      enrollmentDeadline: body.enrollmentDeadline,
+      schedule: body.schedule,
+      location: body.location,
+      teacher: body.teacher,
+      modality: body.modality,
+      slug: body.slug,
+      level: body.level,
+      objective: body.objective,
+      methodology: body.methodology,
+      finalProject: body.finalProject,
+      whatsappGroup: body.whatsappGroup,
+      requirements: body.requirements,
+      maxStudents: body.maxStudents,
+      modules: body.modules,
+      teachers: body.teachers,
+      updatedAt: new Date(),
+    }).where(eq(courses.id, String(id)))
     revalidatePath('/')
+    revalidatePath('/catalogo-formaciones')
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error('[v0] PUT /api/courses error:', error)
     return NextResponse.json({ error: 'Failed to update course' }, { status: 500 })
   }
 }
@@ -88,8 +135,10 @@ export async function DELETE(request: NextRequest) {
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
     await db.delete(courses).where(eq(courses.id, String(id)))
     revalidatePath('/')
+    revalidatePath('/catalogo-formaciones')
     return NextResponse.json({ success: true })
   } catch (error) {
+    console.error('[v0] DELETE /api/courses error:', error)
     return NextResponse.json({ error: 'Failed to delete course' }, { status: 500 })
   }
 }

@@ -11,7 +11,7 @@ export interface CourseTeacher {
 }
 
 export interface Course {
-  id: number;
+  id: string;
   title: string;
   subtitle: string;
   image: string;
@@ -44,9 +44,9 @@ interface CoursesContextType {
   courses: Course[];
   loading: boolean;
   addCourse: (course: Omit<Course, 'id'>) => Promise<void>;
-  updateCourse: (id: number, course: Partial<Course>) => Promise<void>;
-  deleteCourse: (id: number) => Promise<void>;
-  getCourseById: (id: number) => Course | undefined;
+  updateCourse: (id: string, course: Partial<Course>) => Promise<void>;
+  deleteCourse: (id: string) => Promise<void>;
+  getCourseById: (id: string) => Course | undefined;
   refreshCourses: () => Promise<void>;
 }
 
@@ -84,25 +84,25 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
     await fetchCourses();
   };
 
-  const updateCourse = async (id: number, updatedData: Partial<Course>) => {
+  const updateCourse = async (id: string, updatedData: Partial<Course>) => {
     await fetch('/api/courses', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: String(id), ...updatedData }),
+      body: JSON.stringify({ id, ...updatedData }),
     });
     await fetchCourses();
   };
 
-  const deleteCourse = async (id: number) => {
+  const deleteCourse = async (id: string) => {
     await fetch('/api/courses', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id: String(id) }),
+      body: JSON.stringify({ id }),
     });
     await fetchCourses();
   };
 
-  const getCourseById = (id: number) => {
+  const getCourseById = (id: string) => {
     return courses.find(course => course.id === id);
   };
 
