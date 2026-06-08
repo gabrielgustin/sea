@@ -91,31 +91,31 @@ export async function PUT(request: NextRequest) {
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
     
     const result = await db.update(courses).set({
-      title: body.title,
-      subtitle: body.subtitle,
-      description: body.description ?? body.subtitle ?? '',
-      badge: body.badge,
-      status: body.status,
-      category: body.category,
+      title: body.title ?? undefined,
+      subtitle: body.subtitle ?? undefined,
+      description: body.description ?? body.subtitle ?? undefined,
+      badge: body.badge ?? undefined,
+      status: body.status ?? undefined,
+      category: body.category ?? undefined,
       image: body.image ?? null,
-      price: body.price,
-      duration: body.duration,
-      startDate: body.startDate,
-      enrollmentDeadline: body.enrollmentDeadline,
-      schedule: body.schedule,
-      location: body.location,
-      teacher: body.teacher,
-      modality: body.modality,
-      slug: body.slug,
-      level: body.level,
-      objective: body.objective,
-      methodology: body.methodology,
-      finalProject: body.finalProject,
-      whatsappGroup: body.whatsappGroup,
-      requirements: body.requirements,
-      maxStudents: body.maxStudents,
-      modules: body.modules,
-      teachers: body.teachers,
+      price: body.price ?? undefined,
+      duration: body.duration ?? undefined,
+      startDate: body.startDate ?? undefined,
+      enrollmentDeadline: body.enrollmentDeadline ?? undefined,
+      schedule: body.schedule ?? undefined,
+      location: body.location ?? undefined,
+      teacher: body.teacher ?? undefined,
+      modality: body.modality ?? undefined,
+      slug: body.slug ?? undefined,
+      level: body.level ?? undefined,
+      objective: body.objective ?? undefined,
+      methodology: body.methodology ?? undefined,
+      finalProject: body.finalProject ?? undefined,
+      whatsappGroup: body.whatsappGroup ?? undefined,
+      requirements: body.requirements ?? undefined,
+      maxStudents: body.maxStudents ?? undefined,
+      modules: body.modules ?? undefined,
+      teachers: body.teachers ?? undefined,
       updatedAt: new Date(),
     }).where(eq(courses.id, String(id)))
     
@@ -124,7 +124,8 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] PUT /api/courses error:', error)
-    return NextResponse.json({ error: 'Failed to update course', details: String(error) }, { status: 500 })
+    const errorMsg = error instanceof Error ? error.message : String(error)
+    return NextResponse.json({ error: 'Failed to update course: ' + errorMsg }, { status: 500 })
   }
 }
 
