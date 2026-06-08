@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { authClient } from '@/lib/auth-client';
 
 export type UserRole = 'student' | 'admin' | null;
 
@@ -53,12 +52,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Validar credenciales basadas en el rol seleccionado
     if (selectedRole === 'admin') {
       try {
-        const result = await authClient.signIn.email({
-          email: username.includes('@') ? username : `${username}@sea-admin.local`,
-          password,
-        });
-        if (result.error) {
-          return { success: false, error: 'Credenciales incorrectas' };
+        const res = await fetch('/api/admin-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: username.toLowerCase(), password }),
+        })
+        const data = await res.json()
+        if (!res.ok || !data.success) {
+          return { success: false, error: data.error ?? 'Credenciales incorrectas' }
         }
         setIsAuthenticated(true);
         setUserRole('admin');
@@ -66,7 +67,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         localStorage.setItem('userRole', 'admin');
         return { success: true, redirectUrl: '/admin' };
       } catch {
-        return { success: false, error: 'Credenciales incorrectas' };
+        return { success: false, error: 'Error de conexión. Intenta de nuevo.' };
       }
     } else if (selectedRole === 'student') {
       // Validar DNI como usuario y contraseña
@@ -112,10 +113,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const logout = () => {
-    // Sign out from Better Auth if admin
-    if (userRole === 'admin') {
-      authClient.signOut().catch(() => {});
-    }
     setIsAuthenticated(false);
     setUserRole(null);
     setUserDNI(undefined);

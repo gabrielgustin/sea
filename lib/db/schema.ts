@@ -149,3 +149,11 @@ export const interestForms = pgTable('interest_forms', {
   telefono: text('telefono'),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
 })
+
+export const adminUsers = pgTable('admin_users', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  email: text('email').notNull().unique(),
+  passwordHash: text('passwordHash').notNull(),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+})
