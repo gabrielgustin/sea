@@ -52,13 +52,15 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 1400 }: SeaPreload
       return () => clearTimeout(timeout);
     };
 
-    // Esperar a que la página cargue completa + un delay mínimo estético
+    // Si el documento ya está completamente cargado, ejecutar inmediatamente
+    if (document.readyState === "complete") {
+      const timer = setTimeout(handleLoadingComplete, minimumLoadingTimeMs);
+      return () => clearTimeout(timer);
+    }
+
+    // Si no, esperar al evento load
     const loadTimer = setTimeout(() => {
-      if (document.readyState === "complete") {
-        handleLoadingComplete();
-      } else {
-        window.addEventListener("load", handleLoadingComplete);
-      }
+      window.addEventListener("load", handleLoadingComplete);
     }, minimumLoadingTimeMs);
 
     return () => {
