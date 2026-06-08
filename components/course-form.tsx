@@ -59,9 +59,9 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
 
   useEffect(() => {
     if (course) {
-      setFormData(course);
-      // Si la imagen es una URL de datos (base64), usarla como preview
-      if (course.image && course.image.startsWith('data:')) {
+      setFormData(prev => ({ ...prev, ...course }));
+      // Set preview if image already exists (base64 or URL)
+      if (course.image) {
         setImagePreview(course.image);
       }
     }
@@ -145,40 +145,47 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
     }));
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validar tipo de archivo
     if (!file.type.startsWith('image/')) {
       alert('Por favor selecciona un archivo de imagen válido');
       return;
     }
 
-    // Validar tamaño (máx 5MB)
-    if (file.size > 5 * 1024 * 1024) {
-      alert('La imagen no debe exceder 5MB');
+    if (file.size > 8 * 1024 * 1024) {
+      alert('La imagen no debe exceder 8MB');
       return;
     }
 
     setUploading(true);
 
-    // Convertir a base64 para almacenamiento en localStorage
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const base64String = event.target?.result as string;
-      setFormData(prev => ({
-        ...prev,
-        image: base64String,
-      }));
-      setImagePreview(base64String);
+    try {
+      // Show local preview immediately
+      const localUrl = URL.createObjectURL(file);
+      setImagePreview(localUrl);
+
+      // Upload via FormData to avoid JSON body size limits
+      const fd = new FormData();
+      fd.append('file', file);
+
+      const res = await fetch('/api/upload-image', { method: 'POST', body: fd });
+      const data = await res.json();
+
+      if (!res.ok || !data.url) {
+        throw new Error(data.error ?? 'Upload failed');
+      }
+
+      setFormData(prev => ({ ...prev, image: data.url }));
+      setImagePreview(data.url);
+    } catch (err: any) {
+      alert('Error al subir la imagen: ' + err.message);
+      setImagePreview(null);
+      setFormData(prev => ({ ...prev, image: '' }));
+    } finally {
       setUploading(false);
-    };
-    reader.onerror = () => {
-      alert('Error al leer el archivo');
-      setUploading(false);
-    };
-    reader.readAsDataURL(file);
+    }
   };
 
   const removeImage = () => {

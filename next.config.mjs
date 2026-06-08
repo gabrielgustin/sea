@@ -5,6 +5,7 @@ const nextConfig = {
   },
   images: {
     unoptimized: true,
+    dangerouslyAllowSVG: true,
   },
   experimental: {
     serverActions: {
