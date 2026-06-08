@@ -63,9 +63,12 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
       if (res.ok) {
         const data = await res.json();
         setCourses(data.courses ?? []);
+      } else {
+        setCourses([]);
       }
     } catch (err) {
       console.error('Error loading courses:', err);
+      setCourses([]);
     } finally {
       setLoading(false);
     }
@@ -76,11 +79,15 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const addCourse = async (course: Omit<Course, 'id'>) => {
-    await fetch('/api/courses', {
+    const res = await fetch('/api/courses', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(course),
     });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.error || 'Failed to add course');
+    }
     await fetchCourses();
   };
 
@@ -98,11 +105,15 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
   };
 
   const deleteCourse = async (id: string) => {
-    await fetch('/api/courses', {
+    const res = await fetch('/api/courses', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),
     });
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.error || 'Failed to delete course');
+    }
     await fetchCourses();
   };
 

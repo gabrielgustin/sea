@@ -9,7 +9,7 @@ import Image from 'next/image';
 interface CourseListProps {
   courses: Course[];
   onEdit: (course: Course) => void;
-  onDelete: (courseId: number) => void;
+  onDelete: (courseId: string) => void;
   onPreview: (course: Course) => void;
 }
 

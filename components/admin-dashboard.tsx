@@ -43,6 +43,7 @@ export default function AdminDashboard() {
   const handleDelete = (courseId: string) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este curso?')) {
       deleteCourse(courseId);
+      setTimeout(() => window.location.reload(), 500);
     }
   };
 
@@ -58,12 +59,12 @@ export default function AdminDashboard() {
       } else {
         await addCourse(courseData);
       }
+      // Forzar recarga de la página para refrescar los datos
+      setTimeout(() => window.location.reload(), 500);
     } catch (err) {
       console.error('[v0] handleSave error:', err);
+      alert('Error al guardar el curso: ' + (err instanceof Error ? err.message : 'Error desconocido'));
     }
-    setView('list');
-    setEditingCourse(null);
-    setShowForm(false);
   };
 
   const handleCancel = () => {
