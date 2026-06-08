@@ -52,15 +52,10 @@ export default function AdminDashboard() {
   };
 
   const handleSave = async (courseData: any) => {
-    console.log('[v0] handleSave called')
-    console.log('[v0] editingCourse:', editingCourse?.id)
-    console.log('[v0] courseData:', courseData)
     try {
       if (editingCourse) {
-        console.log('[v0] calling updateCourse with id:', editingCourse.id)
         await updateCourse(editingCourse.id, courseData);
       } else {
-        console.log('[v0] calling addCourse')
         await addCourse(courseData);
       }
     } catch (err) {

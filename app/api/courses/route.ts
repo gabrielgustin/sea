@@ -87,19 +87,8 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const { id, ...body } = await request.json()
-    console.log('[v0] PUT /api/courses - id:', id)
-    console.log('[v0] PUT /api/courses - title:', body.title)
     
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
-    
-    // Check if course exists first
-    const existing = await db.select().from(courses).where(eq(courses.id, String(id)))
-    console.log('[v0] PUT /api/courses - existing course found:', existing.length > 0, 'id:', existing[0]?.id)
-    
-    if (existing.length === 0) {
-      console.log('[v0] PUT /api/courses - course not found with id:', String(id))
-      return NextResponse.json({ error: 'Course not found' }, { status: 404 })
-    }
     
     const result = await db.update(courses).set({
       title: body.title,
@@ -130,7 +119,6 @@ export async function PUT(request: NextRequest) {
       updatedAt: new Date(),
     }).where(eq(courses.id, String(id)))
     
-    console.log('[v0] PUT /api/courses - update completed')
     revalidatePath('/')
     revalidatePath('/catalogo-formaciones')
     return NextResponse.json({ success: true })
