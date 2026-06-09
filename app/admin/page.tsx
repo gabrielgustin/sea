@@ -6,7 +6,6 @@ import { useAuth } from '@/context/AuthContext';
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/header';
 import AdminDashboard from '@/components/admin-dashboard';
-import WhatsAppButton from '@/components/whatsapp-button';
 
 export default function AdminPage() {
   const router = useRouter();
@@ -34,7 +33,6 @@ export default function AdminPage() {
         <Header />
         <AdminDashboard />
       </main>
-      <WhatsAppButton />
     </div>
   );
 }
