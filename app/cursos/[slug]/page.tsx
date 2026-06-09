@@ -1,4 +1,5 @@
 // Course detail page - loads course data by slug from the API
+// Dynamic route: /cursos/[slug]
 'use client';
 
 import { useEffect, useState } from 'react';
