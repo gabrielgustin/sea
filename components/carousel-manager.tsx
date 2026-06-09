@@ -20,6 +20,10 @@ interface Course {
   id: string;
   title: string;
   slug: string;
+  startDate?: string;
+  duration?: string;
+  modality?: string;
+  image?: string;
 }
 
 export default function CarouselManager() {
@@ -107,7 +111,7 @@ export default function CarouselManager() {
     }, 0);
   };
 
-  const handleDelete = async (id: string) => {
+  const handleDelete = async (id: number) => {
     if (!confirm('¿Estás seguro de que quieres eliminar este slide?')) return;
 
     try {
@@ -218,7 +222,28 @@ export default function CarouselManager() {
                 </label>
                 <select
                   value={formData.ctaLink || ''}
-                  onChange={(e) => setFormData({ ...formData, ctaLink: e.target.value })}
+                  onChange={(e) => {
+                    const selectedLink = e.target.value;
+                    const selectedCourse = courses.find(c => `/cursos/${c.slug}` === selectedLink);
+                    if (selectedCourse) {
+                      // Auto-rellenar campos desde el curso seleccionado
+                      const subtitle = [
+                        selectedCourse.startDate ? `Fecha de Inicio: ${selectedCourse.startDate}` : '',
+                        selectedCourse.duration ? `Duración: ${selectedCourse.duration}` : '',
+                        selectedCourse.modality ? `Modalidad: ${selectedCourse.modality}` : '',
+                      ].filter(Boolean).join('\n');
+                      setFormData({
+                        ...formData,
+                        ctaLink: selectedLink,
+                        title: formData.title || selectedCourse.title,
+                        subtitle: formData.subtitle || subtitle,
+                        image: formData.image || selectedCourse.image || '',
+                        ctaText: formData.ctaText || 'Ver mas',
+                      });
+                    } else {
+                      setFormData({ ...formData, ctaLink: selectedLink });
+                    }
+                  }}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
                   <option value="">-- Seleccionar un curso --</option>

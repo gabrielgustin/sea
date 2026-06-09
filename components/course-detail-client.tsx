@@ -123,6 +123,7 @@ interface CourseTeacher {
 }
 
 interface Course {
+  id: string;
   title: string;
   subtitle: string;
   image: string;

@@ -8,14 +8,35 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import Link from 'next/link';
 
 interface CarouselSlide {
-  id: string;
+  id: number;
   title: string;
-  description: string;
+  subtitle?: string;
   image: string;
-  startDate: string;
-  duration: string;
-  modality: string;
-  redirectSlug: string;
+  badge?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  order?: number;
+  active?: boolean;
+}
+
+// Parsea el subtitle guardado como "Fecha de Inicio: X\nDuración: X\nModalidad: X"
+function parseSubtitle(subtitle?: string) {
+  if (!subtitle) return { modality: '', startDate: '', duration: '' };
+  const lines = subtitle.split('\n').map(l => l.trim()).filter(Boolean);
+  let modality = '';
+  let startDate = '';
+  let duration = '';
+  for (const line of lines) {
+    if (line.startsWith('Modalidad:')) modality = line.replace('Modalidad:', '').trim();
+    else if (line.startsWith('Fecha de Inicio:')) startDate = line.replace('Fecha de Inicio:', '').trim();
+    else if (line.startsWith('Duración:')) duration = line.replace('Duración:', '').trim();
+    // fallback: si el valor es la línea completa sin prefijo conocido, intenta detectar por posición
+  }
+  // Si no encontró con prefijo, usar las líneas directamente por orden
+  if (!modality && !startDate && !duration && lines.length >= 3) {
+    [startDate, duration, modality] = lines;
+  }
+  return { modality, startDate, duration };
 }
 
 export default function HeroCarousel() {
@@ -91,7 +112,9 @@ export default function HeroCarousel() {
       {/* Carrusel Container */}
       <div ref={emblaRef} className="h-full w-full">
         <div className="flex h-full">
-          {slides.map((slide, index) => (
+          {slides.map((slide, index) => {
+            const { modality, startDate, duration } = parseSubtitle(slide.subtitle);
+            return (
             <div
               key={slide.id}
               className="relative min-w-full h-full flex items-center justify-center overflow-hidden"
@@ -121,23 +144,30 @@ export default function HeroCarousel() {
 
                   {/* Información del curso */}
                   <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-white text-sm md:text-base border-l-2 border-l-white pl-6 md:pl-8 animate-slide-up" style={{ animationDelay: '0.2s' }}>
-                    <div>
-                      <p className="text-gray-300 text-xs md:text-sm uppercase tracking-wide mb-1">Modalidad</p>
-                      <p className="font-semibold">{slide.modality}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-300 text-xs md:text-sm uppercase tracking-wide mb-1">Inicia</p>
-                      <p className="font-semibold">{slide.startDate}</p>
-                    </div>
-                    <div>
-                      <p className="text-gray-300 text-xs md:text-sm uppercase tracking-wide mb-1">Duración</p>
-                      <p className="font-semibold">{slide.duration}</p>
-                    </div>
+                    {modality && (
+                      <div>
+                        <p className="text-gray-300 text-xs md:text-sm uppercase tracking-wide mb-1">MODALIDAD</p>
+                        <p className="font-semibold">{modality}</p>
+                      </div>
+                    )}
+                    {startDate && (
+                      <div>
+                        <p className="text-gray-300 text-xs md:text-sm uppercase tracking-wide mb-1">INICIA</p>
+                        <p className="font-semibold">{startDate}</p>
+                      </div>
+                    )}
+                    {duration && (
+                      <div>
+                        <p className="text-gray-300 text-xs md:text-sm uppercase tracking-wide mb-1">DURACIÓN</p>
+                        <p className="font-semibold">{duration}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
             </div>
-          ))}
+            );
+          })}
         </div>
       </div>
 
@@ -145,10 +175,10 @@ export default function HeroCarousel() {
       <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-4 md:px-8 py-4" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)' }}>
         {/* Ver más — vinculado al slide activo */}
         <Link
-          href={slides[currentSlide]?.redirectSlug ? `/cursos/${slides[currentSlide].redirectSlug}` : '/catalogo-formaciones'}
+          href={slides[currentSlide]?.ctaLink || '/formaciones'}
           className="text-white font-bold text-sm md:text-base transition-all duration-300 hover:underline underline-offset-4"
         >
-          Ver mas &rarr;
+          {slides[currentSlide]?.ctaText || 'Ver mas'} &rarr;
         </Link>
 
         {/* Botones de navegacion */}
