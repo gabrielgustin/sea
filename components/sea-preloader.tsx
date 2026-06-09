@@ -34,38 +34,34 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 1400 }: SeaPreload
     // Bloquear el scroll del body mientras carga
     document.body.style.overflow = "hidden";
 
+    let fadeTimeout: ReturnType<typeof setTimeout>;
+
     const handleLoadingComplete = () => {
       // Marcar que el preloader ya fue mostrado
-      sessionStorage.setItem('sea-preloader-shown', 'true');
-      
+      sessionStorage.setItem("sea-preloader-shown", "true");
+
       // Desvanecer cargador
       setIsVisible(false);
-      
+
       // Permitir el scroll nuevamente
       document.body.style.overflow = "";
 
       // Eliminar del DOM después de terminar la transición de desvanecimiento (500ms)
-      const timeout = setTimeout(() => {
+      fadeTimeout = setTimeout(() => {
         setShouldRender(false);
       }, 500);
-
-      return () => clearTimeout(timeout);
     };
 
-    // Si el documento ya está completamente cargado, ejecutar inmediatamente
-    if (document.readyState === "complete") {
-      const timer = setTimeout(handleLoadingComplete, minimumLoadingTimeMs);
-      return () => clearTimeout(timer);
-    }
-
-    // Si no, esperar al evento load
-    const loadTimer = setTimeout(() => {
-      window.addEventListener("load", handleLoadingComplete);
-    }, minimumLoadingTimeMs);
+    // Esperar tanto el tiempo mínimo visible como la carga completa de la página.
+    // Usamos un único temporizador garantizado: el preloader SIEMPRE se oculta
+    // pasado minimumLoadingTimeMs, independientemente del estado de carga.
+    // Esto evita el bug de quedar bloqueado si el evento "load" disparó antes
+    // de registrar el listener.
+    const minTimer = setTimeout(handleLoadingComplete, minimumLoadingTimeMs);
 
     return () => {
-      clearTimeout(loadTimer);
-      window.removeEventListener("load", handleLoadingComplete);
+      clearTimeout(minTimer);
+      clearTimeout(fadeTimeout);
       document.body.style.overflow = "";
     };
   }, [minimumLoadingTimeMs, hasShown, shouldRender]);
