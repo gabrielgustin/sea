@@ -5,20 +5,22 @@ import { ChevronDown, ChevronUp, Trash2, Edit2, Plus, Upload } from 'lucide-reac
 import Image from 'next/image';
 
 interface CarouselSlide {
-  id: string;
+  id: number;
   title: string;
   image: string;
-  startDate: string;
-  duration: string;
-  modality: string;
-  redirectSlug: string;
+  subtitle?: string;
+  badge?: string;
+  ctaText?: string;
+  ctaLink?: string;
+  order?: number;
+  active?: boolean;
 }
 
 export default function CarouselManager() {
   const [slides, setSlides] = useState<CarouselSlide[]>([]);
   const [loading, setLoading] = useState(true);
-  const [editingId, setEditingId] = useState<string | null>(null);
-  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [expandedId, setExpandedId] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<Partial<CarouselSlide>>({});
 
@@ -43,7 +45,7 @@ export default function CarouselManager() {
   const handleSave = async () => {
     try {
       if (!formData.title || !formData.image) {
-        alert('Por favor completa todos los campos requeridos');
+        alert('Por favor completa los campos requeridos: Título e Imagen');
         return;
       }
 
@@ -148,61 +150,58 @@ export default function CarouselManager() {
               />
             </div>
 
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Subtítulo (Información del curso)
+              </label>
+              <textarea
+                value={formData.subtitle || ''}
+                onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Ej: Fecha de Inicio: 4 de junio, 2026\nDuración: 6 meses\nModalidad: Educación Presencial"
+                rows={3}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Etiqueta (Badge)
+              </label>
+              <input
+                type="text"
+                value={formData.badge || ''}
+                onChange={(e) => setFormData({ ...formData, badge: e.target.value })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Ej: PRESENCIAL, ONLINE"
+              />
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Fecha de Inicio
+                  Texto del botón CTA
                 </label>
                 <input
                   type="text"
-                  value={formData.startDate || ''}
-                  onChange={(e) => setFormData({ ...formData, startDate: e.target.value })}
+                  value={formData.ctaText || ''}
+                  onChange={(e) => setFormData({ ...formData, ctaText: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Ej: 4 de junio, 2026"
+                  placeholder="Ej: Ver más"
                 />
               </div>
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Duración
+                  Link CTA (Destino)
                 </label>
                 <input
                   type="text"
-                  value={formData.duration || ''}
-                  onChange={(e) => setFormData({ ...formData, duration: e.target.value })}
+                  value={formData.ctaLink || ''}
+                  onChange={(e) => setFormData({ ...formData, ctaLink: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Ej: 6 meses"
+                  placeholder="Ej: /cursos/desarrollo-de-aplicaciones"
                 />
               </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Modalidad
-              </label>
-              <input
-                type="text"
-                value={formData.modality || ''}
-                onChange={(e) => setFormData({ ...formData, modality: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Ej: Educación Presencial"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Destino del link "Ver mas" <span className="text-gray-400 font-normal">(slug del curso)</span>
-              </label>
-              <input
-                type="text"
-                value={formData.redirectSlug || ''}
-                onChange={(e) => setFormData({ ...formData, redirectSlug: e.target.value })}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Ej: desarrollo-de-aplicaciones"
-              />
-              <p className="text-xs text-gray-400 mt-1">
-                El link llevara a <code className="bg-gray-100 px-1 rounded">/cursos/[slug]</code>
-              </p>
             </div>
 
             <div>
@@ -231,6 +230,19 @@ export default function CarouselManager() {
                   </div>
                 )}
               </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">
+                Orden
+              </label>
+              <input
+                type="number"
+                value={formData.order || 0}
+                onChange={(e) => setFormData({ ...formData, order: parseInt(e.target.value) })}
+                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="0"
+              />
             </div>
 
             <div className="flex gap-2 pt-4">
@@ -269,20 +281,29 @@ export default function CarouselManager() {
                 />
               </div>
 
-              {/* Información */}
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-gray-900 text-lg mb-1">
-                  {slide.title}
-                </h3>
-                <div className="flex flex-wrap gap-2 text-xs text-gray-500">
-                  <span className="bg-gray-100 px-2 py-1 rounded">
-                    {slide.startDate}
+            {/* Información */}
+            <div className="flex-1 min-w-0">
+              <h3 className="font-semibold text-gray-900 text-lg mb-1">
+                {slide.title}
+              </h3>
+              {slide.subtitle && (
+                <p className="text-sm text-gray-600 mb-2 whitespace-pre-wrap">
+                  {slide.subtitle}
+                </p>
+              )}
+              <div className="flex flex-wrap gap-2">
+                {slide.badge && (
+                  <span className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
+                    {slide.badge}
                   </span>
-                  <span className="bg-gray-100 px-2 py-1 rounded">
-                    {slide.duration}
+                )}
+                {slide.order !== undefined && (
+                  <span className="inline-block bg-gray-100 text-gray-600 px-2 py-1 rounded text-xs">
+                    Orden: {slide.order}
                   </span>
-                </div>
+                )}
               </div>
+            </div>
 
               {/* Botones de acción */}
               <div className="flex gap-2 flex-shrink-0">
@@ -316,19 +337,27 @@ export default function CarouselManager() {
             {/* Detalles expandidos */}
             {expandedId === slide.id && (
               <div className="border-t border-gray-200 bg-gray-50 p-4">
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p className="text-gray-600">Modalidad</p>
-                    <p className="font-medium text-gray-900">{slide.modality}</p>
-                  </div>
-                  <div>
-                    <p className="text-gray-600">Destino "Ver mas"</p>
-                    <p className="font-mono text-xs text-blue-600">/cursos/{slide.redirectSlug || <span className="text-gray-400 italic">no configurado</span>}</p>
-                  </div>
-                  <div className="col-span-2">
-                    <p className="text-gray-600">Imagen</p>
-                    <p className="font-mono text-xs text-gray-600 break-all">{slide.image}</p>
-                  </div>
+                <div className="grid grid-cols-1 gap-4 text-sm">
+                  {slide.ctaText && (
+                    <div>
+                      <p className="text-gray-600">Texto del botón</p>
+                      <p className="font-medium text-gray-900">{slide.ctaText}</p>
+                    </div>
+                  )}
+                  {slide.ctaLink && (
+                    <div>
+                      <p className="text-gray-600">Link de destino</p>
+                      <p className="font-mono text-xs text-blue-600">{slide.ctaLink}</p>
+                    </div>
+                  )}
+                  {slide.image && (
+                    <div>
+                      <p className="text-gray-600">Imagen</p>
+                      <p className="font-mono text-xs text-gray-600 break-all">
+                        {slide.image.substring(0, 50)}...
+                      </p>
+                    </div>
+                  )}
                 </div>
               </div>
             )}

@@ -35,13 +35,25 @@ export async function POST(request: NextRequest) {
 
 export async function PUT(request: NextRequest) {
   try {
-    const { id, ...data } = await request.json()
+    const body = await request.json()
+    const { id, ...data } = body
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
-    const result = await db.update(carouselSlides).set(data).where(eq(carouselSlides.id, id)).returning()
+    
+    // Filter only updatable fields
+    const updateData: any = {}
+    const allowedFields = ['title', 'subtitle', 'image', 'badge', 'ctaText', 'ctaLink', 'order', 'active']
+    for (const field of allowedFields) {
+      if (field in data) {
+        updateData[field] = data[field]
+      }
+    }
+    
+    const result = await db.update(carouselSlides).set(updateData).where(eq(carouselSlides.id, Number(id))).returning()
     revalidatePath('/')
     return NextResponse.json({ success: true, slide: result[0] })
   } catch (error) {
-    return NextResponse.json({ error: 'Failed to update slide' }, { status: 500 })
+    console.error('PUT /api/carousel error:', error)
+    return NextResponse.json({ error: 'Failed to update slide', details: String(error) }, { status: 500 })
   }
 }
 
