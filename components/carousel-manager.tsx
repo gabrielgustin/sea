@@ -35,7 +35,6 @@ export default function CarouselManager() {
       setSlides(data.slides || []);
     } catch (error) {
       console.error('Error fetching carousel slides:', error);
-      alert('Error al cargar los slides');
     } finally {
       setLoading(false);
     }
@@ -57,7 +56,6 @@ export default function CarouselManager() {
         });
 
         if (!response.ok) throw new Error('Error al actualizar');
-        alert('Slide actualizado correctamente');
       } else {
         // Crear
         const response = await fetch('/api/carousel', {
@@ -67,7 +65,6 @@ export default function CarouselManager() {
         });
 
         if (!response.ok) throw new Error('Error al crear');
-        alert('Slide creado correctamente');
       }
 
       setFormData({});
@@ -76,7 +73,6 @@ export default function CarouselManager() {
       fetchSlides();
     } catch (error) {
       console.error('Error saving slide:', error);
-      alert('Error al guardar el slide');
     }
   };
 
@@ -98,11 +94,9 @@ export default function CarouselManager() {
       });
 
       if (!response.ok) throw new Error('Error al eliminar');
-      alert('Slide eliminado correctamente');
       fetchSlides();
     } catch (error) {
       console.error('Error deleting slide:', error);
-      alert('Error al eliminar el slide');
     }
   };
 
