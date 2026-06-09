@@ -167,3 +167,16 @@ export const adminUsers = pgTable('admin_users', {
   passwordHash: text('passwordHash').notNull(),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
 })
+
+export const teachers = pgTable('teachers', {
+  id: serial('id').primaryKey(),
+  name: text('name').notNull(),
+  description: text('description'),
+  image: text('image'),
+  whatsapp: text('whatsapp'),
+  linkedin: text('linkedin'),
+  order: integer('order').notNull().default(0),
+  active: boolean('active').notNull().default(true),
+  createdAt: timestamp('createdAt').notNull().defaultNow(),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+})

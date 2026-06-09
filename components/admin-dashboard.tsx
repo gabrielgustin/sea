@@ -13,6 +13,7 @@ import StudentsList from './students-list';
 import CarouselManager from './carousel-manager';
 import FAQManager from './faq-manager';
 import SettingsManager from './settings-manager';
+import { TeacherManager } from './teacher-manager';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function AdminDashboard() {
   const [showForm, setShowForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
-  const [view, setView] = useState<'list' | 'form' | 'preview' | 'students' | 'carousel' | 'faq' | 'settings'>('list');
+  const [view, setView] = useState<'list' | 'form' | 'preview' | 'students' | 'carousel' | 'faq' | 'settings' | 'teachers'>('list');
 
   const handleLogout = () => {
     logout();
@@ -81,7 +82,7 @@ export default function AdminDashboard() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
             <h1 className="text-4xl font-bold" style={{ color: '#031e41' }}>
-              {view === 'carousel' ? 'Gestionar Carrusel' : view === 'students' ? 'Gestionar Estudiantes' : view === 'faq' ? 'Preguntas Frecuentes' : view === 'settings' ? 'Configuracion' : 'Panel de Administracion'}
+              {view === 'carousel' ? 'Gestionar Carrusel' : view === 'students' ? 'Gestionar Estudiantes' : view === 'faq' ? 'Preguntas Frecuentes' : view === 'settings' ? 'Configuracion' : view === 'teachers' ? 'Gestión de Docentes' : 'Panel de Administracion'}
             </h1>
             <p className="text-gray-600 mt-2">
               {view === 'carousel' 
@@ -92,6 +93,8 @@ export default function AdminDashboard() {
                 ? 'Gestiona las preguntas frecuentes del sitio'
                 : view === 'settings'
                 ? 'Configura enlaces y datos de contacto'
+                : view === 'teachers'
+                ? 'Añade, edita y elimina docentes de SEA'
                 : 'Gestiona los cursos disponibles'}
             </p>
           </div>
@@ -194,6 +197,21 @@ export default function AdminDashboard() {
             <Settings size={18} />
             Configuracion
           </button>
+          <button
+            onClick={() => setView('teachers')}
+            className={`px-4 py-2 font-semibold transition-colors flex items-center gap-2 ${
+              view === 'teachers'
+                ? 'text-blue-900 border-b-2' 
+                : 'text-gray-600 hover:text-gray-800'
+            }`}
+            style={{
+              borderBottomColor: view === 'teachers' ? '#031e41' : 'transparent',
+              color: view === 'teachers' ? '#031e41' : '#666',
+            }}
+          >
+            <Users size={18} />
+            Docentes
+          </button>
         </div>
 
         {/* View Switcher */}
@@ -247,6 +265,10 @@ export default function AdminDashboard() {
 
         {view === 'settings' && (
           <SettingsManager />
+        )}
+
+        {view === 'teachers' && (
+          <TeacherManager />
         )}
       </div>
     </div>
