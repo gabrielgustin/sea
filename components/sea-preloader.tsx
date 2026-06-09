@@ -77,6 +77,22 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 1400 }: SeaPreload
     >
       {/* Estilos CSS encapsulados de animación local */}
       <style dangerouslySetInnerHTML={{ __html: `
+        /* RED DE SEGURIDAD: ocultar el preloader con CSS puro, sin depender de JS.
+           Si la hidratación de React falla o se retrasa, esta animación garantiza
+           que el preloader desaparezca igual tras ~2.3s. */
+        #sea-preloader-wrapper {
+          animation: seaAutoHide 0.5s ease forwards;
+          animation-delay: 2.3s;
+        }
+
+        @keyframes seaAutoHide {
+          to {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+          }
+        }
+
         #sea-preloader-svg {
           width: 100%;
           max-width: 320px;
