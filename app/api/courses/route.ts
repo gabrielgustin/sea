@@ -90,34 +90,37 @@ export async function PUT(request: NextRequest) {
     
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
     
-    const result = await db.update(courses).set({
-      title: body.title ?? undefined,
-      subtitle: body.subtitle ?? undefined,
-      description: body.description ?? body.subtitle ?? undefined,
-      badge: body.badge ?? undefined,
-      status: body.status ?? undefined,
-      category: body.category ?? undefined,
-      image: body.image ?? null,
-      price: body.price ?? undefined,
-      duration: body.duration ?? undefined,
-      startDate: body.startDate ?? undefined,
-      enrollmentDeadline: body.enrollmentDeadline ?? undefined,
-      schedule: body.schedule ?? undefined,
-      location: body.location ?? undefined,
-      teacher: body.teacher ?? undefined,
-      modality: body.modality ?? undefined,
-      slug: body.slug ?? undefined,
-      level: body.level ?? undefined,
-      objective: body.objective ?? undefined,
-      methodology: body.methodology ?? undefined,
-      finalProject: body.finalProject ?? undefined,
-      whatsappGroup: body.whatsappGroup ?? undefined,
-      requirements: body.requirements ?? undefined,
-      maxStudents: body.maxStudents ?? undefined,
-      modules: body.modules ?? undefined,
-      teachers: body.teachers ?? undefined,
-      updatedAt: new Date(),
-    }).where(eq(courses.id, String(id)))
+    // Construir un objeto con solo los campos que tienen valores
+    const updateData: any = { updatedAt: new Date() }
+    
+    // Solo agregar campos si tienen valores (no undefined, no null)
+    if (body.title) updateData.title = body.title
+    if (body.subtitle) updateData.subtitle = body.subtitle
+    if (body.description) updateData.description = body.description
+    if (body.badge) updateData.badge = body.badge
+    if (body.status) updateData.status = body.status
+    if (body.category) updateData.category = body.category
+    if (body.image !== undefined) updateData.image = body.image
+    if (body.price) updateData.price = body.price
+    if (body.duration) updateData.duration = body.duration
+    if (body.startDate) updateData.startDate = body.startDate
+    if (body.enrollmentDeadline) updateData.enrollmentDeadline = body.enrollmentDeadline
+    if (body.schedule) updateData.schedule = body.schedule
+    if (body.location) updateData.location = body.location
+    if (body.teacher) updateData.teacher = body.teacher
+    if (body.modality) updateData.modality = body.modality
+    if (body.slug) updateData.slug = body.slug
+    if (body.level) updateData.level = body.level
+    if (body.objective) updateData.objective = body.objective
+    if (body.methodology) updateData.methodology = body.methodology
+    if (body.finalProject) updateData.finalProject = body.finalProject
+    if (body.whatsappGroup) updateData.whatsappGroup = body.whatsappGroup
+    if (body.requirements) updateData.requirements = body.requirements
+    if (body.maxStudents) updateData.maxStudents = body.maxStudents
+    if (body.modules) updateData.modules = body.modules
+    if (body.teachers) updateData.teachers = body.teachers
+    
+    const result = await db.update(courses).set(updateData).where(eq(courses.id, String(id)))
     
     revalidatePath('/')
     revalidatePath('/catalogo-formaciones')
