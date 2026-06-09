@@ -4,7 +4,6 @@ import { Analytics } from '@vercel/analytics/next'
 import { AuthProvider } from '@/context/AuthContext'
 import { CoursesProvider } from '@/context/CoursesContext'
 import { SiteSettingsProvider } from '@/context/SiteSettingsContext'
-import SeaPreloader from '@/components/sea-preloader'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -41,7 +40,6 @@ export default function RootLayout({
   return (
     <html lang="es" className="bg-background overflow-x-hidden">
       <body className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
-        <SeaPreloader minimumLoadingTimeMs={1400} />
         <AuthProvider>
           <CoursesProvider>
             <SiteSettingsProvider>
