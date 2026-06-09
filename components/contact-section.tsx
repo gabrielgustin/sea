@@ -64,6 +64,12 @@ export default function ContactSection() {
                 </p>
               </div>
               <div>
+                <h3 className="font-semibold text-lg mb-2 text-foreground">Email</h3>
+                <a href="mailto:formaciones@portalsea.com.ar" className="text-blue-600 hover:underline">
+                  formaciones@portalsea.com.ar
+                </a>
+              </div>
+              <div>
                 <h3 className="font-semibold text-lg mb-2 text-foreground">Teléfono</h3>
                 <p className="text-muted-foreground">+54 3516307002</p>
               </div>
