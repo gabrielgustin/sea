@@ -11,17 +11,15 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const slug = searchParams.get('slug')
 
-    let query = db.select().from(courses)
-
-    // Si hay un slug específico, filtrar por ese slug
+    let data
+    
     if (slug) {
-      query = query.where(eq(courses.slug, slug))
+      // Búsqueda por slug específico
+      data = await db.select().from(courses).where(eq(courses.slug, slug))
     } else {
-      // Si no, ordenar por fecha de creación
-      query = query.orderBy(courses.createdAt)
+      // Traer todos los cursos ordenados
+      data = await db.select().from(courses).orderBy(courses.createdAt)
     }
-
-    const data = await query
 
     const mapped = data.map((c) => ({
       id: c.id,
