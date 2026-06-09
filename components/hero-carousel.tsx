@@ -1,11 +1,11 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface CarouselSlide {
   id: number;
@@ -40,6 +40,7 @@ function parseSubtitle(subtitle?: string) {
 }
 
 export default function HeroCarousel() {
+  const router = useRouter();
   const [slides, setSlides] = useState<CarouselSlide[]>([]);
   const [loading, setLoading] = useState(true);
   const [emblaRef, emblaApi] = useEmblaCarousel(
@@ -50,6 +51,8 @@ export default function HeroCarousel() {
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
   const [currentSlide, setCurrentSlide] = useState(0);
+  // ref para mantener siempre el ctaLink más reciente sin problemas de closure
+  const currentCtaLinkRef = useRef<string>('/formaciones');
 
   // Cargar slides desde API
   useEffect(() => {
@@ -72,9 +75,12 @@ export default function HeroCarousel() {
     if (!emblaApi || slides.length === 0) return;
 
     const onSelect = () => {
-      setCurrentSlide(emblaApi.selectedIndex);
+      const idx = emblaApi.selectedIndex;
+      setCurrentSlide(idx);
       setCanScrollPrev(emblaApi.canScrollPrev());
       setCanScrollNext(emblaApi.canScrollNext());
+      // Actualizar ref con el ctaLink del slide activo (siempre fresco)
+      currentCtaLinkRef.current = slides[idx]?.ctaLink || '/formaciones';
     };
 
     emblaApi.on('select', onSelect);
@@ -173,13 +179,16 @@ export default function HeroCarousel() {
 
       {/* Barra inferior: "Ver mas" a la izquierda + flechas a la derecha */}
       <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-4 md:px-8 py-4" style={{ background: 'linear-gradient(to top, rgba(0,0,0,0.5), transparent)' }}>
-        {/* Ver más — vinculado al slide activo */}
-        <Link
-          href={slides[currentSlide]?.ctaLink || '/formaciones'}
-          className="text-white font-bold text-sm md:text-base transition-all duration-300 hover:underline underline-offset-4"
+        {/* Ver más — navega dinámicamente al curso activo */}
+        <button
+          onClick={() => {
+            const target = slides[currentSlide]?.ctaLink || '/formaciones';
+            router.push(target);
+          }}
+          className="text-white font-bold text-sm md:text-base transition-all duration-300 hover:underline underline-offset-4 bg-transparent border-none cursor-pointer"
         >
           {slides[currentSlide]?.ctaText || 'Ver mas'} &rarr;
-        </Link>
+        </button>
 
         {/* Botones de navegacion */}
         <div className="flex gap-3">
