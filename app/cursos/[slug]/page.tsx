@@ -1,3 +1,4 @@
+// Course detail page - loads course data by slug from the API
 'use client';
 
 import { useEffect, useState } from 'react';
