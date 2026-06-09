@@ -16,17 +16,25 @@ interface CarouselSlide {
   active?: boolean;
 }
 
+interface Course {
+  id: string;
+  title: string;
+  slug: string;
+}
+
 export default function CarouselManager() {
   const [slides, setSlides] = useState<CarouselSlide[]>([]);
+  const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<number | null>(null);
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<Partial<CarouselSlide>>({});
 
-  // Cargar slides
+  // Cargar slides y cursos
   useEffect(() => {
     fetchSlides();
+    fetchCourses();
   }, []);
 
   const fetchSlides = async () => {
@@ -39,6 +47,16 @@ export default function CarouselManager() {
       console.error('Error fetching carousel slides:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchCourses = async () => {
+    try {
+      const response = await fetch('/api/courses');
+      const data = await response.json();
+      setCourses(data.courses || []);
+    } catch (error) {
+      console.error('Error fetching courses:', error);
     }
   };
 
@@ -192,15 +210,20 @@ export default function CarouselManager() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
-                  Link CTA (Destino)
+                  Link CTA (Seleccionar Curso)
                 </label>
-                <input
-                  type="text"
+                <select
                   value={formData.ctaLink || ''}
                   onChange={(e) => setFormData({ ...formData, ctaLink: e.target.value })}
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  placeholder="Ej: /cursos/desarrollo-de-aplicaciones"
-                />
+                >
+                  <option value="">-- Seleccionar un curso --</option>
+                  {courses.map((course) => (
+                    <option key={course.id} value={`/cursos/${course.slug}`}>
+                      {course.title}
+                    </option>
+                  ))}
+                </select>
               </div>
             </div>
 
@@ -283,14 +306,23 @@ export default function CarouselManager() {
 
             {/* Información */}
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-gray-900 text-lg mb-1">
+              <h3 className="font-semibold text-gray-900 text-lg mb-2">
                 {slide.title}
               </h3>
+              
               {slide.subtitle && (
-                <p className="text-sm text-gray-600 mb-2 whitespace-pre-wrap">
-                  {slide.subtitle}
-                </p>
+                <div className="mb-3 space-y-1">
+                  {slide.subtitle.split('\n').map((line, idx) => {
+                    if (!line.trim()) return null;
+                    return (
+                      <div key={idx} className="text-sm text-gray-600">
+                        {line}
+                      </div>
+                    );
+                  })}
+                </div>
               )}
+              
               <div className="flex flex-wrap gap-2">
                 {slide.badge && (
                   <span className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-medium">
