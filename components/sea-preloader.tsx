@@ -34,34 +34,38 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 1400 }: SeaPreload
     // Bloquear el scroll del body mientras carga
     document.body.style.overflow = "hidden";
 
-    let fadeTimeout: ReturnType<typeof setTimeout>;
-
     const handleLoadingComplete = () => {
       // Marcar que el preloader ya fue mostrado
-      sessionStorage.setItem("sea-preloader-shown", "true");
-
+      sessionStorage.setItem('sea-preloader-shown', 'true');
+      
       // Desvanecer cargador
       setIsVisible(false);
-
+      
       // Permitir el scroll nuevamente
       document.body.style.overflow = "";
 
       // Eliminar del DOM después de terminar la transición de desvanecimiento (500ms)
-      fadeTimeout = setTimeout(() => {
+      const timeout = setTimeout(() => {
         setShouldRender(false);
       }, 500);
+
+      return () => clearTimeout(timeout);
     };
 
-    // Esperar tanto el tiempo mínimo visible como la carga completa de la página.
-    // Usamos un único temporizador garantizado: el preloader SIEMPRE se oculta
-    // pasado minimumLoadingTimeMs, independientemente del estado de carga.
-    // Esto evita el bug de quedar bloqueado si el evento "load" disparó antes
-    // de registrar el listener.
-    const minTimer = setTimeout(handleLoadingComplete, minimumLoadingTimeMs);
+    // Si el documento ya está completamente cargado, ejecutar inmediatamente
+    if (document.readyState === "complete") {
+      const timer = setTimeout(handleLoadingComplete, minimumLoadingTimeMs);
+      return () => clearTimeout(timer);
+    }
+
+    // Si no, esperar al evento load
+    const loadTimer = setTimeout(() => {
+      window.addEventListener("load", handleLoadingComplete);
+    }, minimumLoadingTimeMs);
 
     return () => {
-      clearTimeout(minTimer);
-      clearTimeout(fadeTimeout);
+      clearTimeout(loadTimer);
+      window.removeEventListener("load", handleLoadingComplete);
       document.body.style.overflow = "";
     };
   }, [minimumLoadingTimeMs, hasShown, shouldRender]);
@@ -77,22 +81,6 @@ export default function SeaPreloader({ minimumLoadingTimeMs = 1400 }: SeaPreload
     >
       {/* Estilos CSS encapsulados de animación local */}
       <style dangerouslySetInnerHTML={{ __html: `
-        /* RED DE SEGURIDAD: ocultar el preloader con CSS puro, sin depender de JS.
-           Si la hidratación de React falla o se retrasa, esta animación garantiza
-           que el preloader desaparezca igual tras ~2.3s. */
-        #sea-preloader-wrapper {
-          animation: seaAutoHide 0.5s ease forwards;
-          animation-delay: 2.3s;
-        }
-
-        @keyframes seaAutoHide {
-          to {
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-          }
-        }
-
         #sea-preloader-svg {
           width: 100%;
           max-width: 320px;
