@@ -3,7 +3,9 @@ import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { AuthProvider } from '@/context/AuthContext'
 import { CoursesProvider } from '@/context/CoursesContext'
+import { LoadingProvider } from '@/context/LoadingContext'
 import { SiteSettingsProvider } from '@/context/SiteSettingsContext'
+import GlobalPreloader from '@/components/global-preloader'
 import './globals.css'
 
 const _geist = Geist({ subsets: ["latin"] });
@@ -42,9 +44,12 @@ export default function RootLayout({
       <body className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
         <AuthProvider>
           <CoursesProvider>
-            <SiteSettingsProvider>
-              {children}
-            </SiteSettingsProvider>
+            <LoadingProvider>
+              <GlobalPreloader />
+              <SiteSettingsProvider>
+                {children}
+              </SiteSettingsProvider>
+            </LoadingProvider>
           </CoursesProvider>
         </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
