@@ -184,9 +184,12 @@ export default function CarouselManager() {
                 value={formData.subtitle || ''}
                 onChange={(e) => setFormData({ ...formData, subtitle: e.target.value })}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="Ej: Fecha de Inicio: 4 de junio, 2026\nDuración: 6 meses\nModalidad: Educación Presencial"
+                placeholder={'Fecha de Inicio: 4 de junio, 2026\nDuración: 6 meses\nModalidad: PRESENCIAL'}
                 rows={3}
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Se autocompleta al seleccionar un curso abajo. Una línea por dato.
+              </p>
             </div>
 
             <div>
@@ -226,7 +229,9 @@ export default function CarouselManager() {
                     const selectedLink = e.target.value;
                     const selectedCourse = courses.find(c => `/cursos/${c.slug}` === selectedLink);
                     if (selectedCourse) {
-                      // Auto-rellenar campos desde el curso seleccionado
+                      // Auto-rellenar campos desde el curso vinculado.
+                      // Siempre refresca el subtitle/título/imagen con los datos del curso
+                      // para mantener el carrusel sincronizado con el curso seleccionado.
                       const subtitle = [
                         selectedCourse.startDate ? `Fecha de Inicio: ${selectedCourse.startDate}` : '',
                         selectedCourse.duration ? `Duración: ${selectedCourse.duration}` : '',
@@ -235,9 +240,10 @@ export default function CarouselManager() {
                       setFormData({
                         ...formData,
                         ctaLink: selectedLink,
-                        title: formData.title || selectedCourse.title,
-                        subtitle: formData.subtitle || subtitle,
-                        image: formData.image || selectedCourse.image || '',
+                        title: selectedCourse.title,
+                        subtitle: subtitle,
+                        badge: selectedCourse.modality || formData.badge || '',
+                        image: selectedCourse.image || formData.image || '',
                         ctaText: formData.ctaText || 'Ver mas',
                       });
                     } else {
