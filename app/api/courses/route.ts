@@ -6,9 +6,23 @@ import { eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 import { revalidatePath } from 'next/cache'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const data = await db.select().from(courses).orderBy(courses.createdAt)
+    const { searchParams } = new URL(request.url)
+    const slug = searchParams.get('slug')
+
+    let query = db.select().from(courses)
+
+    // Si hay un slug específico, filtrar por ese slug
+    if (slug) {
+      query = query.where(eq(courses.slug, slug))
+    } else {
+      // Si no, ordenar por fecha de creación
+      query = query.orderBy(courses.createdAt)
+    }
+
+    const data = await query
+
     const mapped = data.map((c) => ({
       id: c.id,
       title: c.title,
@@ -39,6 +53,12 @@ export async function GET() {
       category: c.category,
       maxStudents: c.maxStudents,
     }))
+
+    // Si búsqueda por slug, retornar un solo curso
+    if (slug && mapped.length > 0) {
+      return NextResponse.json({ course: mapped[0] })
+    }
+
     return NextResponse.json({ courses: mapped })
   } catch (error) {
     console.error('[v0] GET /api/courses error:', error)
