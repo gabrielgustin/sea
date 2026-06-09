@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
+import { pool } from '@/lib/db'
 import { db } from '@/lib/db'
 import { courses } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
@@ -25,7 +26,9 @@ export async function GET() {
       teachers: (c.teachers as any[]) ?? [],
       duration: c.duration ?? '',
       price: c.price ?? '',
-      requirements: c.requirements ?? '',
+      requirements: typeof c.requirements === 'string'
+        ? c.requirements
+        : (c.requirements != null ? String(c.requirements) : ''),
       objective: c.objective ?? '',
       methodology: c.methodology ?? '',
       finalProject: c.finalProject ?? '',
@@ -46,35 +49,58 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const id = body.slug ?? nanoid()
-    await db.insert(courses).values({
+    const id = body.slug || nanoid()
+
+    // requirements is JSONB — always JSON.stringify so plain text becomes a valid JSON string
+    const requirementsVal = body.requirements != null && body.requirements !== ''
+      ? JSON.stringify(body.requirements)
+      : null
+
+    const sql = `
+      INSERT INTO "courses" (
+        "id","title","subtitle","description","badge","status","category",
+        "image","price","duration","startDate","enrollmentDeadline",
+        "schedule","location","teacher","modality","slug","level",
+        "objective","methodology","finalProject","whatsappGroup",
+        "requirements","maxStudents","modules","teachers"
+      ) VALUES (
+        $1,$2,$3,$4,$5,$6,$7,
+        $8,$9,$10,$11,$12,
+        $13,$14,$15,$16,$17,$18,
+        $19,$20,$21,$22,
+        $23::jsonb,$24,$25::jsonb,$26::jsonb
+      )
+    `
+    const params = [
       id,
-      title: body.title ?? '',
-      subtitle: body.subtitle ?? '',
-      description: body.description ?? body.subtitle ?? '',
-      badge: body.badge ?? 'PRESENCIAL',
-      status: body.status ?? 'open',
-      category: body.category ?? 'general',
-      image: body.image ?? null,
-      price: body.price ?? null,
-      duration: body.duration ?? null,
-      startDate: body.startDate ?? null,
-      enrollmentDeadline: body.enrollmentDeadline ?? null,
-      schedule: body.schedule ?? null,
-      location: body.location ?? null,
-      teacher: body.teacher ?? null,
-      modality: body.modality ?? null,
-      slug: body.slug ?? id,
-      level: body.level ?? 'PRINCIPIANTE',
-      objective: body.objective ?? null,
-      methodology: body.methodology ?? null,
-      finalProject: body.finalProject ?? null,
-      whatsappGroup: body.whatsappGroup ?? null,
-      requirements: body.requirements ?? null,
-      maxStudents: body.maxStudents ?? null,
-      modules: body.modules ?? [],
-      teachers: body.teachers ?? [],
-    })
+      body.title ?? '',
+      body.subtitle ?? '',
+      body.description ?? body.subtitle ?? '',
+      body.badge ?? 'PRESENCIAL',
+      body.status ?? 'open',
+      body.category ?? 'general',
+      body.image ?? null,
+      body.price ?? null,
+      body.duration ?? null,
+      body.startDate ?? null,
+      body.enrollmentDeadline ?? null,
+      body.schedule ?? null,
+      body.location ?? null,
+      body.teacher ?? null,
+      body.modality ?? null,
+      body.slug ?? id,
+      body.level ?? 'PRINCIPIANTE',
+      body.objective ?? null,
+      body.methodology ?? null,
+      body.finalProject ?? null,
+      body.whatsappGroup ?? null,
+      requirementsVal,
+      body.maxStudents ?? null,
+      JSON.stringify(body.modules ?? []),
+      JSON.stringify(body.teachers ?? []),
+    ]
+
+    await pool.query(sql, params)
     revalidatePath('/')
     revalidatePath('/catalogo-formaciones')
     return NextResponse.json({ success: true, id })
@@ -87,41 +113,86 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const { id, ...body } = await request.json()
-    
+
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
-    
-    // Construir un objeto con solo los campos que tienen valores
-    const updateData: any = { updatedAt: new Date() }
-    
-    // Solo agregar campos si tienen valores (no undefined, no null)
-    if (body.title) updateData.title = body.title
-    if (body.subtitle) updateData.subtitle = body.subtitle
-    if (body.description) updateData.description = body.description
-    if (body.badge) updateData.badge = body.badge
-    if (body.status) updateData.status = body.status
-    if (body.category) updateData.category = body.category
-    if (body.image !== undefined) updateData.image = body.image
-    if (body.price) updateData.price = body.price
-    if (body.duration) updateData.duration = body.duration
-    if (body.startDate) updateData.startDate = body.startDate
-    if (body.enrollmentDeadline) updateData.enrollmentDeadline = body.enrollmentDeadline
-    if (body.schedule) updateData.schedule = body.schedule
-    if (body.location) updateData.location = body.location
-    if (body.teacher) updateData.teacher = body.teacher
-    if (body.modality) updateData.modality = body.modality
-    if (body.slug) updateData.slug = body.slug
-    if (body.level) updateData.level = body.level
-    if (body.objective) updateData.objective = body.objective
-    if (body.methodology) updateData.methodology = body.methodology
-    if (body.finalProject) updateData.finalProject = body.finalProject
-    if (body.whatsappGroup) updateData.whatsappGroup = body.whatsappGroup
-    if (body.requirements) updateData.requirements = body.requirements
-    if (body.maxStudents) updateData.maxStudents = body.maxStudents
-    if (body.modules) updateData.modules = body.modules
-    if (body.teachers) updateData.teachers = body.teachers
-    
-    const result = await db.update(courses).set(updateData).where(eq(courses.id, String(id)))
-    
+
+    const str = (val: any): string | null =>
+      typeof val === 'string' && val.trim() !== '' ? val.trim() : null
+
+    const fields: string[] = []
+    const params: any[] = []
+
+    const addText = (col: string, val: any) => {
+      const v = str(val)
+      if (v !== null) { params.push(v); fields.push(`"${col}" = $${params.length}`) }
+    }
+
+    const addJsonb = (col: string, val: any) => {
+      // Always serialize to valid JSON string before passing to ::jsonb
+      const serialized = typeof val === 'string'
+        ? JSON.stringify(val)          // wrap plain string: "foo" → '"foo"'
+        : JSON.stringify(val)          // arrays/objects already correct
+      params.push(serialized)
+      fields.push(`"${col}" = $${params.length}::jsonb`)
+    }
+
+    // Required NOT NULL fields — always include
+    params.push(str(body.title) ?? '');       fields.push(`"title" = $${params.length}`)
+    params.push(str(body.description) ?? str(body.subtitle) ?? ''); fields.push(`"description" = $${params.length}`)
+    params.push(str(body.badge) ?? 'PRESENCIAL'); fields.push(`"badge" = $${params.length}`)
+    params.push(str(body.status) ?? 'open');    fields.push(`"status" = $${params.length}`)
+    params.push(str(body.category) ?? 'general'); fields.push(`"category" = $${params.length}`)
+
+    // Optional plain text fields
+    addText('subtitle',            body.subtitle)
+    addText('price',               body.price)
+    addText('duration',            body.duration)
+    addText('startDate',           body.startDate)
+    addText('enrollmentDeadline',  body.enrollmentDeadline)
+    addText('schedule',            body.schedule)
+    addText('location',            body.location)
+    addText('teacher',             body.teacher)
+    addText('modality',            body.modality)
+    addText('slug',                body.slug)
+    addText('level',               body.level)
+    addText('objective',           body.objective)
+    addText('methodology',         body.methodology)
+    addText('finalProject',        body.finalProject)
+    addText('whatsappGroup',       body.whatsappGroup)
+
+    // image: allow null (remove image)
+    if (body.image !== undefined) {
+      params.push(body.image === '' ? null : body.image)
+      fields.push(`"image" = $${params.length}`)
+    }
+
+    // maxStudents: integer
+    if (body.maxStudents != null && body.maxStudents !== '') {
+      params.push(Number(body.maxStudents))
+      fields.push(`"maxStudents" = $${params.length}`)
+    }
+
+    // JSONB columns — requirements is JSONB in DB despite being edited as plain text
+    if (body.requirements != null && body.requirements !== '') {
+      addJsonb('requirements', body.requirements)
+    }
+    if (Array.isArray(body.modules)) {
+      addJsonb('modules', body.modules)
+    }
+    if (Array.isArray(body.teachers)) {
+      addJsonb('teachers', body.teachers)
+    }
+
+    // updatedAt
+    params.push(new Date())
+    fields.push(`"updatedAt" = $${params.length}`)
+
+    // WHERE id
+    params.push(String(id))
+    const sql = `UPDATE "courses" SET ${fields.join(', ')} WHERE "id" = $${params.length}`
+
+    await pool.query(sql, params)
+
     revalidatePath('/')
     revalidatePath('/catalogo-formaciones')
     return NextResponse.json({ success: true })
