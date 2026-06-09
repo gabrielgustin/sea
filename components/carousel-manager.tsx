@@ -101,6 +101,10 @@ export default function CarouselManager() {
     setEditingId(slide.id);
     setShowForm(true);
     setExpandedId(null);
+    // Auto-scroll hacia arriba al formulario
+    setTimeout(() => {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 0);
   };
 
   const handleDelete = async (id: string) => {
@@ -306,20 +310,57 @@ export default function CarouselManager() {
 
             {/* Información */}
             <div className="flex-1 min-w-0">
-              <h3 className="font-semibold text-gray-900 text-lg mb-2">
+              <h3 className="font-semibold text-gray-900 text-lg mb-3">
                 {slide.title}
               </h3>
               
               {slide.subtitle && (
-                <div className="mb-3 space-y-1">
-                  {slide.subtitle.split('\n').map((line, idx) => {
-                    if (!line.trim()) return null;
+                <div className="mb-4 pb-4 border-b border-gray-200">
+                  {(() => {
+                    const lines = slide.subtitle.split('\n').filter(line => line.trim());
+                    
+                    // Extraer modalidad, inicio y duración si existen
+                    let modalidad = '';
+                    let inicio = '';
+                    let duracion = '';
+                    
+                    lines.forEach(line => {
+                      if (line.includes('Modalidad:')) modalidad = line.replace('Modalidad:', '').trim();
+                      if (line.includes('Fecha de Inicio:')) inicio = line.replace('Fecha de Inicio:', '').trim();
+                      if (line.includes('Duración:')) duracion = line.replace('Duración:', '').trim();
+                    });
+                    
+                    // Si tenemos los tres datos, mostrarlos en formato horizontal
+                    if (modalidad && inicio && duracion) {
+                      return (
+                        <div className="flex gap-8 text-sm">
+                          <div>
+                            <p className="text-gray-500 text-xs font-semibold uppercase mb-1">Modalidad</p>
+                            <p className="text-gray-900 font-medium">{modalidad}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-500 text-xs font-semibold uppercase mb-1">Inicia</p>
+                            <p className="text-gray-900 font-medium">{inicio}</p>
+                          </div>
+                          <div>
+                            <p className="text-gray-500 text-xs font-semibold uppercase mb-1">Duración</p>
+                            <p className="text-gray-900 font-medium">{duracion}</p>
+                          </div>
+                        </div>
+                      );
+                    }
+                    
+                    // Si no, mostrar como antes
                     return (
-                      <div key={idx} className="text-sm text-gray-600">
-                        {line}
+                      <div className="space-y-1">
+                        {lines.map((line, idx) => (
+                          <div key={idx} className="text-sm text-gray-600">
+                            {line}
+                          </div>
+                        ))}
                       </div>
                     );
-                  })}
+                  })()}
                 </div>
               )}
               
