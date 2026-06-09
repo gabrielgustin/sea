@@ -4,6 +4,12 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Trash2, Edit2, Plus, AlertCircle } from 'lucide-react'
 
+interface Course {
+  id: number
+  title: string
+  slug: string
+}
+
 interface Teacher {
   id: number
   name: string
@@ -11,12 +17,14 @@ interface Teacher {
   image: string | null
   whatsapp: string | null
   linkedin: string | null
+  courseId: number | null
   order: number
   active: boolean
 }
 
 export function TeacherManager() {
   const [teachers, setTeachers] = useState<Teacher[]>([])
+  const [courses, setCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [editingId, setEditingId] = useState<number | null>(null)
   const [formData, setFormData] = useState({
@@ -25,6 +33,7 @@ export function TeacherManager() {
     image: '',
     whatsapp: '',
     linkedin: '',
+    courseId: '',
     order: 0,
   })
   const [error, setError] = useState('')
@@ -32,7 +41,18 @@ export function TeacherManager() {
 
   useEffect(() => {
     fetchTeachers()
+    fetchCourses()
   }, [])
+
+  const fetchCourses = async () => {
+    try {
+      const res = await fetch('/api/courses')
+      const data = await res.json()
+      setCourses(data.courses || [])
+    } catch (err) {
+      console.error('Error al cargar cursos:', err)
+    }
+  }
 
   const fetchTeachers = async () => {
     try {
@@ -55,7 +75,9 @@ export function TeacherManager() {
 
     try {
       const method = editingId ? 'PUT' : 'POST'
-      const payload = editingId ? { id: editingId, ...formData } : formData
+      const payload = editingId 
+        ? { id: editingId, ...formData, courseId: formData.courseId ? parseInt(formData.courseId) : null }
+        : { ...formData, courseId: formData.courseId ? parseInt(formData.courseId) : null }
 
       const res = await fetch('/api/teachers', {
         method,
@@ -67,7 +89,7 @@ export function TeacherManager() {
 
       setSuccess(editingId ? 'Docente actualizado' : 'Docente creado')
       setEditingId(null)
-      setFormData({ name: '', description: '', image: '', whatsapp: '', linkedin: '', order: 0 })
+      setFormData({ name: '', description: '', image: '', whatsapp: '', linkedin: '', courseId: '', order: 0 })
       setError('')
       await fetchTeachers()
     } catch (err) {
@@ -84,6 +106,7 @@ export function TeacherManager() {
       image: teacher.image || '',
       whatsapp: teacher.whatsapp || '',
       linkedin: teacher.linkedin || '',
+      courseId: teacher.courseId ? String(teacher.courseId) : '',
       order: teacher.order,
     })
   }
@@ -111,7 +134,7 @@ export function TeacherManager() {
 
   const handleCancel = () => {
     setEditingId(null)
-    setFormData({ name: '', description: '', image: '', whatsapp: '', linkedin: '', order: 0 })
+    setFormData({ name: '', description: '', image: '', whatsapp: '', linkedin: '', courseId: '', order: 0 })
     setError('')
   }
 
@@ -190,6 +213,22 @@ export function TeacherManager() {
               onChange={(e) => setFormData({ ...formData, linkedin: e.target.value })}
               placeholder="https://linkedin.com/in/juangarcia"
             />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1">Curso Asignado</label>
+            <select
+              value={formData.courseId}
+              onChange={(e) => setFormData({ ...formData, courseId: e.target.value })}
+              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            >
+              <option value="">-- Seleccionar curso --</option>
+              {courses.map((course) => (
+                <option key={course.id} value={String(course.id)}>
+                  {course.title}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div>

@@ -15,7 +15,7 @@ export async function GET() {
 export async function POST(req: Request) {
   try {
     const body = await req.json()
-    const { name, description, image, whatsapp, linkedin, order } = body
+    const { name, description, image, whatsapp, linkedin, courseId, order } = body
 
     if (!name) return Response.json({ error: 'El nombre es requerido' }, { status: 400 })
 
@@ -25,6 +25,7 @@ export async function POST(req: Request) {
       image: image || null,
       whatsapp: whatsapp || null,
       linkedin: linkedin || null,
+      courseId: courseId || null,
       order: order || 0,
       active: true,
     }).returning()
@@ -39,7 +40,7 @@ export async function POST(req: Request) {
 export async function PUT(req: Request) {
   try {
     const body = await req.json()
-    const { id, name, description, image, whatsapp, linkedin, order, active } = body
+    const { id, name, description, image, whatsapp, linkedin, courseId, order, active } = body
 
     if (!id) return Response.json({ error: 'El ID es requerido' }, { status: 400 })
     if (!name) return Response.json({ error: 'El nombre es requerido' }, { status: 400 })
@@ -50,10 +51,13 @@ export async function PUT(req: Request) {
       image: image || null,
       whatsapp: whatsapp || null,
       linkedin: linkedin || null,
+      courseId: courseId || null,
       order: order || 0,
       active: active !== undefined ? active : true,
       updatedAt: new Date(),
     }).where(eq(teachers.id, id)).returning()
+
+    if (!result.length) return Response.json({ error: 'Docente no encontrado' }, { status: 404 })
 
     return Response.json({ teacher: result[0] })
   } catch (error) {
