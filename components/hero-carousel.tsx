@@ -75,7 +75,7 @@ export default function HeroCarousel() {
     if (!emblaApi || slides.length === 0) return;
 
     const onSelect = () => {
-      const idx = emblaApi.selectedScrollSnap();
+      const idx = emblaApi.selectedIndex;
       setCurrentSlide(idx);
       currentSlideRef.current = idx;
       setCanScrollPrev(emblaApi.canScrollPrev());
@@ -94,10 +94,14 @@ export default function HeroCarousel() {
     if (emblaApi) dir === 'prev' ? emblaApi.scrollPrev() : emblaApi.scrollNext();
   };
 
-  // Navigate to the active slide's course page
-  const handleVerMas = () => {
-    const slide = slidesRef.current[currentSlideRef.current];
-    router.push(slide?.ctaLink || '/formaciones');
+  // Navigate using always-fresh refs, with DOM fallback
+  const handleVerMas = (e: React.MouseEvent<HTMLButtonElement>) => {
+    const idx = currentSlideRef.current;
+    const allSlides = slidesRef.current;
+    const slide = allSlides[idx];
+    // Primary: use ref data; Fallback: read data-target from the DOM element
+    const target = slide?.ctaLink || (e.currentTarget.dataset.target) || '/formaciones';
+    router.push(target);
   };
 
   if (loading) {
@@ -178,6 +182,7 @@ export default function HeroCarousel() {
       <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-4 md:px-8 py-4 bg-gradient-to-t from-black/60 to-transparent">
         <button
           onClick={handleVerMas}
+          data-target={slides[currentSlide]?.ctaLink || '/formaciones'}
           className="text-white font-bold text-sm md:text-base hover:underline underline-offset-4 transition-all bg-transparent border-none cursor-pointer p-0"
         >
           {slides[currentSlide]?.ctaText || 'Ver mas'} →
