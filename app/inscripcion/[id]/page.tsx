@@ -11,10 +11,10 @@ interface PageProps {
 
 export default function EnrollmentPage({ params }: PageProps) {
   const { id } = use(params);
-  const courseId = parseInt(id);
   const { courses } = useCourses();
   
-  const course = courses.find(c => c.id === courseId);
+  // Course IDs are strings, not numbers
+  const course = courses.find(c => c.id === id || c.slug === id);
   
   if (!course) {
     return (
