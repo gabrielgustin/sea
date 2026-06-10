@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { pool } from '@/lib/db'
 import { db } from '@/lib/db'
-import { courses } from '@/lib/db/schema'
+import { courses, teachers } from '@/lib/db/schema'
 import { eq } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
 import { revalidatePath } from 'next/cache'
@@ -52,9 +52,29 @@ export async function GET(request: NextRequest) {
       maxStudents: c.maxStudents,
     }))
 
-    // Si búsqueda por slug, retornar un solo curso
+    // Si búsqueda por slug, buscar también el docente vinculado en tabla teachers
     if (slug && mapped.length > 0) {
-      return NextResponse.json({ course: mapped[0] })
+      const courseId = data[0].id
+      const linkedTeachers = await db
+        .select()
+        .from(teachers)
+        .where(eq(teachers.courseId, Number(courseId)))
+        .orderBy(teachers.order)
+
+      // Combinar: docentes de la tabla teachers tienen prioridad sobre el JSONB legacy
+      const teachersFromDB = linkedTeachers.map((t) => ({
+        name: t.name,
+        photo: t.image ?? '',
+        description: t.description ?? '',
+        linkedin: t.linkedin ?? '',
+        whatsapp: t.whatsapp ?? '',
+      }))
+
+      const finalTeachers = teachersFromDB.length > 0
+        ? teachersFromDB
+        : mapped[0].teachers
+
+      return NextResponse.json({ course: { ...mapped[0], teachers: finalTeachers } })
     }
 
     return NextResponse.json({ courses: mapped })
