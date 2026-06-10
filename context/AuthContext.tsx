@@ -26,11 +26,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    // Limpiar cualquier sesión guardada al montar — la sesión no persiste entre recargas
-    localStorage.removeItem('userAuth');
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('userDNI');
-    localStorage.removeItem('userCourse');
+    // Restaurar sesión desde sessionStorage si existe
+    // sessionStorage se limpia automáticamente al cerrar la pestaña
+    // Persiste durante F5/reload en la misma pestaña
+    const savedAuth = sessionStorage.getItem('userAuth') === 'true';
+    const savedRole = sessionStorage.getItem('userRole') as UserRole;
+    const savedDNI = sessionStorage.getItem('userDNI');
+    const savedCourse = sessionStorage.getItem('userCourse');
+    
+    if (savedAuth && savedRole) {
+      setIsAuthenticated(true);
+      setUserRole(savedRole);
+      setUserDNI(savedDNI || undefined);
+      setUserCourse(savedCourse || undefined);
+    }
+
     setHydrated(true);
   }, []);
 
@@ -49,10 +59,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
         setIsAuthenticated(true);
         setUserRole('admin');
-        localStorage.setItem('userAuth', 'true');
-        localStorage.setItem('userRole', 'admin');
+        sessionStorage.setItem('userAuth', 'true');
+        sessionStorage.setItem('userRole', 'admin');
         return { success: true, redirectUrl: '/admin' };
-      } catch {
+      } catch (err) {
         return { success: false, error: 'Error de conexión. Intenta de nuevo.' };
       }
     } else if (selectedRole === 'student') {
@@ -79,10 +89,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUserDNI(username);
         setUserCourse(student.curso);
         
-        localStorage.setItem('userAuth', 'true');
-        localStorage.setItem('userRole', 'student');
-        localStorage.setItem('userDNI', username);
-        localStorage.setItem('userCourse', student.curso);
+        sessionStorage.setItem('userAuth', 'true');
+        sessionStorage.setItem('userRole', 'student');
+        sessionStorage.setItem('userDNI', username);
+        sessionStorage.setItem('userCourse', student.curso);
 
         // Redirigir a URL externa si es alumno de Diseño e Impresión 3D
         if (student.curso === 'Diseño e Impresión 3D') {
@@ -103,10 +113,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUserRole(null);
     setUserDNI(undefined);
     setUserCourse(undefined);
-    localStorage.removeItem('userAuth');
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('userDNI');
-    localStorage.removeItem('userCourse');
+    sessionStorage.removeItem('userAuth');
+    sessionStorage.removeItem('userRole');
+    sessionStorage.removeItem('userDNI');
+    sessionStorage.removeItem('userCourse');
   };
 
   return (
