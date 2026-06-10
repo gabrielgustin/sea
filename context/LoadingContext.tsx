@@ -1,25 +1,20 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useCourses } from './CoursesContext';
+import React, { createContext, useContext, useState } from 'react';
 
 interface LoadingContextType {
   isLoading: boolean;
+  setIsLoading: (v: boolean) => void;
 }
 
 const LoadingContext = createContext<LoadingContextType | undefined>(undefined);
 
 export function LoadingProvider({ children }: { children: React.ReactNode }) {
-  const [isLoading, setIsLoading] = useState(true);
-  const { loading: coursesLoading } = useCourses();
-
-  useEffect(() => {
-    // La página termina de cargar cuando los cursos están listos
-    setIsLoading(coursesLoading);
-  }, [coursesLoading]);
+  // Start as false — critical content is now server-prefetched
+  const [isLoading, setIsLoading] = useState(false);
 
   return (
-    <LoadingContext.Provider value={{ isLoading }}>
+    <LoadingContext.Provider value={{ isLoading, setIsLoading }}>
       {children}
     </LoadingContext.Provider>
   );

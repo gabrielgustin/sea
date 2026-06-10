@@ -33,37 +33,26 @@ function parseSubtitle(subtitle?: string) {
   return { modality, startDate, duration };
 }
 
-export default function HeroCarousel() {
+interface HeroCarouselProps {
+  initialSlides?: CarouselSlide[];
+}
+
+export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) {
   const router = useRouter();
 
-  // All state
-  const [slides, setSlides] = useState<CarouselSlide[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [slides, setSlides] = useState<CarouselSlide[]>(initialSlides);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [canScrollPrev, setCanScrollPrev] = useState(false);
   const [canScrollNext, setCanScrollNext] = useState(false);
 
   // Stable refs to avoid stale closures
-  const slidesRef = useRef<CarouselSlide[]>([]);
+  const slidesRef = useRef<CarouselSlide[]>(initialSlides);
   const currentSlideRef = useRef(0);
 
   const [emblaRef, emblaApi] = useEmblaCarousel(
     { loop: true, align: 'start' },
     [Autoplay({ delay: 5000, stopOnInteraction: false })]
   );
-
-  // Fetch slides on mount
-  useEffect(() => {
-    fetch('/api/carousel')
-      .then((r) => r.json())
-      .then((data) => {
-        const loaded: CarouselSlide[] = data.slides || [];
-        slidesRef.current = loaded;  // Update ref FIRST
-        setSlides(loaded);           // Then trigger re-render
-      })
-      .catch((err) => console.error('[v0] carousel fetch:', err))
-      .finally(() => setLoading(false));
-  }, []);
 
   // Keep slidesRef in sync whenever slides state updates
   useEffect(() => {
@@ -96,23 +85,13 @@ export default function HeroCarousel() {
 
   // Navigate using the button's closest slide element
   const handleVerMas = (e: React.MouseEvent<HTMLButtonElement>) => {
-    // Find the closest slide container
     const slideEl = e.currentTarget.closest('[data-slide-index]');
     const idx = slideEl ? parseInt(slideEl.getAttribute('data-slide-index') || '0', 10) : 0;
-    
     const allSlides = slidesRef.current;
     const slide = allSlides[idx];
     const target = slide?.ctaLink || '/formaciones';
     router.push(target);
   };
-
-  if (loading) {
-    return (
-      <div className="w-full bg-gray-900 flex items-center justify-center" style={{ height: '65vh' }}>
-        <p className="text-white text-xl animate-pulse">Cargando formaciones...</p>
-      </div>
-    );
-  }
 
   if (slides.length === 0) {
     return (

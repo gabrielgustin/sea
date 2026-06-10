@@ -4,10 +4,18 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useInView } from '@/hooks/useInView';
 import { useCourses } from '@/context/CoursesContext';
+import type { Course } from '@/context/CoursesContext';
 
-export default function CoursesSection() {
-  const { courses } = useCourses();
+interface CoursesSectionProps {
+  initialCourses?: Course[];
+}
+
+export default function CoursesSection({ initialCourses }: CoursesSectionProps) {
+  const { courses: contextCourses } = useCourses();
   const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
+
+  // Use server-prefetched data if available, fallback to context
+  const courses = (initialCourses && initialCourses.length > 0) ? initialCourses : contextCourses;
 
   return (
     <section ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12">

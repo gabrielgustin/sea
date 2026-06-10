@@ -10,7 +10,36 @@ import FAQSection from '@/components/faq-section';
 import ContactSection from '@/components/contact-section';
 import WhatsAppButton from '@/components/whatsapp-button';
 
-export default function Home() {
+async function getCarouselSlides() {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const res = await fetch(`${baseUrl}/api/carousel`, { next: { revalidate: 60 } });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.slides || [];
+  } catch {
+    return [];
+  }
+}
+
+async function getCourses() {
+  try {
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const res = await fetch(`${baseUrl}/api/courses`, { next: { revalidate: 60 } });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return data.courses || [];
+  } catch {
+    return [];
+  }
+}
+
+export default async function Home() {
+  const [slides, courses] = await Promise.all([
+    getCarouselSlides(),
+    getCourses(),
+  ]);
+
   return (
     <div className="flex h-screen w-screen">
       {/* Sidebar - 10% width */}
@@ -21,9 +50,9 @@ export default function Home() {
       {/* Main content - 90% width */}
       <main className="w-full md:w-[90%] overflow-x-hidden overflow-y-auto">
         <Header />
-        <HeroCarousel />
+        <HeroCarousel initialSlides={slides} />
         <TrainingCenterCards />
-        <CoursesSection />
+        <CoursesSection initialCourses={courses} />
         <BenefitsSection />
         <LearningMethodologySection />
         <SpecialOfferSection />
