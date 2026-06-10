@@ -26,25 +26,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    // Solo ejecutar en cliente
-    if (typeof window === 'undefined') {
-      setHydrated(true);
-      return;
-    }
-
-    // Restaurar estado de autenticación del localStorage
-    const savedAuth = localStorage.getItem('userAuth') === 'true';
-    const savedRole = localStorage.getItem('userRole') as UserRole;
-    const savedDNI = localStorage.getItem('userDNI');
-    const savedCourse = localStorage.getItem('userCourse');
-    
-    if (savedAuth && savedRole) {
-      setIsAuthenticated(true);
-      setUserRole(savedRole);
-      setUserDNI(savedDNI || undefined);
-      setUserCourse(savedCourse || undefined);
-    }
-
+    // Limpiar cualquier sesión guardada al montar — la sesión no persiste entre recargas
+    localStorage.removeItem('userAuth');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userDNI');
+    localStorage.removeItem('userCourse');
     setHydrated(true);
   }, []);
 

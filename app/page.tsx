@@ -9,14 +9,18 @@ import SpecialOfferSection from '@/components/special-offer-section';
 import FAQSection from '@/components/faq-section';
 import ContactSection from '@/components/contact-section';
 import WhatsAppButton from '@/components/whatsapp-button';
+import { db } from '@/lib/db';
+import { carouselSlides, courses } from '@/lib/db/schema';
+import { eq, asc } from 'drizzle-orm';
 
 async function getCarouselSlides() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/carousel`, { next: { revalidate: 60 } });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.slides || [];
+    const data = await db
+      .select()
+      .from(carouselSlides)
+      .where(eq(carouselSlides.active, true))
+      .orderBy(asc(carouselSlides.order));
+    return data;
   } catch {
     return [];
   }
@@ -24,18 +28,45 @@ async function getCarouselSlides() {
 
 async function getCourses() {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const res = await fetch(`${baseUrl}/api/courses`, { next: { revalidate: 60 } });
-    if (!res.ok) return [];
-    const data = await res.json();
-    return data.courses || [];
+    const data = await db
+      .select()
+      .from(courses)
+      .orderBy(courses.createdAt);
+    return data.map((c) => ({
+      id: c.id,
+      title: c.title,
+      subtitle: c.subtitle ?? '',
+      description: c.description,
+      image: c.image ?? '',
+      badge: c.badge,
+      startDate: c.startDate ?? '',
+      enrollmentDeadline: c.enrollmentDeadline ?? '',
+      modality: c.modality ?? c.badge,
+      slug: c.slug ?? c.id,
+      schedule: c.schedule ?? '',
+      location: c.location ?? '',
+      teacher: c.teacher ?? '',
+      teachers: (c.teachers as any[]) ?? [],
+      duration: c.duration ?? '',
+      price: c.price ?? '',
+      requirements: c.requirements != null ? String(c.requirements) : '',
+      objective: c.objective ?? '',
+      methodology: c.methodology ?? '',
+      finalProject: c.finalProject ?? '',
+      whatsappGroup: c.whatsappGroup ?? '',
+      level: c.level ?? 'PRINCIPIANTE',
+      modules: (c.modules as any[]) ?? [],
+      status: c.status,
+      category: c.category,
+      maxStudents: c.maxStudents,
+    }));
   } catch {
     return [];
   }
 }
 
 export default async function Home() {
-  const [slides, courses] = await Promise.all([
+  const [slides, initialCourses] = await Promise.all([
     getCarouselSlides(),
     getCourses(),
   ]);
@@ -52,7 +83,7 @@ export default async function Home() {
         <Header />
         <HeroCarousel initialSlides={slides} />
         <TrainingCenterCards />
-        <CoursesSection initialCourses={courses} />
+        <CoursesSection initialCourses={initialCourses} />
         <BenefitsSection />
         <LearningMethodologySection />
         <SpecialOfferSection />
