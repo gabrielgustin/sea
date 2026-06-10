@@ -55,10 +55,36 @@ export async function GET(request: NextRequest) {
     // Si búsqueda por slug, buscar también el docente vinculado en tabla teachers
     if (slug && mapped.length > 0) {
       const courseId = data[0].id
-      // Buscar docentes donde courseId sea INTEGER pero courses.id es TEXT
-      // Necesitamos hacer una query raw o ignorar esta búsqueda por ahora
-      // Por simplicidad, devolver sin docentes de la tabla teachers (usar los del JSONB legacy)
-      return NextResponse.json({ course: mapped[0] })
+      const courseIdNum = parseInt(courseId, 10)
+      
+      try {
+        // Buscar docentes vinculados a este curso
+        const linkedTeachers = await db
+          .select()
+          .from(teachers)
+          .where(eq(teachers.courseId, courseIdNum))
+          .orderBy(teachers.order)
+
+        // Mapear docentes a formato esperado
+        const teachersFromDB = linkedTeachers.map((t) => ({
+          name: t.name,
+          photo: t.image ?? '',
+          description: t.description ?? '',
+          linkedin: t.linkedin ?? '',
+          whatsapp: t.whatsapp ?? '',
+        }))
+
+        // Si hay docentes en la BD, usarlos; si no, usar los del JSONB legacy
+        const finalTeachers = teachersFromDB.length > 0
+          ? teachersFromDB
+          : mapped[0].teachers
+
+        return NextResponse.json({ course: { ...mapped[0], teachers: finalTeachers } })
+      } catch (e) {
+        console.error('[v0] Error fetching teachers:', e)
+        // En caso de error, devolver el curso sin docentes de la BD
+        return NextResponse.json({ course: mapped[0] })
+      }
     }
 
     return NextResponse.json({ courses: mapped })
