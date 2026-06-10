@@ -94,13 +94,15 @@ export default function HeroCarousel() {
     if (emblaApi) dir === 'prev' ? emblaApi.scrollPrev() : emblaApi.scrollNext();
   };
 
-  // Navigate using always-fresh refs, with DOM fallback
+  // Navigate using the button's closest slide element
   const handleVerMas = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const idx = currentSlideRef.current;
+    // Find the closest slide container
+    const slideEl = e.currentTarget.closest('[data-slide-index]');
+    const idx = slideEl ? parseInt(slideEl.getAttribute('data-slide-index') || '0', 10) : 0;
+    
     const allSlides = slidesRef.current;
     const slide = allSlides[idx];
-    // Primary: use ref data; Fallback: read data-target from the DOM element
-    const target = slide?.ctaLink || (e.currentTarget.dataset.target) || '/formaciones';
+    const target = slide?.ctaLink || '/formaciones';
     router.push(target);
   };
 
@@ -128,7 +130,7 @@ export default function HeroCarousel() {
           {slides.map((slide, index) => {
             const { modality, startDate, duration } = parseSubtitle(slide.subtitle);
             return (
-              <div key={slide.id} className="relative min-w-full h-full flex-shrink-0">
+              <div key={slide.id} className="relative min-w-full h-full flex-shrink-0" data-slide-index={index}>
                 {/* Background image */}
                 <div className="absolute inset-0">
                   <Image
