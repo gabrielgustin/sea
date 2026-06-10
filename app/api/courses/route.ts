@@ -149,8 +149,10 @@ export async function POST(request: NextRequest) {
     ]
 
     await pool.query(sql, params)
-    revalidatePath('/')
-    revalidatePath('/catalogo-formaciones')
+    try {
+      revalidatePath('/')
+      revalidatePath('/formaciones')
+    } catch (_) {}
     return NextResponse.json({ success: true, id })
   } catch (error) {
     console.error('[v0] POST /api/courses error:', error)
@@ -175,11 +177,16 @@ export async function PUT(request: NextRequest) {
       if (v !== null) { params.push(v); fields.push(`"${col}" = $${params.length}`) }
     }
 
+    const addNullable = (col: string, val: any) => {
+      // Permite guardar null (borrar el campo) además de valores string vacíos
+      params.push(str(val))
+      fields.push(`"${col}" = $${params.length}`)
+    }
+
     const addJsonb = (col: string, val: any) => {
-      // Always serialize to valid JSON string before passing to ::jsonb
       const serialized = typeof val === 'string'
-        ? JSON.stringify(val)          // wrap plain string: "foo" → '"foo"'
-        : JSON.stringify(val)          // arrays/objects already correct
+        ? JSON.stringify(val)
+        : JSON.stringify(val)
       params.push(serialized)
       fields.push(`"${col}" = $${params.length}::jsonb`)
     }
@@ -196,7 +203,8 @@ export async function PUT(request: NextRequest) {
     addText('price',               body.price)
     addText('duration',            body.duration)
     addText('startDate',           body.startDate)
-    addText('enrollmentDeadline',  body.enrollmentDeadline)
+    // enrollmentDeadline: use addNullable so an empty string clears it too
+    addNullable('enrollmentDeadline', body.enrollmentDeadline)
     addText('schedule',            body.schedule)
     addText('location',            body.location)
     addText('teacher',             body.teacher)
@@ -220,7 +228,7 @@ export async function PUT(request: NextRequest) {
       fields.push(`"maxStudents" = $${params.length}`)
     }
 
-    // JSONB columns — requirements is JSONB in DB despite being edited as plain text
+    // JSONB columns
     if (body.requirements != null && body.requirements !== '') {
       addJsonb('requirements', body.requirements)
     }
@@ -237,12 +245,17 @@ export async function PUT(request: NextRequest) {
 
     // WHERE id
     params.push(String(id))
-    const sql = `UPDATE "courses" SET ${fields.join(', ')} WHERE "id" = $${params.length}`
+    const updateSql = `UPDATE "courses" SET ${fields.join(', ')} WHERE "id" = $${params.length}`
 
-    await pool.query(sql, params)
+    await pool.query(updateSql, params)
 
-    revalidatePath('/')
-    revalidatePath('/catalogo-formaciones')
+    try {
+      revalidatePath('/')
+      revalidatePath('/formaciones')
+    } catch (_) {
+      // revalidatePath puede fallar en ciertos entornos; no es crítico
+    }
+
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] PUT /api/courses error:', error)
@@ -275,8 +288,10 @@ export async function DELETE(request: NextRequest) {
     const { id } = await request.json()
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
     await db.delete(courses).where(eq(courses.id, String(id)))
-    revalidatePath('/')
-    revalidatePath('/catalogo-formaciones')
+    try {
+      revalidatePath('/')
+      revalidatePath('/formaciones')
+    } catch (_) {}
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] DELETE /api/courses error:', error)

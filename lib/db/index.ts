@@ -6,10 +6,11 @@ const sql = neon(process.env.DATABASE_URL!)
 
 export const db = drizzle(sql, { schema })
 
-// Backwards-compat: code that used `pool.query(sql, params)` now delegates to neon()
+// Backwards-compat: code that uses pool.query(text, params)
+// Uses sql.query() which is the correct API for parameterized calls in @neondatabase/serverless
 export const pool = {
   query: async (text: string, values?: any[]) => {
-    const rows = await sql(text, values as any)
-    return { rows }
+    const result = await sql.query(text, values ?? [])
+    return { rows: result.rows ?? result }
   },
 }
