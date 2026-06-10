@@ -14,7 +14,7 @@ export async function submitEnrollment(data: {
   dni: string
   metodoPago?: string
 }) {
-  // Guardar inscripción
+  // Guardar inscripción en BD Neon
   await db.insert(enrollments).values({ ...data, status: 'pending' })
 
   // También crear o actualizar el estudiante en la tabla students
@@ -29,6 +29,30 @@ export async function submitEnrollment(data: {
     status: 'pending',
     paymentStatus: 'pending',
   })
+
+  // Guardar en Google Sheets
+  try {
+    const now = new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })
+    const sheetValues = [
+      now,
+      data.nombre,
+      data.apellido,
+      data.email,
+      data.telefono,
+      data.dni,
+      data.courseName,
+      data.metodoPago || 'No especificado',
+    ]
+
+    await fetch(new URL('/api/google-sheets/append', process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000').toString(), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ values: sheetValues }),
+    })
+  } catch (error) {
+    console.error('[v0] Failed to append to Google Sheets:', error)
+    // No lanzar error aquí - la inscripción ya se guardó en la BD
+  }
 
   revalidatePath('/admin')
 }
