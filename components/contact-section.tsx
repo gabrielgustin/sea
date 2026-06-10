@@ -65,7 +65,7 @@ export default function ContactSection() {
               </div>
               <div>
                 <h3 className="font-semibold text-lg mb-2 text-foreground">Email</h3>
-                <a href="mailto:formaciones@portalsea.com.ar" className="text-blue-600 hover:underline">
+                <a href="mailto:formaciones@portalsea.com.ar" className="text-black hover:underline">
                   formaciones@portalsea.com.ar
                 </a>
               </div>
