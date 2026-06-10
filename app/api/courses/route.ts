@@ -55,14 +55,13 @@ export async function GET(request: NextRequest) {
     // Si búsqueda por slug, buscar también el docente vinculado en tabla teachers
     if (slug && mapped.length > 0) {
       const courseId = data[0].id
-      const courseIdNum = parseInt(courseId, 10)
       
       try {
-        // Buscar docentes vinculados a este curso
+        // Buscar docentes vinculados a este curso (courseId ahora es TEXT)
         const linkedTeachers = await db
           .select()
           .from(teachers)
-          .where(eq(teachers.courseId, courseIdNum))
+          .where(eq(teachers.courseId, courseId))
           .orderBy(teachers.order)
 
         // Mapear docentes a formato esperado

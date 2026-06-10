@@ -175,7 +175,7 @@ export const teachers = pgTable('teachers', {
   image: text('image'),
   whatsapp: text('whatsapp'),
   linkedin: text('linkedin'),
-  courseId: integer('courseId').references(() => courses.id),
+  courseId: text('courseId').references(() => courses.id),
   order: integer('order').notNull().default(0),
   active: boolean('active').notNull().default(true),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
