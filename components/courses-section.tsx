@@ -17,6 +17,9 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
   // Use server-prefetched data if available, fallback to context
   const courses = (initialCourses && initialCourses.length > 0) ? initialCourses : contextCourses;
 
+  // Si no hay cursos seleccionados para el home, no renderizar la sección
+  if (courses.length === 0) return null;
+
   return (
     <section ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12">
       <div className="max-w-6xl mx-auto">

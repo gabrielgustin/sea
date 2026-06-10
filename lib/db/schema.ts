@@ -78,6 +78,7 @@ export const courses = pgTable('courses', {
   maxStudents: integer('maxStudents'),
   modules: jsonb('modules'),
   teachers: jsonb('teachers'),
+  showOnHome: boolean('showOnHome').notNull().default(false),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
 })

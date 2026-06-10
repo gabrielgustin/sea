@@ -26,11 +26,12 @@ async function getCarouselSlides() {
   }
 }
 
-async function getCourses() {
+async function getHomeCourses() {
   try {
     const data = await db
       .select()
       .from(courses)
+      .where(eq(courses.showOnHome, true))
       .orderBy(courses.createdAt);
     return data.map((c) => ({
       id: c.id,
@@ -59,6 +60,7 @@ async function getCourses() {
       status: c.status,
       category: c.category,
       maxStudents: c.maxStudents,
+      showOnHome: c.showOnHome,
     }));
   } catch {
     return [];
@@ -66,9 +68,9 @@ async function getCourses() {
 }
 
 export default async function Home() {
-  const [slides, initialCourses] = await Promise.all([
+  const [slides, homeCourses] = await Promise.all([
     getCarouselSlides(),
-    getCourses(),
+    getHomeCourses(),
   ]);
 
   return (
@@ -83,7 +85,7 @@ export default async function Home() {
         <Header />
         <HeroCarousel initialSlides={slides} />
         <TrainingCenterCards />
-        <CoursesSection initialCourses={initialCourses} />
+        <CoursesSection initialCourses={homeCourses} />
         <BenefitsSection />
         <LearningMethodologySection />
         <SpecialOfferSection />

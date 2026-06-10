@@ -38,6 +38,7 @@ export interface Course {
   finalProject: string;
   whatsappGroup?: string;
   level?: string;
+  showOnHome?: boolean;
 }
 
 interface CoursesContextType {

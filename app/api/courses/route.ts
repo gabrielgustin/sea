@@ -50,6 +50,7 @@ export async function GET(request: NextRequest) {
       status: c.status,
       category: c.category,
       maxStudents: c.maxStudents,
+      showOnHome: c.showOnHome ?? false,
     }))
 
     // Si búsqueda por slug, buscar también el docente vinculado en tabla teachers
@@ -247,6 +248,25 @@ export async function PUT(request: NextRequest) {
     console.error('[v0] PUT /api/courses error:', error)
     const errorMsg = error instanceof Error ? error.message : String(error)
     return NextResponse.json({ error: 'Failed to update course: ' + errorMsg }, { status: 500 })
+  }
+}
+
+export async function PATCH(request: NextRequest) {
+  try {
+    const { id, showOnHome } = await request.json()
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
+
+    await pool.query(
+      `UPDATE "courses" SET "showOnHome" = $1, "updatedAt" = NOW() WHERE "id" = $2`,
+      [Boolean(showOnHome), String(id)]
+    )
+
+    revalidatePath('/')
+    revalidatePath('/formaciones')
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('[v0] PATCH /api/courses error:', error)
+    return NextResponse.json({ error: 'Failed to update course' }, { status: 500 })
   }
 }
 
