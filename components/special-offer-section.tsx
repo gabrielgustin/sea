@@ -1,7 +1,13 @@
+'use client';
+
 import { Sparkles } from 'lucide-react';
 import Link from 'next/link';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 
 export default function SpecialOfferSection() {
+  const { settings } = useSiteSettings();
+  const whatsappLink = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage)}`;
+
   return (
     <section className="w-full px-4 sm:px-6 lg:px-8 py-8 md:py-12">
       {/* Special Offer Section */}
@@ -28,12 +34,22 @@ export default function SpecialOfferSection() {
 
         {/* Buttons */}
         <div className="flex flex-col md:flex-row gap-3 md:gap-4 justify-center">
-          <button className="px-6 md:px-10 py-2.5 md:py-4 text-white font-semibold rounded-full transition-opacity hover:opacity-90 text-sm md:text-base" style={{ backgroundColor: '#031e41' }}>
+          <Link
+            href="/formaciones"
+            className="px-6 md:px-10 py-2.5 md:py-4 text-white font-semibold rounded-full transition-opacity hover:opacity-90 text-sm md:text-base text-center"
+            style={{ backgroundColor: '#031e41' }}
+          >
             Reservar mi lugar
-          </button>
-          <button className="px-6 md:px-10 py-2.5 md:py-4 font-semibold rounded-full transition-colors hover:bg-opacity-5 text-sm md:text-base" style={{ border: '2px solid #031e41', color: '#031e41' }}>
+          </Link>
+          <a
+            href={whatsappLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="px-6 md:px-10 py-2.5 md:py-4 font-semibold rounded-full transition-colors hover:bg-gray-50 text-sm md:text-base text-center"
+            style={{ border: '2px solid #031e41', color: '#031e41' }}
+          >
             Consultar por WhatsApp
-          </button>
+          </a>
         </div>
       </div>
     </section>

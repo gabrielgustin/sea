@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Clock, Users, Award } from 'lucide-react';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 
 interface Course {
   id: string;
@@ -16,6 +17,8 @@ interface Course {
 }
 
 export default function NuestrasFormacionesPage() {
+  const { settings } = useSiteSettings();
+  const whatsappLink = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage)}`;
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -140,18 +143,18 @@ export default function NuestrasFormacionesPage() {
           </p>
           <div className="flex flex-col md:flex-row gap-4 justify-center items-center">
             <Link
-              href="https://wa.me/5493516307002?text=Hola!%20Me%20interesa%20conocer%20sobre%20nuestras%20formaciones"
+              href={whatsappLink}
               target="_blank"
               className="px-8 py-4 rounded-lg font-bold text-lg transition-all duration-300 hover:scale-105 active:scale-95"
               style={{ backgroundColor: '#25D366', color: 'white' }}
             >
-              💬 Consultar por WhatsApp
+              Consultar por WhatsApp
             </Link>
             <a
-              href="mailto:info@centroformaciones.com"
+              href={`mailto:${settings.email}`}
               className="px-8 py-4 rounded-lg font-bold text-lg transition-all duration-300 border-2 border-blue-300 hover:bg-white/10"
             >
-              📧 Enviar Email
+              Enviar Email
             </a>
           </div>
         </div>
