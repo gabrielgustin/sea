@@ -53,6 +53,14 @@ export default function Sidebar() {
     setTimeout(() => setShowLoginAnimation(false), 600);
   };
 
+  const handleAuthIconClick = () => {
+    if (isAuthenticated) {
+      router.push('/admin');
+    } else {
+      setLoginOpen(true);
+    }
+  };
+
   // Icon size for consistency
   const iconSize = 28;
 
