@@ -1,7 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Course } from '@/context/CoursesContext';
+import React, { useState, useEffect } from 'react';
+import { Course, useCourses } from '@/context/CoursesContext';
 import { Button } from '@/components/ui/button';
 import { Edit2, Trash2, Eye, Home } from 'lucide-react';
 import Image from 'next/image';
@@ -19,15 +19,23 @@ export default function CourseList({
   onDelete,
   onPreview,
 }: CourseListProps) {
-  // Local state to reflect toggle changes immediately without full reload
+  const { refreshCourses } = useCourses();
+
+  // Sync homeStatus with courses prop whenever it changes
   const [homeStatus, setHomeStatus] = useState<Record<string, boolean>>(
-    () => Object.fromEntries(courses.map((c) => [c.id, (c as any).showOnHome ?? false]))
+    () => Object.fromEntries(courses.map((c) => [c.id, c.showOnHome ?? false]))
   );
   const [loading, setLoading] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    setHomeStatus(Object.fromEntries(courses.map((c) => [c.id, c.showOnHome ?? false])));
+  }, [courses]);
 
   const handleToggleHome = async (courseId: string) => {
     const current = homeStatus[courseId] ?? false;
     const next = !current;
+    // Optimistic update
+    setHomeStatus((prev) => ({ ...prev, [courseId]: next }));
     setLoading((prev) => ({ ...prev, [courseId]: true }));
     try {
       const res = await fetch('/api/courses', {
@@ -36,8 +44,15 @@ export default function CourseList({
         body: JSON.stringify({ id: courseId, showOnHome: next }),
       });
       if (res.ok) {
-        setHomeStatus((prev) => ({ ...prev, [courseId]: next }));
+        // Refresh context so the value is persisted globally
+        await refreshCourses();
+      } else {
+        // Revert on failure
+        setHomeStatus((prev) => ({ ...prev, [courseId]: current }));
       }
+    } catch {
+      // Revert on error
+      setHomeStatus((prev) => ({ ...prev, [courseId]: current }));
     } finally {
       setLoading((prev) => ({ ...prev, [courseId]: false }));
     }
