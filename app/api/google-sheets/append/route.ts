@@ -8,11 +8,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Invalid values format' }, { status: 400 })
     }
 
-    const webhookUrl = process.env.GOOGLE_SHEETS_WEBHOOK
-    if (!webhookUrl) {
-      console.error('[v0] GOOGLE_SHEETS_WEBHOOK not configured')
-      return NextResponse.json({ error: 'Google Sheets webhook not configured' }, { status: 500 })
-    }
+    // URL del webhook de Google Apps Script
+    const webhookUrl = 'https://script.google.com/macros/s/AKfycbyiURxIAhh2iyWpwtOpsabr87KDLRvb-jJPcWRHPdx2Rn2hoi9GTUZg2Izgxf-gB2GNCA/exec'
 
     // Send data to Google Apps Script webhook
     const response = await fetch(webhookUrl, {
