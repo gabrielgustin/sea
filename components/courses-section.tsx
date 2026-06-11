@@ -11,16 +11,17 @@ interface CoursesSectionProps {
 }
 
 export default function CoursesSection({ initialCourses }: CoursesSectionProps) {
-  const { courses: contextCourses } = useCourses();
+  const { courses: contextCourses, loading } = useCourses();
   const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
 
-  // Use server-prefetched data if available, otherwise filter context by showOnHome
-  const courses = initialCourses && initialCourses.length > 0
+  // Always derive from context (reactive to toggle changes).
+  // Fall back to initialCourses only while the context is still loading.
+  const courses = loading && initialCourses && initialCourses.length > 0
     ? initialCourses
     : contextCourses.filter((c) => c.showOnHome === true);
 
   // Si no hay cursos marcados para mostrar en el inicio, no renderizar la sección
-  if (courses.length === 0) return null;
+  if (!loading && courses.length === 0) return null;
 
   return (
     <section ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12">
