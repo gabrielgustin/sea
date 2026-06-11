@@ -14,9 +14,9 @@ export default function SettingsManager() {
     setFormData(settings);
   }, [settings]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    updateSettings(formData);
+    await updateSettings(formData);
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
   };

@@ -1,9 +1,11 @@
 'use client';
 
 import { MessageCircle } from 'lucide-react';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 
 export default function WhatsAppButton() {
-  const whatsappLink = 'https://wa.me/1234567890'; // Reemplaza con tu número
+  const { settings } = useSiteSettings();
+  const whatsappLink = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage)}`;
 
   return (
     <a

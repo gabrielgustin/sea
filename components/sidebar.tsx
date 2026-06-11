@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Menu, X, Home, BookOpen, Instagram, Mail, LogIn, LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 import Link from 'next/link';
 import LoginModal from './login-modal';
 
@@ -14,22 +15,13 @@ export default function Sidebar() {
   const [showLoginAnimation, setShowLoginAnimation] = useState(false);
   const [showAuthIconAnimation, setShowAuthIconAnimation] = useState(false);
   const { isAuthenticated, logout } = useAuth();
-
-  const handleAuthIconClick = () => {
-    if (isAuthenticated) {
-      // Si está autenticado, redirigir al panel de administración
-      router.push('/admin');
-    } else {
-      // Si no está autenticado, abrir modal de login
-      setLoginOpen(true);
-    }
-  };
+  const { settings } = useSiteSettings();
 
   const publicNavItems = [
     { icon: Home, label: 'Inicio', href: '/' },
     { icon: BookOpen, label: 'Formaciones', href: '/catalogo-formaciones' },
     { icon: Mail, label: 'Contacto', href: '#contacto', scroll: true },
-    { icon: Instagram, label: 'Instagram', href: 'https://www.instagram.com/itsvillada/?hl=es' },
+    { icon: Instagram, label: 'Instagram', href: settings.instagramUrl },
   ];
 
   const handleContactClick = (e: React.MouseEvent) => {

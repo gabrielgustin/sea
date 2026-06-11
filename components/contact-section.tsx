@@ -6,8 +6,10 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { submitContactMessage } from '@/app/actions/contact';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 
 export default function ContactSection() {
+  const { settings } = useSiteSettings();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -60,13 +62,13 @@ export default function ContactSection() {
                 <h3 className="font-semibold text-lg mb-2 text-foreground">Ubicación</h3>
                 <p className="text-muted-foreground">
                   Instituto Técnico Salesiano Villada<br />
-                  Cordoba Capital
+                  {settings.address}
                 </p>
               </div>
               <div>
                 <h3 className="font-semibold text-lg mb-2 text-foreground">Email</h3>
-                <a href="mailto:formaciones@portalsea.com.ar" className="text-black hover:underline">
-                  formaciones@portalsea.com.ar
+                <a href={`mailto:${settings.email}`} className="text-black hover:underline">
+                  {settings.email}
                 </a>
               </div>
               <div>

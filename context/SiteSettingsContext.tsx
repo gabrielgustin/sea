@@ -20,11 +20,12 @@ export interface SiteSettings {
 interface SiteSettingsContextType {
   faqs: FAQ[];
   settings: SiteSettings;
+  loading: boolean;
   addFAQ: (faq: Omit<FAQ, 'id'>) => void;
   updateFAQ: (id: number, faq: Partial<FAQ>) => void;
   deleteFAQ: (id: number) => void;
   reorderFAQs: (faqs: FAQ[]) => void;
-  updateSettings: (settings: Partial<SiteSettings>) => void;
+  updateSettings: (settings: Partial<SiteSettings>) => Promise<void>;
 }
 
 const defaultFAQs: FAQ[] = [
@@ -55,40 +56,43 @@ const defaultFAQs: FAQ[] = [
 ];
 
 const defaultSettings: SiteSettings = {
-  instagramUrl: 'https://www.instagram.com/seu_villada/',
+  instagramUrl: 'https://www.instagram.com/itsvillada/?hl=es',
   whatsappNumber: '5493516307002',
   whatsappMessage: 'Hola! Me interesa obtener más información sobre los cursos disponibles.',
-  email: 'extension@itsvillada.edu.ar',
+  email: 'formaciones@portalsea.com.ar',
   address: 'Cno a La Calera km 7 1/2 Valle',
 };
 
 const SiteSettingsContext = createContext<SiteSettingsContextType | undefined>(undefined);
 
 export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
-  const [faqs, setFAQs] = useState<FAQ[]>([]);
+  const [faqs, setFAQs] = useState<FAQ[]>(defaultFAQs);
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
+  const [loading, setLoading] = useState(true);
 
-  // Initialize from localStorage on mount
+  // Load settings from DB on mount
   useEffect(() => {
-    const savedFAQs = localStorage.getItem('site_faqs');
-    const savedSettings = localStorage.getItem('site_settings');
-    
-    if (savedFAQs) {
+    async function loadSettings() {
       try {
-        setFAQs(JSON.parse(savedFAQs));
-      } catch {
-        setFAQs(defaultFAQs);
+        const res = await fetch('/api/settings');
+        if (res.ok) {
+          const data = await res.json();
+          if (data.settings && Object.keys(data.settings).length > 0) {
+            setSettings((prev) => ({ ...prev, ...data.settings }));
+          }
+        }
+      } catch (error) {
+        console.error('[v0] Failed to load settings from DB:', error);
+      } finally {
+        setLoading(false);
       }
-    } else {
-      setFAQs(defaultFAQs);
     }
+    loadSettings();
 
-    if (savedSettings) {
-      try {
-        setSettings({ ...defaultSettings, ...JSON.parse(savedSettings) });
-      } catch {
-        setSettings(defaultSettings);
-      }
+    // FAQs from localStorage
+    const savedFAQs = localStorage.getItem('site_faqs');
+    if (savedFAQs) {
+      try { setFAQs(JSON.parse(savedFAQs)); } catch { setFAQs(defaultFAQs); }
     }
   }, []);
 
@@ -99,23 +103,13 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
     }
   }, [faqs]);
 
-  // Save settings to localStorage whenever they change
-  useEffect(() => {
-    localStorage.setItem('site_settings', JSON.stringify(settings));
-  }, [settings]);
-
   const addFAQ = (faq: Omit<FAQ, 'id'>) => {
-    const newFAQ: FAQ = {
-      ...faq,
-      id: Date.now(),
-    };
+    const newFAQ: FAQ = { ...faq, id: Date.now() };
     setFAQs((prev) => [...prev, newFAQ]);
   };
 
   const updateFAQ = (id: number, faqData: Partial<FAQ>) => {
-    setFAQs((prev) =>
-      prev.map((faq) => (faq.id === id ? { ...faq, ...faqData } : faq))
-    );
+    setFAQs((prev) => prev.map((faq) => (faq.id === id ? { ...faq, ...faqData } : faq)));
   };
 
   const deleteFAQ = (id: number) => {
@@ -126,21 +120,23 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
     setFAQs(newFAQs);
   };
 
-  const updateSettings = (newSettings: Partial<SiteSettings>) => {
+  // Save settings to DB and update local state
+  const updateSettings = async (newSettings: Partial<SiteSettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
+    try {
+      await fetch('/api/settings', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(newSettings),
+      });
+    } catch (error) {
+      console.error('[v0] Failed to save settings to DB:', error);
+    }
   };
 
   return (
     <SiteSettingsContext.Provider
-      value={{
-        faqs,
-        settings,
-        addFAQ,
-        updateFAQ,
-        deleteFAQ,
-        reorderFAQs,
-        updateSettings,
-      }}
+      value={{ faqs, settings, loading, addFAQ, updateFAQ, deleteFAQ, reorderFAQs, updateSettings }}
     >
       {children}
     </SiteSettingsContext.Provider>
