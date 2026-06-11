@@ -274,8 +274,10 @@ export async function PATCH(request: NextRequest) {
       [Boolean(showOnHome), String(id)]
     )
 
-    revalidatePath('/')
-    revalidatePath('/formaciones')
+    try {
+      revalidatePath('/')
+      revalidatePath('/formaciones')
+    } catch (_) {}
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] PATCH /api/courses error:', error)

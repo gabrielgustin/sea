@@ -14,10 +14,12 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
   const { courses: contextCourses } = useCourses();
   const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
 
-  // Use server-prefetched data if available, fallback to context
-  const courses = (initialCourses && initialCourses.length > 0) ? initialCourses : contextCourses;
+  // Use server-prefetched data if available, otherwise filter context by showOnHome
+  const courses = initialCourses && initialCourses.length > 0
+    ? initialCourses
+    : contextCourses.filter((c) => c.showOnHome === true);
 
-  // Si no hay cursos seleccionados para el home, no renderizar la sección
+  // Si no hay cursos marcados para mostrar en el inicio, no renderizar la sección
   if (courses.length === 0) return null;
 
   return (
