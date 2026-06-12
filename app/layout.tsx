@@ -5,6 +5,7 @@ import { AuthProvider } from '@/context/AuthContext'
 import { CoursesProvider } from '@/context/CoursesContext'
 import { LoadingProvider } from '@/context/LoadingContext'
 import { SchoolProvider } from '@/context/SchoolContext'
+import { SiteSettingsProvider } from '@/context/SiteSettingsContext'
 import GlobalPreloader from '@/components/global-preloader'
 import './globals.css'
 
