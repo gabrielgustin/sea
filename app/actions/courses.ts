@@ -33,7 +33,7 @@ export async function updateCourse(id: string, data: Partial<typeof courses.$inf
   await db.update(courses).set({ ...data, updatedAt: new Date() }).where(eq(courses.id, id))
   revalidatePath('/')
   revalidatePath('/villada/catalogo-formaciones')
-  revalidatePath(`/cursos/${id}`)
+  revalidatePath(`/villada/cursos/${id}`)
 }
 
 export async function deleteCourse(id: string) {

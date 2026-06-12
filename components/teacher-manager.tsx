@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect, useRef } from 'react'
+import { useSchool } from '@/context/SchoolContext'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -36,6 +37,7 @@ const EMPTY_FORM = {
 }
 
 export function TeacherManager() {
+  const { schoolId } = useSchool()
   const [teachers, setTeachers] = useState<Teacher[]>([])
   const [courses, setCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -51,11 +53,11 @@ export function TeacherManager() {
   useEffect(() => {
     fetchTeachers()
     fetchCourses()
-  }, [])
+  }, [schoolId])
 
   const fetchCourses = async () => {
     try {
-      const res = await fetch('/api/courses')
+      const res = await fetch(`/api/courses?schoolId=${schoolId}`)
       const data = await res.json()
       setCourses(data.courses || [])
     } catch (err) {
@@ -65,7 +67,7 @@ export function TeacherManager() {
 
   const fetchTeachers = async () => {
     try {
-      const res = await fetch('/api/teachers')
+      const res = await fetch(`/api/teachers?schoolId=${schoolId}`)
       const data = await res.json()
       setTeachers(data.teachers || [])
     } catch (err) {
@@ -127,7 +129,7 @@ export function TeacherManager() {
         courseId: formData.courseId ? parseInt(formData.courseId) : null,
       }
 
-      const res = await fetch('/api/teachers', {
+      const res = await fetch(`/api/teachers?schoolId=${schoolId}`, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -166,7 +168,7 @@ export function TeacherManager() {
   const handleDelete = async (id: number) => {
     if (!confirm('¿Eliminar este docente?')) return
     try {
-      const res = await fetch('/api/teachers', {
+      const res = await fetch(`/api/teachers?schoolId=${schoolId}`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id }),

@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return { success: true, redirectUrl: 'https://v0-hello-eight-ochre.vercel.app/academy' };
         }
 
-        return { success: true, redirectUrl: '/aula-virtual' };
+        return { success: true, redirectUrl: '/villada/aula-virtual' };
       } catch (error) {
         console.error('[v0] Error validating student:', error);
         return { success: false, error: 'Error al validar credenciales. Intenta de nuevo.' };
