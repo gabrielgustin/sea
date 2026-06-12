@@ -35,26 +35,21 @@ export default function LearningMethodologySection() {
   ];
 
   const getScrollContainer = useCallback(() => {
-    return document.querySelector('main') as HTMLElement | null;
+    // Use window/document scroll since main is no longer the scroll container
+    return document.documentElement as unknown as HTMLElement;
   }, []);
 
   const unlock = useCallback(() => {
-    const container = getScrollContainer();
-    if (container) {
-      container.style.overflow = '';
-      container.style.touchAction = '';
-    }
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
     setIsLocked(false);
-  }, [getScrollContainer]);
+  }, []);
 
   const lock = useCallback(() => {
-    const container = getScrollContainer();
-    if (container) {
-      container.style.overflow = 'hidden';
-      container.style.touchAction = 'none';
-    }
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
     setIsLocked(true);
-  }, [getScrollContainer]);
+  }, []);
 
   const handleDelta = useCallback((delta: number) => {
     if (!isLocked) return;
@@ -95,20 +90,15 @@ export default function LearningMethodologySection() {
   // Detectar entrada a la sección
   useEffect(() => {
     const section = sectionRef.current;
-    const container = getScrollContainer();
-    if (!section || !container) return;
+    if (!section) return;
 
     const checkPosition = () => {
       if (hasCompleted || isLocked) return;
 
       const sectionRect = section.getBoundingClientRect();
-      const containerRect = container.getBoundingClientRect();
-      const viewportHeight = containerRect.height;
-
-      // Activar cuando la sección esté centrada en el viewport
-      const sectionCenterY = sectionRect.top + sectionRect.height / 2 - containerRect.top;
-      const viewportCenter = viewportHeight / 2;
-      const distanceFromCenter = Math.abs(sectionCenterY - viewportCenter);
+      const viewportHeight = window.innerHeight;
+      const sectionCenterY = sectionRect.top + sectionRect.height / 2;
+      const distanceFromCenter = Math.abs(sectionCenterY - viewportHeight / 2);
 
       if (distanceFromCenter < viewportHeight * 0.15 && sectionRect.top < viewportHeight * 0.2) {
         lock();
@@ -116,24 +106,16 @@ export default function LearningMethodologySection() {
       }
     };
 
-    // En móvil: no bloquear el scroll, solo actualizar progreso según scroll
     if (isMobileView) {
       const handleMobileScroll = () => {
         const sectionRect = section.getBoundingClientRect();
-        const containerRect = container.getBoundingClientRect();
-        
-        // Calcular posición del section en relación al viewport
-        const sectionTop = sectionRect.top - containerRect.top;
+        const sectionTop = sectionRect.top;
         const sectionHeight = sectionRect.height;
-        const viewportHeight = containerRect.height;
-        
-        // Cuando el section sale del viewport por arriba (es scrolleado hacia arriba)
+
         if (sectionTop < 0 && sectionTop > -sectionHeight) {
-          // Calcular progreso basado en cuánto se ha scrolleado del section
           const scrolledAmount = Math.abs(sectionTop);
           const maxScroll = sectionHeight * 0.5;
-          const mobileProgress = Math.min(scrolledAmount / maxScroll, 1);
-          setProgress(mobileProgress);
+          setProgress(Math.min(scrolledAmount / maxScroll, 1));
         } else if (sectionTop >= 0) {
           setProgress(0);
         } else {
@@ -141,14 +123,13 @@ export default function LearningMethodologySection() {
         }
       };
 
-      container.addEventListener('scroll', handleMobileScroll, { passive: true });
-      return () => container.removeEventListener('scroll', handleMobileScroll);
+      window.addEventListener('scroll', handleMobileScroll, { passive: true });
+      return () => window.removeEventListener('scroll', handleMobileScroll);
     } else {
-      // Desktop: comportamiento original
-      container.addEventListener('scroll', checkPosition, { passive: true });
-      return () => container.removeEventListener('scroll', checkPosition);
+      window.addEventListener('scroll', checkPosition, { passive: true });
+      return () => window.removeEventListener('scroll', checkPosition);
     }
-  }, [hasCompleted, isLocked, lock, progress, getScrollContainer, isMobileView]);
+  }, [hasCompleted, isLocked, lock, progress, isMobileView]);
 
   // Wheel handler
   useEffect(() => {
@@ -206,13 +187,10 @@ export default function LearningMethodologySection() {
   // Cleanup on unmount
   useEffect(() => {
     return () => {
-      const container = getScrollContainer();
-      if (container) {
-        container.style.overflow = '';
-        container.style.touchAction = '';
-      }
+      document.body.style.overflow = '';
+      document.documentElement.style.overflow = '';
     };
-  }, [getScrollContainer]);
+  }, []);
 
   const activeStep = Math.floor(progress * 4);
 
