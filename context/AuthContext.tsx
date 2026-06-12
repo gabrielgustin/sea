@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUserRole('admin');
         sessionStorage.setItem('userAuth', 'true');
         sessionStorage.setItem('userRole', 'admin');
-        return { success: true, redirectUrl: '/admin' };
+        return { success: true, redirectUrl: '/villada/admin' };
       } catch (err) {
         return { success: false, error: 'Error de conexión. Intenta de nuevo.' };
       }

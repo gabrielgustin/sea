@@ -25,19 +25,19 @@ export async function createCourse(data: Omit<typeof courses.$inferInsert, 'id' 
   const id = nanoid()
   await db.insert(courses).values({ ...data, id })
   revalidatePath('/')
-  revalidatePath('/catalogo-formaciones')
+  revalidatePath('/villada/catalogo-formaciones')
   return id
 }
 
 export async function updateCourse(id: string, data: Partial<typeof courses.$inferInsert>) {
   await db.update(courses).set({ ...data, updatedAt: new Date() }).where(eq(courses.id, id))
   revalidatePath('/')
-  revalidatePath('/catalogo-formaciones')
+  revalidatePath('/villada/catalogo-formaciones')
   revalidatePath(`/cursos/${id}`)
 }
 
 export async function deleteCourse(id: string) {
   await db.delete(courses).where(eq(courses.id, id))
   revalidatePath('/')
-  revalidatePath('/catalogo-formaciones')
+  revalidatePath('/villada/catalogo-formaciones')
 }

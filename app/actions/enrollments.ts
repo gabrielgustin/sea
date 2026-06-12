@@ -54,7 +54,7 @@ export async function submitEnrollment(data: {
     // No lanzar error aquí - la inscripción ya se guardó en la BD
   }
 
-  revalidatePath('/admin')
+  revalidatePath('/villada/admin')
 }
 
 export async function getEnrollments() {
