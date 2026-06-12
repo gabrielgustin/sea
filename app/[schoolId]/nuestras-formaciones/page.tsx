@@ -3,11 +3,11 @@ import Header from '@/components/header';
 import NuestrasFormacionesPage from '@/components/nuestras-formaciones-page';
 
 export const metadata = {
-  title: 'Nuestras Formaciones | Colegio Domingo Savio',
-  description: 'Explora todos nuestros cursos y programas de formación disponibles.',
+  title: 'Nuestras Formaciones | Centro de Formacion',
+  description: 'Explora todos nuestros cursos y programas de formación disponibles',
 };
 
-export default function NuestrasFormacionesRoute() {
+export default function Page() {
   return (
     <div className="flex h-screen w-screen bg-white overflow-hidden">
       <Sidebar />

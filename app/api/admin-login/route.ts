@@ -25,7 +25,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Credenciales incorrectas' }, { status: 401 })
     }
 
-    return NextResponse.json({ success: true, name: user.name, email: user.email, redirectUrl: '/admin' })
+    return NextResponse.json({ success: true, name: user.name, email: user.email, redirectUrl: '/villada/admin' })
   } catch (error) {
     console.error('[v0] Admin login error:', error)
     return NextResponse.json({ error: 'Error interno del servidor' }, { status: 500 })

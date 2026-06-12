@@ -61,7 +61,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUserRole('admin');
         sessionStorage.setItem('userAuth', 'true');
         sessionStorage.setItem('userRole', 'admin');
-        return { success: true, redirectUrl: '/admin' };
+        return { success: true, redirectUrl: '/villada/admin' };
       } catch (err) {
         return { success: false, error: 'Error de conexión. Intenta de nuevo.' };
       }
@@ -99,7 +99,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           return { success: true, redirectUrl: 'https://v0-hello-eight-ochre.vercel.app/academy' };
         }
 
-        return { success: true, redirectUrl: '/aula-virtual' };
+        return { success: true, redirectUrl: '/villada/aula-virtual' };
       } catch (error) {
         console.error('[v0] Error validating student:', error);
         return { success: false, error: 'Error al validar credenciales. Intenta de nuevo.' };

@@ -5,13 +5,11 @@ import Image from 'next/image';
 import { CheckCircle, Users, Award, Zap, TrendingUp, Building2, Lightbulb, Code } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { useCourses } from '@/context/CoursesContext';
-import { useSchool } from '@/context/SchoolContext';
 
 export default function FormacionesPage() {
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const processRef = useRef<HTMLDivElement>(null);
   const { courses } = useCourses();
-  const { schoolId } = useSchool();
 
   useEffect(() => {
     const section = processRef.current;
@@ -151,7 +149,7 @@ export default function FormacionesPage() {
               {courses.map((course) => (
                 <Link
                   key={course.id}
-                  href={`/${schoolId}/cursos/${course.slug || course.id}`}
+                  href={`/villada/cursos/${course.slug || course.id}`}
                   className="overflow-hidden rounded-2xl border-2 border-gray-100 hover:border-blue-200 transition-all duration-300 hover:shadow-lg bg-white group block"
                 >
                   <div className="relative h-44 overflow-hidden bg-gray-100">

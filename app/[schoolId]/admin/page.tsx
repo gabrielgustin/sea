@@ -3,7 +3,6 @@
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useSchool } from '@/context/SchoolContext';
 import Sidebar from '@/components/sidebar';
 import Header from '@/components/header';
 import AdminDashboard from '@/components/admin-dashboard';
@@ -11,7 +10,6 @@ import AdminDashboard from '@/components/admin-dashboard';
 export default function AdminPage() {
   const router = useRouter();
   const { isAuthenticated, userRole } = useAuth();
-  const { schoolId, isReady } = useSchool();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -20,11 +18,11 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (mounted && (!isAuthenticated || userRole !== 'admin')) {
-      router.push(`/${schoolId}`);
+      router.push('/villada');
     }
-  }, [isAuthenticated, userRole, mounted, router, schoolId]);
+  }, [isAuthenticated, userRole, mounted, router]);
 
-  if (!mounted || !isReady || !isAuthenticated || userRole !== 'admin') {
+  if (!mounted || !isAuthenticated || userRole !== 'admin') {
     return null;
   }
 

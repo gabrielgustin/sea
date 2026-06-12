@@ -4,12 +4,10 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useInView } from '@/hooks/useInView';
 import { useCourses } from '@/context/CoursesContext';
-import { useSchool } from '@/context/SchoolContext';
 
 export default function FormacionesCatalog() {
   const { courses } = useCourses();
   const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
-  const { schoolId } = useSchool();
 
   return (
     <div className="w-full">
@@ -45,7 +43,7 @@ export default function FormacionesCatalog() {
               {courses.map((course, index) => (
                 <Link
                   key={course.id}
-                  href={`/${schoolId}/cursos/${course.slug || course.id}`}
+                  href={`/villada/cursos/${course.slug || course.id}`}
                   className={`overflow-hidden rounded-2xl md:rounded-3xl border-2 transition-all duration-500 hover:shadow-2xl block group ${
                     isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
                   }`}

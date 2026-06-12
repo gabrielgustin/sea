@@ -1,21 +1,21 @@
+// Course detail page - loads course data by slug from the API
+// Dynamic route: /cursos/[slug]
 'use client';
 
-import { useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import { useSchool } from '@/context/SchoolContext';
+import { useParams } from 'next/navigation';
 import CourseDetailClient from '@/components/course-detail-client';
 
 export default function CoursePage() {
   const params = useParams();
   const slug = typeof params?.slug === 'string' ? params.slug : '';
-  const { schoolId } = useSchool();
   const [course, setCourse] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!slug || !schoolId) return;
+    if (!slug) return;
 
-    fetch(`/api/courses?slug=${slug}&schoolId=${schoolId}`)
+    fetch(`/api/courses?slug=${slug}`)
       .then(r => r.json())
       .then(data => {
         setCourse(data.course || null);
@@ -25,7 +25,7 @@ export default function CoursePage() {
         console.error('[v0] Course fetch error:', err);
         setLoading(false);
       });
-  }, [slug, schoolId]);
+  }, [slug]);
 
   if (loading) {
     return (

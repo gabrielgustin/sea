@@ -3,11 +3,11 @@ import Header from '@/components/header';
 import TrabajaConNosotrosPage from '@/components/trabaja-con-nosotros-page';
 
 export const metadata = {
-  title: 'Trabaja con Nosotros | Colegio Domingo Savio',
-  description: 'Únete a nuestro equipo de educadores y colaboradores.',
+  title: 'Trabaja con Nosotros | SEA',
+  description: 'Únete a nuestro equipo de educadores y colaboradores',
 };
 
-export default function TrabajaConNosotrosRoute() {
+export default function Page() {
   return (
     <div className="flex h-screen w-screen bg-white overflow-hidden">
       <Sidebar />
