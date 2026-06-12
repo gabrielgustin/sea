@@ -3,8 +3,8 @@ import Header from '@/components/header';
 import FormacionesPage from '@/components/formaciones-page';
 
 export const metadata = {
-  title: 'Formaciones | Colegio Domingo Savio',
-  description: 'Descubre nuestros programas de formación como extensión académica.',
+  title: 'Centro de Formacion - Capacitaciones Extracurriculares',
+  description: 'Descubre nuestro servicio de formaciones como extensión académica para instituciones educativas. Programas personalizados de calidad para tu comunidad.'
 };
 
 export default function FormacionesRoute() {

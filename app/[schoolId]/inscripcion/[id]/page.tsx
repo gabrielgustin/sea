@@ -2,20 +2,20 @@
 
 import { use } from 'react';
 import { useCourses } from '@/context/CoursesContext';
-import { useSchool } from '@/context/SchoolContext';
+import { notFound } from 'next/navigation';
 import EnrollmentFlow from '@/components/enrollment-flow';
 
 interface PageProps {
-  params: Promise<{ schoolId: string; id: string }>;
+  params: Promise<{ id: string }>;
 }
 
 export default function EnrollmentPage({ params }: PageProps) {
   const { id } = use(params);
   const { courses } = useCourses();
-  const { schoolId } = useSchool();
-
+  
+  // Course IDs are strings, not numbers
   const course = courses.find(c => c.id === id || c.slug === id);
-
+  
   if (!course) {
     return (
       <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: '#0a0a0a' }}>
@@ -26,6 +26,6 @@ export default function EnrollmentPage({ params }: PageProps) {
       </div>
     );
   }
-
+  
   return <EnrollmentFlow course={course} />;
 }

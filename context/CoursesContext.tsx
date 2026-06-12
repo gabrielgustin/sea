@@ -1,7 +1,6 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useSchool } from './SchoolContext';
 
 export interface CourseTeacher {
   name: string;
@@ -55,16 +54,13 @@ interface CoursesContextType {
 const CoursesContext = createContext<CoursesContextType | undefined>(undefined);
 
 export function CoursesProvider({ children }: { children: React.ReactNode }) {
-  const { schoolId, isReady } = useSchool();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchCourses = async () => {
-    if (!isReady) return;
-    
     try {
       setLoading(true);
-      const res = await fetch(`/api/courses?schoolId=${schoolId}`);
+      const res = await fetch('/api/courses');
       if (res.ok) {
         const data = await res.json();
         setCourses(data.courses ?? []);
@@ -81,10 +77,10 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     fetchCourses();
-  }, [schoolId, isReady]);
+  }, []);
 
   const addCourse = async (course: Omit<Course, 'id'>) => {
-    const res = await fetch(`/api/courses?schoolId=${schoolId}`, {
+    const res = await fetch('/api/courses', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(course),
@@ -97,7 +93,7 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateCourse = async (id: string, updatedData: Partial<Course>) => {
-    const res = await fetch(`/api/courses?schoolId=${schoolId}`, {
+    const res = await fetch('/api/courses', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, ...updatedData }),
@@ -110,7 +106,7 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
   };
 
   const deleteCourse = async (id: string) => {
-    const res = await fetch(`/api/courses?schoolId=${schoolId}`, {
+    const res = await fetch('/api/courses', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id }),

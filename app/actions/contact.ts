@@ -20,5 +20,5 @@ export async function getContactMessages() {
 
 export async function markMessageRead(id: number) {
   await db.update(contactMessages).set({ read: true }).where(eq(contactMessages.id, id))
-  revalidatePath('/admin')
+  revalidatePath('/villada/admin')
 }

@@ -6,7 +6,6 @@ import { useRouter } from 'next/navigation';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { useSchool } from '@/context/SchoolContext';
 
 // Componente extraído fuera del padre para evitar que se re-monte en cada render
 // y así no perder el foco del input al escribir
@@ -152,7 +151,6 @@ interface Course {
 
 export default function CourseDetailClient({ course }: { course: Course }) {
   const router = useRouter();
-  const { schoolId } = useSchool();
   const [modulesExpanded, setModulesExpanded] = useState(false);
 
   // Parsear una fecha en formato ISO "YYYY-MM-DD" o "Lun 1/06/2026"
@@ -260,7 +258,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
               <p className="text-xl font-bold" style={{ color: '#031e41' }}>{course.price}</p>
             </div>
             <button
-              onClick={() => router.push(`/${schoolId}/inscripcion/${course.id}`)}
+              onClick={() => router.push(`/villada/inscripcion/${course.id}`)}
               className="w-full py-3 rounded-xl font-bold text-white text-sm md:text-base transition-all duration-300 hover:shadow-lg hover:opacity-90 active:scale-95"
               style={{ backgroundColor: '#031e41' }}
             >

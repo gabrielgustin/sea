@@ -16,7 +16,7 @@ export async function submitJobApplication(data: {
   motivacion?: string
 }) {
   await db.insert(jobApplications).values({ ...data, status: 'pending' })
-  revalidatePath('/admin')
+  revalidatePath('/villada/admin')
 }
 
 export async function getJobApplications() {

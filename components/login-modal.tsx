@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useSchool } from '@/context/SchoolContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -21,7 +20,6 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const { login, selectedRole, setSelectedRole } = useAuth();
-  const { schoolId } = useSchool();
 
   // Resetear los campos cuando el modal se cierra/abre
   useEffect(() => {
@@ -46,22 +44,22 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
     try {
       const result = await login(username, password);
       
-        if (result.success) {
-          setUsername('');
-          setPassword('');
-          onLoginSuccess?.();
-
-          // Construir la URL de redirect usando el schoolId actual
-          let redirectUrl = result.redirectUrl || `/${schoolId}`;
-          if (!redirectUrl.startsWith('http')) {
-            // Reemplazar rutas hardcodeadas por rutas con schoolId
-            redirectUrl = redirectUrl
-              .replace(/^\/admin$/, `/${schoolId}/admin`)
-              .replace(/^\/aula-virtual$/, `/${schoolId}/aula-virtual`);
+      if (result.success) {
+        setUsername('');
+        setPassword('');
+        onLoginSuccess?.();
+        
+        // Redirigir según el resultado
+        if (result.redirectUrl) {
+          // Si es URL externa, usar window.location.href
+          if (result.redirectUrl.startsWith('http')) {
+            window.location.href = result.redirectUrl;
+          } else {
+            // Si es ruta interna, también usar window.location.href para mejor compatibilidad
+            window.location.href = result.redirectUrl;
           }
-
-          window.location.href = redirectUrl;
-          onOpenChange(false);
+        }
+        onOpenChange(false);
       } else {
         const credentialHint = selectedRole === 'admin' 
           ? 'admin / admin' 

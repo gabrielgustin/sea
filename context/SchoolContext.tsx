@@ -12,7 +12,7 @@ const SchoolContext = createContext<SchoolContextType | undefined>(undefined);
 
 export function SchoolProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [schoolId, setSchoolId] = useState<string>('savio');
+  const [schoolId, setSchoolId] = useState<string>('villada');
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
@@ -23,8 +23,8 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
     if (possibleSchoolId === 'villada' || possibleSchoolId === 'savio') {
       setSchoolId(possibleSchoolId);
     } else {
-      // Default a savio si no hay schoolId en la ruta
-      setSchoolId('savio');
+      // Default a villada si no hay schoolId en la ruta
+      setSchoolId('villada');
     }
     setIsReady(true);
   }, [pathname]);
