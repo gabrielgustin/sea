@@ -52,6 +52,7 @@ export const verification = pgTable('verification', {
 
 export const courses = pgTable('courses', {
   id: text('id').primaryKey(),
+  schoolId: text('schoolId').notNull().default('villada'),
   title: text('title').notNull(),
   subtitle: text('subtitle'),
   description: text('description').notNull().default(''),
@@ -171,6 +172,7 @@ export const adminUsers = pgTable('admin_users', {
 
 export const teachers = pgTable('teachers', {
   id: serial('id').primaryKey(),
+  schoolId: text('schoolId').notNull().default('villada'),
   name: text('name').notNull(),
   description: text('description'),
   image: text('image'),
