@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { Menu, X, Home, BookOpen, Instagram, Mail, LogIn, LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
+import { useSchool } from '@/context/SchoolContext';
 import Link from 'next/link';
 import LoginModal from './login-modal';
 
@@ -16,10 +17,11 @@ export default function Sidebar() {
   const [showAuthIconAnimation, setShowAuthIconAnimation] = useState(false);
   const { isAuthenticated, logout } = useAuth();
   const { settings } = useSiteSettings();
+  const { schoolId } = useSchool();
 
   const publicNavItems = [
-    { icon: Home, label: 'Inicio', href: '/' },
-    { icon: BookOpen, label: 'Formaciones', href: '/catalogo-formaciones' },
+    { icon: Home, label: 'Inicio', href: `/${schoolId}` },
+    { icon: BookOpen, label: 'Formaciones', href: `/${schoolId}/catalogo-formaciones` },
     { icon: Mail, label: 'Contacto', href: '#contacto', scroll: true },
     { icon: Instagram, label: 'Instagram', href: settings.instagramUrl },
   ];
@@ -55,7 +57,7 @@ export default function Sidebar() {
 
   const handleAuthIconClick = () => {
     if (isAuthenticated) {
-      router.push('/admin');
+      router.push(`/${schoolId}/admin`);
     } else {
       setLoginOpen(true);
     }

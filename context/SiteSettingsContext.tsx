@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useSchool } from './SchoolContext';
 
 export interface FAQ {
   id: number;
@@ -27,6 +28,24 @@ interface SiteSettingsContextType {
   reorderFAQs: (faqs: FAQ[]) => void;
   updateSettings: (settings: Partial<SiteSettings>) => Promise<void>;
 }
+
+// Default settings for Villada
+const defaultSettingsVillada: SiteSettings = {
+  instagramUrl: 'https://www.instagram.com/itsvillada/?hl=es',
+  whatsappNumber: '5493516307002',
+  whatsappMessage: 'Hola! Me interesa obtener más información sobre los cursos disponibles.',
+  email: 'formaciones@portalsea.com.ar',
+  address: 'Cno a La Calera km 7 1/2 Valle',
+};
+
+// Default settings for Savio
+const defaultSettingsSavio: SiteSettings = {
+  instagramUrl: 'https://www.instagram.com/colegio.savio',
+  whatsappNumber: '5491234567890',
+  whatsappMessage: 'Hola! Me interesa obtener más información sobre los cursos del Colegio Savio.',
+  email: 'contacto@colegiosavio.edu.ar',
+  address: 'Dirección del Colegio Savio',
+};
 
 const defaultFAQs: FAQ[] = [
   {
@@ -55,53 +74,56 @@ const defaultFAQs: FAQ[] = [
   },
 ];
 
-const defaultSettings: SiteSettings = {
-  instagramUrl: 'https://www.instagram.com/itsvillada/?hl=es',
-  whatsappNumber: '5493516307002',
-  whatsappMessage: 'Hola! Me interesa obtener más información sobre los cursos disponibles.',
-  email: 'formaciones@portalsea.com.ar',
-  address: 'Cno a La Calera km 7 1/2 Valle',
-};
-
 const SiteSettingsContext = createContext<SiteSettingsContextType | undefined>(undefined);
 
 export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
+  const { schoolId, isReady } = useSchool();
   const [faqs, setFAQs] = useState<FAQ[]>(defaultFAQs);
-  const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
+  const [settings, setSettings] = useState<SiteSettings>(schoolId === 'savio' ? defaultSettingsSavio : defaultSettingsVillada);
   const [loading, setLoading] = useState(true);
 
-  // Load settings from DB on mount
+  // Load settings from DB on mount and when schoolId changes
   useEffect(() => {
+    if (!isReady) return;
+
     async function loadSettings() {
       try {
-        const res = await fetch('/api/settings');
+        const res = await fetch(`/api/settings?schoolId=${schoolId}`);
         if (res.ok) {
           const data = await res.json();
           if (data.settings && Object.keys(data.settings).length > 0) {
+            const defaultSettings = schoolId === 'savio' ? defaultSettingsSavio : defaultSettingsVillada;
             setSettings((prev) => ({ ...prev, ...data.settings }));
+          } else {
+            // If no DB settings, use defaults for this school
+            const defaultSettings = schoolId === 'savio' ? defaultSettingsSavio : defaultSettingsVillada;
+            setSettings(defaultSettings);
           }
         }
       } catch (error) {
         console.error('[v0] Failed to load settings from DB:', error);
+        // Fallback to defaults
+        const defaultSettings = schoolId === 'savio' ? defaultSettingsSavio : defaultSettingsVillada;
+        setSettings(defaultSettings);
       } finally {
         setLoading(false);
       }
     }
     loadSettings();
 
-    // FAQs from localStorage
-    const savedFAQs = localStorage.getItem('site_faqs');
+    // FAQs from localStorage (scoped by schoolId)
+    const savedFAQs = localStorage.getItem(`site_faqs_${schoolId}`);
     if (savedFAQs) {
       try { setFAQs(JSON.parse(savedFAQs)); } catch { setFAQs(defaultFAQs); }
     }
-  }, []);
+  }, [schoolId, isReady]);
 
   // Save FAQs to localStorage whenever they change
   useEffect(() => {
-    if (faqs.length > 0) {
-      localStorage.setItem('site_faqs', JSON.stringify(faqs));
+    if (faqs.length > 0 && isReady) {
+      localStorage.setItem(`site_faqs_${schoolId}`, JSON.stringify(faqs));
     }
-  }, [faqs]);
+  }, [faqs, schoolId, isReady]);
 
   const addFAQ = (faq: Omit<FAQ, 'id'>) => {
     const newFAQ: FAQ = { ...faq, id: Date.now() };
@@ -124,7 +146,7 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
   const updateSettings = async (newSettings: Partial<SiteSettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
     try {
-      await fetch('/api/settings', {
+      await fetch(`/api/settings?schoolId=${schoolId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(newSettings),

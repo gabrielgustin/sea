@@ -52,6 +52,7 @@ export const verification = pgTable('verification', {
 
 export const courses = pgTable('courses', {
   id: text('id').primaryKey(),
+  schoolId: text('schoolId').notNull(),
   title: text('title').notNull(),
   subtitle: text('subtitle'),
   description: text('description').notNull().default(''),
@@ -62,8 +63,8 @@ export const courses = pgTable('courses', {
   price: text('price'),
   duration: text('duration'),
   startDate: text('startDate'),
-  enrollmentDeadline: text('enrollmentDeadline'),
-  endDate: text('endDate'),
+  enrollmentDeadline: text('enrollmentdeadline'),
+  endDate: text('enddate'),
   schedule: text('schedule'),
   location: text('location'),
   teacher: text('teacher'),
@@ -171,6 +172,7 @@ export const adminUsers = pgTable('admin_users', {
 
 export const teachers = pgTable('teachers', {
   id: serial('id').primaryKey(),
+  schoolId: text('schoolId').notNull(),
   name: text('name').notNull(),
   description: text('description'),
   image: text('image'),
@@ -180,5 +182,13 @@ export const teachers = pgTable('teachers', {
   order: integer('order').notNull().default(0),
   active: boolean('active').notNull().default(true),
   createdAt: timestamp('createdAt').notNull().defaultNow(),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+})
+
+export const schoolSettings = pgTable('school_settings', {
+  id: serial('id').primaryKey(),
+  schoolId: text('schoolId').notNull(),
+  key: text('key').notNull(),
+  value: text('value').notNull(),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
 })
