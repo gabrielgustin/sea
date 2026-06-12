@@ -30,10 +30,11 @@ export default function TrainingCenterCards() {
         {cards.map((card, index) => (
           <Link key={card.href} href={card.href}>
             <div
-              className="p-6 md:p-8 rounded-2xl text-gray-800 text-center transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer flex flex-col justify-center min-h-64 md:min-h-72 bg-gray-100"
+              className="p-6 md:p-8 rounded-2xl text-white text-center transition-all duration-300 hover:shadow-xl hover:scale-105 cursor-pointer flex flex-col justify-center min-h-64 md:min-h-72"
+              style={{ backgroundColor: '#031e41' }}
             >
-              <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-balance text-gray-800">{card.title}</h3>
-              <p className="text-sm md:text-base leading-relaxed opacity-70 text-gray-700">{card.description}</p>
+              <h3 className="text-xl md:text-2xl font-bold mb-3 md:mb-4 text-balance text-white">{card.title}</h3>
+              <p className="text-sm md:text-base leading-relaxed text-white/80">{card.description}</p>
             </div>
           </Link>
         ))}
