@@ -182,3 +182,11 @@ export const teachers = pgTable('teachers', {
   createdAt: timestamp('createdAt').notNull().defaultNow(),
   updatedAt: timestamp('updatedAt').notNull().defaultNow(),
 })
+
+export const schoolSettings = pgTable('school_settings', {
+  id: serial('id').primaryKey(),
+  schoolId: text('schoolId').notNull(),
+  key: text('key').notNull(),
+  value: text('value').notNull(),
+  updatedAt: timestamp('updatedAt').notNull().defaultNow(),
+})
