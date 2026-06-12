@@ -149,7 +149,7 @@ export default function FormacionesPage() {
               {courses.map((course) => (
                 <Link
                   key={course.id}
-                  href={`/cursos/${course.slug || course.id}`}
+                  href={`/villada/cursos/${course.slug || course.id}`}
                   className="overflow-hidden rounded-2xl border-2 border-gray-100 hover:border-blue-200 transition-all duration-300 hover:shadow-lg bg-white group block"
                 >
                   <div className="relative h-44 overflow-hidden bg-gray-100">

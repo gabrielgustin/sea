@@ -258,7 +258,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
               <p className="text-xl font-bold" style={{ color: '#031e41' }}>{course.price}</p>
             </div>
             <button
-              onClick={() => router.push(`/inscripcion/${course.id}`)}
+              onClick={() => router.push(`/villada/inscripcion/${course.id}`)}
               className="w-full py-3 rounded-xl font-bold text-white text-sm md:text-base transition-all duration-300 hover:shadow-lg hover:opacity-90 active:scale-95"
               style={{ backgroundColor: '#031e41' }}
             >

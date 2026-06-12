@@ -151,7 +151,7 @@ export async function POST(request: NextRequest) {
     await pool.query(sql, params)
     try {
       revalidatePath('/')
-      revalidatePath('/formaciones')
+      revalidatePath('/villada/formaciones')
     } catch (_) {}
     return NextResponse.json({ success: true, id })
   } catch (error) {
@@ -251,7 +251,7 @@ export async function PUT(request: NextRequest) {
 
     try {
       revalidatePath('/')
-      revalidatePath('/formaciones')
+      revalidatePath('/villada/formaciones')
     } catch (_) {
       // revalidatePath puede fallar en ciertos entornos; no es crítico
     }
@@ -292,7 +292,7 @@ export async function DELETE(request: NextRequest) {
     await db.delete(courses).where(eq(courses.id, String(id)))
     try {
       revalidatePath('/')
-      revalidatePath('/formaciones')
+      revalidatePath('/villada/formaciones')
     } catch (_) {}
     return NextResponse.json({ success: true })
   } catch (error) {
