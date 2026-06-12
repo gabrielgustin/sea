@@ -1,7 +1,6 @@
 'use client';
 
 import Image from 'next/image';
-import Link from 'next/link';
 
 export default function Header() {
   return (
@@ -9,7 +8,7 @@ export default function Header() {
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 md:h-28">
           {/* Desktop Logo - SEA */}
-          <Link href="/savio" className="hidden md:flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+          <a href="https://www.portalsea.com.ar/savio" className="hidden md:flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
               src="/logo-sea.png" 
               alt="SEA Logo"
@@ -18,10 +17,10 @@ export default function Header() {
               className="h-20 w-auto object-contain"
               priority
             />
-          </Link>
+          </a>
 
           {/* Mobile - Logo SEA Left */}
-          <Link href="/savio" className="md:hidden flex items-center cursor-pointer hover:opacity-80 transition-opacity">
+          <a href="https://www.portalsea.com.ar/savio" className="md:hidden flex items-center cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
               src="/logo-sea.png" 
               alt="SEA Logo"
@@ -30,7 +29,7 @@ export default function Header() {
               className="h-12 w-auto object-contain"
               priority
             />
-          </Link>
+          </a>
 
           {/* Mobile - Logo Savio Right */}
           <div className="md:hidden flex items-center justify-end">
