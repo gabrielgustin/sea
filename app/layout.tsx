@@ -4,7 +4,7 @@ import { Analytics } from '@vercel/analytics/next'
 import { AuthProvider } from '@/context/AuthContext'
 import { CoursesProvider } from '@/context/CoursesContext'
 import { LoadingProvider } from '@/context/LoadingContext'
-import { SiteSettingsProvider } from '@/context/SiteSettingsContext'
+import { SchoolProvider } from '@/context/SchoolContext'
 import GlobalPreloader from '@/components/global-preloader'
 import './globals.css'
 
@@ -42,16 +42,18 @@ export default function RootLayout({
   return (
     <html lang="es" className="bg-background overflow-x-hidden">
       <body className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
-        <AuthProvider>
-          <CoursesProvider>
-            <LoadingProvider>
-              <GlobalPreloader />
-              <SiteSettingsProvider>
-                {children}
-              </SiteSettingsProvider>
-            </LoadingProvider>
-          </CoursesProvider>
-        </AuthProvider>
+        <SchoolProvider>
+          <AuthProvider>
+            <CoursesProvider>
+              <LoadingProvider>
+                <GlobalPreloader />
+                <SiteSettingsProvider>
+                  {children}
+                </SiteSettingsProvider>
+              </LoadingProvider>
+            </CoursesProvider>
+          </AuthProvider>
+        </SchoolProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
