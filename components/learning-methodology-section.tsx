@@ -2,41 +2,44 @@
 
 import { useEffect, useState, useRef, useCallback } from 'react';
 
+const steps = [
+  {
+    number: '01',
+    title: 'Aprende',
+    description: 'Participa en lecciones en video completas y materiales de curso detallados creados por expertos de la industria.',
+  },
+  {
+    number: '02',
+    title: 'Practica',
+    description: 'Aplica tu conocimiento a través de ejercicios de codificación interactivos y proyectos del mundo real.',
+  },
+  {
+    number: '03',
+    title: 'Construye',
+    description: 'Crea proyectos de portfolio que demuestren tus habilidades a posibles empleadores.',
+  },
+  {
+    number: '04',
+    title: 'Triunfa',
+    description: 'Obtén certificación y accede a oportunidades de colocación laboral con empresas tecnológicas líderes.',
+  },
+];
+
 export default function LearningMethodologySection() {
   const [progress, setProgress] = useState(0);
   const [isLocked, setIsLocked] = useState(false);
   const [hasCompleted, setHasCompleted] = useState(false);
-  const [isMobileView, setIsMobileView] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const sectionRef = useRef<HTMLDivElement>(null);
   const progressRef = useRef(0);
   const touchStartY = useRef(0);
 
-  const steps = [
-    {
-      number: '01',
-      title: 'Aprende',
-      description: 'Participa en lecciones en video completas y materiales de curso detallados creados por expertos de la industria.',
-    },
-    {
-      number: '02',
-      title: 'Practica',
-      description: 'Aplica tu conocimiento a través de ejercicios de codificación interactivos y proyectos del mundo real.',
-    },
-    {
-      number: '03',
-      title: 'Construye',
-      description: 'Crea proyectos de portfolio que demuestren tus habilidades a posibles empleadores.',
-    },
-    {
-      number: '04',
-      title: 'Triunfa',
-      description: 'Obtén certificación y accede a oportunidades de colocación laboral con empresas tecnológicas líderes.',
-    },
-  ];
-
-  const getScrollContainer = useCallback(() => {
-    // Use window/document scroll since main is no longer the scroll container
-    return document.documentElement as unknown as HTMLElement;
+  // Detectar móvil
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 768);
+    check();
+    window.addEventListener('resize', check);
+    return () => window.removeEventListener('resize', check);
   }, []);
 
   const unlock = useCallback(() => {
@@ -53,11 +56,8 @@ export default function LearningMethodologySection() {
 
   const handleDelta = useCallback((delta: number) => {
     if (!isLocked) return;
+    progressRef.current += delta * 0.0015;
 
-    const sensitivity = 0.0015;
-    progressRef.current += delta * sensitivity;
-
-    // Scroll hacia arriba y progreso <= 0: desbloquear
     if (progressRef.current <= 0 && delta < 0) {
       progressRef.current = 0;
       setProgress(0);
@@ -65,79 +65,59 @@ export default function LearningMethodologySection() {
       return;
     }
 
-    // Limitar entre 0 y 1
     progressRef.current = Math.max(0, Math.min(1, progressRef.current));
     setProgress(progressRef.current);
 
-    // Si llega al 100%: completar y desbloquear
     if (progressRef.current >= 1) {
       setHasCompleted(true);
       setTimeout(unlock, 150);
     }
   }, [isLocked, unlock]);
 
-  // Detectar y actualizar tamaño de ventana (móvil vs desktop)
+  // En móvil: progress basado en scroll natural sin lock
   useEffect(() => {
-    const handleResize = () => {
-      setIsMobileView(window.innerWidth < 768);
-    };
-    
-    handleResize(); // Llamar al montar
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
-  // Detectar entrada a la sección
-  useEffect(() => {
+    if (!isMobile) return;
     const section = sectionRef.current;
     if (!section) return;
 
-    const checkPosition = () => {
+    const handleScroll = () => {
+      const rect = section.getBoundingClientRect();
+      if (rect.top < 0 && rect.top > -rect.height) {
+        setProgress(Math.min(Math.abs(rect.top) / (rect.height * 0.5), 1));
+      } else if (rect.top >= 0) {
+        setProgress(0);
+      } else {
+        setProgress(1);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [isMobile]);
+
+  // En desktop: detectar entrada a sección y bloquear scroll
+  useEffect(() => {
+    if (isMobile) return;
+    const section = sectionRef.current;
+    if (!section) return;
+
+    const handleScroll = () => {
       if (hasCompleted || isLocked) return;
-
-      const sectionRect = section.getBoundingClientRect();
-      const viewportHeight = window.innerHeight;
-      const sectionCenterY = sectionRect.top + sectionRect.height / 2;
-      const distanceFromCenter = Math.abs(sectionCenterY - viewportHeight / 2);
-
-      if (distanceFromCenter < viewportHeight * 0.15 && sectionRect.top < viewportHeight * 0.2) {
+      const rect = section.getBoundingClientRect();
+      const vh = window.innerHeight;
+      if (rect.top < vh * 0.2 && rect.bottom > vh * 0.5) {
         lock();
         progressRef.current = progress;
       }
     };
 
-    if (isMobileView) {
-      const handleMobileScroll = () => {
-        const sectionRect = section.getBoundingClientRect();
-        const sectionTop = sectionRect.top;
-        const sectionHeight = sectionRect.height;
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [hasCompleted, isLocked, lock, progress, isMobile]);
 
-        if (sectionTop < 0 && sectionTop > -sectionHeight) {
-          const scrolledAmount = Math.abs(sectionTop);
-          const maxScroll = sectionHeight * 0.5;
-          setProgress(Math.min(scrolledAmount / maxScroll, 1));
-        } else if (sectionTop >= 0) {
-          setProgress(0);
-        } else {
-          setProgress(1);
-        }
-      };
-
-      window.addEventListener('scroll', handleMobileScroll, { passive: true });
-      return () => window.removeEventListener('scroll', handleMobileScroll);
-    } else {
-      window.addEventListener('scroll', checkPosition, { passive: true });
-      return () => window.removeEventListener('scroll', checkPosition);
-    }
-  }, [hasCompleted, isLocked, lock, progress, isMobileView]);
-
-  // Wheel handler
+  // Wheel handler (desktop)
   useEffect(() => {
-    if (!isLocked) return;
-    
-    // Desabilitar en móvil
-    const isMobile = window.innerWidth < 768;
-    if (isMobile) return;
+    if (!isLocked || isMobile) return;
 
     const handleWheel = (e: WheelEvent) => {
       e.preventDefault();
@@ -145,46 +125,35 @@ export default function LearningMethodologySection() {
       handleDelta(e.deltaY);
     };
 
-    const options = { passive: false, capture: true };
-    window.addEventListener('wheel', handleWheel, options);
-    document.addEventListener('wheel', handleWheel, options);
+    const opts = { passive: false, capture: true } as AddEventListenerOptions;
+    window.addEventListener('wheel', handleWheel, opts);
+    return () => window.removeEventListener('wheel', handleWheel, opts);
+  }, [isLocked, isMobile, handleDelta]);
 
-    return () => {
-      window.removeEventListener('wheel', handleWheel, options as EventListenerOptions);
-      document.removeEventListener('wheel', handleWheel, options as EventListenerOptions);
-    };
-  }, [isLocked, handleDelta]);
-
-  // Touch handlers
+  // Touch handler (desktop tablets)
   useEffect(() => {
-    if (!isLocked) return;
-    
-    // Desabilitar en móvil
-    const isMobile = window.innerWidth < 768;
-    if (isMobile) return;
+    if (!isLocked || isMobile) return;
 
     const handleTouchStart = (e: TouchEvent) => {
       touchStartY.current = e.touches[0].clientY;
     };
-
     const handleTouchMove = (e: TouchEvent) => {
       e.preventDefault();
-      const deltaY = touchStartY.current - e.touches[0].clientY;
+      const delta = touchStartY.current - e.touches[0].clientY;
       touchStartY.current = e.touches[0].clientY;
-      handleDelta(deltaY * 2);
+      handleDelta(delta * 2);
     };
 
-    const options = { passive: false, capture: true };
-    window.addEventListener('touchstart', handleTouchStart, options);
-    window.addEventListener('touchmove', handleTouchMove, options);
-
+    const opts = { passive: false, capture: true } as AddEventListenerOptions;
+    window.addEventListener('touchstart', handleTouchStart, opts);
+    window.addEventListener('touchmove', handleTouchMove, opts);
     return () => {
-      window.removeEventListener('touchstart', handleTouchStart, options as EventListenerOptions);
-      window.removeEventListener('touchmove', handleTouchMove, options as EventListenerOptions);
+      window.removeEventListener('touchstart', handleTouchStart, opts);
+      window.removeEventListener('touchmove', handleTouchMove, opts);
     };
-  }, [isLocked, handleDelta]);
+  }, [isLocked, isMobile, handleDelta]);
 
-  // Cleanup on unmount
+  // Cleanup
   useEffect(() => {
     return () => {
       document.body.style.overflow = '';
@@ -195,117 +164,79 @@ export default function LearningMethodologySection() {
   const activeStep = Math.floor(progress * 4);
 
   return (
-    <section ref={sectionRef} className="w-full px-4 sm:px-6 lg:px-8 py-16 relative min-h-[650px]">
+    <section ref={sectionRef} className="w-full px-4 sm:px-6 lg:px-8 py-16">
       <div className="max-w-6xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <h2 className="text-3xl md:text-4xl font-bold mb-4" style={{ color: '#031e41' }}>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4 text-balance" style={{ color: '#031e41' }}>
             Nuestra ruta de aprendizaje
           </h2>
-          <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto leading-relaxed">
             Un camino probado diseñado para construir habilidades reales y confianza
           </p>
         </div>
 
-        {/* Progress Bar Container - OCULTO */}
-        {/* <div className="relative mb-8 hidden md:block">
-          {/* Step Labels */}
-          {/* <div className="flex justify-between mb-3">
-            {steps.map((step, index) => (
-              <span
-                key={index}
-                className="text-sm font-semibold transition-all duration-300"
-                style={{
-                  color: progress * 4 > index ? '#031e41' : '#9ca3af',
-                  transform: progress * 4 > index ? 'scale(1.1)' : 'scale(1)',
-                }}
-              >
-                {step.title}
-              </span>
-            ))}
-          </div>
-
-          {/* Progress Bar */}
-          {/* <div className="h-3 bg-gray-200 rounded-full overflow-hidden relative">
+        {/* Progress bar */}
+        <div className="hidden md:block mb-10">
+          <div className="relative h-2 bg-gray-200 rounded-full overflow-visible">
             <div
-              className="h-full rounded-full transition-all duration-100 ease-out relative"
-              style={{
-                width: `${progress * 100}%`,
-                background: 'linear-gradient(90deg, #031e41 0%, #1a4d7a 50%, #9cbadb 100%)',
-              }}
-            >
-              {progress > 0 && progress < 1 && (
+              className="h-full rounded-full transition-all duration-200"
+              style={{ width: `${progress * 100}%`, backgroundColor: '#031e41' }}
+            />
+            {/* Step dots */}
+            {steps.map((_, i) => {
+              const pos = (i / (steps.length - 1)) * 100;
+              const reached = progress * 100 >= pos;
+              return (
                 <div
-                  className="absolute right-0 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full animate-pulse"
+                  key={i}
+                  className="absolute top-1/2 -translate-y-1/2 w-4 h-4 rounded-full border-2 transition-all duration-300"
                   style={{
-                    background: '#9cbadb',
-                    boxShadow: '0 0 15px 5px rgba(156, 186, 219, 0.8)',
+                    left: `${pos}%`,
+                    transform: 'translate(-50%, -50%)',
+                    backgroundColor: reached ? '#031e41' : '#fff',
+                    borderColor: reached ? '#031e41' : '#d1d5db',
                   }}
                 />
-              )}
-            </div>
-
-            {/* Step Markers */}
-            {/* <div className="absolute inset-0 flex justify-between items-center">
-              {steps.map((_, index) => {
-                const markerPosition = (index / (steps.length - 1)) * 100;
-                const isReached = progress * 100 >= markerPosition;
-                return (
-                  <div
-                    key={index}
-                    className="w-4 h-4 rounded-full border-2 transition-all duration-300"
-                    style={{
-                      backgroundColor: isReached ? '#031e41' : '#fff',
-                      borderColor: isReached ? '#031e41' : '#d1d5db',
-                      transform: isReached ? 'scale(1.2)' : 'scale(1)',
-                    }}
-                  />
-                );
-              })}
-            </div>
+              );
+            })}
           </div>
-        </div> */}
+        </div>
 
-        {/* Steps Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mt-12">
+        {/* Steps */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {steps.map((step, index) => {
-            const isMobile = typeof window !== 'undefined' && window.innerWidth < 768;
             const isActive = isMobile ? progress > index * 0.25 : activeStep >= index;
-            const isCurrent = isMobile 
-              ? Math.floor(progress * 4) === index 
+            const isCurrent = isMobile
+              ? Math.floor(progress * 4) === index
               : activeStep === index;
 
             return (
               <div
                 key={index}
-                className="relative p-6 rounded-xl transition-all duration-700"
+                className="relative p-6 rounded-xl transition-all duration-500"
                 style={{
                   backgroundColor: isActive ? '#f3f4f6' : '#ffffff',
                   border: isCurrent ? '2px solid #031e41' : '1px solid #e5e7eb',
                   transform: isCurrent ? 'translateY(-8px) scale(1.02)' : 'translateY(0) scale(1)',
-                  boxShadow: isCurrent ? '0 10px 25px rgba(3, 30, 65, 0.15)' : 'none',
+                  boxShadow: isCurrent ? '0 10px 25px rgba(3,30,65,0.15)' : 'none',
                 }}
               >
                 <div
-                  className="text-4xl font-bold mb-3 transition-colors duration-700"
+                  className="text-4xl font-bold mb-3 transition-colors duration-500"
                   style={{ color: isActive ? '#9cbadb' : '#031e41' }}
                 >
                   {step.number}
                 </div>
-
                 <div className="h-1 w-full bg-gray-200 rounded-full mb-4 overflow-hidden">
                   <div
-                    className="h-full transition-all duration-700"
-                    style={{
-                      width: isActive ? '100%' : '0%',
-                      backgroundColor: '#031e41',
-                    }}
+                    className="h-full transition-all duration-500"
+                    style={{ width: isActive ? '100%' : '0%', backgroundColor: '#031e41' }}
                   />
                 </div>
-
                 <h3
-                  className="text-lg font-bold mb-2 transition-colors duration-700"
-                  style={{ color: isCurrent ? '#031e41' : '#1f2937' }}
+                  className="text-lg font-bold mb-2 transition-colors duration-500"
+                  style={{ color: '#1f2937' }}
                 >
                   {step.title}
                 </h3>
@@ -324,7 +255,7 @@ export default function LearningMethodologySection() {
           })}
         </div>
 
-        {/* Scroll Hint */}
+        {/* Scroll hint */}
         {isLocked && progress < 1 && (
           <div className="text-center mt-8 animate-bounce">
             <div className="inline-flex items-center gap-2 text-gray-500 text-sm bg-gray-100 px-4 py-2 rounded-full">
