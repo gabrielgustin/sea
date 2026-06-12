@@ -1,22 +1,57 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { Menu, X, Home, BookOpen, Instagram, Mail, LogIn, LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
-import { useState } from 'react';
-import { Menu, Home, BookOpen, LogOut, LogIn } from 'lucide-react';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
 import Link from 'next/link';
 import LoginModal from './login-modal';
 
-const SIDEBAR_ITEMS = [
-  { icon: Home, label: 'Home', href: '/villada' },
-  { icon: BookOpen, label: 'Formaciones', href: '/villada/catalogo-formaciones' },
-];
-
 export default function Sidebar() {
   const router = useRouter();
-  const { isAuthenticated, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
+  const [showLoginAnimation, setShowLoginAnimation] = useState(false);
+  const [showAuthIconAnimation, setShowAuthIconAnimation] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
+  const { settings } = useSiteSettings();
+
+  const publicNavItems = [
+    { icon: Home, label: 'Inicio', href: '/' },
+    { icon: BookOpen, label: 'Formaciones', href: '/villada/catalogo-formaciones' },
+    { icon: Mail, label: 'Contacto', href: '#contacto', scroll: true },
+    { icon: Instagram, label: 'Instagram', href: settings.instagramUrl },
+  ];
+
+  const handleContactClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const contactSection = document.querySelector('#contacto');
+    if (contactSection) {
+      contactSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleLogout = () => {
+    setShowLoginAnimation(false);
+    setShowAuthIconAnimation(true);
+    setTimeout(() => {
+      setShowAuthIconAnimation(false);
+      logout();
+    }, 400);
+  };
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      setShowAuthIconAnimation(true);
+      setTimeout(() => setShowAuthIconAnimation(false), 400);
+    }
+  }, [isAuthenticated]);
+
+  const handleLoginSuccess = () => {
+    setShowLoginAnimation(true);
+    setTimeout(() => setShowLoginAnimation(false), 600);
+  };
 
   const handleAuthIconClick = () => {
     if (isAuthenticated) {
@@ -26,87 +61,179 @@ export default function Sidebar() {
     }
   };
 
-  const handleLogout = () => {
-    logout();
-    setIsOpen(false);
-  };
+  // Icon size for consistency
+  const iconSize = 28;
 
   return (
     <>
-      <LoginModal isOpen={loginOpen} onClose={() => setLoginOpen(false)} />
-
-      <div className="hidden md:fixed md:left-0 md:top-0 md:bottom-0 md:w-[10%] md:bg-white md:border-r md:border-gray-200 md:flex md:flex-col md:items-center md:pt-6 md:pb-6 md:gap-8 z-40">
-        <div className="flex flex-col gap-6 flex-1">
-          {SIDEBAR_ITEMS.map((item) => {
+      {/* Desktop Sidebar - Responsive, centered, professional */}
+      <aside 
+        className="hidden md:flex fixed left-0 top-0 h-screen w-[10%] bg-white z-40 flex-col items-center justify-center px-3" 
+        style={{ borderRight: '2px solid #031e41' }}
+      >
+        <nav className="flex flex-col items-center gap-10">
+          {/* Navigation Items */}
+          {publicNavItems.map((item, index) => {
             const Icon = item.icon;
+            const isExternal = item.href.startsWith('http');
+            const isScroll = (item as any).scroll;
+            
+            if (isExternal) {
+              return (
+                <a
+                  key={index}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
+                  title={item.label}
+                >
+                  <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                  <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
+                    {item.label}
+                  </span>
+                </a>
+              );
+            }
+            
+            if (isScroll) {
+              return (
+                <button
+                  key={index}
+                  onClick={handleContactClick}
+                  className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
+                  title={item.label}
+                >
+                  <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                  <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
+                    {item.label}
+                  </span>
+                </button>
+              );
+            }
+            
             return (
-              <Link key={item.href} href={item.href} className="flex justify-center hover:opacity-70 transition-opacity">
-                <Icon size={28} className="text-gray-800" />
+              <Link
+                key={index}
+                href={item.href}
+                className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
+                title={item.label}
+              >
+                <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
+                  {item.label}
+                </span>
               </Link>
             );
           })}
-        </div>
 
-        <button
-          onClick={handleAuthIconClick}
-          className="flex justify-center hover:opacity-70 transition-opacity"
-          title={isAuthenticated ? 'Admin' : 'Iniciar Sesión'}
-        >
-          {isAuthenticated ? <LogOut size={28} className="text-gray-800" /> : <LogIn size={28} className="text-gray-800" />}
-        </button>
-      </div>
-
-      <div className="md:hidden fixed top-4 left-4 z-50">
-        <button onClick={() => setIsOpen(!isOpen)} className="p-2 rounded-lg hover:bg-gray-100">
-          <Menu size={24} />
-        </button>
-      </div>
-
-      {isOpen && (
-        <div className="md:hidden fixed inset-0 bg-black/50 z-40" onClick={() => setIsOpen(false)}>
-          <div className="fixed left-0 top-0 bottom-0 w-64 bg-white flex flex-col p-6 gap-4" onClick={(e) => e.stopPropagation()}>
-            <button onClick={() => setIsOpen(false)} className="self-end">
-              ✕
-            </button>
-            {SIDEBAR_ITEMS.map((item) => {
-              const Icon = item.icon;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
-                  onClick={() => setIsOpen(false)}
-                >
-                  <Icon size={20} />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-            <hr className="my-2" />
+          {/* Login/Admin Button */}
+          <button
+            onClick={handleAuthIconClick}
+            className="flex justify-center items-center p-3 transition-all duration-300 group relative rounded-xl hover:bg-blue-50"
+            title={isAuthenticated ? "Panel de Administración" : "Iniciar sesión"}
+          >
             {isAuthenticated ? (
-              <>
-                <Link
-                  href="/villada/admin"
-                  className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100"
+              <LogOut size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+            ) : (
+              <LogIn size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+            )}
+            <span className="absolute left-16 bg-gradient-to-r text-white px-4 py-2 rounded-lg text-xs opacity-0 group-hover:opacity-100 transition-all duration-300 whitespace-nowrap pointer-events-none font-semibold translate-x-2 group-hover:translate-x-0" style={{ backgroundImage: 'linear-gradient(135deg, #031e41 0%, #617587 100%)' }}>
+              {isAuthenticated ? "Panel de Admin" : "Iniciar sesión"}
+            </span>
+          </button>
+
+        </nav>
+      </aside>
+
+      {/* Mobile Hamburger Button - Hidden */}
+      {/* Hamburger menu hidden for improved mobile UX */}
+
+      {/* Mobile Overlay */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-40 md:hidden animate-fade-in"
+          onClick={() => setIsOpen(false)}
+        />
+      )}
+
+      {/* Mobile Sidebar */}
+      <aside
+        className={`fixed left-0 top-0 h-screen w-64 bg-white z-45 flex flex-col items-center transition-all duration-300 md:hidden ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
+        style={{ borderRight: '2px solid #031e41' }}
+      >
+        <nav className="flex flex-col items-center gap-10 w-full">
+          {/* Navigation Items */}
+          {publicNavItems.map((item, index) => {
+            const Icon = item.icon;
+            const isExternal = item.href.startsWith('http');
+            const isScroll = (item as any).scroll;
+            
+            if (isExternal) {
+              return (
+                <a
+                  key={index}
+                  href={item.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group"
                   onClick={() => setIsOpen(false)}
                 >
-                  <LogOut size={20} />
-                  <span>Admin</span>
-                </Link>
-                <button onClick={handleLogout} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 text-red-600 text-left">
-                  <LogOut size={20} />
-                  <span>Cerrar Sesión</span>
+                  <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                  <span className="text-sm font-medium" style={{ color: '#031e41' }}>{item.label}</span>
+                </a>
+              );
+            }
+            
+            if (isScroll) {
+              return (
+                <button
+                  key={index}
+                  onClick={(e) => {
+                    handleContactClick(e);
+                    setIsOpen(false);
+                  }}
+                  className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group w-full"
+                >
+                  <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                  <span className="text-sm font-medium" style={{ color: '#031e41' }}>{item.label}</span>
                 </button>
-              </>
+              );
+            }
+            
+            return (
+              <Link
+                key={index}
+                href={item.href}
+                className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group"
+                onClick={() => setIsOpen(false)}
+              >
+                <Icon size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
+                <span className="text-sm font-medium" style={{ color: '#031e41' }}>{item.label}</span>
+              </Link>
+            );
+          })}
+
+          {/* Login/Admin Button */}
+          <button
+            onClick={handleAuthIconClick}
+            className="flex items-center gap-3 px-4 py-3 hover:bg-blue-50 transition-all duration-200 rounded group w-full"
+          >
+            {isAuthenticated ? (
+              <LogOut size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
             ) : (
-              <button onClick={() => setLoginOpen(true)} className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100">
-                <LogIn size={20} />
-                <span>Iniciar Sesión</span>
-              </button>
+              <LogIn size={iconSize} className="transition-all duration-300 group-hover:scale-110" style={{ color: '#031e41' }} />
             )}
-          </div>
-        </div>
-      )}
+            <span className="text-sm font-medium" style={{ color: '#031e41' }}>
+              {isAuthenticated ? "Panel de Admin" : "Iniciar sesión"}
+            </span>
+          </button>
+        </nav>
+      </aside>
+
+      <LoginModal open={loginOpen} onOpenChange={setLoginOpen} onLoginSuccess={handleLoginSuccess} />
     </>
   );
 }

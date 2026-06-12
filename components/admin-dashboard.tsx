@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useCourses, Course } from '@/context/CoursesContext';
 import { useAuth } from '@/context/AuthContext';
-import { useSchool } from '@/context/SchoolContext';
 import { Plus, Edit2, Trash2, Eye, EyeOff, Users, Sliders, HelpCircle, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CourseForm from './course-form';
@@ -19,7 +18,6 @@ import { TeacherManager } from './teacher-manager';
 export default function AdminDashboard() {
   const router = useRouter();
   const { logout } = useAuth();
-  const { schoolId } = useSchool();
   const { courses, addCourse, updateCourse, deleteCourse } = useCourses();
   const [showForm, setShowForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
@@ -28,7 +26,7 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     logout();
-    router.push(`/${schoolId}`);
+    router.push('/');
   };
 
   const handleAddNew = () => {

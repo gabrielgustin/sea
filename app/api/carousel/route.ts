@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
       image: body.image ?? '/carousel/placeholder.png',
       badge: body.badge,
       ctaText: body.ctaText,
-      ctaLink: body.ctaLink ?? (body.redirectSlug ? `/villada/cursos/${body.redirectSlug}` : undefined),
+      ctaLink: body.ctaLink ?? (body.redirectSlug ? `/cursos/${body.redirectSlug}` : undefined),
       order: body.order ?? 0,
       active: body.active ?? true,
     }).returning()

@@ -1,9 +1,11 @@
 'use client';
 
+'use client';
+
+import { Sparkles } from 'lucide-react';
+import Link from 'next/link';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
 import { useInView } from '@/hooks/useInView';
-import Link from 'next/link';
-import { Sparkles } from 'lucide-react';
 
 export default function SpecialOfferSection() {
   const { settings } = useSiteSettings();
@@ -18,21 +20,30 @@ export default function SpecialOfferSection() {
         }`}
         style={{ border: '2px solid #031e41' }}
       >
-        <div className="text-center mb-6 md:mb-8">
-          <div className="inline-flex items-center justify-center w-12 h-12 md:w-16 md:h-16 rounded-full mb-4 md:mb-6" style={{ backgroundColor: '#031e41' }}>
-            <Sparkles className="text-white" size={24} />
-          </div>
-          <h2 className="text-2xl md:text-4xl font-bold mb-3 md:mb-4" style={{ color: '#031e41' }}>
-            Oferta Especial
-          </h2>
-          <p className="text-sm md:text-lg leading-relaxed text-gray-700">
-            Inscribite ahora en nuestras formaciones especiales. ¡Plazas limitadas! Acceso a contenido premium, certificados oficiales y acompañamiento personalizado.
-          </p>
+        {/* Badge */}
+        <div className="flex items-center justify-center gap-2 mb-4 md:mb-6">
+          <Sparkles size={16} className="md:w-5 md:h-5" style={{ color: '#031e41' }} />
+          <span className="font-semibold text-xs md:text-base tracking-wider" style={{ color: '#031e41' }}>
+            OFERTA ESPECIAL
+          </span>
+          <Sparkles size={16} className="md:w-5 md:h-5" style={{ color: '#031e41' }} />
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center">
+        {/* Title */}
+        <h2 className="text-2xl md:text-5xl font-bold text-gray-900 text-center mb-3 md:mb-4">
+          Inscripciones Abiertas
+        </h2>
+
+        {/* Description */}
+        <p className="text-gray-700 text-center mb-6 md:mb-10 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+          No esperes más para transformar tu futuro. Los lugares se asignan por orden de
+          inscripción. Todos nuestros cursos incluyen certificación oficial de ITS Villada.
+        </p>
+
+        {/* Buttons */}
+        <div className="flex flex-col md:flex-row gap-3 md:gap-4 justify-center">
           <Link
-            href="/villada/formaciones"
+            href="/formaciones"
             className="px-6 md:px-10 py-2.5 md:py-4 text-white font-semibold rounded-full transition-opacity hover:opacity-90 text-sm md:text-base text-center"
             style={{ backgroundColor: '#031e41' }}
           >
@@ -42,8 +53,8 @@ export default function SpecialOfferSection() {
             href={whatsappLink}
             target="_blank"
             rel="noopener noreferrer"
-            className="px-6 md:px-10 py-2.5 md:py-4 text-white font-semibold rounded-full transition-opacity hover:opacity-90 text-sm md:text-base text-center"
-            style={{ backgroundColor: '#25D366' }}
+            className="px-6 md:px-10 py-2.5 md:py-4 font-semibold rounded-full transition-colors hover:bg-gray-50 text-sm md:text-base text-center"
+            style={{ border: '2px solid #031e41', color: '#031e41' }}
           >
             Consultar por WhatsApp
           </a>

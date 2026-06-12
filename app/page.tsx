@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-// Redirige rutas sin schoolId a /savio
+// Redirige rutas sin schoolId a /villada
 export default function RootPage() {
-  redirect('/savio');
+  redirect('/villada');
 }
