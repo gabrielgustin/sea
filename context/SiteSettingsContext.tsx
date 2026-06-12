@@ -40,7 +40,7 @@ const defaultSettingsVillada: SiteSettings = {
 
 // Default settings for Savio
 const defaultSettingsSavio: SiteSettings = {
-  instagramUrl: 'https://www.instagram.com/colegio.savio',
+  instagramUrl: 'https://www.instagram.com/domingosaviocba/?hl=es',
   whatsappNumber: '5491234567890',
   whatsappMessage: 'Hola! Me interesa obtener más información sobre los cursos del Colegio Savio.',
   email: 'contacto@colegiosavio.edu.ar',
