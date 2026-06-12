@@ -1,5 +1,6 @@
-'use client';
+import { redirect } from 'next/navigation';
 
+<<<<<<<< HEAD:app/[schoolId]/admin/page.tsx
 import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
@@ -35,4 +36,8 @@ export default function AdminPage() {
       </main>
     </div>
   );
+========
+export default function AdminRedirect() {
+  redirect('/savio/admin');
+>>>>>>>> main:app/admin/page.tsx
 }

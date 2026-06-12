@@ -12,7 +12,7 @@ export default async function SchoolLayout({
   // Validar que el schoolId sea válido
   const validSchools = ['villada', 'savio'];
   if (!validSchools.includes(schoolId)) {
-    redirect('/villada');
+    redirect('/savio');
   }
 
   // El SchoolContext en el root layout ya detecta el schoolId automáticamente
