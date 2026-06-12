@@ -1,13 +1,13 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
+import { getDb } from '@/lib/db/getDb'
 import { teachers } from '@/lib/db/schema'
 import { eq, and } from 'drizzle-orm'
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const schoolId = searchParams.get('schoolId') || 'villada'
-    
+    const schoolId = searchParams.get('schoolId') || 'savio'
+    const db = getDb(schoolId)
     const allTeachers = await db.select().from(teachers).where(eq(teachers.schoolId, schoolId)).orderBy(teachers.order)
     return NextResponse.json({ teachers: allTeachers })
   } catch (error) {
@@ -19,8 +19,8 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const schoolId = searchParams.get('schoolId') || 'villada'
-    
+    const schoolId = searchParams.get('schoolId') || 'savio'
+    const db = getDb(schoolId)
     const body = await request.json()
     const { name, description, image, whatsapp, linkedin, courseId, order } = body
 
@@ -48,8 +48,8 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const schoolId = searchParams.get('schoolId') || 'villada'
-    
+    const schoolId = searchParams.get('schoolId') || 'savio'
+    const db = getDb(schoolId)
     const body = await request.json()
     const { id, name, description, image, whatsapp, linkedin, courseId, order, active } = body
 
@@ -69,7 +69,6 @@ export async function PUT(request: NextRequest) {
     }).where(and(eq(teachers.id, id), eq(teachers.schoolId, schoolId))).returning()
 
     if (!result.length) return NextResponse.json({ error: 'Docente no encontrado' }, { status: 404 })
-
     return NextResponse.json({ teacher: result[0] })
   } catch (error) {
     console.error('[API] PUT teacher error:', error)
@@ -80,13 +79,12 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const schoolId = searchParams.get('schoolId') || 'villada'
-    
+    const schoolId = searchParams.get('schoolId') || 'savio'
+    const db = getDb(schoolId)
     const body = await request.json()
     const { id } = body
 
     if (!id) return NextResponse.json({ error: 'El ID es requerido' }, { status: 400 })
-
     await db.delete(teachers).where(and(eq(teachers.id, id), eq(teachers.schoolId, schoolId)))
     return NextResponse.json({ success: true })
   } catch (error) {
@@ -94,4 +92,5 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: 'Error al eliminar docente' }, { status: 500 })
   }
 }
+
 

@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { getPool } from '@/lib/db/getDb'
-import { db } from '@/lib/db'
+import { getPool, getDb } from '@/lib/db/getDb'
 import { courses, teachers } from '@/lib/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { nanoid } from 'nanoid'
@@ -10,7 +9,10 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const slug = searchParams.get('slug')
-    const schoolId = searchParams.get('schoolId') || 'villada'
+    const schoolId = searchParams.get('schoolId') || 'savio'
+
+    // Usar siempre la BD de la escuela correcta
+    const db = getDb(schoolId)
 
     let data
 
@@ -87,7 +89,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const schoolId = searchParams.get('schoolId') || 'villada'
+    const schoolId = searchParams.get('schoolId') || 'savio'
     const pool = getPool(schoolId)
 
     const body = await request.json()
@@ -140,7 +142,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const schoolId = searchParams.get('schoolId') || 'villada'
+    const schoolId = searchParams.get('schoolId') || 'savio'
     const pool = getPool(schoolId)
 
     const { id, ...body } = await request.json()
@@ -219,7 +221,7 @@ export async function PUT(request: NextRequest) {
 export async function PATCH(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const schoolId = searchParams.get('schoolId') || 'villada'
+    const schoolId = searchParams.get('schoolId') || 'savio'
     const pool = getPool(schoolId)
 
     const { id, showOnHome } = await request.json()
@@ -240,7 +242,10 @@ export async function PATCH(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
-    const schoolId = searchParams.get('schoolId') || 'villada'
+    const schoolId = searchParams.get('schoolId') || 'savio'
+
+    // Usar la BD de la escuela correcta
+    const db = getDb(schoolId)
 
     const { id } = await request.json()
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })

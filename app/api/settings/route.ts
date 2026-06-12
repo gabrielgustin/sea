@@ -4,11 +4,11 @@ import { getPool } from '@/lib/db/getDb'
 export async function GET(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
-    const schoolId = searchParams.get('schoolId') || 'villada'
+    const schoolId = searchParams.get('schoolId') || 'savio'
     const pool = getPool(schoolId)
-    
+
     const result = await pool.query(
-      'SELECT key, value FROM school_settings WHERE schoolId = $1 ORDER BY key',
+      'SELECT key, value FROM school_settings WHERE "schoolId" = $1 ORDER BY key',
       [schoolId]
     )
     const settings: Record<string, string> = {}
@@ -25,14 +25,14 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const searchParams = request.nextUrl.searchParams
-    const schoolId = searchParams.get('schoolId') || 'villada'
+    const schoolId = searchParams.get('schoolId') || 'savio'
     const body = await request.json()
     const pool = getPool(schoolId)
 
     for (const [key, value] of Object.entries(body)) {
       await pool.query(
-        `INSERT INTO school_settings (schoolId, key, value, "updatedAt") VALUES ($1, $2, $3, NOW())
-         ON CONFLICT (schoolId, key) DO UPDATE SET value = $3, "updatedAt" = NOW()`,
+        `INSERT INTO school_settings ("schoolId", key, value, "updatedAt") VALUES ($1, $2, $3, NOW())
+         ON CONFLICT ("schoolId", key) DO UPDATE SET value = $3, "updatedAt" = NOW()`,
         [schoolId, key, String(value)]
       )
     }
