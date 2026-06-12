@@ -1,14 +1,18 @@
 'use client';
 
 import Image from 'next/image';
+import Link from 'next/link';
+import { useSchool } from '@/context/SchoolContext';
 
 export default function Header() {
+  const { schoolId } = useSchool();
+
   return (
     <header className="w-full bg-white fixed md:static top-0 left-0 right-0 z-30 md:z-auto" style={{ borderBottom: '2px solid #031e41' }}>
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 md:h-28">
           {/* Desktop Logo - SEA */}
-          <a href="https://www.portalsea.com.ar/savio" className="hidden md:flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+          <Link href={`/${schoolId}`} className="hidden md:flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
               src="/logo-sea.png" 
               alt="SEA Logo"
@@ -17,10 +21,10 @@ export default function Header() {
               className="h-20 w-auto object-contain"
               priority
             />
-          </a>
+          </Link>
 
           {/* Mobile - Logo SEA Left */}
-          <a href="https://www.portalsea.com.ar/savio" className="md:hidden flex items-center cursor-pointer hover:opacity-80 transition-opacity">
+          <Link href={`/${schoolId}`} className="md:hidden flex items-center cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
               src="/logo-sea.png" 
               alt="SEA Logo"
@@ -29,7 +33,7 @@ export default function Header() {
               className="h-12 w-auto object-contain"
               priority
             />
-          </a>
+          </Link>
 
           {/* Mobile - Logo Savio Right */}
           <div className="md:hidden flex items-center justify-end">
