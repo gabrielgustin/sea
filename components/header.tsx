@@ -9,7 +9,7 @@ export default function Header() {
       <div className="w-full px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-20 md:h-28">
           {/* Desktop Logo - SEA */}
-          <Link href="/" className="hidden md:flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
+          <Link href="/villada" className="hidden md:flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
               src="/logo-sea.png" 
               alt="SEA Logo"
@@ -21,7 +21,7 @@ export default function Header() {
           </Link>
 
           {/* Mobile - Logo SEA Left */}
-          <Link href="/" className="md:hidden flex items-center cursor-pointer hover:opacity-80 transition-opacity">
+          <Link href="/villada" className="md:hidden flex items-center cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
               src="/logo-sea.png" 
               alt="SEA Logo"

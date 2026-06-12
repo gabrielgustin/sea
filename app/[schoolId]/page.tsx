@@ -57,17 +57,19 @@ export default async function Home({ params }: { params: Promise<{ schoolId: str
   return (
     <>
       <Sidebar />
-      <Header />
-      <main className="md:pl-[10%]">
-        <HeroCarousel slides={slides} />
-        <TrainingCenterCards />
-        <CoursesSection initialCourses={initialCourses} />
-        <BenefitsSection />
-        <LearningMethodologySection />
-        <SpecialOfferSection />
-        <FAQSection />
-        <ContactSection />
-      </main>
+      <div className="md:pl-[10%]">
+        <Header />
+        <main>
+          <HeroCarousel initialSlides={slides} />
+          <TrainingCenterCards />
+          <CoursesSection initialCourses={initialCourses} />
+          <BenefitsSection />
+          <LearningMethodologySection />
+          <SpecialOfferSection />
+          <FAQSection />
+          <ContactSection />
+        </main>
+      </div>
       <WhatsAppButton />
     </>
   );
