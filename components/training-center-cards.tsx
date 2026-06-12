@@ -2,23 +2,25 @@
 
 import Link from 'next/link';
 import { useInView } from '@/hooks/useInView';
+import { useSchool } from '@/context/SchoolContext';
 
 export default function TrainingCenterCards() {
   const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
+  const { schoolId } = useSchool();
 
   const cards = [
     {
-      href: '/formaciones',
+      href: `/${schoolId}/formaciones`,
       title: 'Lleva SEA a tu Institución',
       description: 'Creamos tu Centro de Formación junto a la Secretaría de Extensión Académica.',
     },
     {
-      href: '/trabaja-con-nosotros',
+      href: `/${schoolId}/trabaja-con-nosotros`,
       title: 'Trabajá con Nosotros',
       description: 'Graduado/a y estudiante avanzado/a: Postulate para trabajar en nuestros proyectos o dictar cursos',
     },
     {
-      href: '/catalogo-formaciones',
+      href: `/${schoolId}/catalogo-formaciones`,
       title: 'Nuestras Formaciones',
       description: 'Explora todo nuestro catálogo de formaciones disponibles y encuentra la que mejor se adapte a tus necesidades',
     },
