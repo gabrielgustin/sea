@@ -21,8 +21,8 @@ export async function POST(request: NextRequest) {
 
     for (const [key, value] of Object.entries(body)) {
       await pool.query(
-        `INSERT INTO site_settings (key, value, "updatedAt") VALUES ($1, $2, NOW())
-         ON CONFLICT (key) DO UPDATE SET value = $2, "updatedAt" = NOW()`,
+        `INSERT INTO site_settings (key, value) VALUES (?, ?)
+         ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
         [key, String(value)]
       )
     }
