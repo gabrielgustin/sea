@@ -1,16 +1,28 @@
 import { createClient } from '@libsql/client'
 
-const connectionUrl = process.env.TURSO_CONNECTION_URL
-const authToken = process.env.TURSO_AUTH_TOKEN
+let tursoClient: any = null
 
-if (!connectionUrl || !authToken) {
-  throw new Error('Missing TURSO_CONNECTION_URL or TURSO_AUTH_TOKEN environment variables')
+function getTursoClient() {
+  if (tursoClient) return tursoClient
+
+  const connectionUrl = process.env.TURSO_CONNECTION_URL
+  const authToken = process.env.TURSO_AUTH_TOKEN
+
+  if (!connectionUrl || !authToken) {
+    throw new Error('Missing TURSO_CONNECTION_URL or TURSO_AUTH_TOKEN environment variables')
+  }
+
+  tursoClient = createClient({
+    url: connectionUrl,
+    authToken: authToken,
+  })
+
+  return tursoClient
 }
 
-export const turso = createClient({
-  url: connectionUrl,
-  authToken: authToken,
-})
+export const turso = {
+  execute: (sql: any, args?: any) => getTursoClient().execute(sql, args),
+}
 
 // Initialize database schema on first connection
 export async function initializeSchema() {
