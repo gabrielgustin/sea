@@ -1,8 +1,6 @@
 'use server'
 
-import { db } from '@/lib/db'
-import { contactMessages } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
+import { pool } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 
 export async function submitContactMessage(data: {
@@ -11,14 +9,33 @@ export async function submitContactMessage(data: {
   telefono?: string
   mensaje: string
 }) {
-  await db.insert(contactMessages).values(data)
+  try {
+    await pool.query(
+      `INSERT INTO contact_messages (nombre, email, telefono, mensaje) VALUES (?, ?, ?, ?)`,
+      [data.nombre, data.email, data.telefono || null, data.mensaje]
+    )
+  } catch (error) {
+    console.error('[v0] Error submitting contact message:', error)
+    throw error
+  }
 }
 
 export async function getContactMessages() {
-  return db.select().from(contactMessages).orderBy(contactMessages.createdAt)
+  try {
+    const result = await pool.query(`SELECT * FROM contact_messages ORDER BY createdAt DESC`)
+    return result.rows || []
+  } catch (error) {
+    console.error('[v0] Error getting contact messages:', error)
+    return []
+  }
 }
 
 export async function markMessageRead(id: number) {
-  await db.update(contactMessages).set({ read: true }).where(eq(contactMessages.id, id))
-  revalidatePath('/villada/admin')
+  try {
+    await pool.query(`UPDATE contact_messages SET read = 1 WHERE id = ?`, [id])
+    revalidatePath('/villada/admin')
+  } catch (error) {
+    console.error('[v0] Error marking message as read:', error)
+    throw error
+  }
 }

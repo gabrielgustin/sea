@@ -1,31 +1,67 @@
 'use server'
 
-import { db } from '@/lib/db'
-import { students } from '@/lib/db/schema'
-import { eq, and } from 'drizzle-orm'
+import { pool } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 
 export async function getStudents() {
-  return db.select().from(students).orderBy(students.createdAt)
+  try {
+    const result = await pool.query('SELECT * FROM students ORDER BY createdAt DESC')
+    return result.rows || []
+  } catch (error) {
+    console.error('[v0] Error getting students:', error)
+    return []
+  }
 }
 
 export async function getStudentByDni(dni: string) {
-  const result = await db.select().from(students).where(eq(students.dni, dni))
-  return result[0] ?? null
+  try {
+    const result = await pool.query('SELECT * FROM students WHERE dni = ? LIMIT 1', [dni])
+    return result.rows?.[0] ?? null
+  } catch (error) {
+    console.error('[v0] Error getting student by DNI:', error)
+    return null
+  }
 }
 
-export async function createStudent(data: Omit<typeof students.$inferInsert, 'id' | 'createdAt'>) {
-  const result = await db.insert(students).values(data).returning()
-  revalidatePath('/villada/admin')
-  return result[0]
+export async function createStudent(data: any) {
+  try {
+    const fields = Object.keys(data).filter(k => data[k] !== undefined)
+    const placeholders = fields.map(() => '?').join(', ')
+    const values = fields.map(k => data[k])
+    
+    const query = `INSERT INTO students (${fields.join(', ')}) VALUES (${placeholders})`
+    const result = await pool.query(query, values)
+    
+    revalidatePath('/villada/admin')
+    return result.rows?.[0] || data
+  } catch (error) {
+    console.error('[v0] Error creating student:', error)
+    throw error
+  }
 }
 
-export async function updateStudent(id: number, data: Partial<typeof students.$inferInsert>) {
-  await db.update(students).set(data).where(eq(students.id, id))
-  revalidatePath('/villada/admin')
+export async function updateStudent(id: number, data: any) {
+  try {
+    const fields = Object.keys(data).filter(k => data[k] !== undefined)
+    const setClause = fields.map(f => `${f} = ?`).join(', ')
+    const values = [...fields.map(k => data[k]), id]
+    
+    const query = `UPDATE students SET ${setClause} WHERE id = ?`
+    await pool.query(query, values)
+    
+    revalidatePath('/villada/admin')
+  } catch (error) {
+    console.error('[v0] Error updating student:', error)
+    throw error
+  }
 }
 
 export async function deleteStudent(id: number) {
-  await db.delete(students).where(eq(students.id, id))
-  revalidatePath('/villada/admin')
+  try {
+    await pool.query('DELETE FROM students WHERE id = ?', [id])
+    revalidatePath('/villada/admin')
+  } catch (error) {
+    console.error('[v0] Error deleting student:', error)
+    throw error
+  }
 }
