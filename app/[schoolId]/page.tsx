@@ -9,33 +9,25 @@ import SpecialOfferSection from '@/components/special-offer-section';
 import FAQSection from '@/components/faq-section';
 import ContactSection from '@/components/contact-section';
 import WhatsAppButton from '@/components/whatsapp-button';
-import { getDb } from '@/lib/db/getDb';
-import { carouselSlides, courses } from '@/lib/db/schema';
-import { eq, asc } from 'drizzle-orm';
+import { pool } from '@/lib/db';
 
-async function getCarouselSlides(schoolId: string) {
+async function getCarouselSlides(_schoolId: string) {
   try {
-    const db = await getDb(schoolId);
-    const data = await db
-      .select()
-      .from(carouselSlides)
-      .where(eq(carouselSlides.active, true))
-      .orderBy(asc(carouselSlides.order));
-    return data;
+    const result = await pool.query(
+      'SELECT * FROM carousel_slides WHERE active = 1 ORDER BY `order` ASC'
+    );
+    return result.rows || [];
   } catch {
     return [];
   }
 }
 
-async function getHomeCourses(schoolId: string) {
+async function getHomeCourses(_schoolId: string) {
   try {
-    const db = await getDb(schoolId);
-    const data = await db
-      .select()
-      .from(courses)
-      .where(eq(courses.showOnHome, true))
-      .orderBy(asc(courses.createdAt));
-    return data;
+    const result = await pool.query(
+      'SELECT * FROM courses WHERE showOnHome = 1 ORDER BY createdAt ASC'
+    );
+    return result.rows || [];
   } catch {
     return [];
   }
