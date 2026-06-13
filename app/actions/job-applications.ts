@@ -1,7 +1,6 @@
 'use server'
 
-import { db } from '@/lib/db'
-import { jobApplications } from '@/lib/db/schema'
+import { pool } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 
 export async function submitJobApplication(data: {
@@ -15,10 +14,24 @@ export async function submitJobApplication(data: {
   experiencia?: string
   motivacion?: string
 }) {
-  await db.insert(jobApplications).values({ ...data, status: 'pending' })
-  revalidatePath('/villada/admin')
+  try {
+    await pool.query(
+      `INSERT INTO job_applications (nombre, apellido, email, telefono, dni, titulo, especialidad, experiencia, motivacion, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+      [data.nombre, data.apellido, data.email, data.telefono || null, data.dni || null, data.titulo || null, data.especialidad || null, data.experiencia || null, data.motivacion || null]
+    )
+    revalidatePath('/villada/admin')
+  } catch (error) {
+    console.error('[v0] Error submitting job application:', error)
+    throw error
+  }
 }
 
 export async function getJobApplications() {
-  return db.select().from(jobApplications).orderBy(jobApplications.createdAt)
+  try {
+    const result = await pool.query('SELECT * FROM job_applications ORDER BY createdAt DESC')
+    return result.rows || []
+  } catch (error) {
+    console.error('[v0] Error getting job applications:', error)
+    return []
+  }
 }

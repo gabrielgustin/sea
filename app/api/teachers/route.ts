@@ -1,11 +1,9 @@
-import { db } from '@/lib/db'
-import { teachers } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
+import { pool } from '@/lib/db'
 
 export async function GET() {
   try {
-    const allTeachers = await db.select().from(teachers).orderBy(teachers.order)
-    return Response.json({ teachers: allTeachers })
+    const result = await pool.query('SELECT * FROM teachers ORDER BY `order` ASC')
+    return Response.json({ teachers: result.rows || [] })
   } catch (error) {
     console.error('[API] GET teachers error:', error)
     return Response.json({ error: 'Error al obtener docentes' }, { status: 500 })
@@ -19,18 +17,12 @@ export async function POST(req: Request) {
 
     if (!name) return Response.json({ error: 'El nombre es requerido' }, { status: 400 })
 
-    const result = await db.insert(teachers).values({
-      name,
-      description: description || null,
-      image: image || null,
-      whatsapp: whatsapp || null,
-      linkedin: linkedin || null,
-      courseId: courseId || null,
-      order: order || 0,
-      active: true,
-    }).returning()
+    await pool.query(
+      `INSERT INTO teachers (name, description, image, whatsapp, linkedin, courseId, "order", active) VALUES (?, ?, ?, ?, ?, ?, ?, 1)`,
+      [name, description || null, image || null, whatsapp || null, linkedin || null, courseId || null, order || 0]
+    )
 
-    return Response.json({ teacher: result[0] }, { status: 201 })
+    return Response.json({ success: true }, { status: 201 })
   } catch (error) {
     console.error('[API] POST teacher error:', error)
     return Response.json({ error: 'Error al crear docente' }, { status: 500 })
@@ -45,21 +37,12 @@ export async function PUT(req: Request) {
     if (!id) return Response.json({ error: 'El ID es requerido' }, { status: 400 })
     if (!name) return Response.json({ error: 'El nombre es requerido' }, { status: 400 })
 
-    const result = await db.update(teachers).set({
-      name,
-      description: description || null,
-      image: image || null,
-      whatsapp: whatsapp || null,
-      linkedin: linkedin || null,
-      courseId: courseId || null,
-      order: order || 0,
-      active: active !== undefined ? active : true,
-      updatedAt: new Date(),
-    }).where(eq(teachers.id, id)).returning()
+    await pool.query(
+      `UPDATE teachers SET name = ?, description = ?, image = ?, whatsapp = ?, linkedin = ?, courseId = ?, "order" = ?, active = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`,
+      [name, description || null, image || null, whatsapp || null, linkedin || null, courseId || null, order || 0, active !== undefined ? active : 1, id]
+    )
 
-    if (!result.length) return Response.json({ error: 'Docente no encontrado' }, { status: 404 })
-
-    return Response.json({ teacher: result[0] })
+    return Response.json({ success: true })
   } catch (error) {
     console.error('[API] PUT teacher error:', error)
     return Response.json({ error: 'Error al actualizar docente' }, { status: 500 })
@@ -73,7 +56,7 @@ export async function DELETE(req: Request) {
 
     if (!id) return Response.json({ error: 'El ID es requerido' }, { status: 400 })
 
-    await db.delete(teachers).where(eq(teachers.id, id))
+    await pool.query(`DELETE FROM teachers WHERE id = ?`, [id])
     return Response.json({ success: true })
   } catch (error) {
     console.error('[API] DELETE teacher error:', error)

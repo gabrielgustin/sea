@@ -1,7 +1,6 @@
 'use server'
 
-import { db } from '@/lib/db'
-import { interestForms } from '@/lib/db/schema'
+import { pool } from '@/lib/db'
 
 export async function submitInterestForm(data: {
   courseId: string
@@ -10,9 +9,23 @@ export async function submitInterestForm(data: {
   email: string
   telefono?: string
 }) {
-  await db.insert(interestForms).values(data)
+  try {
+    await pool.query(
+      `INSERT INTO interest_forms (courseId, courseName, nombre, email, telefono) VALUES (?, ?, ?, ?, ?)`,
+      [data.courseId, data.courseName, data.nombre, data.email, data.telefono || null]
+    )
+  } catch (error) {
+    console.error('[v0] Error submitting interest form:', error)
+    throw error
+  }
 }
 
 export async function getInterestForms() {
-  return db.select().from(interestForms).orderBy(interestForms.createdAt)
+  try {
+    const result = await pool.query('SELECT * FROM interest_forms ORDER BY createdAt DESC')
+    return result.rows || []
+  } catch (error) {
+    console.error('[v0] Error getting interest forms:', error)
+    return []
+  }
 }

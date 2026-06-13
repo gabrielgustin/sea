@@ -1,12 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
-import { students } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
+import { pool } from '@/lib/db'
 
 export async function GET() {
   try {
-    const data = await db.select().from(students).orderBy(students.createdAt)
-    return NextResponse.json({ students: data })
+    const result = await pool.query('SELECT * FROM students ORDER BY createdAt DESC')
+    return NextResponse.json({ students: result.rows || [] })
   } catch (error) {
     return NextResponse.json({ error: 'Failed to fetch students' }, { status: 500 })
   }
@@ -15,19 +13,22 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-    const result = await db.insert(students).values({
-      nombre: body.nombre ?? body.name ?? '',
-      apellido: body.apellido ?? '',
-      email: body.email ?? '',
-      telefono: body.telefono,
-      dni: body.dni,
-      courseId: body.courseId ?? body.curso ?? '',
-      courseName: body.courseName ?? body.curso ?? '',
-      status: body.status ?? 'pending',
-      paymentStatus: body.paymentStatus ?? 'pending',
-      notes: body.notes,
-    }).returning()
-    return NextResponse.json({ success: true, student: result[0] })
+    await pool.query(
+      `INSERT INTO students (nombre, apellido, email, telefono, dni, courseId, courseName, status, paymentStatus, notes) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [
+        body.nombre ?? body.name ?? '',
+        body.apellido ?? '',
+        body.email ?? '',
+        body.telefono,
+        body.dni,
+        body.courseId ?? body.curso ?? '',
+        body.courseName ?? body.curso ?? '',
+        body.status ?? 'pending',
+        body.paymentStatus ?? 'pending',
+        body.notes,
+      ]
+    )
+    return NextResponse.json({ success: true })
   } catch (error) {
     return NextResponse.json({ error: 'Failed to create student' }, { status: 500 })
   }
@@ -37,7 +38,12 @@ export async function PUT(request: NextRequest) {
   try {
     const { id, ...updatedData } = await request.json()
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
-    await db.update(students).set(updatedData).where(eq(students.id, id))
+    
+    const fields = Object.keys(updatedData).filter(k => updatedData[k] !== undefined)
+    const setClause = fields.map(f => `${f} = ?`).join(', ')
+    const values = [...fields.map(k => updatedData[k]), id]
+    
+    await pool.query(`UPDATE students SET ${setClause} WHERE id = ?`, values)
     return NextResponse.json({ success: true })
   } catch (error) {
     return NextResponse.json({ error: 'Failed to update student' }, { status: 500 })
@@ -48,7 +54,8 @@ export async function DELETE(request: NextRequest) {
   try {
     const { id } = await request.json()
     if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
-    await db.delete(students).where(eq(students.id, id))
+    
+    await pool.query(`DELETE FROM students WHERE id = ?`, [id])
     return NextResponse.json({ success: true })
   } catch (error) {
     return NextResponse.json({ error: 'Failed to delete student' }, { status: 500 })

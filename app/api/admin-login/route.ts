@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { db } from '@/lib/db'
-import { adminUsers } from '@/lib/db/schema'
-import { eq } from 'drizzle-orm'
+import { pool } from '@/lib/db'
 import bcrypt from 'bcryptjs'
 
 export async function POST(request: NextRequest) {
@@ -12,8 +10,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Usuario y contraseña requeridos' }, { status: 400 })
     }
 
-    const users = await db.select().from(adminUsers).where(eq(adminUsers.email, email.toLowerCase()))
-    const user = users[0]
+    const result = await pool.query(
+      'SELECT * FROM admin_users WHERE email = ? LIMIT 1',
+      [email.toLowerCase()]
+    )
+    const user = result.rows?.[0]
 
     if (!user) {
       return NextResponse.json({ error: 'Credenciales incorrectas' }, { status: 401 })
