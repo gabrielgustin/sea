@@ -2,13 +2,10 @@
   "buildCommand": "npm run build",
   "installCommand": "npm install",
   "outputDirectory": ".next",
-  "env": [
-    "DATABASE_URL",
-    "BETTER_AUTH_SECRET"
-  ],
-  "git": {
-    "deploymentEnabled": {
-      "villada": true
-    }
+  "env": {
+    "TURSO_CONNECTION_URL": "@TURSO_CONNECTION_URL",
+    "TURSO_AUTH_TOKEN_RW": "@TURSO_AUTH_TOKEN_RW",
+    "BLOB_READ_WRITE_TOKEN": "@BLOB_READ_WRITE_TOKEN",
+    "AI_GATEWAY_API_KEY": "@AI_GATEWAY_API_KEY"
   }
 }
