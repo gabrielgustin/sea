@@ -6,7 +6,7 @@ function getTursoClient() {
   if (tursoClient) return tursoClient
 
   const connectionUrl = process.env.TURSO_CONNECTION_URL
-  const authToken = process.env.TURSO_AUTH_TOKEN
+  const authToken = process.env.TURSO_AUTH_TOKEN_RW || process.env.TURSO_AUTH_TOKEN
 
   if (!connectionUrl || !authToken) {
     throw new Error('Missing TURSO_CONNECTION_URL or TURSO_AUTH_TOKEN environment variables')
