@@ -15,7 +15,7 @@ async function getCarouselSlides(schoolId: string) {
   try {
     await initializeSchema();
     const result = await turso.execute({
-      sql: 'SELECT * FROM carousel WHERE active = 1 AND schoolId = ? ORDER BY "order" ASC',
+      sql: 'SELECT * FROM carousel_slides WHERE active = 1 AND schoolId = ? ORDER BY "order" ASC',
       args: [schoolId]
     });
     return result.rows || [];
@@ -26,6 +26,7 @@ async function getCarouselSlides(schoolId: string) {
 
 async function getHomeCourses(schoolId: string) {
   try {
+    await initializeSchema();
     const result = await turso.execute({
       sql: 'SELECT * FROM courses WHERE showOnHome = 1 AND schoolId = ? ORDER BY createdAt ASC',
       args: [schoolId]
