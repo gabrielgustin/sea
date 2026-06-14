@@ -1,10 +1,5 @@
 {
   "buildCommand": "npm run build",
   "installCommand": "npm install",
-  "outputDirectory": ".next",
-  "git": {
-    "deploymentEnabled": {
-      "savio": true
-    }
-  }
+  "outputDirectory": ".next"
 }
