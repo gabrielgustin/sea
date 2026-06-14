@@ -5,6 +5,10 @@ import bcrypt from 'bcryptjs'
 // One-time endpoint to create the initial admin user for Savio.
 // Call GET /api/setup to create/update the admin user credentials.
 export async function GET() {
+  // Temporarily open to allow initial user creation in production
+  // if (process.env.NODE_ENV === 'production' && !process.env.ALLOW_SETUP) {
+  //   return NextResponse.json({ error: 'Not allowed in production' }, { status: 403 })
+  // }
   try {
     // Ensure admin_users table exists
     await turso.execute(`
