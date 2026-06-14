@@ -2,10 +2,6 @@
   "buildCommand": "npm run build",
   "installCommand": "npm install",
   "outputDirectory": ".next",
-  "env": [
-    "DATABASE_URL",
-    "BETTER_AUTH_SECRET"
-  ],
   "git": {
     "deploymentEnabled": {
       "savio": true
