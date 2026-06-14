@@ -1,4 +1,5 @@
 import { redirect } from 'next/navigation';
+import { SchoolProvider } from '@/components/school-provider';
 
 export default async function SchoolLayout({
   children,
@@ -15,7 +16,9 @@ export default async function SchoolLayout({
     redirect('/villada');
   }
 
-  // El SchoolContext en el root layout ya detecta el schoolId automáticamente
-  // Este layout solo sirve para validación
-  return <>{children}</>;
+  return (
+    <SchoolProvider schoolId={schoolId}>
+      {children}
+    </SchoolProvider>
+  );
 }

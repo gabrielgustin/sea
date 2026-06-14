@@ -53,14 +53,14 @@ interface CoursesContextType {
 
 const CoursesContext = createContext<CoursesContextType | undefined>(undefined);
 
-export function CoursesProvider({ children }: { children: React.ReactNode }) {
+export function CoursesProvider({ children, schoolId = 'villada' }: { children: React.ReactNode; schoolId?: string }) {
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
 
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const res = await fetch('/api/courses');
+      const res = await fetch(`/api/courses?schoolId=${schoolId}`);
       if (res.ok) {
         const data = await res.json();
         setCourses(data.courses ?? []);
@@ -77,13 +77,13 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     fetchCourses();
-  }, []);
+  }, [schoolId]);
 
   const addCourse = async (course: Omit<Course, 'id'>) => {
     const res = await fetch('/api/courses', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(course),
+      body: JSON.stringify({ ...course, schoolId }),
     });
     if (!res.ok) {
       const error = await res.json();
@@ -96,7 +96,7 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
     const res = await fetch('/api/courses', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, ...updatedData }),
+      body: JSON.stringify({ id, ...updatedData, schoolId }),
     })
     const resData = await res.json()
     if (!res.ok) {
@@ -109,7 +109,7 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
     const res = await fetch('/api/courses', {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id }),
+      body: JSON.stringify({ id, schoolId }),
     });
     if (!res.ok) {
       const error = await res.json();
