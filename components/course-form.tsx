@@ -69,6 +69,27 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
     }
   }, [course]);
 
+  const generateSlug = (title: string) => {
+    return title
+      .toLowerCase()
+      .trim()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^\w\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  };
+
+  const handleTitleChange = (value: string) => {
+    const newSlug = generateSlug(value);
+    setFormData(prev => ({
+      ...prev,
+      title: value,
+      slug: newSlug,
+    }));
+  };
+
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({
       ...prev,
@@ -234,19 +255,16 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
                   <Label>Título del Curso *</Label>
                   <Input
                     value={formData.title}
-                    onChange={(e) => handleInputChange('title', e.target.value)}
+                    onChange={(e) => handleTitleChange(e.target.value)}
                     placeholder="Ej: Desarrollo de Aplicaciones"
                     className="mt-2 transition-smooth"
                   />
                 </div>
                 <div>
-                  <Label>Slug (URL) *</Label>
-                  <Input
-                    value={formData.slug}
-                    onChange={(e) => handleInputChange('slug', e.target.value)}
-                    placeholder="desarrollo-de-aplicaciones"
-                    className="mt-2 transition-smooth"
-                  />
+                  <Label>Slug (URL) - Se genera automáticamente</Label>
+                  <div className="mt-2 px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-700 font-mono text-sm">
+                    {formData.slug || '(se generará cuando ingreses el título)'}
+                  </div>
                 </div>
               </div>
 
