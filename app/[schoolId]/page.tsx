@@ -9,15 +9,15 @@ import SpecialOfferSection from '@/components/special-offer-section';
 import FAQSection from '@/components/faq-section';
 import ContactSection from '@/components/contact-section';
 import WhatsAppButton from '@/components/whatsapp-button';
-import { pool } from '@/lib/db';
+import { turso, initializeSchema } from '@/lib/turso-client';
 
 async function getCarouselSlides(schoolId: string) {
   try {
-    const result = await pool.query(
-      'SELECT * FROM carousel_slides WHERE active = 1 ORDER BY `order` ASC',
-      [],
-      schoolId
-    );
+    await initializeSchema();
+    const result = await turso.execute({
+      sql: 'SELECT * FROM carousel WHERE active = 1 AND schoolId = ? ORDER BY "order" ASC',
+      args: [schoolId]
+    });
     return result.rows || [];
   } catch {
     return [];
@@ -26,11 +26,10 @@ async function getCarouselSlides(schoolId: string) {
 
 async function getHomeCourses(schoolId: string) {
   try {
-    const result = await pool.query(
-      'SELECT * FROM courses WHERE showOnHome = 1 ORDER BY createdAt ASC',
-      [],
-      schoolId
-    );
+    const result = await turso.execute({
+      sql: 'SELECT * FROM courses WHERE showOnHome = 1 AND schoolId = ? ORDER BY createdAt ASC',
+      args: [schoolId]
+    });
     return result.rows || [];
   } catch {
     return [];

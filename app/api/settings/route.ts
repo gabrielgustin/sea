@@ -1,12 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { pool } from '@/lib/db'
+import { turso, initializeSchema } from '@/lib/turso-client'
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    const result = await pool.query('SELECT key, value FROM site_settings')
+    await initializeSchema()
+    const { searchParams } = new URL(request.url)
+    const schoolId = searchParams.get('schoolId') || 'villada'
+    const result = await turso.execute({
+      sql: 'SELECT key, value FROM site_settings WHERE schoolId = ?',
+      args: [schoolId]
+    })
     const settings: Record<string, string> = {}
     for (const row of result.rows) {
-      settings[row.key] = row.value
+      settings[row.key as string] = row.value as string
     }
     return NextResponse.json({ settings })
   } catch (error) {
@@ -18,15 +24,14 @@ export async function GET() {
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
-
-    for (const [key, value] of Object.entries(body)) {
-      await pool.query(
-        `INSERT INTO site_settings (key, value) VALUES (?, ?)
-         ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
-        [key, String(value)]
-      )
+    const { schoolId = 'villada', ...settings } = body
+    for (const [key, value] of Object.entries(settings)) {
+      await turso.execute({
+        sql: `INSERT INTO site_settings (key, schoolId, value) VALUES (?, ?, ?)
+              ON CONFLICT(key, schoolId) DO UPDATE SET value = excluded.value`,
+        args: [key, schoolId, String(value)]
+      })
     }
-
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] POST /api/settings error:', error)
