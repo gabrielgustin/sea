@@ -35,8 +35,8 @@ export default function Header() {
           {/* Mobile - Logo Savio Right */}
           <div className="md:hidden flex items-center justify-end">
             <Image 
-              src="/logo-savio.png" 
-              alt="ITS Savio Logo"
+              src="/logo-domingo-savio.png" 
+              alt="Domingo Savio Logo"
               width={80}
               height={60}
               className="h-12 w-auto object-contain"
@@ -46,11 +46,11 @@ export default function Header() {
           {/* Desktop - Right Side Logo */}
           <div className="hidden md:flex items-center justify-end gap-0">
             <Image
-              src="/logo-savio.png"
-              alt="ITS Savio Logo"
-              width={150}
-              height={100}
-              className="h-20 w-auto object-contain"
+              src="/logo-domingo-savio.png"
+              alt="Domingo Savio Logo"
+              width={200}
+              height={150}
+              className="h-24 w-auto object-contain"
             />
           </div>
         </div>
