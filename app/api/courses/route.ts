@@ -58,7 +58,7 @@ export async function GET(request: NextRequest) {
         status: c.status, category: c.category,
         maxStudents: c.maxStudents, showOnHome: Boolean(c.showOnHome),
       }))
-      return NextResponse.json(courses)
+      return NextResponse.json({ courses })
     }
   } catch (error) {
     console.error('[v0] GET /api/courses error:', error)
