@@ -34,7 +34,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
     slug: '',
     description: '',
     schedule: '',
-    location: 'ITS Villada, Valle Escondido',
+    location: 'ITS Savio, Valle Escondido',
     teacher: '',
     duration: '6 meses',
     price: '',
@@ -405,7 +405,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
                   <Input
                     value={formData.location}
                     onChange={(e) => handleInputChange('location', e.target.value)}
-                    placeholder="ITS Villada, Valle Escondido"
+                    placeholder="ITS Savio, Valle Escondido"
                     className="mt-2 transition-smooth"
                   />
                 </div>

@@ -12,19 +12,19 @@ const SchoolContext = createContext<SchoolContextType | undefined>(undefined);
 
 export function SchoolProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const [schoolId, setSchoolId] = useState<string>('villada');
+  const [schoolId, setSchoolId] = useState<string>('savio');
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    // Detecta si la ruta empieza con /villada o /savio
+    // Detecta si la ruta empieza con /savio o /savio
     const segments = pathname.split('/').filter(Boolean);
     const possibleSchoolId = segments[0];
 
-    if (possibleSchoolId === 'villada' || possibleSchoolId === 'savio') {
+    if (possibleSchoolId === 'savio' || possibleSchoolId === 'savio') {
       setSchoolId(possibleSchoolId);
     } else {
-      // Default a villada si no hay schoolId en la ruta
-      setSchoolId('villada');
+      // Default a savio si no hay schoolId en la ruta
+      setSchoolId('savio');
     }
     setIsReady(true);
   }, [pathname]);

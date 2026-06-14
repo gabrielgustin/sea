@@ -10,7 +10,7 @@ export default function BenefitsSection() {
     {
       icon: Award,
       title: 'Certificación Oficial',
-      description: 'Todos nuestros cursos cuentan con certificación oficial de ITS Villada',
+      description: 'Todos nuestros cursos cuentan con certificación oficial de ITS Savio',
     },
     {
       icon: Zap,

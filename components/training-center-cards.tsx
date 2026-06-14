@@ -8,17 +8,17 @@ export default function TrainingCenterCards() {
 
   const cards = [
     {
-      href: '/villada/formaciones',
+      href: '/savio/formaciones',
       title: 'Lleva SEA a tu Institución',
       description: 'Creamos tu Centro de Formación junto a la Secretaría de Extensión Académica.',
     },
     {
-      href: '/villada/trabaja-con-nosotros',
+      href: '/savio/trabaja-con-nosotros',
       title: 'Trabajá con Nosotros',
       description: 'Graduado/a y estudiante avanzado/a: Postulate para trabajar en nuestros proyectos o dictar cursos',
     },
     {
-      href: '/villada/catalogo-formaciones',
+      href: '/savio/catalogo-formaciones',
       title: 'Nuestras Formaciones',
       description: 'Explora todo nuestro catálogo de formaciones disponibles y encuentra la que mejor se adapte a tus necesidades',
     },

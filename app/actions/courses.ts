@@ -45,7 +45,7 @@ export async function createCourse(data: any) {
     await pool.query(query, values)
     
     revalidatePath('/')
-    revalidatePath('/villada/catalogo-formaciones')
+    revalidatePath('/savio/catalogo-formaciones')
     return id
   } catch (error) {
     console.error('[v0] Error creating course:', error)
@@ -63,8 +63,8 @@ export async function updateCourse(id: string, data: any) {
     await pool.query(query, values)
     
     revalidatePath('/')
-    revalidatePath('/villada/catalogo-formaciones')
-    revalidatePath(`/villada/cursos/${id}`)
+    revalidatePath('/savio/catalogo-formaciones')
+    revalidatePath(`/savio/cursos/${id}`)
   } catch (error) {
     console.error('[v0] Error updating course:', error)
     throw error
@@ -76,7 +76,7 @@ export async function deleteCourse(id: string) {
     await pool.query('DELETE FROM courses WHERE id = ?', [id])
     
     revalidatePath('/')
-    revalidatePath('/villada/catalogo-formaciones')
+    revalidatePath('/savio/catalogo-formaciones')
   } catch (error) {
     console.error('[v0] Error deleting course:', error)
     throw error

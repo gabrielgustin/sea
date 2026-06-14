@@ -18,7 +18,7 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (mounted && (!isAuthenticated || userRole !== 'admin')) {
-      router.push('/villada');
+      router.push('/savio');
     }
   }, [isAuthenticated, userRole, mounted, router]);
 

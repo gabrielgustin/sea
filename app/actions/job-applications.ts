@@ -19,7 +19,7 @@ export async function submitJobApplication(data: {
       `INSERT INTO job_applications (nombre, apellido, email, telefono, dni, titulo, especialidad, experiencia, motivacion, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
       [data.nombre, data.apellido, data.email, data.telefono || null, data.dni || null, data.titulo || null, data.especialidad || null, data.experiencia || null, data.motivacion || null]
     )
-    revalidatePath('/villada/admin')
+    revalidatePath('/savio/admin')
   } catch (error) {
     console.error('[v0] Error submitting job application:', error)
     throw error

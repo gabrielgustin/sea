@@ -32,7 +32,7 @@ export async function createStudent(data: any) {
     const query = `INSERT INTO students (${fields.join(', ')}) VALUES (${placeholders})`
     const result = await pool.query(query, values)
     
-    revalidatePath('/villada/admin')
+    revalidatePath('/savio/admin')
     return result.rows?.[0] || data
   } catch (error) {
     console.error('[v0] Error creating student:', error)
@@ -49,7 +49,7 @@ export async function updateStudent(id: number, data: any) {
     const query = `UPDATE students SET ${setClause} WHERE id = ?`
     await pool.query(query, values)
     
-    revalidatePath('/villada/admin')
+    revalidatePath('/savio/admin')
   } catch (error) {
     console.error('[v0] Error updating student:', error)
     throw error
@@ -59,7 +59,7 @@ export async function updateStudent(id: number, data: any) {
 export async function deleteStudent(id: number) {
   try {
     await pool.query('DELETE FROM students WHERE id = ?', [id])
-    revalidatePath('/villada/admin')
+    revalidatePath('/savio/admin')
   } catch (error) {
     console.error('[v0] Error deleting student:', error)
     throw error

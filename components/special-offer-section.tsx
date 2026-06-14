@@ -37,13 +37,13 @@ export default function SpecialOfferSection() {
         {/* Description */}
         <p className="text-gray-700 text-center mb-6 md:mb-10 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
           No esperes más para transformar tu futuro. Los lugares se asignan por orden de
-          inscripción. Todos nuestros cursos incluyen certificación oficial de ITS Villada.
+          inscripción. Todos nuestros cursos incluyen certificación oficial de ITS Savio.
         </p>
 
         {/* Buttons */}
         <div className="flex flex-col md:flex-row gap-3 md:gap-4 justify-center">
           <Link
-            href="/villada/formaciones"
+            href="/savio/formaciones"
             className="px-6 md:px-10 py-2.5 md:py-4 text-white font-semibold rounded-full transition-opacity hover:opacity-90 text-sm md:text-base text-center"
             style={{ backgroundColor: '#031e41' }}
           >
