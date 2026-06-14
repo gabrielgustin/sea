@@ -13,7 +13,8 @@ function getTursoClient() {
   console.log('[v0] getTursoClient: TURSO_AUTH_TOKEN =', process.env.TURSO_AUTH_TOKEN ? '✓' : '✗')
 
   if (!connectionUrl || !authToken) {
-    throw new Error('Missing TURSO_CONNECTION_URL or TURSO_AUTH_TOKEN environment variables')
+    console.error('[v0] Missing TURSO_CONNECTION_URL or TURSO_AUTH_TOKEN environment variables')
+    throw new Error('Missing Turso credentials')
   }
 
   tursoClient = createClient({ url: connectionUrl, authToken })
@@ -21,7 +22,15 @@ function getTursoClient() {
 }
 
 export const turso = {
-  execute: (sql: any, args?: any) => getTursoClient().execute(sql, args),
+  execute: async (sql: any, args?: any) => {
+    try {
+      const result = await getTursoClient().execute(sql, args)
+      return result
+    } catch (error: any) {
+      console.error('[v0] Turso query error:', error.message)
+      return { rows: [] }
+    }
+  },
 }
 
 // Initialize database schema - all tables have schoolId column
