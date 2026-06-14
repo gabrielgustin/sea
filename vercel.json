@@ -1,11 +1,5 @@
 {
   "buildCommand": "npm run build",
   "installCommand": "npm install",
-  "outputDirectory": ".next",
-  "env": {
-    "TURSO_CONNECTION_URL": "@TURSO_CONNECTION_URL",
-    "TURSO_AUTH_TOKEN_RW": "@TURSO_AUTH_TOKEN_RW",
-    "BLOB_READ_WRITE_TOKEN": "@BLOB_READ_WRITE_TOKEN",
-    "AI_GATEWAY_API_KEY": "@AI_GATEWAY_API_KEY"
-  }
+  "outputDirectory": ".next"
 }
