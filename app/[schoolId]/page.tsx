@@ -11,10 +11,12 @@ import ContactSection from '@/components/contact-section';
 import WhatsAppButton from '@/components/whatsapp-button';
 import { pool } from '@/lib/db';
 
-async function getCarouselSlides(_schoolId: string) {
+async function getCarouselSlides(schoolId: string) {
   try {
     const result = await pool.query(
-      'SELECT * FROM carousel_slides WHERE active = 1 ORDER BY `order` ASC'
+      'SELECT * FROM carousel_slides WHERE active = 1 ORDER BY `order` ASC',
+      [],
+      schoolId
     );
     return result.rows || [];
   } catch {
@@ -22,10 +24,12 @@ async function getCarouselSlides(_schoolId: string) {
   }
 }
 
-async function getHomeCourses(_schoolId: string) {
+async function getHomeCourses(schoolId: string) {
   try {
     const result = await pool.query(
-      'SELECT * FROM courses WHERE showOnHome = 1 ORDER BY createdAt ASC'
+      'SELECT * FROM courses WHERE showOnHome = 1 ORDER BY createdAt ASC',
+      [],
+      schoolId
     );
     return result.rows || [];
   } catch {
