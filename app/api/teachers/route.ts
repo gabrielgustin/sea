@@ -55,6 +55,29 @@ export async function DELETE(request: NextRequest) {
   try {
     const { id, schoolId = 'villada' } = await request.json()
     if (!id) return NextResponse.json({ error: 'El ID es requerido' }, { status: 400 })
+    
+    // Obtener todos los cursos para actualizar el JSON de teachers
+    const coursesResult = await turso.execute({
+      sql: 'SELECT id, teachers FROM courses WHERE schoolId = ?',
+      args: [schoolId]
+    })
+    
+    // Actualizar el JSON de teachers en cada curso, removiendo el docente eliminado
+    for (const course of coursesResult.rows || []) {
+      try {
+        const teachers = course.teachers ? JSON.parse(course.teachers as string) : []
+        const updatedTeachers = teachers.filter((t: any) => t.id !== id)
+        
+        await turso.execute({
+          sql: 'UPDATE courses SET teachers = ? WHERE id = ? AND schoolId = ?',
+          args: [JSON.stringify(updatedTeachers), course.id, schoolId]
+        })
+      } catch (e) {
+        console.error('[v0] Error updating course teachers JSON:', e)
+      }
+    }
+    
+    // Ahora eliminar el docente
     await turso.execute({ sql: 'DELETE FROM teachers WHERE id=? AND schoolId=?', args: [id, schoolId] })
     return NextResponse.json({ success: true })
   } catch (error) {

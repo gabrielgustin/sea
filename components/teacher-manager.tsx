@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Trash2, Edit2, Plus, AlertCircle, Upload, X } from 'lucide-react'
 import Image from 'next/image'
+import { useSchool } from '@/context/SchoolContext'
 
 interface Course {
   id: number
@@ -36,6 +37,7 @@ const EMPTY_FORM = {
 }
 
 export function TeacherManager() {
+  const { schoolId } = useSchool()
   const [teachers, setTeachers] = useState<Teacher[]>([])
   const [courses, setCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -49,13 +51,15 @@ export function TeacherManager() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    fetchTeachers()
-    fetchCourses()
-  }, [])
+    if (schoolId) {
+      fetchTeachers()
+      fetchCourses()
+    }
+  }, [schoolId])
 
   const fetchCourses = async () => {
     try {
-      const res = await fetch('/api/courses')
+      const res = await fetch(`/api/courses?schoolId=${schoolId}`)
       const data = await res.json()
       setCourses(data.courses || [])
     } catch (err) {
@@ -65,7 +69,7 @@ export function TeacherManager() {
 
   const fetchTeachers = async () => {
     try {
-      const res = await fetch('/api/teachers')
+      const res = await fetch(`/api/teachers?schoolId=${schoolId}`)
       const data = await res.json()
       setTeachers(data.teachers || [])
     } catch (err) {
@@ -124,6 +128,7 @@ export function TeacherManager() {
       const payload = {
         ...(editingId !== 'new' && { id: editingId }),
         ...formData,
+        schoolId,
         courseId: formData.courseId ? parseInt(formData.courseId) : null,
       }
 
@@ -169,7 +174,7 @@ export function TeacherManager() {
       const res = await fetch('/api/teachers', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ id, schoolId }),
       })
       if (!res.ok) throw new Error()
       setSuccess('Docente eliminado')
