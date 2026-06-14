@@ -11,12 +11,12 @@ export async function GET() {
   try {
     await auth.api.signUpEmail({
       body: {
-        name: 'Admin',
-        email: 'admin@sea-admin.local',
-        password: 'admin',
+        name: 'Savio',
+        email: 'savio@sea-admin.local',
+        password: 'savio',
       },
     })
-    return NextResponse.json({ success: true, message: 'Admin user created. Email: admin@sea-admin.local, Password: admin' })
+    return NextResponse.json({ success: true, message: 'Admin user created. Usuario: savio, Contraseña: savio' })
   } catch (err: any) {
     // If user already exists that's fine
     if (err?.message?.includes('already') || err?.status === 422) {

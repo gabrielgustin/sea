@@ -10,9 +10,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Usuario y contraseña requeridos' }, { status: 400 })
     }
 
+    // Accept both email format and plain username (e.g. 'savio')
+    const emailToSearch = email.includes('@') ? email.toLowerCase() : `${email.toLowerCase()}@sea-admin.local`
     const result = await pool.query(
       'SELECT * FROM admin_users WHERE email = ? LIMIT 1',
-      [email.toLowerCase()]
+      [emailToSearch]
     )
     const user = result.rows?.[0]
 
