@@ -6,10 +6,12 @@ function getTursoClient() {
   if (tursoClient) return tursoClient
 
   const connectionUrl = process.env.TURSO_CONNECTION_URL
-  const authToken = process.env.TURSO_AUTH_TOKEN
+  // Support both TURSO_AUTH_TOKEN and TURSO_AUTH_TOKEN_RW (Vercel integration naming)
+  const authToken = process.env.TURSO_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN_RW
 
   if (!connectionUrl || !authToken) {
-    throw new Error('Missing TURSO_CONNECTION_URL or TURSO_AUTH_TOKEN environment variables')
+    console.warn('[v0] Missing Turso credentials - Turso API calls will fail. Set TURSO_CONNECTION_URL and TURSO_AUTH_TOKEN.')
+    return null
   }
 
   tursoClient = createClient({
@@ -21,12 +23,24 @@ function getTursoClient() {
 }
 
 export const turso = {
-  execute: (sql: any, args?: any) => getTursoClient().execute(sql, args),
+  execute: (sql: any, args?: any) => {
+    const client = getTursoClient()
+    if (!client) {
+      throw new Error('Turso client not initialized - missing TURSO_CONNECTION_URL or TURSO_AUTH_TOKEN environment variables')
+    }
+    return client.execute(sql, args)
+  },
 }
 
 // Initialize database schema on first connection
 export async function initializeSchema() {
   try {
+    const client = getTursoClient()
+    if (!client) {
+      console.warn('[v0] Turso not configured - skipping schema initialization')
+      return
+    }
+
     await turso.execute(`
       CREATE TABLE IF NOT EXISTS courses (
         id TEXT PRIMARY KEY,

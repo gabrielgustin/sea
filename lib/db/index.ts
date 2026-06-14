@@ -6,10 +6,12 @@ function getTursoClient() {
   if (tursoClient) return tursoClient
 
   const connectionUrl = process.env.TURSO_CONNECTION_URL
-  const authToken = process.env.TURSO_AUTH_TOKEN
+  // Support both TURSO_AUTH_TOKEN and TURSO_AUTH_TOKEN_RW (Vercel integration naming)
+  const authToken = process.env.TURSO_AUTH_TOKEN || process.env.TURSO_AUTH_TOKEN_RW
 
   if (!connectionUrl || !authToken) {
-    throw new Error('Missing TURSO_CONNECTION_URL or TURSO_AUTH_TOKEN environment variables')
+    console.warn('[v0] Missing Turso credentials - Turso API calls will fail. Set TURSO_CONNECTION_URL and TURSO_AUTH_TOKEN.')
+    return null
   }
 
   tursoClient = createClient({
@@ -22,13 +24,23 @@ function getTursoClient() {
 
 // Turso client wrapper
 export const turso = {
-  execute: (sql: any, args?: any) => getTursoClient().execute(sql, args),
+  execute: (sql: any, args?: any) => {
+    const client = getTursoClient()
+    if (!client) {
+      throw new Error('Turso client not initialized - missing TURSO_CONNECTION_URL or TURSO_AUTH_TOKEN environment variables')
+    }
+    return client.execute(sql, args)
+  },
 }
 
 // Backwards-compat: code that uses db.query(text, params)
 export const db = {
   query: async (text: string, values?: any[]) => {
-    const result = await getTursoClient().execute(text, values ?? [])
+    const client = getTursoClient()
+    if (!client) {
+      throw new Error('Turso client not initialized - missing TURSO_CONNECTION_URL or TURSO_AUTH_TOKEN environment variables')
+    }
+    const result = await client.execute(text, values ?? [])
     return { rows: result.rows ?? result }
   },
 }
@@ -36,7 +48,11 @@ export const db = {
 // Backwards-compat: code that uses pool.query(text, params)
 export const pool = {
   query: async (text: string, values?: any[]) => {
-    const result = await getTursoClient().execute(text, values ?? [])
+    const client = getTursoClient()
+    if (!client) {
+      throw new Error('Turso client not initialized - missing TURSO_CONNECTION_URL or TURSO_AUTH_TOKEN environment variables')
+    }
+    const result = await client.execute(text, values ?? [])
     return { rows: result.rows ?? result }
   },
 }
