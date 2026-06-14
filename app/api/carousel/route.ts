@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
       image: row.image || '/carousel/placeholder.png', order: row.order,
     }))
 
-    return NextResponse.json(slides)
+    return NextResponse.json({ slides })
   } catch (error) {
     console.error('[v0] GET /api/carousel error:', error)
     return NextResponse.json({ error: 'Failed to fetch carousel' }, { status: 500 })

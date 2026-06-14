@@ -242,7 +242,7 @@ export default function CarouselManager() {
                   value={formData.ctaLink || ''}
                   onChange={(e) => {
                     const selectedLink = e.target.value;
-                    const selectedCourse = courses.find(c => `/villada/cursos/${c.slug}` === selectedLink);
+                    const selectedCourse = courses.find(c => `/${schoolId}/cursos/${c.slug}` === selectedLink);
                     if (selectedCourse) {
                       // Auto-rellenar campos desde el curso seleccionado
                       const subtitle = [
