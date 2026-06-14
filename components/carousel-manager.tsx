@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { ChevronDown, ChevronUp, Trash2, Edit2, Plus, Upload } from 'lucide-react';
 import Image from 'next/image';
+import { useSchool } from '@/context/SchoolContext';
 
 interface CarouselSlide {
   id: number;
@@ -27,6 +28,7 @@ interface Course {
 }
 
 export default function CarouselManager() {
+  const { schoolId } = useSchool();
   const [slides, setSlides] = useState<CarouselSlide[]>([]);
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -34,17 +36,19 @@ export default function CarouselManager() {
   const [expandedId, setExpandedId] = useState<number | null>(null);
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<Partial<CarouselSlide>>({});
+  const [uploading, setUploading] = useState(false);
 
-  // Cargar slides y cursos
   useEffect(() => {
-    fetchSlides();
-    fetchCourses();
-  }, []);
+    if (schoolId) {
+      fetchSlides();
+      fetchCourses();
+    }
+  }, [schoolId]);
 
   const fetchSlides = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/carousel');
+      const response = await fetch(`/api/carousel?schoolId=${schoolId}`);
       const data = await response.json();
       setSlides(data.slides || []);
     } catch (error) {
@@ -56,11 +60,29 @@ export default function CarouselManager() {
 
   const fetchCourses = async () => {
     try {
-      const response = await fetch('/api/courses');
+      const response = await fetch(`/api/courses?schoolId=${schoolId}`);
       const data = await response.json();
       setCourses(data.courses || []);
     } catch (error) {
       console.error('Error fetching courses:', error);
+    }
+  };
+
+  const handleImageUpload = async (file: File) => {
+    setUploading(true);
+    try {
+      const fd = new FormData();
+      fd.append('file', file);
+      fd.append('folder', `carousel/${schoolId}`);
+      const res = await fetch('/api/upload-image', { method: 'POST', body: fd });
+      const data = await res.json();
+      if (data.url) {
+        setFormData(prev => ({ ...prev, image: data.url }));
+      }
+    } catch (error) {
+      console.error('Error uploading image:', error);
+    } finally {
+      setUploading(false);
     }
   };
 
@@ -72,22 +94,18 @@ export default function CarouselManager() {
       }
 
       if (editingId) {
-        // Actualizar
         const response = await fetch('/api/carousel', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: editingId, ...formData })
+          body: JSON.stringify({ id: editingId, ...formData, schoolId })
         });
-
         if (!response.ok) throw new Error('Error al actualizar');
       } else {
-        // Crear
         const response = await fetch('/api/carousel', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
+          body: JSON.stringify({ ...formData, schoolId })
         });
-
         if (!response.ok) throw new Error('Error al crear');
       }
 
@@ -248,7 +266,7 @@ export default function CarouselManager() {
                 >
                   <option value="">-- Seleccionar un curso --</option>
                   {courses.map((course) => (
-                    <option key={course.id} value={`/villada/cursos/${course.slug}`}>
+                    <option key={course.id} value={`/${schoolId}/cursos/${course.slug}`}>
                       {course.title}
                     </option>
                   ))}
@@ -260,25 +278,26 @@ export default function CarouselManager() {
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Imagen del Slide
               </label>
-              <div className="relative">
+              <div className="space-y-2">
                 <input
                   type="file"
                   accept="image/*"
+                  disabled={uploading}
                   onChange={(e) => {
                     const file = e.target.files?.[0];
-                    if (file) {
-                      const reader = new FileReader();
-                      reader.onloadend = () => {
-                        setFormData({ ...formData, image: reader.result as string });
-                      };
-                      reader.readAsDataURL(file);
-                    }
+                    if (file) handleImageUpload(file);
                   }}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50"
                 />
-                {formData.image && (
-                  <div className="mt-2 text-sm text-green-600">
-                    ✓ Imagen seleccionada
+                {uploading && (
+                  <div className="text-sm text-blue-600">Subiendo imagen...</div>
+                )}
+                {formData.image && !uploading && (
+                  <div className="flex items-center gap-2">
+                    <div className="relative w-20 h-12 rounded overflow-hidden border">
+                      <Image src={formData.image} alt="Preview" fill className="object-cover" />
+                    </div>
+                    <span className="text-sm text-green-600">Imagen subida correctamente</span>
                   </div>
                 )}
               </div>

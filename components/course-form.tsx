@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { Course } from '@/context/CoursesContext';
+import { useSchool } from '@/context/SchoolContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -23,6 +24,7 @@ interface Module {
 }
 
 export default function CourseForm({ course, onSave, onCancel }: CourseFormProps) {
+  const { schoolId } = useSchool();
   const [formData, setFormData] = useState({
     title: '',
     subtitle: '',
@@ -169,6 +171,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
       // Upload via FormData to avoid JSON body size limits
       const fd = new FormData();
       fd.append('file', file);
+      fd.append('folder', `courses/${schoolId}`);
 
       const res = await fetch('/api/upload-image', { method: 'POST', body: fd });
       const data = await res.json();
