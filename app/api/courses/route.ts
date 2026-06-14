@@ -121,6 +121,22 @@ export async function PUT(request: NextRequest) {
   }
 }
 
+export async function PATCH(request: NextRequest) {
+  try {
+    const body = await request.json()
+    const { id, schoolId = 'villada', showOnHome } = body
+    if (!id) return NextResponse.json({ error: 'ID required' }, { status: 400 })
+    await turso.execute({
+      sql: 'UPDATE courses SET showOnHome = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND schoolId = ?',
+      args: [showOnHome ? 1 : 0, id, schoolId]
+    })
+    return NextResponse.json({ success: true })
+  } catch (error) {
+    console.error('[v0] PATCH /api/courses error:', error)
+    return NextResponse.json({ error: 'Failed to update course' }, { status: 500 })
+  }
+}
+
 export async function DELETE(request: NextRequest) {
   try {
     const { id, schoolId = 'villada' } = await request.json()
