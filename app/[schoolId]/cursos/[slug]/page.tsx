@@ -9,13 +9,14 @@ import CourseDetailClient from '@/components/course-detail-client';
 export default function CoursePage() {
   const params = useParams();
   const slug = typeof params?.slug === 'string' ? params.slug : '';
+  const schoolId = typeof params?.schoolId === 'string' ? params.schoolId : 'savio';
   const [course, setCourse] = useState<any>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (!slug) return;
 
-    fetch(`/api/courses?slug=${slug}`)
+    fetch(`/api/courses?slug=${slug}&schoolId=${schoolId}`)
       .then(r => r.json())
       .then(data => {
         setCourse(data.course || null);
@@ -25,7 +26,7 @@ export default function CoursePage() {
         console.error('[v0] Course fetch error:', err);
         setLoading(false);
       });
-  }, [slug]);
+  }, [slug, schoolId]);
 
   if (loading) {
     return (

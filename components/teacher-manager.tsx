@@ -48,6 +48,11 @@ export function TeacherManager() {
   const [success, setSuccess] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Derive schoolId from the URL path
+  const schoolId = typeof window !== 'undefined'
+    ? (window.location.pathname.split('/').filter(Boolean)[0] || 'savio')
+    : 'savio'
+
   useEffect(() => {
     fetchTeachers()
     fetchCourses()
@@ -55,9 +60,9 @@ export function TeacherManager() {
 
   const fetchCourses = async () => {
     try {
-      const res = await fetch('/api/courses')
+      const res = await fetch(`/api/courses?schoolId=${schoolId}`)
       const data = await res.json()
-      setCourses(data.courses || [])
+      setCourses(Array.isArray(data) ? data : (data.courses || []))
     } catch (err) {
       console.error('Error al cargar cursos:', err)
     }
@@ -65,7 +70,7 @@ export function TeacherManager() {
 
   const fetchTeachers = async () => {
     try {
-      const res = await fetch('/api/teachers')
+      const res = await fetch(`/api/teachers?schoolId=${schoolId}`)
       const data = await res.json()
       setTeachers(data.teachers || [])
     } catch (err) {
@@ -124,6 +129,7 @@ export function TeacherManager() {
       const payload = {
         ...(editingId !== 'new' && { id: editingId }),
         ...formData,
+        schoolId,
         courseId: formData.courseId ? parseInt(formData.courseId) : null,
       }
 
@@ -169,7 +175,7 @@ export function TeacherManager() {
       const res = await fetch('/api/teachers', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id }),
+        body: JSON.stringify({ id, schoolId }),
       })
       if (!res.ok) throw new Error()
       setSuccess('Docente eliminado')

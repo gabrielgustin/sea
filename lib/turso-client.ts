@@ -30,12 +30,13 @@ export async function initializeSchema() {
     await turso.execute(`
       CREATE TABLE IF NOT EXISTS courses (
         id TEXT PRIMARY KEY,
+        schoolId TEXT NOT NULL DEFAULT 'savio',
         title TEXT NOT NULL,
         subtitle TEXT,
         description TEXT,
         image TEXT,
         badge TEXT,
-        slug TEXT UNIQUE,
+        slug TEXT,
         startDate TEXT,
         enrollmentDeadline TEXT,
         modality TEXT,
@@ -64,11 +65,12 @@ export async function initializeSchema() {
     await turso.execute(`
       CREATE TABLE IF NOT EXISTS carousel (
         id TEXT PRIMARY KEY,
+        schoolId TEXT NOT NULL DEFAULT 'savio',
         title TEXT NOT NULL,
         description TEXT,
         image TEXT,
         active BOOLEAN DEFAULT 1,
-        order INTEGER DEFAULT 0,
+        "order" INTEGER DEFAULT 0,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `)
@@ -76,16 +78,29 @@ export async function initializeSchema() {
     await turso.execute(`
       CREATE TABLE IF NOT EXISTS teachers (
         id TEXT PRIMARY KEY,
+        schoolId TEXT NOT NULL DEFAULT 'savio',
         name TEXT NOT NULL,
         description TEXT,
         image TEXT,
         linkedin TEXT,
         whatsapp TEXT,
         courseId TEXT,
-        order INTEGER DEFAULT 0,
+        "order" INTEGER DEFAULT 0,
+        active INTEGER DEFAULT 1,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `)
+
+    // Add schoolId column to existing tables if missing (migration)
+    try {
+      await turso.execute(`ALTER TABLE courses ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
+    } catch (_) {}
+    try {
+      await turso.execute(`ALTER TABLE carousel ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
+    } catch (_) {}
+    try {
+      await turso.execute(`ALTER TABLE teachers ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
+    } catch (_) {}
 
     console.log('[v0] Turso schema initialized successfully')
   } catch (error: any) {

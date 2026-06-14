@@ -20,7 +20,7 @@ export function SchoolProvider({ children }: { children: React.ReactNode }) {
     const segments = pathname.split('/').filter(Boolean);
     const possibleSchoolId = segments[0];
 
-    if (possibleSchoolId === 'savio' || possibleSchoolId === 'savio') {
+    if (possibleSchoolId === 'savio' || possibleSchoolId === 'villada') {
       setSchoolId(possibleSchoolId);
     } else {
       // Default a savio si no hay schoolId en la ruta

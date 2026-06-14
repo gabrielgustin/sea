@@ -19,7 +19,7 @@ export default function CourseList({
   onDelete,
   onPreview,
 }: CourseListProps) {
-  const { refreshCourses } = useCourses();
+  const { refreshCourses, schoolId } = useCourses();
 
   // Sync homeStatus with courses prop whenever it changes
   const [homeStatus, setHomeStatus] = useState<Record<string, boolean>>(
@@ -41,7 +41,7 @@ export default function CourseList({
       const res = await fetch('/api/courses', {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id: courseId, showOnHome: next }),
+        body: JSON.stringify({ id: courseId, showOnHome: next, schoolId }),
       });
       if (res.ok) {
         // Refresh context so the value is persisted globally

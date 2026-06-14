@@ -1,6 +1,6 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
+import { useRouter, useParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import Sidebar from '@/components/sidebar';
@@ -9,6 +9,8 @@ import AdminDashboard from '@/components/admin-dashboard';
 
 export default function AdminPage() {
   const router = useRouter();
+  const params = useParams();
+  const schoolId = typeof params?.schoolId === 'string' ? params.schoolId : 'savio';
   const { isAuthenticated, userRole } = useAuth();
   const [mounted, setMounted] = useState(false);
 
@@ -18,9 +20,9 @@ export default function AdminPage() {
 
   useEffect(() => {
     if (mounted && (!isAuthenticated || userRole !== 'admin')) {
-      router.push('/savio');
+      router.push(`/${schoolId}`);
     }
-  }, [isAuthenticated, userRole, mounted, router]);
+  }, [isAuthenticated, userRole, mounted, router, schoolId]);
 
   if (!mounted || !isAuthenticated || userRole !== 'admin') {
     return null;

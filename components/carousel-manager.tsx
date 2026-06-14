@@ -35,6 +35,11 @@ export default function CarouselManager() {
   const [showForm, setShowForm] = useState(false);
   const [formData, setFormData] = useState<Partial<CarouselSlide>>({});
 
+  // Derive schoolId from the URL path
+  const schoolId = typeof window !== 'undefined'
+    ? (window.location.pathname.split('/').filter(Boolean)[0] || 'savio')
+    : 'savio'
+
   // Cargar slides y cursos
   useEffect(() => {
     fetchSlides();
@@ -44,9 +49,9 @@ export default function CarouselManager() {
   const fetchSlides = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/carousel');
+      const response = await fetch(`/api/carousel?schoolId=${schoolId}`);
       const data = await response.json();
-      setSlides(data.slides || []);
+      setSlides(Array.isArray(data) ? data : (data.slides || []));
     } catch (error) {
       console.error('Error fetching carousel slides:', error);
     } finally {
@@ -56,9 +61,9 @@ export default function CarouselManager() {
 
   const fetchCourses = async () => {
     try {
-      const response = await fetch('/api/courses');
+      const response = await fetch(`/api/courses?schoolId=${schoolId}`);
       const data = await response.json();
-      setCourses(data.courses || []);
+      setCourses(Array.isArray(data) ? data : (data.courses || []));
     } catch (error) {
       console.error('Error fetching courses:', error);
     }
@@ -76,7 +81,7 @@ export default function CarouselManager() {
         const response = await fetch('/api/carousel', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ id: editingId, ...formData })
+          body: JSON.stringify({ id: editingId, ...formData, schoolId })
         });
 
         if (!response.ok) throw new Error('Error al actualizar');
@@ -85,7 +90,7 @@ export default function CarouselManager() {
         const response = await fetch('/api/carousel', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(formData)
+          body: JSON.stringify({ ...formData, schoolId })
         });
 
         if (!response.ok) throw new Error('Error al crear');
@@ -118,7 +123,7 @@ export default function CarouselManager() {
       const response = await fetch('/api/carousel', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id })
+        body: JSON.stringify({ id, schoolId })
       });
 
       if (!response.ok) throw new Error('Error al eliminar');
