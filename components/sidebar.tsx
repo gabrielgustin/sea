@@ -4,12 +4,14 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Menu, X, Home, BookOpen, Instagram, Mail, LogIn, LogOut } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { useSchool } from '@/context/SchoolContext';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
 import Link from 'next/link';
 import LoginModal from './login-modal';
 
 export default function Sidebar() {
   const router = useRouter();
+  const { schoolId } = useSchool();
   const [isOpen, setIsOpen] = useState(false);
   const [loginOpen, setLoginOpen] = useState(false);
   const [showLoginAnimation, setShowLoginAnimation] = useState(false);
@@ -19,7 +21,7 @@ export default function Sidebar() {
 
   const publicNavItems = [
     { icon: Home, label: 'Inicio', href: '/' },
-    { icon: BookOpen, label: 'Formaciones', href: '/savio/catalogo-formaciones' },
+    { icon: BookOpen, label: 'Formaciones', href: `/${schoolId}/catalogo-formaciones` },
     { icon: Mail, label: 'Contacto', href: '#contacto', scroll: true },
     { icon: Instagram, label: 'Instagram', href: settings.instagramUrl },
   ];
@@ -55,7 +57,7 @@ export default function Sidebar() {
 
   const handleAuthIconClick = () => {
     if (isAuthenticated) {
-      router.push('/savio/admin');
+      router.push(`/${schoolId}/admin`);
     } else {
       setLoginOpen(true);
     }
