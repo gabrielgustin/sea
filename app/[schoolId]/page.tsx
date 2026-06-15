@@ -9,7 +9,7 @@ import SpecialOfferSection from '@/components/special-offer-section';
 import FAQSection from '@/components/faq-section';
 import ContactSection from '@/components/contact-section';
 import WhatsAppButton from '@/components/whatsapp-button';
-import { turso } from '@/lib/turso-client';
+import { turso, initializeSchema } from '@/lib/turso-client';
 
 async function getCarouselSlides(schoolId: string) {
   try {
@@ -46,6 +46,14 @@ export async function generateMetadata({ params }: { params: Promise<{ schoolId:
 
 export default async function Home({ params }: { params: Promise<{ schoolId: string }> }) {
   const { schoolId } = await params;
+  
+  // Initialize database schema on first load
+  try {
+    await initializeSchema();
+  } catch (error) {
+    console.error('[v0] Error initializing schema:', error);
+  }
+  
   const slides = await getCarouselSlides(schoolId);
   const initialCourses = await getHomeCourses(schoolId);
 

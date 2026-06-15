@@ -63,12 +63,13 @@ export async function initializeSchema() {
     `)
 
     await turso.execute(`
-      CREATE TABLE IF NOT EXISTS carousel (
+      CREATE TABLE IF NOT EXISTS carousel_slides (
         id TEXT PRIMARY KEY,
         schoolId TEXT NOT NULL DEFAULT 'savio',
         title TEXT NOT NULL,
         description TEXT,
         image TEXT,
+        ctaLink TEXT,
         active BOOLEAN DEFAULT 1,
         "order" INTEGER DEFAULT 0,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -96,7 +97,7 @@ export async function initializeSchema() {
       await turso.execute(`ALTER TABLE courses ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
     } catch (_) {}
     try {
-      await turso.execute(`ALTER TABLE carousel ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
+      await turso.execute(`ALTER TABLE carousel_slides ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
     } catch (_) {}
     try {
       await turso.execute(`ALTER TABLE teachers ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
