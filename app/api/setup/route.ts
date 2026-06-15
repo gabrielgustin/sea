@@ -5,10 +5,6 @@ import bcrypt from 'bcryptjs'
 // One-time endpoint to create the initial admin user for Savio.
 // Call GET /api/setup to create/update the admin user credentials.
 export async function GET() {
-  // Temporarily open to allow initial user creation in production
-  // if (process.env.NODE_ENV === 'production' && !process.env.ALLOW_SETUP) {
-  //   return NextResponse.json({ error: 'Not allowed in production' }, { status: 403 })
-  // }
   try {
     // Ensure admin_users table exists with all required columns
     await turso.execute(`
@@ -40,26 +36,20 @@ export async function GET() {
     const passwordHash = await bcrypt.hash('savio', 10)
 
     // Check if user already exists
-    const existing = await turso.execute({
-      sql: 'SELECT id FROM admin_users WHERE email = ?',
-      args: [email],
-    })
+    const checkSql = `SELECT id FROM admin_users WHERE email = '${email.replace(/'/g, "''")}'`
+    const existing = await turso.execute(checkSql)
 
     if (existing.rows && existing.rows.length > 0) {
       // Update password in case it changed
-      await turso.execute({
-        sql: 'UPDATE admin_users SET passwordHash = ?, name = ? WHERE email = ?',
-        args: [passwordHash, 'Savio', email],
-      })
+      const updateSql = `UPDATE admin_users SET passwordHash = '${passwordHash.replace(/'/g, "''")}', name = 'Savio' WHERE email = '${email.replace(/'/g, "''")}'`
+      await turso.execute(updateSql)
       return NextResponse.json({ success: true, message: 'Admin user updated. Usuario: savio, Contraseña: savio' })
     }
 
     // Create new user with generated ID
     const id = `admin_${Date.now()}`
-    await turso.execute({
-      sql: 'INSERT INTO admin_users (id, name, email, passwordHash) VALUES (?, ?, ?, ?)',
-      args: [id, 'Savio', email, passwordHash],
-    })
+    const insertSql = `INSERT INTO admin_users (id, name, email, passwordHash) VALUES ('${id}', 'Savio', '${email.replace(/'/g, "''")}', '${passwordHash.replace(/'/g, "''")}')`
+    await turso.execute(insertSql)
 
     return NextResponse.json({ success: true, message: 'Admin user created. Usuario: savio, Contraseña: savio' })
   } catch (error: any) {
