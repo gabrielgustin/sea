@@ -10,7 +10,7 @@ export async function GET() {
   //   return NextResponse.json({ error: 'Not allowed in production' }, { status: 403 })
   // }
   try {
-    // Ensure admin_users table exists
+    // Ensure admin_users table exists with all required columns
     await turso.execute(`
       CREATE TABLE IF NOT EXISTS admin_users (
         id TEXT PRIMARY KEY,
@@ -22,6 +22,19 @@ export async function GET() {
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `)
+
+    // Add missing columns if they don't exist (for existing tables)
+    try {
+      await turso.execute(`ALTER TABLE admin_users ADD COLUMN role TEXT DEFAULT 'admin'`)
+    } catch {
+      // Column already exists, ignore
+    }
+
+    try {
+      await turso.execute(`ALTER TABLE admin_users ADD COLUMN schoolId TEXT DEFAULT 'savio'`)
+    } catch {
+      // Column already exists, ignore
+    }
 
     const email = 'savio@sea-admin.local'
     const passwordHash = await bcrypt.hash('savio', 10)
