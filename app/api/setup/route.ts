@@ -41,7 +41,7 @@ export async function GET() {
 
     // Check if user already exists
     const existing = await turso.execute({
-      sql: 'SELECT id FROM admin_users WHERE email = ? LIMIT 1',
+      sql: 'SELECT id FROM admin_users WHERE email = ?',
       args: [email],
     })
 
@@ -54,11 +54,11 @@ export async function GET() {
       return NextResponse.json({ success: true, message: 'Admin user updated. Usuario: savio, Contraseña: savio' })
     }
 
-    // Create new user
+    // Create new user with generated ID
     const id = `admin_${Date.now()}`
     await turso.execute({
-      sql: 'INSERT INTO admin_users (id, name, email, passwordHash, role, schoolId) VALUES (?, ?, ?, ?, ?, ?)',
-      args: [id, 'Savio', email, passwordHash, 'admin', 'savio'],
+      sql: 'INSERT INTO admin_users (id, name, email, passwordHash) VALUES (?, ?, ?, ?)',
+      args: [id, 'Savio', email, passwordHash],
     })
 
     return NextResponse.json({ success: true, message: 'Admin user created. Usuario: savio, Contraseña: savio' })
