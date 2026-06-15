@@ -3,7 +3,9 @@ import { turso } from '@/lib/turso-client';
 
 export async function POST(request: NextRequest) {
   try {
+    console.log('[v0] Admin login request received');
     const { email, password, schoolId } = await request.json();
+    console.log('[v0] Parsed request:', { email, schoolId });
 
     if (!email || !password || !schoolId) {
       return NextResponse.json(
@@ -12,11 +14,13 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log('[v0] Querying admins table...');
     // Query the database for admin credentials
     const result = await turso.execute(
       'SELECT id, email, password FROM admins WHERE email = ? AND schoolId = ? LIMIT 1',
       [email.toLowerCase(), schoolId]
     );
+    console.log('[v0] Query result:', result);
 
     const admin = result.rows?.[0];
 
@@ -48,6 +52,7 @@ export async function POST(request: NextRequest) {
     });
   } catch (error) {
     console.error('[v0] Admin login error:', error);
+    console.error('[v0] Error details:', (error as Error).message);
     return NextResponse.json(
       { success: false, error: 'Error de conexión. Intenta de nuevo.' },
       { status: 500 }
