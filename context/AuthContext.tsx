@@ -17,7 +17,7 @@ interface AuthContextType {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children, schoolId = 'villada' }: { children: React.ReactNode; schoolId?: string }) {
+export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<UserRole>(null);
   const [userDNI, setUserDNI] = useState<string>();
@@ -51,7 +51,7 @@ export function AuthProvider({ children, schoolId = 'villada' }: { children: Rea
         const res = await fetch('/api/admin-login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: username.toLowerCase(), password, schoolId }),
+          body: JSON.stringify({ email: username.toLowerCase(), password }),
         })
         const data = await res.json()
         if (!res.ok || !data.success) {
@@ -61,7 +61,7 @@ export function AuthProvider({ children, schoolId = 'villada' }: { children: Rea
         setUserRole('admin');
         sessionStorage.setItem('userAuth', 'true');
         sessionStorage.setItem('userRole', 'admin');
-        return { success: true, redirectUrl: `/${schoolId}/admin` };
+        return { success: true, redirectUrl: '/savio/admin' };
       } catch (err) {
         return { success: false, error: 'Error de conexión. Intenta de nuevo.' };
       }

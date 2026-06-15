@@ -56,15 +56,14 @@ interface CoursesContextType {
 
 const CoursesContext = createContext<CoursesContextType | undefined>(undefined);
 
-export function CoursesProvider({ children, schoolId: propSchoolId }: { children: React.ReactNode; schoolId?: string }) {
+export function CoursesProvider({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Use prop schoolId if provided, otherwise derive from URL path
+  // Derive schoolId from the URL path
   const segments = pathname.split('/').filter(Boolean);
-  const pathSchoolId = (segments[0] === 'savio' || segments[0] === 'villada') ? segments[0] : 'savio';
-  const schoolId = propSchoolId || pathSchoolId;
+  const schoolId = (segments[0] === 'savio' || segments[0] === 'villada') ? segments[0] : 'savio';
 
   const fetchCourses = async () => {
     try {
