@@ -11,7 +11,7 @@ export const coursesData = [
     slug: 'desarrollo-de-aplicaciones',
     description: 'El programa de Desarrollo de Aplicaciones en Python con Tkinter está diseñado para introducir al estudiante en las bases de la programación estructurada y la creación de software con entorno visual. A través de un enfoque metodológico, el estudiante transitará desde la conceptualización lógica de un algoritmo hasta el despliegue de aplicaciones de escritorio funcionales e interactivas, utilizando el lenguaje de programación más demandado del mercado actual.',
     schedule: 'Lunes: 16:30 a 18:00',
-    location: 'ITS Villada, Valle Escondido',
+    location: 'ITS Savio, Valle Escondido',
     teacher: 'Gabriel Muñoz',
     teachers: [
       {
@@ -70,7 +70,7 @@ export const coursesData = [
     slug: 'desarrollo-de-videojuegos',
     description: 'El curso de Diseño y Desarrollo de Videojuegos ofrece una formación integral en las dinámicas fundamentales de la industria del entretenimiento digital. Utilizando Unity, el motor de desarrollo líder del mercado profesional a nivel global, los estudiantes aprenderán a estructurar las reglas, mecánicas y estéticas que componen un videojuego. El programa guía al estudiante desde la conceptualización de ideas hasta la programación e implementación de entornos interactivos utilizando estándares profesionales.',
     schedule: 'Jueves: 16:30 a 18:00',
-    location: 'ITS Villada, Valle Escondido',
+    location: 'ITS Savio, Valle Escondido',
     teacher: 'Jose Verino',
     teachers: [
       {
@@ -129,7 +129,7 @@ export const coursesData = [
     slug: 'diseno-impresion-3d',
     description: 'El curso de Diseño e Impresión 3D capacita al estudiante en las tecnologías de fabricación aditiva, un pilar fundamental de la industria 4.0. A lo largo del programa, se profundiza en todo el flujo de trabajo digital: desde la concepción geométrica de una pieza en un software de modelado paramétrico hasta su materialización física mediante la calibración precisa de maquinaria de impresión.',
     schedule: 'Martes: 16:30 a 18:00',
-    location: 'ITS Villada, Valle Escondido',
+    location: 'ITS Savio, Valle Escondido',
     teacher: 'Santiago Henderson',
     teachers: [
       {
@@ -188,7 +188,7 @@ export const coursesData = [
     slug: 'mecanica-de-motores',
     description: 'El trayecto formativo en Mecánica Automotriz brinda los conocimientos teóricos y prácticos indispensables para comprender el funcionamiento integral de los vehículos modernos. El programa aborda de manera rigurosa desde los principios termodinámicos de los motores de combustión interna hasta el diagnóstico técnico y la reparación de los sistemas de seguridad y transmisión automotriz.',
     schedule: 'Martes: 16:30 a 18:00',
-    location: 'ITS Villada, Valle Escondido',
+    location: 'ITS Savio, Valle Escondido',
     teacher: 'Kevin Altamirano',
     teachers: [
       {

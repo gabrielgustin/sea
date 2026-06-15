@@ -37,7 +37,7 @@ export default function TestimonialsSection() {
     {
       id: 4,
       name: 'María González',
-      text: '"La certificación de ITS Villada me abrió muchas puertas laborales. Inversión que valió totalmente la pena."',
+      text: '"La certificación de ITS Savio me abrió muchas puertas laborales. Inversión que valió totalmente la pena."',
       rating: 5,
     },
   ];

@@ -18,7 +18,7 @@ import { TeacherManager } from './teacher-manager';
 export default function AdminDashboard() {
   const router = useRouter();
   const { logout } = useAuth();
-  const { courses, addCourse, updateCourse, deleteCourse } = useCourses();
+  const { courses, addCourse, updateCourse, deleteCourse, schoolId } = useCourses();
   const [showForm, setShowForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
@@ -26,7 +26,7 @@ export default function AdminDashboard() {
 
   const handleLogout = () => {
     logout();
-    router.push('/');
+    router.push(`/${schoolId}`);
   };
 
   const handleAddNew = () => {

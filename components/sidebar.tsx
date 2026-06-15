@@ -19,7 +19,7 @@ export default function Sidebar() {
 
   const publicNavItems = [
     { icon: Home, label: 'Inicio', href: '/' },
-    { icon: BookOpen, label: 'Formaciones', href: '/villada/catalogo-formaciones' },
+    { icon: BookOpen, label: 'Formaciones', href: '/savio/catalogo-formaciones' },
     { icon: Mail, label: 'Contacto', href: '#contacto', scroll: true },
     { icon: Instagram, label: 'Instagram', href: settings.instagramUrl },
   ];
@@ -55,7 +55,7 @@ export default function Sidebar() {
 
   const handleAuthIconClick = () => {
     if (isAuthenticated) {
-      router.push('/villada/admin');
+      router.push('/savio/admin');
     } else {
       setLoginOpen(true);
     }

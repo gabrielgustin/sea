@@ -6,73 +6,108 @@ function getTursoClient() {
   if (tursoClient) return tursoClient
 
   const connectionUrl = process.env.TURSO_CONNECTION_URL
-  const authToken = process.env.TURSO_AUTH_TOKEN_RW || process.env.TURSO_AUTH_TOKEN
+  const authToken = process.env.TURSO_AUTH_TOKEN
 
   if (!connectionUrl || !authToken) {
     throw new Error('Missing TURSO_CONNECTION_URL or TURSO_AUTH_TOKEN environment variables')
   }
 
-  tursoClient = createClient({ url: connectionUrl, authToken })
+  tursoClient = createClient({
+    url: connectionUrl,
+    authToken: authToken,
+  })
+
   return tursoClient
 }
 
 export const turso = {
-  execute: async (query: { sql: string; args?: any[] } | string, args?: any[]) => {
-    try {
-      const client = getTursoClient()
-      if (typeof query === 'string') {
-        return await client.execute({ sql: query, args: args ?? [] })
-      }
-      return await client.execute(query)
-    } catch (error: any) {
-      console.error('[v0] Turso query error:', error.message)
-      return { rows: [] }
-    }
-  },
+  execute: (sql: any, args?: any) => getTursoClient().execute(sql, args),
 }
 
-let schemaInitialized = false
-
+// Initialize database schema on first connection
 export async function initializeSchema() {
-  if (schemaInitialized) return
   try {
-    const client = getTursoClient()
+    await turso.execute(`
+      CREATE TABLE IF NOT EXISTS courses (
+        id TEXT PRIMARY KEY,
+        schoolId TEXT NOT NULL DEFAULT 'savio',
+        title TEXT NOT NULL,
+        subtitle TEXT,
+        description TEXT,
+        image TEXT,
+        badge TEXT,
+        slug TEXT,
+        startDate TEXT,
+        enrollmentDeadline TEXT,
+        modality TEXT,
+        schedule TEXT,
+        location TEXT,
+        teacher TEXT,
+        teachers TEXT,
+        duration TEXT,
+        price TEXT,
+        requirements TEXT,
+        objective TEXT,
+        methodology TEXT,
+        finalProject TEXT,
+        whatsappGroup TEXT,
+        level TEXT DEFAULT 'PRINCIPIANTE',
+        modules TEXT,
+        status TEXT DEFAULT 'ACTIVE',
+        category TEXT,
+        maxStudents INTEGER,
+        showOnHome BOOLEAN DEFAULT 0,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `)
 
-    // Add schoolId column to existing tables if it doesn't exist yet
-    const addSchoolIdIfMissing = async (table: string) => {
-      try {
-        await client.execute(`ALTER TABLE ${table} ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'villada'`)
-        // Set all existing rows to 'villada'
-        await client.execute(`UPDATE ${table} SET schoolId = 'villada' WHERE schoolId IS NULL OR schoolId = ''`)
-        console.log(`[v0] Added schoolId to ${table}`)
-      } catch {
-        // Column already exists, that's fine
-      }
-    }
+    await turso.execute(`
+      CREATE TABLE IF NOT EXISTS carousel (
+        id TEXT PRIMARY KEY,
+        schoolId TEXT NOT NULL DEFAULT 'savio',
+        title TEXT NOT NULL,
+        description TEXT,
+        image TEXT,
+        active BOOLEAN DEFAULT 1,
+        "order" INTEGER DEFAULT 0,
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `)
 
-    await addSchoolIdIfMissing('courses')
-    await addSchoolIdIfMissing('carousel_slides')
-    await addSchoolIdIfMissing('teachers')
-    await addSchoolIdIfMissing('students')
-    await addSchoolIdIfMissing('site_settings')
-    await addSchoolIdIfMissing('admin_users')
-
-    // Create tables that may not exist yet for multi-school support
-    await client.execute(`
-      CREATE TABLE IF NOT EXISTS admin_users_new (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        schoolId TEXT NOT NULL DEFAULT 'villada',
+    await turso.execute(`
+      CREATE TABLE IF NOT EXISTS teachers (
+        id TEXT PRIMARY KEY,
+        schoolId TEXT NOT NULL DEFAULT 'savio',
         name TEXT NOT NULL,
-        email TEXT NOT NULL,
-        passwordHash TEXT NOT NULL,
+        description TEXT,
+        image TEXT,
+        linkedin TEXT,
+        whatsapp TEXT,
+        courseId TEXT,
+        "order" INTEGER DEFAULT 0,
         active INTEGER DEFAULT 1,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `)
 
-    schemaInitialized = true
-    console.log('[v0] Schema initialized successfully')
+    // Add schoolId column to existing tables if missing (migration)
+    try {
+      await turso.execute(`ALTER TABLE courses ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
+    } catch (_) {}
+    try {
+      await turso.execute(`ALTER TABLE carousel ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
+    } catch (_) {}
+    try {
+      await turso.execute(`ALTER TABLE teachers ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
+    } catch (_) {}
+
+    console.log('[v0] Turso schema initialized successfully')
   } catch (error: any) {
-    console.error('[v0] Error initializing schema:', error.message)
+    if (error.message?.includes('already exists')) {
+      console.log('[v0] Schema already exists')
+    } else {
+      console.error('[v0] Error initializing Turso schema:', error)
+    }
   }
 }

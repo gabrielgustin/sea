@@ -44,19 +44,19 @@ const defaultFAQs: FAQ[] = [
   {
     id: 3,
     question: '¿Otorgan certificados?',
-    answer: 'Sí, todos nuestros cursos otorgan certificado oficial de la Secretaría de Extensión Académica del ITS Villada al completar satisfactoriamente el programa.',
+    answer: 'Sí, todos nuestros cursos otorgan certificado oficial de la Secretaría de Extensión Académica del ITS Savio al completar satisfactoriamente el programa.',
     order: 3,
   },
   {
     id: 4,
-    question: '¿Puedo tomar cursos si no soy estudiante del ITS Villada?',
+    question: '¿Puedo tomar cursos si no soy estudiante del ITS Savio?',
     answer: 'Sí, nuestros cursos están abiertos a toda la comunidad. No es necesario ser estudiante del instituto para inscribirse.',
     order: 4,
   },
 ];
 
 const defaultSettings: SiteSettings = {
-  instagramUrl: 'https://www.instagram.com/itsvillada/?hl=es',
+  instagramUrl: 'https://www.instagram.com/itssavio/?hl=es',
   whatsappNumber: '5493516307002',
   whatsappMessage: 'Hola! Me interesa obtener más información sobre los cursos disponibles.',
   email: 'formaciones@portalsea.com.ar',

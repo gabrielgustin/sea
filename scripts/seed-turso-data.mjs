@@ -18,7 +18,7 @@ const db = createClient({
 
 async function seedData() {
   try {
-    console.log('[v0] Seeding Turso database with Villada courses and carousel...\n')
+    console.log('[v0] Seeding Turso database with Savio courses and carousel...\n')
 
     // Carousel slides
     const carouselSlides = [
@@ -29,7 +29,7 @@ async function seedData() {
         image: '/images/carousel-3d.jpg',
         badge: 'NUEVO',
         ctaText: 'Ver más',
-        ctaLink: '/villada/cursos/diseno-3d',
+        ctaLink: '/savio/cursos/diseno-3d',
         order: 0,
         active: 1,
       },
@@ -40,7 +40,7 @@ async function seedData() {
         image: '/images/carousel-formaciones.jpg',
         badge: 'DISPONIBLE',
         ctaText: 'Explorar',
-        ctaLink: '/villada/catalogo-formaciones',
+        ctaLink: '/savio/catalogo-formaciones',
         order: 1,
         active: 1,
       },
@@ -51,7 +51,7 @@ async function seedData() {
         image: '/images/carousel-centro.jpg',
         badge: 'DESTACADO',
         ctaText: 'Conocer más',
-        ctaLink: '/villada/centro-innovacion',
+        ctaLink: '/savio/centro-innovacion',
         order: 2,
         active: 1,
       },
@@ -73,7 +73,7 @@ async function seedData() {
         startDate: '2024-07-01',
         enrollmentDeadline: '2024-06-30',
         schedule: 'Lunes y Miércoles 18:00 - 20:00',
-        location: 'Centro de Innovación, ITS Villada',
+        location: 'Centro de Innovación, ITS Savio',
         teacher: 'Ing. Carlos Martínez',
         modality: 'PRESENCIAL',
         slug: 'diseno-3d',
@@ -105,7 +105,7 @@ async function seedData() {
         startDate: '2024-07-15',
         enrollmentDeadline: '2024-07-14',
         schedule: 'Martes y Jueves 19:00 - 20:30',
-        location: 'Aula de Informática, ITS Villada',
+        location: 'Aula de Informática, ITS Savio',
         teacher: 'Lic. Gabriel Muñoz',
         modality: 'PRESENCIAL',
         slug: 'python-aplicaciones',
@@ -137,7 +137,7 @@ async function seedData() {
         startDate: '2024-08-01',
         enrollmentDeadline: '2024-07-31',
         schedule: 'Viernes 17:00 - 19:00',
-        location: 'Laboratorio de Electrónica, ITS Villada',
+        location: 'Laboratorio de Electrónica, ITS Savio',
         teacher: 'Ing. Roberto López',
         modality: 'PRESENCIAL',
         slug: 'electronica-arduino',
@@ -169,7 +169,7 @@ async function seedData() {
         startDate: '2024-08-15',
         enrollmentDeadline: '2024-08-14',
         schedule: 'Lunes y Viernes 19:00 - 20:30',
-        location: 'Sala de Diseño, ITS Villada',
+        location: 'Sala de Diseño, ITS Savio',
         teacher: 'Lic. Ana Pérez',
         modality: 'PRESENCIAL',
         slug: 'diseno-grafico',

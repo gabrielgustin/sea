@@ -43,7 +43,7 @@ export default function FormacionesCatalog() {
               {courses.map((course, index) => (
                 <Link
                   key={course.id}
-                  href={`/villada/cursos/${course.slug || course.id}`}
+                  href={`/savio/cursos/${course.slug || course.id}`}
                   className={`overflow-hidden rounded-2xl md:rounded-3xl border-2 transition-all duration-500 hover:shadow-2xl block group ${
                     isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
                   }`}

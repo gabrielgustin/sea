@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState } from 'react';
+import { usePathname } from 'next/navigation';
 
 export interface CourseTeacher {
   name: string;
@@ -12,6 +13,7 @@ export interface CourseTeacher {
 
 export interface Course {
   id: string;
+  schoolId?: string;
   title: string;
   subtitle: string;
   image: string;
@@ -44,6 +46,7 @@ export interface Course {
 interface CoursesContextType {
   courses: Course[];
   loading: boolean;
+  schoolId: string;
   addCourse: (course: Omit<Course, 'id'>) => Promise<void>;
   updateCourse: (id: string, course: Partial<Course>) => Promise<void>;
   deleteCourse: (id: string) => Promise<void>;
@@ -53,9 +56,14 @@ interface CoursesContextType {
 
 const CoursesContext = createContext<CoursesContextType | undefined>(undefined);
 
-export function CoursesProvider({ children, schoolId = 'villada' }: { children: React.ReactNode; schoolId?: string }) {
+export function CoursesProvider({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Derive schoolId from the URL path
+  const segments = pathname.split('/').filter(Boolean);
+  const schoolId = (segments[0] === 'savio' || segments[0] === 'villada') ? segments[0] : 'savio';
 
   const fetchCourses = async () => {
     try {
@@ -63,12 +71,12 @@ export function CoursesProvider({ children, schoolId = 'villada' }: { children: 
       const res = await fetch(`/api/courses?schoolId=${schoolId}`);
       if (res.ok) {
         const data = await res.json();
-        setCourses(data.courses ?? []);
+        setCourses(Array.isArray(data) ? data : (data.courses ?? []));
       } else {
         setCourses([]);
       }
     } catch (err) {
-      console.error('Error loading courses:', err);
+      console.error('[v0] Error loading courses:', err);
       setCourses([]);
     } finally {
       setLoading(false);
@@ -97,10 +105,10 @@ export function CoursesProvider({ children, schoolId = 'villada' }: { children: 
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, ...updatedData, schoolId }),
-    })
-    const resData = await res.json()
+    });
+    const resData = await res.json();
     if (!res.ok) {
-      throw new Error(resData.error || 'Failed to update course')
+      throw new Error(resData.error || 'Failed to update course');
     }
     await fetchCourses();
   };
@@ -123,7 +131,7 @@ export function CoursesProvider({ children, schoolId = 'villada' }: { children: 
   };
 
   return (
-    <CoursesContext.Provider value={{ courses, loading, addCourse, updateCourse, deleteCourse, getCourseById, refreshCourses: fetchCourses }}>
+    <CoursesContext.Provider value={{ courses, loading, schoolId, addCourse, updateCourse, deleteCourse, getCourseById, refreshCourses: fetchCourses }}>
       {children}
     </CoursesContext.Provider>
   );
