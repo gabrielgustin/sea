@@ -37,8 +37,9 @@ async function getHomeCourses(schoolId: string) {
 
 export async function generateMetadata({ params }: { params: Promise<{ schoolId: string }> }) {
   const { schoolId } = await params;
+  const schoolName = schoolId === 'savio' ? 'ITS Savio' : 'ITS Villada';
   return {
-    title: schoolId === 'savio' ? 'ITS Savio - Formaciones' : 'ITS Savio - Formaciones',
+    title: `${schoolName} - Formaciones`,
     description: 'Programas de formación de calidad',
   };
 }
