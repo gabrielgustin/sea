@@ -44,7 +44,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
     }
 
     try {
-      const result = await login(username, password);
+      const result = await login(username, password, schoolId);
       
       if (result.success) {
         setUsername('');

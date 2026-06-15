@@ -10,14 +10,15 @@ interface AuthContextType {
   selectedRole: 'student' | 'admin';
   userDNI?: string;
   userCourse?: string;
+  schoolId?: string;
   setSelectedRole: (role: 'student' | 'admin') => void;
-  login: (username: string, password: string) => Promise<{ success: boolean; redirectUrl?: string; error?: string }>;
+  login: (username: string, password: string, schoolId: string) => Promise<{ success: boolean; redirectUrl?: string; error?: string }>;
   logout: () => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
+export function AuthProvider({ children, schoolId = 'savio' }: { children: React.ReactNode; schoolId?: string }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [userRole, setUserRole] = useState<UserRole>(null);
   const [userDNI, setUserDNI] = useState<string>();
@@ -44,14 +45,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setHydrated(true);
   }, []);
 
-  const login = async (username: string, password: string): Promise<{ success: boolean; redirectUrl?: string; error?: string }> => {
+  const login = async (username: string, password: string, loginSchoolId: string): Promise<{ success: boolean; redirectUrl?: string; error?: string }> => {
     // Validar credenciales basadas en el rol seleccionado
     if (selectedRole === 'admin') {
       try {
         const res = await fetch('/api/admin-login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: username.toLowerCase(), password }),
+          body: JSON.stringify({ email: username.toLowerCase(), password, schoolId: loginSchoolId }),
         })
         const data = await res.json()
         if (!res.ok || !data.success) {
@@ -61,7 +62,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUserRole('admin');
         sessionStorage.setItem('userAuth', 'true');
         sessionStorage.setItem('userRole', 'admin');
-        return { success: true, redirectUrl: '/savio/admin' };
+        return { success: true, redirectUrl: `/${loginSchoolId}/admin` };
       } catch (err) {
         return { success: false, error: 'Error de conexión. Intenta de nuevo.' };
       }
@@ -120,7 +121,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userRole, userDNI, userCourse, selectedRole, setSelectedRole, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, userRole, userDNI, userCourse, schoolId, selectedRole, setSelectedRole, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
