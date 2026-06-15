@@ -6,32 +6,6 @@ import bcrypt from 'bcryptjs'
 // Call GET /api/setup to create/update the admin user credentials.
 export async function GET() {
   try {
-    // Ensure admin_users table exists with all required columns
-    await turso.execute(`
-      CREATE TABLE IF NOT EXISTS admin_users (
-        id TEXT PRIMARY KEY,
-        name TEXT NOT NULL,
-        email TEXT UNIQUE NOT NULL,
-        passwordHash TEXT NOT NULL,
-        role TEXT DEFAULT 'admin',
-        schoolId TEXT DEFAULT 'savio',
-        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `)
-
-    // Add missing columns if they don't exist (for existing tables)
-    try {
-      await turso.execute(`ALTER TABLE admin_users ADD COLUMN role TEXT DEFAULT 'admin'`)
-    } catch {
-      // Column already exists, ignore
-    }
-
-    try {
-      await turso.execute(`ALTER TABLE admin_users ADD COLUMN schoolId TEXT DEFAULT 'savio'`)
-    } catch {
-      // Column already exists, ignore
-    }
-
     const email = 'savio@sea-admin.local'
     const passwordHash = await bcrypt.hash('savio', 10)
 
@@ -41,14 +15,13 @@ export async function GET() {
 
     if (existing.rows && existing.rows.length > 0) {
       // Update password in case it changed
-      const updateSql = `UPDATE admin_users SET passwordHash = '${passwordHash.replace(/'/g, "''")}', name = 'Savio' WHERE email = '${email.replace(/'/g, "''")}'`
+      const updateSql = `UPDATE admin_users SET passwordHash = '${passwordHash.replace(/'/g, "''")}', name = 'Savio', schoolId = 'savio' WHERE email = '${email.replace(/'/g, "''")}'`
       await turso.execute(updateSql)
       return NextResponse.json({ success: true, message: 'Admin user updated. Usuario: savio, Contraseña: savio' })
     }
 
-    // Create new user with generated ID
-    const id = `admin_${Date.now()}`
-    const insertSql = `INSERT INTO admin_users (id, name, email, passwordHash) VALUES ('${id}', 'Savio', '${email.replace(/'/g, "''")}', '${passwordHash.replace(/'/g, "''")}')`
+    // Create new user - let id auto-increment since it's INTEGER PRIMARY KEY
+    const insertSql = `INSERT INTO admin_users (name, email, passwordHash, schoolId) VALUES ('Savio', '${email.replace(/'/g, "''")}', '${passwordHash.replace(/'/g, "''")}', 'savio')`
     await turso.execute(insertSql)
 
     return NextResponse.json({ success: true, message: 'Admin user created. Usuario: savio, Contraseña: savio' })
