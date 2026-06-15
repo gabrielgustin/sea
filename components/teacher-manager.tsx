@@ -50,11 +50,6 @@ export function TeacherManager() {
   const [success, setSuccess] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Derive schoolId from the URL path
-  const schoolId = typeof window !== 'undefined'
-    ? (window.location.pathname.split('/').filter(Boolean)[0] || 'savio')
-    : 'savio'
-
   useEffect(() => {
     if (schoolId) {
       fetchTeachers()
