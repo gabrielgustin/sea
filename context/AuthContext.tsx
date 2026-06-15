@@ -48,10 +48,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     // Validar credenciales basadas en el rol seleccionado
     if (selectedRole === 'admin') {
       try {
+        // Get schoolId from the current route or use default 'savio'
+        const schoolId = typeof window !== 'undefined' 
+          ? (window.location.pathname.split('/').filter(Boolean)[0] || 'savio')
+          : 'savio'
+        
         const res = await fetch('/api/admin-login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: username.toLowerCase(), password }),
+          body: JSON.stringify({ email: username.toLowerCase(), password, schoolId }),
         })
         const data = await res.json()
         if (!res.ok || !data.success) {
@@ -61,8 +66,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setUserRole('admin');
         sessionStorage.setItem('userAuth', 'true');
         sessionStorage.setItem('userRole', 'admin');
-        return { success: true, redirectUrl: '/savio/admin' };
+        return { success: true, redirectUrl: `/${schoolId}/admin` };
       } catch (err) {
+        console.error('[v0] Admin login error:', err);
         return { success: false, error: 'Error de conexión. Intenta de nuevo.' };
       }
     } else if (selectedRole === 'student') {
