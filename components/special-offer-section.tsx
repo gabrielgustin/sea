@@ -6,10 +6,12 @@ import { Sparkles } from 'lucide-react';
 import Link from 'next/link';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
 import { useInView } from '@/hooks/useInView';
+import { useSchool } from '@/context/SchoolContext';
 
 export default function SpecialOfferSection() {
   const { settings } = useSiteSettings();
   const { ref, isInView } = useInView({ once: true, threshold: 0.15 });
+  const { schoolId } = useSchool();
   const whatsappLink = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage)}`;
 
   return (
@@ -43,7 +45,7 @@ export default function SpecialOfferSection() {
         {/* Buttons */}
         <div className="flex flex-col md:flex-row gap-3 md:gap-4 justify-center">
           <Link
-            href="/savio/formaciones"
+            href={`/${schoolId}/formaciones`}
             className="px-6 md:px-10 py-2.5 md:py-4 text-white font-semibold rounded-full transition-opacity hover:opacity-90 text-sm md:text-base text-center"
             style={{ backgroundColor: '#031e41' }}
           >

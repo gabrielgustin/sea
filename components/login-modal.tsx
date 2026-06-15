@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
+import { useSchool } from '@/context/SchoolContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -19,6 +20,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const { schoolId } = useSchool();
   const { login, selectedRole, setSelectedRole } = useAuth();
 
   // Resetear los campos cuando el modal se cierra/abre
@@ -62,7 +64,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
         onOpenChange(false);
       } else {
         const credentialHint = selectedRole === 'admin' 
-          ? 'savio / savio' 
+          ? `${schoolId} / ${schoolId}` 
           : 'tu DNI (usuario y contraseña deben ser iguales)';
         setError(result.error || `Credenciales incorrectas. Intenta con: ${credentialHint}`);
       }
@@ -107,7 +109,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
               <Input
                 id="username"
                 type="text"
-                placeholder={selectedRole === 'admin' ? 'savio' : 'Tu DNI'}
+                placeholder={selectedRole === 'admin' ? schoolId : 'Tu DNI'}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="transition-smooth"

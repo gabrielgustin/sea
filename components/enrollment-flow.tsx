@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Course } from '@/context/CoursesContext';
+import { useSchool } from '@/context/SchoolContext';
 import { ArrowLeft, ArrowRight, Calendar, Clock, User, CheckCircle, Mail, Phone, CreditCard, AlertCircle } from 'lucide-react';
 import { submitEnrollment } from '@/app/actions/enrollments';
 
@@ -19,6 +20,7 @@ interface StudentData {
 
 export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
   const router = useRouter();
+  const { schoolId } = useSchool();
   const [currentStep, setCurrentStep] = useState(1);
   const [studentData, setStudentData] = useState<StudentData>({
     nombre: '',
@@ -56,7 +58,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     } else {
-      router.push(`/savio/cursos/${course.slug || course.id}`);
+      router.push(`/${schoolId}/cursos/${course.slug || course.id}`);
     }
   };
 

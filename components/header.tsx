@@ -7,6 +7,9 @@ import { useSchool } from '@/context/SchoolContext';
 export default function Header() {
   const { schoolId } = useSchool();
 
+  const schoolLogo = schoolId === 'villada' ? '/logo-its-villada.png' : '/logo-domingo-savio.png';
+  const schoolLogoAlt = schoolId === 'villada' ? 'ITS Villada Logo' : 'Domingo Savio Logo';
+
   return (
     <header className="w-full bg-white fixed md:static top-0 left-0 right-0 z-30 md:z-auto" style={{ borderBottom: '2px solid #031e41' }}>
       <div className="w-full px-4 sm:px-6 lg:px-8">
@@ -35,22 +38,22 @@ export default function Header() {
             />
           </Link>
 
-          {/* Mobile - Logo Savio Right */}
+          {/* Mobile - School Logo Right */}
           <div className="md:hidden flex items-center justify-end">
             <Image 
-              src="/logo-domingo-savio.png" 
-              alt="Domingo Savio Logo"
+              src={schoolLogo}
+              alt={schoolLogoAlt}
               width={80}
               height={60}
               className="h-12 w-auto object-contain"
             />
           </div>
 
-          {/* Desktop - Right Side Logo */}
+          {/* Desktop - Right Side School Logo */}
           <div className="hidden md:flex items-center justify-end gap-0">
             <Image
-              src="/logo-domingo-savio.png"
-              alt="Domingo Savio Logo"
+              src={schoolLogo}
+              alt={schoolLogoAlt}
               width={200}
               height={150}
               className="h-24 w-auto object-contain"

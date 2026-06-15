@@ -6,6 +6,7 @@ import Autoplay from 'embla-carousel-autoplay';
 import useEmblaCarousel from 'embla-carousel-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { useSchool } from '@/context/SchoolContext';
 
 interface CarouselSlide {
   id: number;
@@ -39,6 +40,7 @@ interface HeroCarouselProps {
 
 export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) {
   const router = useRouter();
+  const { schoolId } = useSchool();
 
   const [slides, setSlides] = useState<CarouselSlide[]>(initialSlides);
   const [currentSlide, setCurrentSlide] = useState(0);
@@ -89,7 +91,7 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
     const idx = slideEl ? parseInt(slideEl.getAttribute('data-slide-index') || '0', 10) : 0;
     const allSlides = slidesRef.current;
     const slide = allSlides[idx];
-    const target = slide?.ctaLink || '/savio/formaciones';
+    const target = slide?.ctaLink || `/${schoolId}/formaciones`;
     router.push(target);
   };
 
@@ -163,7 +165,7 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
       <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-4 md:px-8 py-4 bg-gradient-to-t from-black/60 to-transparent">
         <button
           onClick={handleVerMas}
-          data-target={slides[currentSlide]?.ctaLink || '/savio/formaciones'}
+          data-target={slides[currentSlide]?.ctaLink || `/${schoolId}/formaciones`}
           className="text-white font-bold text-sm md:text-base hover:underline underline-offset-4 transition-all bg-transparent border-none cursor-pointer p-0"
         >
           {slides[currentSlide]?.ctaText || 'Ver mas'} →

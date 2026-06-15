@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { ArrowRight, Clock, Users, Award } from 'lucide-react';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
+import { useSchool } from '@/context/SchoolContext';
 
 interface Course {
   id: string;
@@ -18,6 +19,7 @@ interface Course {
 
 export default function NuestrasFormacionesPage() {
   const { settings } = useSiteSettings();
+  const { schoolId } = useSchool();
   const whatsappLink = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage)}`;
   const [courses, setCourses] = useState<Course[]>([]);
   const [loading, setLoading] = useState(true);
@@ -113,7 +115,7 @@ export default function NuestrasFormacionesPage() {
 
                     {/* CTA Button */}
                     <Link
-                      href={`/savio/cursos/${course.redirectSlug}`}
+                      href={`/${schoolId}/cursos/${course.redirectSlug}`}
                       className="w-full py-3 px-4 rounded-lg font-bold transition-all duration-300 flex items-center justify-center gap-2 group/btn text-white"
                       style={{ backgroundColor: '#031e41' }}
                     >
