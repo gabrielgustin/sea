@@ -113,7 +113,7 @@ export default function NuestrasFormacionesPage() {
 
                     {/* CTA Button */}
                     <Link
-                      href={`/villada/cursos/${course.redirectSlug}`}
+                      href={`/savio/cursos/${course.redirectSlug}`}
                       className="w-full py-3 px-4 rounded-lg font-bold transition-all duration-300 flex items-center justify-center gap-2 group/btn text-white"
                       style={{ backgroundColor: '#031e41' }}
                     >

@@ -62,7 +62,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
         onOpenChange(false);
       } else {
         const credentialHint = selectedRole === 'admin' 
-          ? 'admin / admin' 
+          ? 'savio / savio' 
           : 'tu DNI (usuario y contraseña deben ser iguales)';
         setError(result.error || `Credenciales incorrectas. Intenta con: ${credentialHint}`);
       }
@@ -107,7 +107,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
               <Input
                 id="username"
                 type="text"
-                placeholder={selectedRole === 'admin' ? 'admin' : 'Tu DNI'}
+                placeholder={selectedRole === 'admin' ? 'savio' : 'Tu DNI'}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="transition-smooth"

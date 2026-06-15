@@ -11,9 +11,9 @@ export default async function SchoolLayout({
   const { schoolId } = await params;
 
   // Validar que el schoolId sea válido
-  const validSchools = ['villada', 'savio'];
+  const validSchools = ['savio', 'savio'];
   if (!validSchools.includes(schoolId)) {
-    redirect('/villada');
+    redirect('/savio');
   }
 
   return (

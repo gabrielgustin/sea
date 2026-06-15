@@ -50,6 +50,11 @@ export function TeacherManager() {
   const [success, setSuccess] = useState('')
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Derive schoolId from the URL path
+  const schoolId = typeof window !== 'undefined'
+    ? (window.location.pathname.split('/').filter(Boolean)[0] || 'savio')
+    : 'savio'
+
   useEffect(() => {
     if (schoolId) {
       fetchTeachers()
@@ -61,7 +66,7 @@ export function TeacherManager() {
     try {
       const res = await fetch(`/api/courses?schoolId=${schoolId}`)
       const data = await res.json()
-      setCourses(data.courses || [])
+      setCourses(Array.isArray(data) ? data : (data.courses || []))
     } catch (err) {
       console.error('Error al cargar cursos:', err)
     }

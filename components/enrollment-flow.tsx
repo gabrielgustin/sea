@@ -56,7 +56,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     } else {
-      router.push(`/villada/cursos/${course.slug || course.id}`);
+      router.push(`/savio/cursos/${course.slug || course.id}`);
     }
   };
 
@@ -151,7 +151,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
         {/* Certificate Badge */}
         <div className="flex items-center gap-2 pt-3 border-t border-gray-100">
           <CheckCircle size={16} style={{ color: '#031e41' }} />
-          <span className="text-gray-700 text-xs md:text-sm font-medium">Certificado oficial por ITS Villada</span>
+          <span className="text-gray-700 text-xs md:text-sm font-medium">Certificado oficial por ITS Savio</span>
         </div>
       </div>
     </div>
@@ -365,7 +365,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
 
             <button
               onClick={() => {
-                const message = encodeURIComponent(`Hola! Te comparto el link para unirte al grupo de WhatsApp del curso "${course.title}" del ITS Villada: ${course.whatsappGroup}`);
+                const message = encodeURIComponent(`Hola! Te comparto el link para unirte al grupo de WhatsApp del curso "${course.title}" del ITS Savio: ${course.whatsappGroup}`);
                 window.open(`https://wa.me/?text=${message}`, '_blank');
               }}
               className="w-full px-6 py-3 rounded-xl font-bold transition-all flex items-center justify-center gap-2 text-sm md:text-base"

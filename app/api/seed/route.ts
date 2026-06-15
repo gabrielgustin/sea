@@ -4,7 +4,7 @@ import { nanoid } from 'nanoid'
 
 export async function POST() {
   try {
-    console.log('[v0] Seeding database with Villada data...')
+    console.log('[v0] Seeding database with Savio data...')
 
     // Carousel slides
     const carouselSlides = [
@@ -53,7 +53,7 @@ export async function POST() {
         price: '$3.500/mes',
         duration: '8 semanas',
         schedule: 'Lunes y Miércoles 18:00 - 20:00',
-        location: 'Centro de Innovación, ITS Villada',
+        location: 'Centro de Innovación, ITS Savio',
         teacher: 'Ing. Carlos Martínez',
       },
       {
@@ -65,7 +65,7 @@ export async function POST() {
         price: '$3.000/mes',
         duration: '12 semanas',
         schedule: 'Martes y Jueves 19:00 - 20:30',
-        location: 'Aula de Informática, ITS Villada',
+        location: 'Aula de Informática, ITS Savio',
         teacher: 'Lic. Gabriel Muñoz',
       },
       {
@@ -77,7 +77,7 @@ export async function POST() {
         price: '$2.800/mes',
         duration: '10 semanas',
         schedule: 'Viernes 17:00 - 19:00',
-        location: 'Laboratorio de Electrónica, ITS Villada',
+        location: 'Laboratorio de Electrónica, ITS Savio',
         teacher: 'Ing. Roberto López',
       },
     ]

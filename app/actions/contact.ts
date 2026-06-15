@@ -33,7 +33,7 @@ export async function getContactMessages() {
 export async function markMessageRead(id: number) {
   try {
     await pool.query(`UPDATE contact_messages SET read = 1 WHERE id = ?`, [id])
-    revalidatePath('/villada/admin')
+    revalidatePath('/savio/admin')
   } catch (error) {
     console.error('[v0] Error marking message as read:', error)
     throw error

@@ -55,7 +55,7 @@ export async function submitEnrollment(data: {
       console.error('[v0] Failed to append to Google Sheets:', error)
     }
 
-    revalidatePath('/villada/admin')
+    revalidatePath('/savio/admin')
   } catch (error) {
     console.error('[v0] Error submitting enrollment:', error)
     throw error
