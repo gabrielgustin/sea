@@ -14,7 +14,7 @@ import { pool } from '@/lib/db';
 async function getCarouselSlides(schoolId: string) {
   try {
     const result = await pool.query(
-      'SELECT * FROM carousel WHERE schoolId = ? AND active = 1 ORDER BY `order` ASC',
+      'SELECT * FROM carousel_slides WHERE schoolId = ? AND active = 1 ORDER BY `order` ASC',
       [schoolId]
     );
     return result.rows || [];
