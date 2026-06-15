@@ -27,13 +27,12 @@ export function AuthProvider({ children, schoolId = 'savio' }: { children: React
   const [hydrated, setHydrated] = useState(false);
 
   useEffect(() => {
-    // Restaurar sesión desde sessionStorage si existe
-    // sessionStorage se limpia automáticamente al cerrar la pestaña
-    // Persiste durante F5/reload en la misma pestaña
-    const savedAuth = sessionStorage.getItem('userAuth') === 'true';
-    const savedRole = sessionStorage.getItem('userRole') as UserRole;
-    const savedDNI = sessionStorage.getItem('userDNI');
-    const savedCourse = sessionStorage.getItem('userCourse');
+    // Restaurar sesión desde localStorage si existe
+    // localStorage persiste incluso al cerrar la pestaña
+    const savedAuth = localStorage.getItem('userAuth') === 'true';
+    const savedRole = localStorage.getItem('userRole') as UserRole;
+    const savedDNI = localStorage.getItem('userDNI');
+    const savedCourse = localStorage.getItem('userCourse');
     
     if (savedAuth && savedRole) {
       setIsAuthenticated(true);
@@ -60,8 +59,8 @@ export function AuthProvider({ children, schoolId = 'savio' }: { children: React
         }
         setIsAuthenticated(true);
         setUserRole('admin');
-        sessionStorage.setItem('userAuth', 'true');
-        sessionStorage.setItem('userRole', 'admin');
+        localStorage.setItem('userAuth', 'true');
+        localStorage.setItem('userRole', 'admin');
         return { success: true, redirectUrl: `/${loginSchoolId}/admin` };
       } catch (err) {
         return { success: false, error: 'Error de conexión. Intenta de nuevo.' };
@@ -89,11 +88,10 @@ export function AuthProvider({ children, schoolId = 'savio' }: { children: React
         setUserRole('student');
         setUserDNI(username);
         setUserCourse(student.curso);
-        
-        sessionStorage.setItem('userAuth', 'true');
-        sessionStorage.setItem('userRole', 'student');
-        sessionStorage.setItem('userDNI', username);
-        sessionStorage.setItem('userCourse', student.curso);
+        localStorage.setItem('userAuth', 'true');
+        localStorage.setItem('userRole', 'student');
+        localStorage.setItem('userDNI', username);
+        localStorage.setItem('userCourse', student.curso);
 
         // Redirigir a URL externa si es alumno de Diseño e Impresión 3D
         if (student.curso === 'Diseño e Impresión 3D') {
@@ -114,10 +112,10 @@ export function AuthProvider({ children, schoolId = 'savio' }: { children: React
     setUserRole(null);
     setUserDNI(undefined);
     setUserCourse(undefined);
-    sessionStorage.removeItem('userAuth');
-    sessionStorage.removeItem('userRole');
-    sessionStorage.removeItem('userDNI');
-    sessionStorage.removeItem('userCourse');
+    localStorage.removeItem('userAuth');
+    localStorage.removeItem('userRole');
+    localStorage.removeItem('userDNI');
+    localStorage.removeItem('userCourse');
   };
 
   return (

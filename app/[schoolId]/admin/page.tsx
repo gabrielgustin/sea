@@ -11,11 +11,14 @@ export default function AdminPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if user is logged in
-    const isLoggedIn = sessionStorage.getItem('userAuth') === 'true';
-    const userRole = sessionStorage.getItem('userRole');
+    // Check if user is logged in - usando localStorage persistente en lugar de sessionStorage
+    const isLoggedIn = localStorage.getItem('userAuth') === 'true' || sessionStorage.getItem('userAuth') === 'true';
+    const userRole = localStorage.getItem('userRole') || sessionStorage.getItem('userRole');
+
+    console.log('[v0] Admin page auth check:', { isLoggedIn, userRole });
 
     if (!isLoggedIn || userRole !== 'admin') {
+      console.log('[v0] Not authenticated, redirecting to home');
       router.push(`/${schoolId}`);
       return;
     }
