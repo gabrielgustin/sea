@@ -66,46 +66,54 @@ export async function submitEnrollment(data: {
       throw tursoError
     }
 
-    // 2. Send to Google Sheets (async, non-blocking)
+    // 2. Send to Google Sheets — called directly, no internal HTTP fetch
     try {
-      const now = new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })
-      const sheetValues = [
-        now,
-        data.nombre,
-        data.apellido,
-        data.email,
-        data.telefono,
-        data.dni,
-        data.courseName,
-        data.commissionName || 'Sin comisión',
-        data.metodoPago || 'No especificado',
-      ]
+      const webhookUrls: Record<string, string> = {
+        villada: 'https://script.google.com/macros/s/AKfycby1qkF291jaQnrdOPgyQGTwe8KmwB-53ywsWXvCW-yvDMiBGMARQ7dtn4OWCnEaZSqogg/exec',
+        savio:   'https://script.google.com/macros/s/AKfycbz31HHo9UjoqNspFg6yserBcT_5Q3T4N0C6s6aTCwheKlSt6tueNHzqE-kBmsGvYCmmfw/exec',
+      }
+      const webhookUrl = webhookUrls[data.schoolId]
 
-      console.log('[v0] Sending to Google Sheets:', { schoolId: data.schoolId, values: sheetValues })
+      if (!webhookUrl) {
+        console.error('[v0] No webhook URL for schoolId:', data.schoolId)
+      } else {
+        const now = new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })
+        const sheetValues = [
+          now,
+          data.nombre,
+          data.apellido,
+          data.email,
+          data.telefono,
+          data.dni,
+          data.courseName,
+          data.commissionName || 'Sin comisión',
+          data.metodoPago || 'No especificado',
+        ]
 
-      const gsResponse = await fetch(
-        process.env.VERCEL_URL
-          ? `https://${process.env.VERCEL_URL}/api/google-sheets/append`
-          : 'http://localhost:3000/api/google-sheets/append',
-        {
+        console.log('[v0] Posting to Apps Script:', webhookUrl.substring(0, 60) + '...')
+
+        // Step 1: POST — Apps Script responds with 302 redirect
+        const postResponse = await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            schoolId: data.schoolId,
-            values: sheetValues,
-          }),
+          body: JSON.stringify({ schoolId: data.schoolId, values: sheetValues }),
+          redirect: 'manual',
+        })
+        console.log('[v0] Apps Script POST status:', postResponse.status)
+
+        // Step 2: GET the redirect URL to obtain the real JSON response
+        const redirectUrl = postResponse.headers.get('location')
+        if (redirectUrl) {
+          const getResponse = await fetch(redirectUrl, { method: 'GET' })
+          const responseText = await getResponse.text()
+          console.log('[v0] Apps Script result:', responseText.substring(0, 150))
+        } else {
+          console.error('[v0] Apps Script returned no redirect location')
         }
-      )
-
-      const gsData = await gsResponse.json()
-      console.log('[v0] Google Sheets response:', gsResponse.status, gsData)
-
-      if (!gsResponse.ok) {
-        console.error('[v0] Google Sheets error:', gsData)
       }
     } catch (gsError) {
       console.error('[v0] Failed to send to Google Sheets:', gsError)
-      // Don't throw — enrollment is already saved
+      // Don't throw — enrollment is already saved in Turso
     }
 
     revalidatePath(`/${data.schoolId}/admin`)
