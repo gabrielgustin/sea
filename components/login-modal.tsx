@@ -20,22 +20,8 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { login, selectedRole, setSelectedRole, hydrated } = useAuth();
-  
-  // Usar SchoolContext si está disponible, si no usar fallback
-  let schoolId = 'savio';
-  try {
-    const school = useSchool();
-    schoolId = school.schoolId;
-  } catch (err) {
-    // Si SchoolProvider no está disponible, usar valor por defecto
-    schoolId = 'savio';
-  }
-
-  // No renderizar hasta que esté hidratado
-  if (!hydrated) {
-    return null;
-  }
+  const { schoolId } = useSchool();
+  const { login, selectedRole, setSelectedRole } = useAuth();
 
   // Resetear los campos cuando el modal se cierra/abre
   useEffect(() => {

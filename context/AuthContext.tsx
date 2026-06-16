@@ -11,7 +11,6 @@ interface AuthContextType {
   userDNI?: string;
   userCourse?: string;
   schoolId?: string;
-  hydrated: boolean;
   setSelectedRole: (role: 'student' | 'admin') => void;
   login: (username: string, password: string, schoolId: string) => Promise<{ success: boolean; redirectUrl?: string; error?: string }>;
   logout: () => void;
@@ -120,7 +119,7 @@ export function AuthProvider({ children, schoolId = 'savio' }: { children: React
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userRole, userDNI, userCourse, schoolId, hydrated, selectedRole, setSelectedRole, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, userRole, userDNI, userCourse, schoolId, selectedRole, setSelectedRole, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
