@@ -33,9 +33,11 @@ export async function GET(request: NextRequest) {
       const slides = (result.rows || []).map((row: any) => ({
         ...row,
         active: Boolean(row.active),
-        // normalize: map subtitle→description for frontend compatibility
         description: row.subtitle || row.description || '',
         slideDuration: row.slideDuration || '',
+        slideModality: row.slideModality || '',
+        slideStart: row.slideStart || '',
+        slideBadge: row.slideBadge || '',
       }))
       return NextResponse.json({ slides })
     }
@@ -57,8 +59,8 @@ export async function POST(request: NextRequest) {
     if (hasTurso()) {
       const turso = await getTurso()
       const result = await turso.execute(
-        'INSERT INTO carousel_slides (schoolId, title, description, image, ctaLink, slideDuration, active, "order") VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [schoolId, body.title || '', body.description || '', body.image || '', body.ctaLink || '', body.slideDuration || '', body.active !== false ? 1 : 0, body.order ?? 0]
+        'INSERT INTO carousel_slides (schoolId, title, description, image, ctaLink, slideDuration, slideModality, slideStart, slideBadge, active, "order") VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [schoolId, body.title || '', body.description || '', body.image || '', body.ctaLink || '', body.slideDuration || '', body.slideModality || '', body.slideStart || '', body.slideBadge || '', body.active !== false ? 1 : 0, body.order ?? 0]
       )
       const newId = result.lastInsertRowid?.toString() || String(Date.now())
       return NextResponse.json({ success: true, id: newId })
@@ -80,7 +82,7 @@ export async function PUT(request: NextRequest) {
 
     if (hasTurso()) {
       const turso = await getTurso()
-      const allowed = ['title', 'subtitle', 'image', 'ctaText', 'ctaLink', 'slideDuration', 'active', 'order']
+      const allowed = ['title', 'subtitle', 'description', 'image', 'ctaText', 'ctaLink', 'slideDuration', 'slideModality', 'slideStart', 'slideBadge', 'active', 'order']
       const data: Record<string, any> = { ...updatedData }
       // normalize description → subtitle
       if (data.description !== undefined && data.subtitle === undefined) {

@@ -3,8 +3,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { Textarea } from '@/components/ui/textarea'
-import { Plus, Trash2, Edit2, Upload, X, AlertCircle, ImageIcon, ChevronUp, ChevronDown, Eye, EyeOff } from 'lucide-react'
+import { Plus, Trash2, Edit2, Upload, X, AlertCircle, ImageIcon, ChevronUp, ChevronDown, Eye, EyeOff, ChevronDown as ChevronDownIcon } from 'lucide-react'
 import Image from 'next/image'
 import { useSchool } from '@/context/SchoolContext'
 
@@ -15,16 +14,27 @@ interface Slide {
   image: string
   ctaLink: string
   slideDuration?: string
+  slideModality?: string
+  slideStart?: string
+  slideBadge?: string
   active: boolean
   order: number
 }
 
+interface Course {
+  id: string
+  title: string
+  slug: string
+}
+
 const EMPTY_FORM = {
   title: '',
-  description: '',
   image: '',
   ctaLink: '',
   slideDuration: '',
+  slideModality: '',
+  slideStart: '',
+  slideBadge: '',
   active: true,
   order: 0,
 }
@@ -32,6 +42,7 @@ const EMPTY_FORM = {
 export function CarouselManager() {
   const { schoolId } = useSchool()
   const [slides, setSlides] = useState<Slide[]>([])
+  const [courses, setCourses] = useState<Course[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [editingId, setEditingId] = useState<string | 'new' | null>(null)
   const [formData, setFormData] = useState(EMPTY_FORM)
@@ -40,11 +51,27 @@ export function CarouselManager() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [courseDropdownOpen, setCourseDropdownOpen] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
+  const dropdownRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (schoolId) fetchSlides()
+    if (schoolId) {
+      fetchSlides()
+      fetchCourses()
+    }
   }, [schoolId])
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setCourseDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handler)
+    return () => document.removeEventListener('mousedown', handler)
+  }, [])
 
   const fetchSlides = async () => {
     setIsLoading(true)
@@ -60,10 +87,17 @@ export function CarouselManager() {
     }
   }
 
+  const fetchCourses = async () => {
+    try {
+      const res = await fetch(`/api/courses?schoolId=${schoolId}`)
+      const data = await res.json()
+      setCourses(data.courses || [])
+    } catch {}
+  }
+
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-
     if (!file.type.startsWith('image/')) {
       setError('El archivo debe ser una imagen (JPG, PNG, WEBP, etc.)')
       return
@@ -72,12 +106,9 @@ export function CarouselManager() {
       setError('La imagen no debe superar los 8MB')
       return
     }
-
-    // Preview inmediato
     const localUrl = URL.createObjectURL(file)
     setImagePreview(localUrl)
     setError('')
-
     setUploading(true)
     try {
       const fd = new FormData()
@@ -114,10 +145,12 @@ export function CarouselManager() {
     setEditingId(slide.id)
     setFormData({
       title: slide.title,
-      description: slide.description || '',
       image: slide.image || '',
       ctaLink: slide.ctaLink || '',
       slideDuration: slide.slideDuration || '',
+      slideModality: slide.slideModality || '',
+      slideStart: slide.slideStart || '',
+      slideBadge: slide.slideBadge || '',
       active: slide.active,
       order: slide.order,
     })
@@ -140,7 +173,6 @@ export function CarouselManager() {
       setError('Espera a que termine de subir la imagen')
       return
     }
-
     setSaving(true)
     setError('')
     try {
@@ -202,11 +234,8 @@ export function CarouselManager() {
     const targetIndex = direction === 'up' ? index - 1 : index + 1
     if (targetIndex < 0 || targetIndex >= newSlides.length) return
     ;[newSlides[index], newSlides[targetIndex]] = [newSlides[targetIndex], newSlides[index]]
-
-    // Update orders
     const updates = newSlides.map((s, i) => ({ id: s.id, order: i }))
     setSlides(newSlides.map((s, i) => ({ ...s, order: i })))
-
     try {
       await Promise.all(
         updates.map(u =>
@@ -221,6 +250,9 @@ export function CarouselManager() {
       await fetchSlides()
     }
   }
+
+  // Find selected course name for display
+  const selectedCourse = courses.find(c => formData.ctaLink === `/${schoolId}/formaciones/${c.slug}`)
 
   return (
     <div className="space-y-6">
@@ -263,7 +295,6 @@ export function CarouselManager() {
           <div>
             <label className="block text-sm font-medium mb-2">Imagen del slide</label>
             <div className="flex flex-col sm:flex-row gap-4">
-              {/* Preview */}
               <div
                 className="relative w-full sm:w-48 h-28 rounded-lg overflow-hidden border-2 border-dashed flex items-center justify-center bg-gray-50 flex-shrink-0 cursor-pointer group"
                 style={{ borderColor: imagePreview ? '#031e41' : '#d1d5db' }}
@@ -271,13 +302,7 @@ export function CarouselManager() {
               >
                 {imagePreview ? (
                   <>
-                    <Image
-                      src={imagePreview}
-                      alt="Preview"
-                      fill
-                      className="object-cover"
-                      unoptimized
-                    />
+                    <Image src={imagePreview} alt="Preview" fill className="object-cover" unoptimized />
                     <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                       <Upload className="h-6 w-6 text-white" />
                     </div>
@@ -294,35 +319,14 @@ export function CarouselManager() {
                   </div>
                 )}
               </div>
-
-              {/* Controles */}
               <div className="flex flex-col gap-2 justify-center">
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={handleImageChange}
-                />
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  disabled={uploading}
-                  onClick={() => fileInputRef.current?.click()}
-                  className="flex items-center gap-2"
-                >
+                <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+                <Button type="button" variant="outline" size="sm" disabled={uploading} onClick={() => fileInputRef.current?.click()} className="flex items-center gap-2">
                   <Upload className="h-4 w-4" />
                   {uploading ? 'Subiendo...' : 'Seleccionar imagen'}
                 </Button>
                 {imagePreview && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="sm"
-                    onClick={handleRemoveImage}
-                    className="flex items-center gap-2 text-red-600 border-red-200 hover:bg-red-50"
-                  >
+                  <Button type="button" variant="outline" size="sm" onClick={handleRemoveImage} className="flex items-center gap-2 text-red-600 border-red-200 hover:bg-red-50">
                     <X className="h-4 w-4" /> Quitar imagen
                   </Button>
                 )}
@@ -341,35 +345,105 @@ export function CarouselManager() {
             />
           </div>
 
-          {/* Descripción */}
-          <div>
-            <label className="block text-sm font-medium mb-1">Descripción</label>
-            <Textarea
-              value={formData.description}
-              onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
-              placeholder="Descripción breve del slide..."
-              rows={3}
-            />
+          {/* Grid 3 campos: Duración, Modalidad, Inicio */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Duración</label>
+              <Input
+                value={formData.slideDuration}
+                onChange={e => setFormData(prev => ({ ...prev, slideDuration: e.target.value }))}
+                placeholder="Ej: 12 clases"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Modalidad</label>
+              <Input
+                value={formData.slideModality}
+                onChange={e => setFormData(prev => ({ ...prev, slideModality: e.target.value }))}
+                placeholder="Ej: Presencial"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Inicio</label>
+              <Input
+                value={formData.slideStart}
+                onChange={e => setFormData(prev => ({ ...prev, slideStart: e.target.value }))}
+                placeholder="Ej: 5 de agosto"
+              />
+            </div>
           </div>
 
-          {/* Link CTA */}
+          {/* Badge superior derecho */}
           <div>
-            <label className="block text-sm font-medium mb-1">Enlace (CTA) <span className="text-gray-400 font-normal">— opcional</span></label>
-            <Input
-              value={formData.ctaLink}
-              onChange={e => setFormData(prev => ({ ...prev, ctaLink: e.target.value }))}
-              placeholder="https://... o /ruta-interna"
-            />
+            <label className="block text-sm font-medium mb-1">
+              Badge esquina superior derecha
+              <span className="text-gray-400 font-normal ml-1">— ej: "DURACIÓN 16 CLASES"</span>
+            </label>
+            <div className="flex items-center gap-3">
+              <Input
+                value={formData.slideBadge}
+                onChange={e => setFormData(prev => ({ ...prev, slideBadge: e.target.value }))}
+                placeholder="Texto del badge..."
+                className="flex-1"
+              />
+              {formData.slideBadge && (
+                <span className="flex-shrink-0 px-3 py-1.5 rounded-full text-xs font-bold uppercase tracking-wide text-white" style={{ backgroundColor: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)' }}>
+                  {formData.slideBadge}
+                </span>
+              )}
+            </div>
           </div>
 
-          {/* Duración del slide */}
+          {/* Redirigir a curso */}
           <div>
-            <label className="block text-sm font-medium mb-1">Duración <span className="text-gray-400 font-normal">— ej: "12 clases"</span></label>
-            <Input
-              value={formData.slideDuration || ''}
-              onChange={e => setFormData(prev => ({ ...prev, slideDuration: e.target.value }))}
-              placeholder="12 clases, 6 meses, etc..."
-            />
+            <label className="block text-sm font-medium mb-1">Redirigir a</label>
+            <div className="relative" ref={dropdownRef}>
+              <button
+                type="button"
+                onClick={() => setCourseDropdownOpen(prev => !prev)}
+                className="w-full flex items-center justify-between px-3 py-2 rounded-md border text-sm bg-white transition-colors hover:bg-gray-50"
+                style={{ borderColor: courseDropdownOpen ? '#031e41' : '#e5e7eb', color: selectedCourse ? '#1f2937' : '#9ca3af' }}
+              >
+                <span>{selectedCourse ? selectedCourse.title : 'Seleccionar curso...'}</span>
+                <ChevronDownIcon className={`h-4 w-4 text-gray-400 transition-transform ${courseDropdownOpen ? 'rotate-180' : ''}`} />
+              </button>
+
+              {courseDropdownOpen && (
+                <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
+                  {/* Opcion: sin redireccion */}
+                  <button
+                    type="button"
+                    onClick={() => { setFormData(prev => ({ ...prev, ctaLink: `/${schoolId}/formaciones` })); setCourseDropdownOpen(false) }}
+                    className="w-full text-left px-3 py-2.5 text-sm hover:bg-gray-50 transition-colors border-b border-gray-100 text-gray-500 italic"
+                  >
+                    Ver todas las formaciones
+                  </button>
+                  {courses.length === 0 ? (
+                    <div className="px-3 py-3 text-sm text-gray-400 text-center">Sin cursos cargados</div>
+                  ) : (
+                    <div className="max-h-48 overflow-y-auto">
+                      {courses.map(course => (
+                        <button
+                          key={course.id}
+                          type="button"
+                          onClick={() => {
+                            setFormData(prev => ({ ...prev, ctaLink: `/${schoolId}/formaciones/${course.slug}` }))
+                            setCourseDropdownOpen(false)
+                          }}
+                          className="w-full text-left px-3 py-2.5 text-sm hover:bg-blue-50 transition-colors"
+                          style={{ color: formData.ctaLink === `/${schoolId}/formaciones/${course.slug}` ? '#031e41' : '#374151', fontWeight: formData.ctaLink === `/${schoolId}/formaciones/${course.slug}` ? 600 : 400 }}
+                        >
+                          {course.title}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+            {formData.ctaLink && (
+              <p className="text-xs text-gray-400 mt-1">Ruta: {formData.ctaLink}</p>
+            )}
           </div>
 
           {/* Activo */}
@@ -412,7 +486,6 @@ export function CarouselManager() {
               className={`border rounded-xl overflow-hidden flex items-center gap-0 bg-white transition-all ${!slide.active ? 'opacity-60' : ''} hover:shadow-sm`}
               style={{ borderColor: slide.active ? '#9cbadb' : '#e5e7eb' }}
             >
-              {/* Imagen miniatura */}
               <div className="w-24 h-16 flex-shrink-0 bg-gray-100 overflow-hidden relative">
                 {slide.image ? (
                   <Image src={slide.image} alt={slide.title} fill className="object-cover" unoptimized />
@@ -423,7 +496,6 @@ export function CarouselManager() {
                 )}
               </div>
 
-              {/* Contenido */}
               <div className="flex-1 min-w-0 px-4 py-3">
                 <div className="flex items-center gap-2">
                   <p className="font-semibold text-gray-900 truncate">{slide.title}</p>
@@ -431,53 +503,30 @@ export function CarouselManager() {
                     {slide.active ? 'Activo' : 'Oculto'}
                   </span>
                 </div>
-                {slide.description && (
-                  <p className="text-sm text-gray-500 mt-0.5 truncate">{slide.description}</p>
-                )}
-                {slide.ctaLink && (
-                  <p className="text-xs text-blue-500 mt-0.5 truncate">{slide.ctaLink}</p>
-                )}
+                <div className="flex items-center gap-3 mt-0.5 flex-wrap">
+                  {slide.slideModality && <span className="text-xs text-gray-500">{slide.slideModality}</span>}
+                  {slide.slideDuration && <span className="text-xs text-gray-500">{slide.slideDuration}</span>}
+                  {slide.slideStart && <span className="text-xs text-gray-500">Inicio: {slide.slideStart}</span>}
+                  {slide.ctaLink && <span className="text-xs text-blue-400 truncate">{slide.ctaLink}</span>}
+                </div>
               </div>
 
-              {/* Acciones */}
               <div className="flex items-center gap-1 pr-3 flex-shrink-0">
-                {/* Reordenar */}
                 <div className="flex flex-col gap-0.5">
-                  <button
-                    onClick={() => handleReorder(index, 'up')}
-                    disabled={index === 0}
-                    className="p-1 text-gray-400 hover:text-gray-700 disabled:opacity-20"
-                  >
+                  <button onClick={() => handleReorder(index, 'up')} disabled={index === 0} className="p-1 text-gray-400 hover:text-gray-700 disabled:opacity-20">
                     <ChevronUp className="h-4 w-4" />
                   </button>
-                  <button
-                    onClick={() => handleReorder(index, 'down')}
-                    disabled={index === slides.length - 1}
-                    className="p-1 text-gray-400 hover:text-gray-700 disabled:opacity-20"
-                  >
+                  <button onClick={() => handleReorder(index, 'down')} disabled={index === slides.length - 1} className="p-1 text-gray-400 hover:text-gray-700 disabled:opacity-20">
                     <ChevronDown className="h-4 w-4" />
                   </button>
                 </div>
-
-                <button
-                  onClick={() => handleToggleActive(slide)}
-                  className="p-2 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-50"
-                  title={slide.active ? 'Ocultar' : 'Mostrar'}
-                >
+                <button onClick={() => handleToggleActive(slide)} className="p-2 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-50" title={slide.active ? 'Ocultar' : 'Mostrar'}>
                   {slide.active ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
                 </button>
-
-                <button
-                  onClick={() => openEdit(slide)}
-                  className="p-2 text-gray-500 hover:text-blue-900 rounded-lg hover:bg-blue-50"
-                >
+                <button onClick={() => openEdit(slide)} className="p-2 text-gray-500 hover:text-blue-900 rounded-lg hover:bg-blue-50">
                   <Edit2 className="h-4 w-4" />
                 </button>
-
-                <button
-                  onClick={() => handleDelete(slide.id)}
-                  className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50"
-                >
+                <button onClick={() => handleDelete(slide.id)} className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50">
                   <Trash2 className="h-4 w-4" />
                 </button>
               </div>

@@ -16,6 +16,9 @@ interface CarouselSlide {
   ctaText?: string;
   ctaLink?: string;
   slideDuration?: string;
+  slideModality?: string;
+  slideStart?: string;
+  slideBadge?: string;
 }
 
 function parseSubtitle(subtitle?: string) {
@@ -110,9 +113,12 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
       <div ref={emblaRef} className="h-full w-full overflow-hidden">
         <div className="flex h-full">
           {slides.map((slide, index) => {
-            const { modality, startDate, duration } = parseSubtitle(slide.subtitle);
-            // Use slideDuration if available, otherwise fall back to parsed duration
-            const displayDuration = slide.slideDuration || duration;
+            // Prefer direct fields; fall back to parsing legacy subtitle
+            const parsed = parseSubtitle(slide.subtitle);
+            const displayModality = slide.slideModality || parsed.modality;
+            const displayStart    = slide.slideStart    || parsed.startDate;
+            const displayDuration = slide.slideDuration || parsed.duration;
+
             return (
               <div key={slide.id} className="relative min-w-full h-full flex-shrink-0" data-slide-index={index}>
                 {/* Background image */}
@@ -128,36 +134,46 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50" />
                 </div>
 
+                {/* Badge superior derecho */}
+                {slide.slideBadge && (
+                  <div className="absolute top-5 right-5 z-20">
+                    <span className="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest text-white"
+                      style={{ backgroundColor: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.15)' }}>
+                      {slide.slideBadge}
+                    </span>
+                  </div>
+                )}
+
                 {/* Slide content */}
                 <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 w-full h-full flex flex-col justify-end pb-20">
-                  {/* Modality Badge */}
-                  {modality && (
+                  {/* Modality pill */}
+                  {displayModality && (
                     <div className="mb-6 inline-flex w-fit">
-                      <span 
+                      <span
                         className="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide text-gray-800"
                         style={{ backgroundColor: '#c7d9e8' }}
                       >
-                        {modality}
+                        {displayModality}
                       </span>
                     </div>
                   )}
-                  
+
                   <div className="flex flex-col gap-4">
                     <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl text-pretty line-clamp-3">
                       {slide.title}
                     </h1>
-                    {(modality || startDate || displayDuration) && (
+                    {(displayModality || displayStart || displayDuration) && (
                       <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-white text-sm md:text-base border-l-2 border-white pl-6 md:pl-8">
-                        {modality && (
+                        {displayModality && (
                           <div>
                             <p className="text-gray-300 text-xs uppercase tracking-widest mb-1">MODALIDAD</p>
-                            <p className="font-semibold">{modality}</p>
+                            <p className="font-semibold">{displayModality}</p>
                           </div>
                         )}
-                        {startDate && (
+                        {displayStart && (
                           <div>
                             <p className="text-gray-300 text-xs uppercase tracking-widest mb-1">INICIA</p>
-                            <p className="font-semibold">{startDate}</p>
+                            <p className="font-semibold">{displayStart}</p>
                           </div>
                         )}
                         {displayDuration && (

@@ -91,6 +91,9 @@ export async function initializeSchema() {
         image TEXT,
         ctaLink TEXT,
         slideDuration TEXT,
+        slideModality TEXT,
+        slideStart TEXT,
+        slideBadge TEXT,
         active BOOLEAN DEFAULT 1,
         "order" INTEGER DEFAULT 0,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -122,6 +125,15 @@ export async function initializeSchema() {
     } catch (_) {}
     try {
       await turso.execute(`ALTER TABLE carousel_slides ADD COLUMN slideDuration TEXT`)
+    } catch (_) {}
+    try {
+      await turso.execute(`ALTER TABLE carousel_slides ADD COLUMN slideModality TEXT`)
+    } catch (_) {}
+    try {
+      await turso.execute(`ALTER TABLE carousel_slides ADD COLUMN slideStart TEXT`)
+    } catch (_) {}
+    try {
+      await turso.execute(`ALTER TABLE carousel_slides ADD COLUMN slideBadge TEXT`)
     } catch (_) {}
     try {
       await turso.execute(`ALTER TABLE teachers ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
