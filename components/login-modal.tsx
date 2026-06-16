@@ -24,7 +24,6 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
   const schoolId = typeof params?.schoolId === 'string' ? params.schoolId : 'savio';
   const { login, selectedRole, setSelectedRole } = useAuth();
 
-  // Resetear los campos cuando el modal se cierra/abre
   useEffect(() => {
     if (open) {
       setUsername('');
@@ -45,33 +44,26 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
     }
 
     try {
-      // Demo credentials: admin/admin for any school
-      const isValidAdmin = (username === schoolId || username === 'admin') && (password === schoolId || password === 'admin');
-      
-      if (isValidAdmin) {
-        // Store auth in localStorage
-        localStorage.setItem('userAuth', 'true');
-        localStorage.setItem('userRole', 'admin');
-        localStorage.setItem('schoolId', schoolId);
-        localStorage.setItem('username', username);
-        
-        console.log('[v0] Admin login successful (demo mode)');
-        
+      const result = await login(username, password, schoolId);
+
+      if (result.success) {
         setUsername('');
         setPassword('');
         onLoginSuccess?.();
         onOpenChange(false);
-        
-        // Redirect to admin panel
-        setTimeout(() => {
-          window.location.href = `/${schoolId}/admin`;
-        }, 100);
+        if (result.redirectUrl) {
+          setTimeout(() => {
+            window.location.href = result.redirectUrl!;
+          }, 100);
+        }
       } else {
-        setError(`Credenciales incorrectas. Intenta con usuario: ${schoolId} y contraseña: ${schoolId}`);
+        const hint = selectedRole === 'admin'
+          ? `Intenta con usuario: ${schoolId} y contraseña: ${schoolId}`
+          : 'Usuario y contraseña deben ser tu DNI';
+        setError(result.error || `Credenciales incorrectas. ${hint}`);
       }
     } catch (err) {
       setError('Error al procesar el login. Intenta de nuevo.');
-      console.error('[v0] Login error:', err);
     } finally {
       setLoading(false);
     }
@@ -81,43 +73,62 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Iniciar Sesión</DialogTitle>
+          <DialogTitle className="text-xl font-bold" style={{ color: '#031e41' }}>
+            Iniciar Sesión
+          </DialogTitle>
           <DialogDescription>
             Selecciona tu tipo de cuenta e ingresa tus credenciales
           </DialogDescription>
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Role Selector - Admin Only */}
+          {/* Role Selector */}
           <div className="flex gap-3">
             <button
-              onClick={() => setSelectedRole('admin')}
-              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all border-blue-900 bg-blue-50`}
-              style={{
-                borderColor: '#031e41',
-                backgroundColor: 'rgba(3, 30, 65, 0.05)',
-              }}
-              disabled
+              type="button"
+              onClick={() => setSelectedRole('student')}
+              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all ${
+                selectedRole === 'student'
+                  ? 'border-blue-900 bg-blue-50'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+              style={selectedRole === 'student' ? { borderColor: '#031e41', backgroundColor: 'rgba(3,30,65,0.05)' } : {}}
             >
-              <Shield size={20} style={{ color: '#031e41' }} />
-              <span className="font-semibold" style={{ color: '#031e41' }}>Administrador</span>
+              <Users size={18} style={{ color: selectedRole === 'student' ? '#031e41' : '#9ca3af' }} />
+              <span className="font-semibold text-sm" style={{ color: selectedRole === 'student' ? '#031e41' : '#6b7280' }}>
+                Estudiante
+              </span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setSelectedRole('admin')}
+              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all ${
+                selectedRole === 'admin'
+                  ? 'border-blue-900 bg-blue-50'
+                  : 'border-gray-200 hover:border-gray-300'
+              }`}
+              style={selectedRole === 'admin' ? { borderColor: '#031e41', backgroundColor: 'rgba(3,30,65,0.05)' } : {}}
+            >
+              <Shield size={18} style={{ color: selectedRole === 'admin' ? '#031e41' : '#9ca3af' }} />
+              <span className="font-semibold text-sm" style={{ color: selectedRole === 'admin' ? '#031e41' : '#6b7280' }}>
+                Administrador
+              </span>
             </button>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">Usuario</Label>
+              <Label htmlFor="username">
+                {selectedRole === 'admin' ? 'Usuario' : 'DNI'}
+              </Label>
               <Input
                 id="username"
                 type="text"
-                placeholder={schoolId}
+                placeholder={selectedRole === 'admin' ? schoolId : 'Tu DNI'}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="transition-smooth"
+                autoComplete="username"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Demo: usa {schoolId}
-              </p>
             </div>
 
             <div className="space-y-2">
@@ -125,14 +136,16 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
               <Input
                 id="password"
                 type="password"
-                placeholder={schoolId}
+                placeholder={selectedRole === 'admin' ? '••••••••' : 'Tu DNI'}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="transition-smooth"
+                autoComplete="current-password"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                Demo: usa {schoolId}
-              </p>
+              {selectedRole === 'student' && (
+                <p className="text-xs text-gray-500">
+                  Para estudiantes: usuario y contraseña deben ser tu DNI
+                </p>
+              )}
             </div>
 
             {error && (
@@ -141,7 +154,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
               </div>
             )}
 
-            <div className="flex gap-2 pt-4">
+            <div className="flex gap-2 pt-2">
               <Button
                 type="button"
                 variant="outline"
