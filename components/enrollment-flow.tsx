@@ -33,6 +33,9 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
   const [studentData, setStudentData] = useState<StudentData>({ nombre: '', dni: '', email: '', telefono: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isStudentDataVerified, setIsStudentDataVerified] = useState(false);
+  const [showResendForm, setShowResendForm] = useState(false);
+  const [resendEmail, setResendEmail] = useState('');
+  const [isResending, setIsResending] = useState(false);
 
   const progress = (currentStep / totalSteps) * 100;
 
@@ -405,6 +408,22 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
         )}
       </div>
 
+      {/* AVISO IMPORTANTE */}
+      <div className="rounded-xl p-4 md:p-5 border-2" style={{ backgroundColor: '#fff3cd', borderColor: '#ffc107' }}>
+        <div className="flex gap-3 items-start">
+          <div className="text-xl flex-shrink-0 pt-0.5">⚠️</div>
+          <div className="text-left">
+            <p className="font-bold text-sm md:text-base mb-1" style={{ color: '#856404' }}>
+              IMPORTANTE: Solo el alumno/alumna debe unirse al grupo
+            </p>
+            <p className="text-xs md:text-sm" style={{ color: '#856404' }}>
+              Si completaste este formulario en nombre de otra persona, reenvíale el link del grupo para que ella se una.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* GRUPO DE WHATSAPP */}
       <div className="rounded-2xl p-4 md:p-6 text-left" style={{ backgroundColor: '#ffffff', border: '2px solid #9cbadb' }}>
         <div className="text-center mb-4">
           <h2 className="text-lg md:text-xl font-bold" style={{ color: '#031e41' }}>Sumate al grupo!</h2>
@@ -424,6 +443,92 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
           </a>
         ) : (
           <p className="text-gray-500 text-sm text-center">El link del grupo sera compartido proximamente</p>
+        )}
+      </div>
+
+      {/* REENVIAR LINK SECTION */}
+      <div className="rounded-2xl p-4 md:p-6 text-left border-2" style={{ backgroundColor: '#f9fafb', borderColor: '#e5e7eb' }}>
+        <div className="text-center mb-4">
+          <h3 className="text-base md:text-lg font-bold mb-1" style={{ color: '#031e41' }}>¿No eres el/la alumno/a?</h3>
+          <p className="text-xs md:text-sm text-gray-600">Comparte el link del grupo de WhatsApp con el alumno/alumna</p>
+        </div>
+
+        {!showResendForm ? (
+          <button
+            onClick={() => setShowResendForm(true)}
+            className="w-full px-4 py-2.5 rounded-lg border-2 font-semibold text-sm transition-all"
+            style={{ borderColor: '#031e41', color: '#031e41', backgroundColor: '#ffffff' }}
+            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = '#f0f4f8'}
+            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = '#ffffff'}
+          >
+            Reenviar link por email
+          </button>
+        ) : (
+          <div className="space-y-3">
+            <div>
+              <label className="text-xs font-semibold mb-1.5 block text-gray-700">Email del alumno/alumna:</label>
+              <input
+                type="email"
+                value={resendEmail}
+                onChange={(e) => setResendEmail(e.target.value)}
+                placeholder="email@ejemplo.com"
+                className="w-full px-3 py-2.5 rounded-lg border text-sm"
+                style={{ borderColor: '#e5e7eb', color: '#1f2937' }}
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                onClick={async () => {
+                  if (!resendEmail.includes('@')) {
+                    alert('Por favor ingresa un email válido');
+                    return;
+                  }
+                  setIsResending(true);
+                  try {
+                    const whatsappLink = selectedCommission?.whatsappLink || course.whatsappGroup;
+                    const response = await fetch('/api/send-whatsapp-link', {
+                      method: 'POST',
+                      headers: { 'Content-Type': 'application/json' },
+                      body: JSON.stringify({
+                        email: resendEmail,
+                        courseName: course.title,
+                        commissionName: selectedCommission?.name,
+                        whatsappLink: whatsappLink,
+                      }),
+                    });
+
+                    if (response.ok) {
+                      alert(`✓ Link reenviado a ${resendEmail}`);
+                      setResendEmail('');
+                      setShowResendForm(false);
+                    } else {
+                      alert('Error al reenviar. Intenta de nuevo.');
+                    }
+                  } catch (error) {
+                    console.error('[v0] Resend error:', error);
+                    alert('Error al reenviar el link');
+                  } finally {
+                    setIsResending(false);
+                  }
+                }}
+                disabled={isResending || !resendEmail}
+                className="flex-1 px-4 py-2.5 rounded-lg font-semibold text-sm transition-all text-white disabled:opacity-50"
+                style={{ backgroundColor: '#031e41' }}
+              >
+                {isResending ? 'Enviando...' : 'Enviar link'}
+              </button>
+              <button
+                onClick={() => {
+                  setShowResendForm(false);
+                  setResendEmail('');
+                }}
+                className="px-4 py-2.5 rounded-lg border-2 font-semibold text-sm"
+                style={{ borderColor: '#e5e7eb', color: '#6b7280' }}
+              >
+                Cancelar
+              </button>
+            </div>
+          </div>
         )}
       </div>
 
