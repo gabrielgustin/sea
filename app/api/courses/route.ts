@@ -38,7 +38,22 @@ export async function GET(request: NextRequest) {
           'SELECT * FROM courses WHERE schoolId = ? AND (slug = ? OR id = ?) LIMIT 1',
           [schoolId, slug, slug]
         )
-        const course = result.rows?.[0] ? mapRow(result.rows[0]) : null
+        let course = result.rows?.[0] ? mapRow(result.rows[0]) : null
+        
+        // Fetch associated teachers from teachers table
+        if (course) {
+          const teachersResult = await turso.execute(
+            'SELECT id, name, description, image, whatsapp, linkedin FROM teachers WHERE courseId = ? AND active = 1 ORDER BY "order" ASC',
+            [course.id]
+          )
+          course.teachers = (teachersResult.rows || []).map((row: any) => ({
+            name: row.name,
+            description: row.description,
+            photo: row.image,
+            whatsapp: row.whatsapp,
+            linkedin: row.linkedin,
+          }))
+        }
         return NextResponse.json({ course })
       }
 
@@ -47,7 +62,25 @@ export async function GET(request: NextRequest) {
         'SELECT * FROM courses WHERE schoolId = ? ORDER BY createdAt DESC',
         [schoolId]
       )
-      return NextResponse.json({ courses: (result.rows || []).map(mapRow) })
+      
+      // Fetch teachers for each course
+      const courses = await Promise.all((result.rows || []).map(async (courseRow: any) => {
+        const course = mapRow(courseRow)
+        const teachersResult = await turso.execute(
+          'SELECT id, name, description, image, whatsapp, linkedin FROM teachers WHERE courseId = ? AND active = 1 ORDER BY "order" ASC',
+          [course.id]
+        )
+        course.teachers = (teachersResult.rows || []).map((row: any) => ({
+          name: row.name,
+          description: row.description,
+          photo: row.image,
+          whatsapp: row.whatsapp,
+          linkedin: row.linkedin,
+        }))
+        return course
+      }))
+      
+      return NextResponse.json({ courses })
     }
 
     // Fallback: in-memory
