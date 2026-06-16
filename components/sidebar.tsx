@@ -20,7 +20,7 @@ export default function Sidebar() {
   const { settings } = useSiteSettings();
 
   const publicNavItems = [
-    { icon: Home, label: 'Inicio', href: '/' },
+    { icon: Home, label: 'Inicio', href: `/${schoolId}` },
     { icon: BookOpen, label: 'Formaciones', href: `/${schoolId}/catalogo-formaciones` },
     { icon: Mail, label: 'Contacto', href: '#contacto', scroll: true },
     { icon: Instagram, label: 'Instagram', href: settings.instagramUrl },
