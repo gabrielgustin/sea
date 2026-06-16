@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { useSchool } from '@/context/SchoolContext';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Users, Shield } from 'lucide-react';
+import { useParams } from 'next/navigation';
 
 interface LoginModalProps {
   open: boolean;
@@ -20,7 +20,8 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const { schoolId } = useSchool();
+  const params = useParams();
+  const schoolId = typeof params?.schoolId === 'string' ? params.schoolId : 'savio';
   const { login, selectedRole, setSelectedRole } = useAuth();
 
   // Resetear los campos cuando el modal se cierra/abre
