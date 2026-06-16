@@ -10,8 +10,8 @@ export async function POST(request: NextRequest) {
 
     // Webhook URLs por escuela - cada una apunta a su Google Sheet
     const webhookUrls: Record<string, string> = {
-      villada: 'https://script.google.com/macros/s/AKfycbyWEqG5pQ8xL5JhT-V2K9H3wE5a6pZ8mN4oP2qRsT9vU1xY2zA/exec', // Reemplazar con webhook de Villada
-      savio: 'https://script.google.com/macros/s/AKfycbw1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t/exec', // Reemplazar con webhook de Savio
+      villada: 'https://script.google.com/macros/s/AKfycbwlg-BjQTtTxOP4Cx77u1uAL1jW7GY9lJ9V5VODsYtSLHM5n3NhaFKC2LDB88pydL0HRg/exec',
+      savio: 'https://script.google.com/macros/s/AKfycby3lnFQs12b3GWxVpdG66Re_RRZOYhJoCI_xHg9-GT3n9BSuKqEZJ8X8t6Ca137sLAzbw/exec',
     }
 
     const webhookUrl = webhookUrls[schoolId]
