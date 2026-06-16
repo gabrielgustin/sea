@@ -41,22 +41,31 @@ export async function submitEnrollment(data: {
         data.metodoPago || 'No especificado',
       ]
 
-      await fetch(
-        new URL(
-          '/api/google-sheets/append',
-          process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
-        ).toString(),
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ 
-            schoolId: data.schoolId,
-            values: sheetValues 
-          }),
-        }
-      )
+      const gsUrl = new URL(
+        '/api/google-sheets/append',
+        process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
+      ).toString()
+
+      console.log('[v0] Sending to Google Sheets:', { schoolId: data.schoolId, url: gsUrl, valuesCount: sheetValues.length })
+
+      const response = await fetch(gsUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ 
+          schoolId: data.schoolId,
+          values: sheetValues 
+        }),
+      })
+
+      const responseData = await response.json()
+      console.log('[v0] Google Sheets response:', response.status, responseData)
+
+      if (!response.ok) {
+        throw new Error(`Google Sheets API error: ${response.status} - ${JSON.stringify(responseData)}`)
+      }
     } catch (error) {
       console.error('[v0] Failed to append to Google Sheets:', error)
+      // No throw - permite que la inscripción se guarde aunque falle Google Sheets
     }
 
     revalidatePath('/savio/admin')

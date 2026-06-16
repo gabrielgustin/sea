@@ -19,7 +19,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: `Unknown schoolId: ${schoolId}` }, { status: 400 })
     }
 
-    console.log('[v0] Appending to Google Sheets for schoolId:', schoolId)
+    console.log('[v0] Google Sheets append request:', { schoolId, valuesCount: values.length, webhookUrl: webhookUrl.substring(0, 50) + '...' })
 
     // Send data to Google Apps Script webhook
     const response = await fetch(webhookUrl, {
@@ -32,12 +32,15 @@ export async function POST(request: NextRequest) {
       }),
     })
 
+    const responseText = await response.text()
+    console.log('[v0] Webhook response status:', response.status, 'body:', responseText.substring(0, 200))
+
     if (!response.ok) {
-      const errorText = await response.text()
-      console.error('[v0] Google Sheets webhook error:', response.status, errorText)
-      return NextResponse.json({ error: 'Failed to save to Google Sheets' }, { status: response.status })
+      console.error('[v0] Google Sheets webhook failed:', response.status, responseText)
+      return NextResponse.json({ error: `Webhook error: ${response.status}` }, { status: response.status })
     }
 
+    console.log('[v0] Google Sheets append SUCCESS for schoolId:', schoolId)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] POST /api/google-sheets/append error:', error)
