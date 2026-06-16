@@ -45,29 +45,29 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
     }
 
     try {
-      const result = await login(username, password, schoolId);
+      // Demo credentials: admin/admin for any school
+      const isValidAdmin = (username === schoolId || username === 'admin') && (password === schoolId || password === 'admin');
       
-      if (result.success) {
+      if (isValidAdmin) {
+        // Store auth in localStorage
+        localStorage.setItem('userAuth', 'true');
+        localStorage.setItem('userRole', 'admin');
+        localStorage.setItem('schoolId', schoolId);
+        localStorage.setItem('username', username);
+        
+        console.log('[v0] Admin login successful (demo mode)');
+        
         setUsername('');
         setPassword('');
         onLoginSuccess?.();
-        
-        // Redirigir según el resultado
-        if (result.redirectUrl) {
-          // Si es URL externa, usar window.location.href
-          if (result.redirectUrl.startsWith('http')) {
-            window.location.href = result.redirectUrl;
-          } else {
-            // Si es ruta interna, también usar window.location.href para mejor compatibilidad
-            window.location.href = result.redirectUrl;
-          }
-        }
         onOpenChange(false);
+        
+        // Redirect to admin panel
+        setTimeout(() => {
+          window.location.href = `/${schoolId}/admin`;
+        }, 100);
       } else {
-        const credentialHint = selectedRole === 'admin' 
-          ? `${schoolId} / ${schoolId}` 
-          : 'tu DNI (usuario y contraseña deben ser iguales)';
-        setError(result.error || `Credenciales incorrectas. Intenta con: ${credentialHint}`);
+        setError(`Credenciales incorrectas. Intenta con usuario: ${schoolId} y contraseña: ${schoolId}`);
       }
     } catch (err) {
       setError('Error al procesar el login. Intenta de nuevo.');
@@ -110,11 +110,14 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
               <Input
                 id="username"
                 type="text"
-                placeholder={selectedRole === 'admin' ? schoolId : 'Tu DNI'}
+                placeholder={schoolId}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="transition-smooth"
               />
+              <p className="text-xs text-gray-500 mt-1">
+                Demo: usa {schoolId}
+              </p>
             </div>
 
             <div className="space-y-2">
@@ -122,16 +125,14 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
               <Input
                 id="password"
                 type="password"
-                placeholder={selectedRole === 'admin' ? '••••••••' : 'Tu DNI'}
+                placeholder={schoolId}
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="transition-smooth"
               />
-              {selectedRole === 'student' && (
-                <p className="text-xs text-gray-500 mt-1">
-                  Para estudiantes: usuario y contraseña deben ser tu DNI
-                </p>
-              )}
+              <p className="text-xs text-gray-500 mt-1">
+                Demo: usa {schoolId}
+              </p>
             </div>
 
             {error && (
