@@ -7,10 +7,10 @@ import { useAuth } from '@/context/AuthContext';
 import { Plus, Edit2, Trash2, Eye, EyeOff, Users, Sliders, HelpCircle, Settings, LogOut } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import CourseForm from './course-form';
-import CourseList from './course-list';
+import { CourseList } from './course-list';
 import CoursePreview from './course-preview';
 import StudentsList from './students-list';
-import CarouselManager from './carousel-manager';
+import { CarouselManager } from './carousel-manager';
 import FAQManager from './faq-manager';
 import SettingsManager from './settings-manager';
 import { TeacherManager } from './teacher-manager';
@@ -214,25 +214,13 @@ export default function AdminDashboard() {
           </button>
         </div>
 
-        {/* View Switcher */}
-        {(view === 'list' || view === 'form' || view === 'preview') && (
-          <div className="mb-6">
-            <div className="flex items-center gap-2 text-sm text-gray-600">
-              <span>Total de cursos:</span>
-              <span className="font-bold text-lg" style={{ color: '#031e41' }}>
-                {courses.length}
-              </span>
-            </div>
-          </div>
-        )}
+
 
         {/* Main Content */}
         {view === 'list' && (
           <CourseList
-            courses={courses}
             onEdit={handleEdit}
-            onDelete={handleDelete}
-            onPreview={handlePreview}
+            onNew={handleAddNew}
           />
         )}
 

@@ -1,466 +1,479 @@
-'use client';
+'use client'
 
-import React, { useState, useEffect } from 'react';
-import { usePathname } from 'next/navigation';
-import { Plus, Trash2, Save, GripVertical, Image as ImageIcon, AlertCircle } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useState, useEffect, useRef } from 'react'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Textarea } from '@/components/ui/textarea'
+import { Plus, Trash2, Edit2, Upload, X, AlertCircle, ImageIcon, ChevronUp, ChevronDown, Eye, EyeOff } from 'lucide-react'
+import Image from 'next/image'
+import { useSchool } from '@/context/SchoolContext'
 
-interface CarouselSlide {
-  id: number;
-  title: string;
-  subtitle: string;
-  image: string;
-  badge: string;
-  ctaText: string;
-  ctaLink: string;
-  order: number;
-  active: number;
-  schoolId: string;
+interface Slide {
+  id: string
+  title: string
+  description: string
+  image: string
+  ctaLink: string
+  active: boolean
+  order: number
 }
 
-const BLANK_SLIDE: Omit<CarouselSlide, 'id' | 'order' | 'active' | 'createdAt' | 'schoolId'> = {
+const EMPTY_FORM = {
   title: '',
-  subtitle: '',
+  description: '',
   image: '',
-  badge: '',
-  ctaText: '',
   ctaLink: '',
-};
+  active: true,
+  order: 0,
+}
 
-export default function CarouselManager() {
-  const pathname = usePathname();
-  const segments = pathname.split('/').filter(Boolean);
-  const schoolId = (segments[0] === 'savio' || segments[0] === 'villada') ? segments[0] : 'savio';
-
-  const [slides, setSlides] = useState<CarouselSlide[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState<number | null>(null);
-  const [deleting, setDeleting] = useState<number | null>(null);
-  const [adding, setAdding] = useState(false);
-  const [newSlide, setNewSlide] = useState({ ...BLANK_SLIDE });
-  const [error, setError] = useState<string | null>(null);
-  const [successMsg, setSuccessMsg] = useState<string | null>(null);
-
-  const showSuccess = (msg: string) => {
-    setSuccessMsg(msg);
-    setTimeout(() => setSuccessMsg(null), 3000);
-  };
-
-  const fetchSlides = async () => {
-    try {
-      setLoading(true);
-      const res = await fetch(`/api/carousel?schoolId=${schoolId}`);
-      if (res.ok) {
-        const data = await res.json();
-        setSlides(Array.isArray(data) ? data : (data.slides ?? []));
-      }
-    } catch {
-      setError('Error al cargar los slides.');
-    } finally {
-      setLoading(false);
-    }
-  };
+export function CarouselManager() {
+  const { schoolId } = useSchool()
+  const [slides, setSlides] = useState<Slide[]>([])
+  const [isLoading, setIsLoading] = useState(true)
+  const [editingId, setEditingId] = useState<string | 'new' | null>(null)
+  const [formData, setFormData] = useState(EMPTY_FORM)
+  const [imagePreview, setImagePreview] = useState<string>('')
+  const [uploading, setUploading] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+  const [success, setSuccess] = useState('')
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
-    fetchSlides();
-  }, [schoolId]);
+    if (schoolId) fetchSlides()
+  }, [schoolId])
 
-  const handleUpdate = async (slide: CarouselSlide) => {
-    setSaving(slide.id);
-    setError(null);
+  const fetchSlides = async () => {
+    setIsLoading(true)
     try {
-      const res = await fetch('/api/carousel', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...slide, schoolId }),
-      });
-      if (!res.ok) throw new Error('Error al guardar');
-      await fetchSlides();
-      showSuccess('Slide actualizado correctamente');
+      const res = await fetch(`/api/carousel?schoolId=${schoolId}`)
+      const data = await res.json()
+      const sorted = (data.slides || []).sort((a: Slide, b: Slide) => a.order - b.order)
+      setSlides(sorted)
     } catch {
-      setError('Error al guardar el slide.');
+      setError('Error al cargar los slides')
     } finally {
-      setSaving(null);
+      setIsLoading(false)
     }
-  };
+  }
 
-  const handleDelete = async (id: number) => {
-    if (!window.confirm('¿Eliminar este slide?')) return;
-    setDeleting(id);
-    setError(null);
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+
+    if (!file.type.startsWith('image/')) {
+      setError('El archivo debe ser una imagen (JPG, PNG, WEBP, etc.)')
+      return
+    }
+    if (file.size > 8 * 1024 * 1024) {
+      setError('La imagen no debe superar los 8MB')
+      return
+    }
+
+    // Preview inmediato
+    const localUrl = URL.createObjectURL(file)
+    setImagePreview(localUrl)
+    setError('')
+
+    setUploading(true)
+    try {
+      const fd = new FormData()
+      fd.append('file', file)
+      fd.append('folder', `carousel/${schoolId}`)
+      const res = await fetch('/api/upload-image', { method: 'POST', body: fd })
+      const data = await res.json()
+      if (!res.ok || !data.url) throw new Error(data.error || 'Error al subir')
+      setFormData(prev => ({ ...prev, image: data.url }))
+      setImagePreview(data.url)
+    } catch (err: any) {
+      setError(err.message || 'Error al subir la imagen')
+      setImagePreview(formData.image || '')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleRemoveImage = () => {
+    setImagePreview('')
+    setFormData(prev => ({ ...prev, image: '' }))
+    if (fileInputRef.current) fileInputRef.current.value = ''
+  }
+
+  const openNew = () => {
+    setEditingId('new')
+    setFormData({ ...EMPTY_FORM, order: slides.length })
+    setImagePreview('')
+    setError('')
+    setSuccess('')
+  }
+
+  const openEdit = (slide: Slide) => {
+    setEditingId(slide.id)
+    setFormData({
+      title: slide.title,
+      description: slide.description || '',
+      image: slide.image || '',
+      ctaLink: slide.ctaLink || '',
+      active: slide.active,
+      order: slide.order,
+    })
+    setImagePreview(slide.image || '')
+    setError('')
+    setSuccess('')
+  }
+
+  const handleCancel = () => {
+    setEditingId(null)
+    setFormData(EMPTY_FORM)
+    setImagePreview('')
+    setError('')
+  }
+
+  const handleSave = async () => {
+    if (!formData.title.trim()) {
+      setError('El título es requerido')
+      return
+    }
+    if (uploading) {
+      setError('Espera a que termine de subir la imagen')
+      return
+    }
+
+    setSaving(true)
+    setError('')
+    try {
+      const isNew = editingId === 'new'
+      const payload = {
+        ...formData,
+        schoolId,
+        ...(isNew ? { id: `slide_${Date.now()}` } : { id: editingId }),
+      }
+      const res = await fetch('/api/carousel', {
+        method: isNew ? 'POST' : 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+      })
+      if (!res.ok) throw new Error('Error al guardar')
+      setSuccess(isNew ? 'Slide creado correctamente' : 'Slide actualizado correctamente')
+      setEditingId(null)
+      setFormData(EMPTY_FORM)
+      setImagePreview('')
+      await fetchSlides()
+    } catch (err: any) {
+      setError(err.message || 'Error al guardar el slide')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  const handleDelete = async (id: string) => {
+    if (!confirm('¿Eliminar este slide del carrusel?')) return
     try {
       const res = await fetch('/api/carousel', {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, schoolId }),
-      });
-      if (!res.ok) throw new Error('Error al eliminar');
-      await fetchSlides();
-      showSuccess('Slide eliminado');
+      })
+      if (!res.ok) throw new Error()
+      setSuccess('Slide eliminado')
+      await fetchSlides()
     } catch {
-      setError('Error al eliminar el slide.');
-    } finally {
-      setDeleting(null);
+      setError('Error al eliminar el slide')
     }
-  };
+  }
 
-  const handleAdd = async () => {
-    if (!newSlide.title.trim()) {
-      setError('El título es obligatorio.');
-      return;
-    }
-    setSaving(-1);
-    setError(null);
+  const handleToggleActive = async (slide: Slide) => {
     try {
-      const res = await fetch('/api/carousel', {
-        method: 'POST',
+      await fetch('/api/carousel', {
+        method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...newSlide, schoolId, order: slides.length, active: 1 }),
-      });
-      if (!res.ok) throw new Error('Error al crear');
-      setNewSlide({ ...BLANK_SLIDE });
-      setAdding(false);
-      await fetchSlides();
-      showSuccess('Slide creado correctamente');
+        body: JSON.stringify({ id: slide.id, schoolId, active: !slide.active }),
+      })
+      await fetchSlides()
     } catch {
-      setError('Error al crear el slide.');
-    } finally {
-      setSaving(null);
+      setError('Error al actualizar el slide')
     }
-  };
+  }
 
-  const handleSlideChange = (id: number, field: keyof CarouselSlide, value: string | number) => {
-    setSlides(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
-  };
+  const handleReorder = async (index: number, direction: 'up' | 'down') => {
+    const newSlides = [...slides]
+    const targetIndex = direction === 'up' ? index - 1 : index + 1
+    if (targetIndex < 0 || targetIndex >= newSlides.length) return
+    ;[newSlides[index], newSlides[targetIndex]] = [newSlides[targetIndex], newSlides[index]]
 
-  const imageOptions = [
-    { label: 'Impresión 3D', value: '/images/carousel-3d.jpg' },
-    { label: 'Formaciones', value: '/images/carousel-formaciones.jpg' },
-    { label: 'Centro', value: '/images/carousel-centro.jpg' },
-    { label: 'URL personalizada', value: 'custom' },
-  ];
+    // Update orders
+    const updates = newSlides.map((s, i) => ({ id: s.id, order: i }))
+    setSlides(newSlides.map((s, i) => ({ ...s, order: i })))
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center py-20">
-        <div className="w-8 h-8 border-4 border-blue-900 border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    try {
+      await Promise.all(
+        updates.map(u =>
+          fetch('/api/carousel', {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: u.id, schoolId, order: u.order }),
+          })
+        )
+      )
+    } catch {
+      await fetchSlides()
+    }
   }
 
   return (
     <div className="space-y-6">
-      {/* Feedback */}
+      {/* Header */}
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold" style={{ color: '#031e41' }}>Carrusel de Imágenes</h2>
+          <p className="text-sm text-gray-500 mt-1">{slides.length} slide{slides.length !== 1 ? 's' : ''} en total</p>
+        </div>
+        {editingId === null && (
+          <Button onClick={openNew} className="bg-blue-900 hover:bg-blue-800 text-white">
+            <Plus className="mr-2 h-4 w-4" /> Nuevo Slide
+          </Button>
+        )}
+      </div>
+
+      {/* Alertas */}
       {error && (
-        <div className="flex items-center gap-2 bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-700 text-sm">
-          <AlertCircle size={16} /> {error}
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 flex items-center gap-2 text-red-700 text-sm">
+          <AlertCircle className="h-4 w-4 flex-shrink-0" />
+          {error}
+          <button onClick={() => setError('')} className="ml-auto"><X className="h-4 w-4" /></button>
         </div>
       )}
-      {successMsg && (
-        <div className="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-3 text-green-700 text-sm">
-          ✓ {successMsg}
-        </div>
-      )}
-
-      {/* Existing slides */}
-      {slides.length === 0 && !adding ? (
-        <div className="flex flex-col items-center justify-center py-20 text-center">
-          <div className="p-6 rounded-full mb-4" style={{ backgroundColor: '#eaf0f8' }}>
-            <ImageIcon size={40} style={{ color: '#031e41' }} />
-          </div>
-          <p className="text-gray-500">No hay slides. Agrega el primero.</p>
-        </div>
-      ) : (
-        <div className="space-y-4">
-          {slides.map((slide, idx) => (
-            <SlideCard
-              key={slide.id}
-              slide={slide}
-              idx={idx}
-              saving={saving === slide.id}
-              deleting={deleting === slide.id}
-              imageOptions={imageOptions}
-              onChange={(field, value) => handleSlideChange(slide.id, field, value)}
-              onSave={() => handleUpdate(slide)}
-              onDelete={() => handleDelete(slide.id)}
-            />
-          ))}
+      {success && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-green-700 text-sm flex justify-between">
+          {success}
+          <button onClick={() => setSuccess('')}><X className="h-4 w-4" /></button>
         </div>
       )}
 
-      {/* Add new slide form */}
-      {adding ? (
-        <div
-          className="rounded-2xl p-5 space-y-4"
-          style={{ border: '2px dashed #031e41', backgroundColor: '#f8fafc' }}
-        >
-          <h3 className="font-bold text-base" style={{ color: '#031e41' }}>Nuevo Slide</h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <FormField
-              label="Título *"
-              value={newSlide.title}
-              onChange={v => setNewSlide(s => ({ ...s, title: v }))}
-              placeholder="Ej: Diseño e Impresión 3D"
-            />
-            <FormField
-              label="Subtítulo"
-              value={newSlide.subtitle}
-              onChange={v => setNewSlide(s => ({ ...s, subtitle: v }))}
-              placeholder="Ej: Aprende a modelar"
-            />
-            <div className="md:col-span-2">
-              <ImageFieldNew
-                value={newSlide.image}
-                onChange={v => setNewSlide(s => ({ ...s, image: v }))}
-                options={imageOptions}
-              />
+      {/* Formulario */}
+      {editingId !== null && (
+        <div className="bg-white border border-gray-200 rounded-xl p-6 shadow-sm space-y-5">
+          <h3 className="font-bold text-lg" style={{ color: '#031e41' }}>
+            {editingId === 'new' ? 'Nuevo Slide' : 'Editar Slide'}
+          </h3>
+
+          {/* Upload de imagen */}
+          <div>
+            <label className="block text-sm font-medium mb-2">Imagen del slide</label>
+            <div className="flex flex-col sm:flex-row gap-4">
+              {/* Preview */}
+              <div
+                className="relative w-full sm:w-48 h-28 rounded-lg overflow-hidden border-2 border-dashed flex items-center justify-center bg-gray-50 flex-shrink-0 cursor-pointer group"
+                style={{ borderColor: imagePreview ? '#031e41' : '#d1d5db' }}
+                onClick={() => !uploading && fileInputRef.current?.click()}
+              >
+                {imagePreview ? (
+                  <>
+                    <Image
+                      src={imagePreview}
+                      alt="Preview"
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
+                    <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                      <Upload className="h-6 w-6 text-white" />
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-center p-3">
+                    <ImageIcon className="h-8 w-8 text-gray-300 mx-auto mb-1" />
+                    <p className="text-xs text-gray-400">Click para subir imagen</p>
+                  </div>
+                )}
+                {uploading && (
+                  <div className="absolute inset-0 bg-white/70 flex items-center justify-center">
+                    <div className="w-6 h-6 border-2 border-t-transparent rounded-full animate-spin" style={{ borderColor: '#031e41', borderTopColor: 'transparent' }} />
+                  </div>
+                )}
+              </div>
+
+              {/* Controles */}
+              <div className="flex flex-col gap-2 justify-center">
+                <input
+                  ref={fileInputRef}
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageChange}
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  disabled={uploading}
+                  onClick={() => fileInputRef.current?.click()}
+                  className="flex items-center gap-2"
+                >
+                  <Upload className="h-4 w-4" />
+                  {uploading ? 'Subiendo...' : 'Seleccionar imagen'}
+                </Button>
+                {imagePreview && (
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleRemoveImage}
+                    className="flex items-center gap-2 text-red-600 border-red-200 hover:bg-red-50"
+                  >
+                    <X className="h-4 w-4" /> Quitar imagen
+                  </Button>
+                )}
+                <p className="text-xs text-gray-400">JPG, PNG, WEBP. Max 8MB.</p>
+              </div>
             </div>
-            <FormField
-              label="Badge"
-              value={newSlide.badge}
-              onChange={v => setNewSlide(s => ({ ...s, badge: v }))}
-              placeholder="Ej: NUEVO"
-            />
-            <FormField
-              label="Texto del botón"
-              value={newSlide.ctaText}
-              onChange={v => setNewSlide(s => ({ ...s, ctaText: v }))}
-              placeholder="Ej: Ver más"
-            />
-            <FormField
-              label="Link del botón"
-              value={newSlide.ctaLink}
-              onChange={v => setNewSlide(s => ({ ...s, ctaLink: v }))}
-              placeholder="Ej: /villada/formaciones"
+          </div>
+
+          {/* Título */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Título <span className="text-red-500">*</span></label>
+            <Input
+              value={formData.title}
+              onChange={e => setFormData(prev => ({ ...prev, title: e.target.value }))}
+              placeholder="Ej: Bienvenidos al Portal SEA"
             />
           </div>
-          <div className="flex gap-3 pt-2">
-            <Button
-              onClick={handleAdd}
-              disabled={saving === -1}
-              className="text-white"
-              style={{ backgroundColor: '#031e41' }}
+
+          {/* Descripción */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Descripción</label>
+            <Textarea
+              value={formData.description}
+              onChange={e => setFormData(prev => ({ ...prev, description: e.target.value }))}
+              placeholder="Descripción breve del slide..."
+              rows={3}
+            />
+          </div>
+
+          {/* Link CTA */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Enlace (CTA) <span className="text-gray-400 font-normal">— opcional</span></label>
+            <Input
+              value={formData.ctaLink}
+              onChange={e => setFormData(prev => ({ ...prev, ctaLink: e.target.value }))}
+              placeholder="https://... o /ruta-interna"
+            />
+          </div>
+
+          {/* Activo */}
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium">Visible en el carrusel</label>
+            <button
+              type="button"
+              onClick={() => setFormData(prev => ({ ...prev, active: !prev.active }))}
+              className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${formData.active ? 'bg-blue-900' : 'bg-gray-300'}`}
             >
-              {saving === -1 ? 'Guardando...' : 'Crear Slide'}
+              <span className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${formData.active ? 'translate-x-6' : 'translate-x-1'}`} />
+            </button>
+            <span className="text-sm text-gray-500">{formData.active ? 'Activo' : 'Oculto'}</span>
+          </div>
+
+          {/* Botones */}
+          <div className="flex gap-2 pt-2 border-t border-gray-100">
+            <Button onClick={handleSave} disabled={saving || uploading} className="bg-green-700 hover:bg-green-800 text-white">
+              {saving ? 'Guardando...' : 'Guardar slide'}
             </Button>
-            <Button
-              variant="outline"
-              onClick={() => { setAdding(false); setNewSlide({ ...BLANK_SLIDE }); setError(null); }}
-            >
-              Cancelar
-            </Button>
+            <Button onClick={handleCancel} variant="outline">Cancelar</Button>
           </div>
         </div>
-      ) : (
-        <Button
-          onClick={() => setAdding(true)}
-          className="flex items-center gap-2 text-white"
-          style={{ backgroundColor: '#031e41' }}
-        >
-          <Plus size={18} />
-          Agregar Slide
-        </Button>
       )}
-    </div>
-  );
-}
 
-/* ---- Sub-components ---- */
+      {/* Lista de slides */}
+      {isLoading ? (
+        <div className="text-center py-12 text-gray-400">Cargando slides...</div>
+      ) : slides.length === 0 ? (
+        <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-xl">
+          <ImageIcon className="h-12 w-12 text-gray-200 mx-auto mb-3" />
+          <p className="text-gray-400 font-medium">No hay slides en el carrusel</p>
+          <p className="text-sm text-gray-400 mt-1">Crea el primero con el botón de arriba</p>
+        </div>
+      ) : (
+        <div className="space-y-3">
+          {slides.map((slide, index) => (
+            <div
+              key={slide.id}
+              className={`border rounded-xl overflow-hidden flex items-center gap-0 bg-white transition-all ${!slide.active ? 'opacity-60' : ''} hover:shadow-sm`}
+              style={{ borderColor: slide.active ? '#9cbadb' : '#e5e7eb' }}
+            >
+              {/* Imagen miniatura */}
+              <div className="w-24 h-16 flex-shrink-0 bg-gray-100 overflow-hidden relative">
+                {slide.image ? (
+                  <Image src={slide.image} alt={slide.title} fill className="object-cover" unoptimized />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <ImageIcon className="h-6 w-6 text-gray-300" />
+                  </div>
+                )}
+              </div>
 
-function FormField({
-  label, value, onChange, placeholder, type = 'text',
-}: {
-  label: string; value: string; onChange: (v: string) => void; placeholder?: string; type?: string;
-}) {
-  return (
-    <div>
-      <label className="block text-xs font-semibold text-gray-700 mb-1">{label}</label>
-      <input
-        type={type}
-        value={value}
-        onChange={e => onChange(e.target.value)}
-        placeholder={placeholder}
-        className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900"
-      />
-    </div>
-  );
-}
+              {/* Contenido */}
+              <div className="flex-1 min-w-0 px-4 py-3">
+                <div className="flex items-center gap-2">
+                  <p className="font-semibold text-gray-900 truncate">{slide.title}</p>
+                  <span className={`text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0 ${slide.active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                    {slide.active ? 'Activo' : 'Oculto'}
+                  </span>
+                </div>
+                {slide.description && (
+                  <p className="text-sm text-gray-500 mt-0.5 truncate">{slide.description}</p>
+                )}
+                {slide.ctaLink && (
+                  <p className="text-xs text-blue-500 mt-0.5 truncate">{slide.ctaLink}</p>
+                )}
+              </div>
 
-function ImageFieldNew({
-  value, onChange, options,
-}: {
-  value: string; onChange: (v: string) => void;
-  options: { label: string; value: string }[];
-}) {
-  const isCustom = value && !options.some(o => o.value === value && o.value !== 'custom');
-  const [custom, setCustom] = useState(isCustom ? value : '');
-  const [mode, setMode] = useState<'preset' | 'custom'>(isCustom ? 'custom' : 'preset');
+              {/* Acciones */}
+              <div className="flex items-center gap-1 pr-3 flex-shrink-0">
+                {/* Reordenar */}
+                <div className="flex flex-col gap-0.5">
+                  <button
+                    onClick={() => handleReorder(index, 'up')}
+                    disabled={index === 0}
+                    className="p-1 text-gray-400 hover:text-gray-700 disabled:opacity-20"
+                  >
+                    <ChevronUp className="h-4 w-4" />
+                  </button>
+                  <button
+                    onClick={() => handleReorder(index, 'down')}
+                    disabled={index === slides.length - 1}
+                    className="p-1 text-gray-400 hover:text-gray-700 disabled:opacity-20"
+                  >
+                    <ChevronDown className="h-4 w-4" />
+                  </button>
+                </div>
 
-  return (
-    <div>
-      <label className="block text-xs font-semibold text-gray-700 mb-1">Imagen</label>
-      <div className="flex gap-2 mb-2">
-        <button
-          type="button"
-          onClick={() => setMode('preset')}
-          className="text-xs px-3 py-1 rounded-full border transition-colors"
-          style={mode === 'preset' ? { backgroundColor: '#031e41', color: 'white', borderColor: '#031e41' } : {}}
-        >
-          Imagen predefinida
-        </button>
-        <button
-          type="button"
-          onClick={() => setMode('custom')}
-          className="text-xs px-3 py-1 rounded-full border transition-colors"
-          style={mode === 'custom' ? { backgroundColor: '#031e41', color: 'white', borderColor: '#031e41' } : {}}
-        >
-          URL personalizada
-        </button>
-      </div>
-      {mode === 'preset' ? (
-        <select
-          value={value}
-          onChange={e => onChange(e.target.value)}
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900"
-        >
-          <option value="">Sin imagen</option>
-          {options.filter(o => o.value !== 'custom').map(o => (
-            <option key={o.value} value={o.value}>{o.label}</option>
+                <button
+                  onClick={() => handleToggleActive(slide)}
+                  className="p-2 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-50"
+                  title={slide.active ? 'Ocultar' : 'Mostrar'}
+                >
+                  {slide.active ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
+                </button>
+
+                <button
+                  onClick={() => openEdit(slide)}
+                  className="p-2 text-gray-500 hover:text-blue-900 rounded-lg hover:bg-blue-50"
+                >
+                  <Edit2 className="h-4 w-4" />
+                </button>
+
+                <button
+                  onClick={() => handleDelete(slide.id)}
+                  className="p-2 text-gray-400 hover:text-red-600 rounded-lg hover:bg-red-50"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
           ))}
-        </select>
-      ) : (
-        <input
-          type="text"
-          value={custom}
-          onChange={e => { setCustom(e.target.value); onChange(e.target.value); }}
-          placeholder="https://... o /images/..."
-          className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-900"
-        />
+        </div>
       )}
     </div>
-  );
-}
-
-function SlideCard({
-  slide, idx, saving, deleting, imageOptions, onChange, onSave, onDelete,
-}: {
-  slide: CarouselSlide;
-  idx: number;
-  saving: boolean;
-  deleting: boolean;
-  imageOptions: { label: string; value: string }[];
-  onChange: (field: keyof CarouselSlide, value: string | number) => void;
-  onSave: () => void;
-  onDelete: () => void;
-}) {
-  return (
-    <div
-      className="rounded-2xl p-5 bg-white"
-      style={{ border: '1.5px solid #e2e8f0' }}
-    >
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-2">
-          <GripVertical size={18} className="text-gray-400" />
-          <span className="text-sm font-semibold" style={{ color: '#031e41' }}>
-            Slide #{idx + 1}
-          </span>
-          <label className="flex items-center gap-1.5 text-xs text-gray-600 ml-3 cursor-pointer">
-            <input
-              type="checkbox"
-              checked={slide.active === 1}
-              onChange={e => onChange('active', e.target.checked ? 1 : 0)}
-              className="rounded"
-            />
-            Activo
-          </label>
-        </div>
-        <Button
-          size="sm"
-          variant="destructive"
-          onClick={onDelete}
-          disabled={deleting}
-          className="flex items-center gap-1 text-xs"
-        >
-          <Trash2 size={13} />
-          {deleting ? 'Eliminando...' : 'Eliminar'}
-        </Button>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-        <FormField
-          label="Título"
-          value={slide.title}
-          onChange={v => onChange('title', v)}
-          placeholder="Título del slide"
-        />
-        <FormField
-          label="Subtítulo"
-          value={slide.subtitle}
-          onChange={v => onChange('subtitle', v)}
-          placeholder="Subtítulo"
-        />
-        <div className="md:col-span-2">
-          <label className="block text-xs font-semibold text-gray-700 mb-1">Imagen</label>
-          <select
-            value={imageOptions.some(o => o.value === slide.image) ? slide.image : 'custom'}
-            onChange={e => {
-              if (e.target.value !== 'custom') onChange('image', e.target.value);
-            }}
-            className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none mb-1"
-          >
-            <option value="">Sin imagen</option>
-            {imageOptions.filter(o => o.value !== 'custom').map(o => (
-              <option key={o.value} value={o.value}>{o.label}</option>
-            ))}
-            <option value="custom">URL personalizada</option>
-          </select>
-          {(!imageOptions.some(o => o.value === slide.image) || slide.image === '') && (
-            <input
-              type="text"
-              value={slide.image}
-              onChange={e => onChange('image', e.target.value)}
-              placeholder="https://... o /images/..."
-              className="w-full border border-gray-300 rounded-lg px-3 py-2 text-sm focus:outline-none"
-            />
-          )}
-        </div>
-        <FormField
-          label="Badge"
-          value={slide.badge}
-          onChange={v => onChange('badge', v)}
-          placeholder="Ej: NUEVO"
-        />
-        <FormField
-          label="Texto del botón CTA"
-          value={slide.ctaText ?? ''}
-          onChange={v => onChange('ctaText', v)}
-          placeholder="Ej: Ver más"
-        />
-        <FormField
-          label="Link del botón CTA"
-          value={slide.ctaLink ?? ''}
-          onChange={v => onChange('ctaLink', v)}
-          placeholder="Ej: /villada/formaciones"
-        />
-        <FormField
-          label="Orden"
-          value={String(slide.order ?? idx)}
-          onChange={v => onChange('order', Number(v))}
-          type="number"
-        />
-      </div>
-
-      <div className="flex justify-end">
-        <Button
-          onClick={onSave}
-          disabled={saving}
-          className="flex items-center gap-2 text-white"
-          style={{ backgroundColor: '#031e41' }}
-        >
-          <Save size={16} />
-          {saving ? 'Guardando...' : 'Guardar cambios'}
-        </Button>
-      </div>
-    </div>
-  );
+  )
 }

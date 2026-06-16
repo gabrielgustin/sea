@@ -9,19 +9,19 @@ import Image from 'next/image'
 import { useSchool } from '@/context/SchoolContext'
 
 interface Course {
-  id: number
+  id: string
   title: string
   slug: string
 }
 
 interface Teacher {
-  id: number
+  id: string
   name: string
   description: string | null
   image: string | null
   whatsapp: string | null
   linkedin: string | null
-  courseId: number | null
+  courseId: string | null
   order: number
   active: boolean
 }
@@ -93,10 +93,12 @@ export function TeacherManager() {
     try {
       const fd = new FormData()
       fd.append('file', file)
-      const res = await fetch('/api/teachers/upload', { method: 'POST', body: fd })
+      fd.append('folder', 'teachers')
+      const res = await fetch('/api/upload-image', { method: 'POST', body: fd })
       const data = await res.json()
-      if (!res.ok) throw new Error(data.error || 'Error al subir imagen')
+      if (!res.ok || !data.url) throw new Error(data.error || 'Error al subir imagen')
       setFormData(prev => ({ ...prev, image: data.url }))
+      setImagePreview(data.url)
     } catch (err: any) {
       setError(err.message || 'Error al subir la imagen')
       setImagePreview(formData.image || '')
@@ -126,10 +128,10 @@ export function TeacherManager() {
     try {
       const method = editingId === 'new' ? 'POST' : 'PUT'
       const payload = {
-        ...(editingId !== 'new' && { id: editingId }),
+        ...(editingId !== 'new' && { id: String(editingId) }),
         ...formData,
         schoolId,
-        courseId: formData.courseId ? parseInt(formData.courseId) : null,
+        courseId: formData.courseId || null,
       }
 
       const res = await fetch('/api/teachers', {
@@ -191,9 +193,9 @@ export function TeacherManager() {
     setError('')
   }
 
-  const getCourseName = (courseId: number | null) => {
+  const getCourseName = (courseId: string | null) => {
     if (!courseId) return null
-    return courses.find(c => c.id === courseId)?.title || null
+    return courses.find(c => String(c.id) === String(courseId))?.title || null
   }
 
   return (

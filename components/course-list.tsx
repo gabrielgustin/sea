@@ -1,203 +1,180 @@
-'use client';
+'use client'
 
-import React, { useState } from 'react';
-import { Course } from '@/context/CoursesContext';
-import { Edit2, Trash2, Eye, CheckCircle, XCircle, Calendar, Clock, MapPin, DollarSign } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import Image from 'next/image';
+import { useState } from 'react'
+import { Button } from '@/components/ui/button'
+import { Pencil, Trash2, Eye, EyeOff, Plus, BookOpen, Clock, MapPin, DollarSign } from 'lucide-react'
+import Image from 'next/image'
+import { useCourses } from '@/context/CoursesContext'
 
 interface CourseListProps {
-  courses: Course[];
-  onEdit: (course: Course) => void;
-  onDelete: (courseId: string) => void;
-  onPreview: (course: Course) => void;
+  onEdit: (course: any) => void
+  onNew: () => void
 }
 
-export default function CourseList({ courses, onEdit, onDelete, onPreview }: CourseListProps) {
-  const [filter, setFilter] = useState<'all' | 'active' | 'inactive'>('all');
-  const [search, setSearch] = useState('');
+export function CourseList({ onEdit, onNew }: CourseListProps) {
+  const { courses, deleteCourse, updateCourse, loading } = useCourses()
+  const [deletingId, setDeletingId] = useState<string | null>(null)
+  const [togglingId, setTogglingId] = useState<string | null>(null)
 
-  const filtered = courses.filter(c => {
-    const status = (c as any).status ?? 'ACTIVE';
-    const matchesFilter =
-      filter === 'all' ||
-      (filter === 'active' && status !== 'INACTIVE') ||
-      (filter === 'inactive' && status === 'INACTIVE');
-    const matchesSearch =
-      !search ||
-      c.title.toLowerCase().includes(search.toLowerCase()) ||
-      (c.subtitle ?? '').toLowerCase().includes(search.toLowerCase());
-    return matchesFilter && matchesSearch;
-  });
+  const handleDelete = async (courseId: string, title: string) => {
+    if (!confirm(`¿Eliminar el curso "${title}"? Esta acción no se puede deshacer.`)) return
+    setDeletingId(courseId)
+    try {
+      await deleteCourse(courseId)
+    } finally {
+      setDeletingId(null)
+    }
+  }
 
-  if (courses.length === 0) {
+  const handleToggleStatus = async (course: any) => {
+    setTogglingId(course.id)
+    try {
+      const newStatus = course.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE'
+      await updateCourse(course.id, { status: newStatus })
+    } finally {
+      setTogglingId(null)
+    }
+  }
+
+  const getStatusBadge = (status: string) => {
+    switch (status) {
+      case 'ACTIVE':
+        return <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-green-100 text-green-700">Activo</span>
+      case 'INACTIVE':
+        return <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">Inactivo</span>
+      case 'DRAFT':
+        return <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-yellow-100 text-yellow-700">Borrador</span>
+      default:
+        return <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">{status}</span>
+    }
+  }
+
+  if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-24 text-center">
-        <div className="p-6 rounded-full mb-6" style={{ backgroundColor: '#eaf0f8' }}>
-          <Eye size={48} style={{ color: '#031e41' }} />
+      <div className="flex items-center justify-center py-16 text-gray-400">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-t-transparent rounded-full animate-spin mx-auto mb-3" style={{ borderColor: '#031e41', borderTopColor: 'transparent' }} />
+          <p>Cargando cursos...</p>
         </div>
-        <h3 className="text-2xl font-bold mb-2" style={{ color: '#031e41' }}>
-          No hay cursos todavía
-        </h3>
-        <p className="text-gray-500 max-w-sm">
-          Agrega tu primer curso con el botón &quot;Nuevo Curso&quot; de arriba.
-        </p>
       </div>
-    );
+    )
   }
 
   return (
-    <div>
-      {/* Filters */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <input
-          type="text"
-          placeholder="Buscar por título o subtítulo..."
-          value={search}
-          onChange={e => setSearch(e.target.value)}
-          className="border border-gray-300 rounded-lg px-4 py-2 text-sm flex-1 focus:outline-none focus:ring-2 focus:ring-blue-900"
-        />
-        <div className="flex gap-2">
-          {(['all', 'active', 'inactive'] as const).map(f => (
-            <button
-              key={f}
-              onClick={() => setFilter(f)}
-              className="px-4 py-2 rounded-lg text-sm font-medium transition-colors"
-              style={
-                filter === f
-                  ? { backgroundColor: '#031e41', color: 'white' }
-                  : { backgroundColor: '#f3f4f6', color: '#4b5563' }
-              }
-            >
-              {f === 'all' ? 'Todos' : f === 'active' ? 'Activos' : 'Inactivos'}
-            </button>
-          ))}
+    <div className="space-y-4">
+      <div className="flex justify-between items-center">
+        <div>
+          <h2 className="text-2xl font-bold" style={{ color: '#031e41' }}>Gestión de Cursos</h2>
+          <p className="text-sm text-gray-500 mt-1">
+            {courses.length} curso{courses.length !== 1 ? 's' : ''} encontrado{courses.length !== 1 ? 's' : ''}
+          </p>
         </div>
+        <Button onClick={onNew} className="bg-blue-900 hover:bg-blue-800 text-white">
+          <Plus className="mr-2 h-4 w-4" /> Nuevo Curso
+        </Button>
       </div>
 
-      <p className="text-sm text-gray-500 mb-4">
-        {filtered.length} {filtered.length === 1 ? 'curso encontrado' : 'cursos encontrados'}
-      </p>
-
-      {/* Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-        {filtered.map(course => {
-          const status = (course as any).status ?? 'ACTIVE';
-          const isActive = status !== 'INACTIVE';
-          return (
+      {courses.length === 0 ? (
+        <div className="text-center py-16 border-2 border-dashed border-gray-200 rounded-xl">
+          <BookOpen className="h-12 w-12 text-gray-200 mx-auto mb-3" />
+          <p className="text-gray-400 font-medium">No hay cursos todavía</p>
+          <p className="text-sm text-gray-400 mt-1 mb-4">Crea tu primer curso con el botón de arriba</p>
+          <Button onClick={onNew} variant="outline" size="sm">
+            <Plus className="mr-2 h-4 w-4" /> Crear primer curso
+          </Button>
+        </div>
+      ) : (
+        <div className="grid gap-4">
+          {courses.map((course) => (
             <div
               key={course.id}
-              className="bg-white rounded-2xl overflow-hidden flex flex-col transition-all duration-300 hover:shadow-lg group"
-              style={{ border: '1.5px solid #e2e8f0' }}
+              className={`border rounded-xl overflow-hidden bg-white hover:shadow-md transition-all flex flex-col sm:flex-row ${course.status === 'INACTIVE' ? 'opacity-60' : ''}`}
+              style={{ borderColor: course.status === 'ACTIVE' ? '#9cbadb' : '#e5e7eb' }}
             >
-              {/* Image */}
-              <div className="relative h-44 bg-gray-100 overflow-hidden">
+              <div className="w-full sm:w-36 h-32 sm:h-auto flex-shrink-0 relative bg-gray-100 overflow-hidden">
                 {course.image ? (
-                  <Image
-                    src={course.image}
-                    alt={course.title}
-                    fill
-                    className="object-cover group-hover:scale-105 transition-transform duration-500"
-                  />
+                  <Image src={course.image} alt={course.title} fill className="object-cover" unoptimized />
                 ) : (
-                  <div
-                    className="w-full h-full flex items-center justify-center"
-                    style={{ backgroundColor: '#031e41' }}
-                  >
-                    <span className="text-white text-4xl font-bold opacity-20 select-none">
-                      {course.title.slice(0, 2).toUpperCase()}
-                    </span>
+                  <div className="w-full h-full flex items-center justify-center">
+                    <BookOpen className="h-10 w-10 text-gray-200" />
                   </div>
                 )}
-                <div className="absolute top-3 right-3">
-                  {isActive ? (
-                    <span className="flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full bg-green-100 text-green-700">
-                      <CheckCircle size={12} /> Activo
-                    </span>
-                  ) : (
-                    <span className="flex items-center gap-1 text-xs font-semibold px-2 py-1 rounded-full bg-red-100 text-red-700">
-                      <XCircle size={12} /> Inactivo
-                    </span>
-                  )}
-                </div>
-                {course.badge && (
-                  <div className="absolute top-3 left-3">
-                    <span className="text-xs font-semibold px-2 py-1 rounded-full text-white" style={{ backgroundColor: '#031e41' }}>
+                {course.level && (
+                  <span className="absolute top-2 left-2 text-xs font-bold px-2 py-0.5 rounded bg-white/90 text-gray-700">
+                    {course.level}
+                  </span>
+                )}
+              </div>
+
+              <div className="flex-1 p-4 min-w-0">
+                <div className="flex items-start gap-2 flex-wrap">
+                  <h3 className="font-bold text-gray-900 text-lg leading-tight">{course.title}</h3>
+                  {getStatusBadge(course.status || 'ACTIVE')}
+                  {course.badge && (
+                    <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
                       {course.badge}
                     </span>
-                  </div>
+                  )}
+                </div>
+                {course.subtitle && (
+                  <p className="text-sm text-gray-500 mt-1 line-clamp-1">{course.subtitle}</p>
+                )}
+                <div className="flex flex-wrap gap-x-4 gap-y-1 mt-2">
+                  {course.schedule && (
+                    <span className="flex items-center gap-1 text-xs text-gray-500">
+                      <Clock className="h-3.5 w-3.5" /> {course.schedule}
+                    </span>
+                  )}
+                  {course.modality && (
+                    <span className="flex items-center gap-1 text-xs text-gray-500">
+                      <MapPin className="h-3.5 w-3.5" /> {course.modality}
+                    </span>
+                  )}
+                  {course.price && (
+                    <span className="flex items-center gap-1 text-xs font-semibold text-green-700">
+                      <DollarSign className="h-3.5 w-3.5" /> {course.price}
+                    </span>
+                  )}
+                </div>
+                {course.description && (
+                  <p className="text-sm text-gray-500 mt-2 line-clamp-2">{course.description}</p>
                 )}
               </div>
 
-              {/* Content */}
-              <div className="p-4 flex flex-col flex-1">
-                <h3 className="font-bold text-base leading-tight mb-1 line-clamp-2" style={{ color: '#031e41' }}>
-                  {course.title}
-                </h3>
-                {course.subtitle && (
-                  <p className="text-gray-500 text-xs mb-3 line-clamp-1">{course.subtitle}</p>
-                )}
-
-                <div className="grid grid-cols-2 gap-1.5 mb-4 mt-auto">
-                  {course.price && (
-                    <div className="flex items-center gap-1 text-xs text-gray-600">
-                      <DollarSign size={12} style={{ color: '#031e41' }} />
-                      <span className="truncate">{course.price}</span>
-                    </div>
+              <div className="flex sm:flex-col items-center justify-end gap-2 p-3 border-t sm:border-t-0 sm:border-l border-gray-100 flex-shrink-0">
+                <Button onClick={() => onEdit(course)} size="sm" variant="outline" className="flex items-center gap-1.5">
+                  <Pencil className="h-3.5 w-3.5" /> Editar
+                </Button>
+                <Button
+                  onClick={() => handleToggleStatus(course)}
+                  disabled={togglingId === course.id}
+                  size="sm"
+                  variant="outline"
+                  className={`flex items-center gap-1.5 ${course.status === 'ACTIVE' ? 'text-amber-600 border-amber-200 hover:bg-amber-50' : 'text-green-600 border-green-200 hover:bg-green-50'}`}
+                >
+                  {togglingId === course.id ? (
+                    <span className="text-xs">...</span>
+                  ) : course.status === 'ACTIVE' ? (
+                    <><EyeOff className="h-3.5 w-3.5" /> Ocultar</>
+                  ) : (
+                    <><Eye className="h-3.5 w-3.5" /> Activar</>
                   )}
-                  {course.duration && (
-                    <div className="flex items-center gap-1 text-xs text-gray-600">
-                      <Clock size={12} style={{ color: '#031e41' }} />
-                      <span className="truncate">{course.duration}</span>
-                    </div>
-                  )}
-                  {course.schedule && (
-                    <div className="flex items-center gap-1 text-xs text-gray-600 col-span-2">
-                      <Calendar size={12} style={{ color: '#031e41' }} />
-                      <span className="truncate">{course.schedule}</span>
-                    </div>
-                  )}
-                  {course.location && (
-                    <div className="flex items-center gap-1 text-xs text-gray-600 col-span-2">
-                      <MapPin size={12} style={{ color: '#031e41' }} />
-                      <span className="truncate">{course.location}</span>
-                    </div>
-                  )}
-                </div>
-
-                <div className="flex gap-2 pt-3 border-t border-gray-100">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onPreview(course)}
-                    className="flex-1 flex items-center justify-center gap-1 text-xs"
-                  >
-                    <Eye size={14} />
-                    Ver
-                  </Button>
-                  <Button
-                    size="sm"
-                    onClick={() => onEdit(course)}
-                    className="flex-1 flex items-center justify-center gap-1 text-xs text-white"
-                    style={{ backgroundColor: '#031e41' }}
-                  >
-                    <Edit2 size={14} />
-                    Editar
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="destructive"
-                    onClick={() => onDelete(course.id)}
-                    className="flex items-center justify-center gap-1 text-xs"
-                  >
-                    <Trash2 size={14} />
-                  </Button>
-                </div>
+                </Button>
+                <Button
+                  onClick={() => handleDelete(course.id, course.title)}
+                  disabled={deletingId === course.id}
+                  size="sm"
+                  variant="outline"
+                  className="flex items-center gap-1.5 text-red-600 border-red-200 hover:bg-red-50"
+                >
+                  <Trash2 className="h-3.5 w-3.5" />
+                  {deletingId === course.id ? '...' : 'Eliminar'}
+                </Button>
               </div>
             </div>
-          );
-        })}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
-  );
+  )
 }

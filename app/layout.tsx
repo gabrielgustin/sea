@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
+import { AuthProvider } from '@/context/AuthContext'
+import { CoursesProvider } from '@/context/CoursesContext'
 import { LoadingProvider } from '@/context/LoadingContext'
 import { SiteSettingsProvider } from '@/context/SiteSettingsContext'
 import GlobalPreloader from '@/components/global-preloader'
@@ -40,12 +42,16 @@ export default function RootLayout({
   return (
     <html lang="es" className="bg-background overflow-x-hidden">
       <body className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
-        <LoadingProvider>
-          <GlobalPreloader />
-          <SiteSettingsProvider>
-            {children}
-          </SiteSettingsProvider>
-        </LoadingProvider>
+        <AuthProvider>
+          <CoursesProvider>
+            <LoadingProvider>
+              <GlobalPreloader />
+              <SiteSettingsProvider>
+                {children}
+              </SiteSettingsProvider>
+            </LoadingProvider>
+          </CoursesProvider>
+        </AuthProvider>
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
     </html>
