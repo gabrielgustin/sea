@@ -34,11 +34,29 @@ export async function POST(request: NextRequest) {
     })
 
     const responseText = await response.text()
-    console.log('[v0] Webhook response status:', response.status, 'body:', responseText.substring(0, 200))
+    console.log('[v0] Webhook response status:', response.status, 'body:', responseText.substring(0, 300))
 
     if (!response.ok) {
       console.error('[v0] Google Sheets webhook failed:', response.status, responseText)
       return NextResponse.json({ error: `Webhook error: ${response.status}` }, { status: response.status })
+    }
+
+    // Google Apps Script sometimes returns HTML error pages with status 200
+    // Detect the "unable to open the file" error from Google
+    if (responseText.includes('Sorry, unable to open') || responseText.includes('Page Not Found') || responseText.startsWith('<!DOCTYPE')) {
+      console.error('[v0] Google Apps Script returned an HTML error page — script may be deleted or revoked')
+      return NextResponse.json({ error: 'Google Apps Script not available. Please recreate the webhook deployment.' }, { status: 503 })
+    }
+
+    // Try to parse JSON response from Apps Script
+    try {
+      const json = JSON.parse(responseText)
+      if (json.error) {
+        console.error('[v0] Apps Script returned error:', json.error)
+        return NextResponse.json({ error: json.error }, { status: 500 })
+      }
+    } catch (_) {
+      // Not JSON — still ok if no HTML error
     }
 
     console.log('[v0] Google Sheets append SUCCESS for schoolId:', schoolId)
