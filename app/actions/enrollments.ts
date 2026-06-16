@@ -67,8 +67,8 @@ export async function submitEnrollment(data: {
     // 2. Send to Google Sheets — direct POST with redirect:follow (same pattern as working project)
     try {
       const webhookUrls: Record<string, string> = {
-        villada: 'https://script.google.com/macros/s/AKfycby1qkF291jaQnrdOPgyQGTwe8KmwB-53ywsWXvCW-yvDMiBGMARQ7dtn4OWCnEaZSqogg/exec',
-        savio:   'https://script.google.com/macros/s/AKfycbz31HHo9UjoqNspFg6yserBcT_5Q3T4N0C6s6aTCwheKlSt6tueNHzqE-kBmsGvYCmmfw/exec',
+        savio:   'https://script.google.com/macros/s/AKfycbwlXGof6GY00Husss84Skv5cYj2xS7lvYj_BQFXH7IWzSyhSpoxaVHsDdpSBZsFHLqkKg/exec',
+        villada: 'https://script.google.com/macros/s/AKfycbwAAagIsSVYGZjwQCv4x-YIhymHQZ4OIoxi4jhPQKxpdYq8yQKBHoy_vLcboKjojvUn8w/exec',
       }
       const webhookUrl = webhookUrls[data.schoolId]
 
