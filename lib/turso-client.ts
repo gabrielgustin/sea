@@ -90,6 +90,7 @@ export async function initializeSchema() {
         description TEXT,
         image TEXT,
         ctaLink TEXT,
+        slideDuration TEXT,
         active BOOLEAN DEFAULT 1,
         "order" INTEGER DEFAULT 0,
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
@@ -120,7 +121,7 @@ export async function initializeSchema() {
       await turso.execute(`ALTER TABLE courses ADD COLUMN commissions TEXT DEFAULT '[]'`)
     } catch (_) {}
     try {
-      await turso.execute(`ALTER TABLE carousel_slides ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
+      await turso.execute(`ALTER TABLE carousel_slides ADD COLUMN slideDuration TEXT`)
     } catch (_) {}
     try {
       await turso.execute(`ALTER TABLE teachers ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)

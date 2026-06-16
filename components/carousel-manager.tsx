@@ -14,6 +14,7 @@ interface Slide {
   description: string
   image: string
   ctaLink: string
+  slideDuration?: string
   active: boolean
   order: number
 }
@@ -23,6 +24,7 @@ const EMPTY_FORM = {
   description: '',
   image: '',
   ctaLink: '',
+  slideDuration: '',
   active: true,
   order: 0,
 }
@@ -115,12 +117,11 @@ export function CarouselManager() {
       description: slide.description || '',
       image: slide.image || '',
       ctaLink: slide.ctaLink || '',
+      slideDuration: slide.slideDuration || '',
       active: slide.active,
       order: slide.order,
     })
     setImagePreview(slide.image || '')
-    setError('')
-    setSuccess('')
   }
 
   const handleCancel = () => {
@@ -358,6 +359,16 @@ export function CarouselManager() {
               value={formData.ctaLink}
               onChange={e => setFormData(prev => ({ ...prev, ctaLink: e.target.value }))}
               placeholder="https://... o /ruta-interna"
+            />
+          </div>
+
+          {/* Duración del slide */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Duración <span className="text-gray-400 font-normal">— ej: "12 clases"</span></label>
+            <Input
+              value={formData.slideDuration || ''}
+              onChange={e => setFormData(prev => ({ ...prev, slideDuration: e.target.value }))}
+              placeholder="12 clases, 6 meses, etc..."
             />
           </div>
 

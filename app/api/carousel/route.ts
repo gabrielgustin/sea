@@ -35,6 +35,7 @@ export async function GET(request: NextRequest) {
         active: Boolean(row.active),
         // normalize: map subtitle→description for frontend compatibility
         description: row.subtitle || row.description || '',
+        slideDuration: row.slideDuration || '',
       }))
       return NextResponse.json({ slides })
     }
@@ -56,8 +57,8 @@ export async function POST(request: NextRequest) {
     if (hasTurso()) {
       const turso = await getTurso()
       const result = await turso.execute(
-        'INSERT INTO carousel_slides (schoolId, title, subtitle, image, ctaText, ctaLink, active, "order") VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
-        [schoolId, body.title || '', subtitle, body.image || '', body.ctaText || '', body.ctaLink || '', body.active !== false ? 1 : 0, body.order ?? 0]
+        'INSERT INTO carousel_slides (schoolId, title, description, image, ctaLink, slideDuration, active, "order") VALUES (?, ?, ?, ?, ?, ?, ?, ?)',
+        [schoolId, body.title || '', body.description || '', body.image || '', body.ctaLink || '', body.slideDuration || '', body.active !== false ? 1 : 0, body.order ?? 0]
       )
       const newId = result.lastInsertRowid?.toString() || String(Date.now())
       return NextResponse.json({ success: true, id: newId })
@@ -79,7 +80,7 @@ export async function PUT(request: NextRequest) {
 
     if (hasTurso()) {
       const turso = await getTurso()
-      const allowed = ['title', 'subtitle', 'image', 'ctaText', 'ctaLink', 'active', 'order']
+      const allowed = ['title', 'subtitle', 'image', 'ctaText', 'ctaLink', 'slideDuration', 'active', 'order']
       const data: Record<string, any> = { ...updatedData }
       // normalize description → subtitle
       if (data.description !== undefined && data.subtitle === undefined) {

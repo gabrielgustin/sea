@@ -15,6 +15,7 @@ interface CarouselSlide {
   image: string;
   ctaText?: string;
   ctaLink?: string;
+  slideDuration?: string;
 }
 
 function parseSubtitle(subtitle?: string) {
@@ -110,6 +111,8 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
         <div className="flex h-full">
           {slides.map((slide, index) => {
             const { modality, startDate, duration } = parseSubtitle(slide.subtitle);
+            // Use slideDuration if available, otherwise fall back to parsed duration
+            const displayDuration = slide.slideDuration || duration;
             return (
               <div key={slide.id} className="relative min-w-full h-full flex-shrink-0" data-slide-index={index}>
                 {/* Background image */}
@@ -143,7 +146,7 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
                     <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl text-pretty line-clamp-3">
                       {slide.title}
                     </h1>
-                    {(modality || startDate || duration) && (
+                    {(modality || startDate || displayDuration) && (
                       <div className="flex flex-col md:flex-row gap-4 md:gap-8 text-white text-sm md:text-base border-l-2 border-white pl-6 md:pl-8">
                         {modality && (
                           <div>
@@ -157,10 +160,10 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
                             <p className="font-semibold">{startDate}</p>
                           </div>
                         )}
-                        {duration && (
+                        {displayDuration && (
                           <div>
                             <p className="text-gray-300 text-xs uppercase tracking-widest mb-1">DURACIÓN</p>
-                            <p className="font-semibold">{duration}</p>
+                            <p className="font-semibold">{displayDuration}</p>
                           </div>
                         )}
                       </div>
