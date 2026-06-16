@@ -47,6 +47,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
     finalProject: '',
     whatsappGroup: '',
     level: 'PRINCIPIANTE',
+    showOnHome: false,
   });
 
   const [expandedSections, setExpandedSections] = useState({
@@ -391,6 +392,34 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
                 <p className="text-xs text-gray-500 mt-1">
                   Este link se mostrara al finalizar la inscripcion
                 </p>
+              </div>
+
+              {/* Show on Home toggle */}
+              <div
+                onClick={() => handleInputChange('showOnHome', !formData.showOnHome)}
+                className="flex items-center justify-between p-4 rounded-xl border-2 cursor-pointer transition-all select-none"
+                style={{
+                  borderColor: formData.showOnHome ? '#031e41' : '#e5e7eb',
+                  backgroundColor: formData.showOnHome ? 'rgba(3,30,65,0.04)' : '#f9fafb',
+                }}
+              >
+                <div>
+                  <p className="font-semibold text-sm" style={{ color: '#031e41' }}>
+                    Mostrar en "Proximas Formaciones"
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Si esta activo, el curso aparece en el inicio del sitio ademas del catalogo
+                  </p>
+                </div>
+                <div
+                  className="relative w-11 h-6 rounded-full flex-shrink-0 transition-colors duration-200"
+                  style={{ backgroundColor: formData.showOnHome ? '#031e41' : '#d1d5db' }}
+                >
+                  <div
+                    className="absolute top-0.5 w-5 h-5 bg-white rounded-full shadow transition-transform duration-200"
+                    style={{ transform: formData.showOnHome ? 'translateX(20px)' : 'translateX(2px)' }}
+                  />
+                </div>
               </div>
             </div>
           )}

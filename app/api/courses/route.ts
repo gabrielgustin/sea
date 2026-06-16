@@ -19,24 +19,43 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const schoolId = searchParams.get('schoolId') || 'savio'
+    const slug = searchParams.get('slug')
+
+    const mapRow = (row: any) => ({
+      ...row,
+      modules: row.modules ? JSON.parse(row.modules as string) : [],
+      teachers: row.teachers ? JSON.parse(row.teachers as string) : [],
+      showOnHome: Boolean(row.showOnHome),
+    })
 
     if (hasTurso()) {
       const turso = await getTurso()
+
+      // Single course by slug or id
+      if (slug) {
+        const result = await turso.execute(
+          'SELECT * FROM courses WHERE schoolId = ? AND (slug = ? OR id = ?) LIMIT 1',
+          [schoolId, slug, slug]
+        )
+        const course = result.rows?.[0] ? mapRow(result.rows[0]) : null
+        return NextResponse.json({ course })
+      }
+
+      // All courses for this school
       const result = await turso.execute(
         'SELECT * FROM courses WHERE schoolId = ? ORDER BY createdAt DESC',
         [schoolId]
       )
-      const courses = (result.rows || []).map((row: any) => ({
-        ...row,
-        modules: row.modules ? JSON.parse(row.modules as string) : [],
-        teachers: row.teachers ? JSON.parse(row.teachers as string) : [],
-        showOnHome: Boolean(row.showOnHome),
-      }))
-      return NextResponse.json({ courses })
+      return NextResponse.json({ courses: (result.rows || []).map(mapRow) })
     }
 
     // Fallback: in-memory
-    return NextResponse.json({ courses: getStore(schoolId) })
+    const store = getStore(schoolId)
+    if (slug) {
+      const course = store.find((c: any) => c.slug === slug || c.id === slug) ?? null
+      return NextResponse.json({ course })
+    }
+    return NextResponse.json({ courses: store })
   } catch (error) {
     console.error('[v0] GET /api/courses error:', error)
     return NextResponse.json({ courses: [] })

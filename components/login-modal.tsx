@@ -6,7 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
-import { Users, Shield } from 'lucide-react';
+import { Shield } from 'lucide-react';
 import { useParams } from 'next/navigation';
 
 interface LoginModalProps {
@@ -29,6 +29,8 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
       setUsername('');
       setPassword('');
       setError('');
+      // Always default to admin since student login is hidden
+      setSelectedRole('admin');
     }
   }, [open]);
 
@@ -57,10 +59,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
           }, 100);
         }
       } else {
-        const hint = selectedRole === 'admin'
-          ? `Intenta con usuario: ${schoolId} y contraseña: ${schoolId}`
-          : 'Usuario y contraseña deben ser tu DNI';
-        setError(result.error || `Credenciales incorrectas. ${hint}`);
+          setError(result.error || 'Credenciales incorrectas. Verifica usuario y contraseña.');
       }
     } catch (err) {
       setError('Error al procesar el login. Intenta de nuevo.');
@@ -82,49 +81,21 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
         </DialogHeader>
 
         <div className="space-y-4">
-          {/* Role Selector */}
-          <div className="flex gap-3">
-            <button
-              type="button"
-              onClick={() => setSelectedRole('student')}
-              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all ${
-                selectedRole === 'student'
-                  ? 'border-blue-900 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-              style={selectedRole === 'student' ? { borderColor: '#031e41', backgroundColor: 'rgba(3,30,65,0.05)' } : {}}
-            >
-              <Users size={18} style={{ color: selectedRole === 'student' ? '#031e41' : '#9ca3af' }} />
-              <span className="font-semibold text-sm" style={{ color: selectedRole === 'student' ? '#031e41' : '#6b7280' }}>
-                Estudiante
-              </span>
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedRole('admin')}
-              className={`flex-1 flex items-center justify-center gap-2 p-3 rounded-lg border-2 transition-all ${
-                selectedRole === 'admin'
-                  ? 'border-blue-900 bg-blue-50'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-              style={selectedRole === 'admin' ? { borderColor: '#031e41', backgroundColor: 'rgba(3,30,65,0.05)' } : {}}
-            >
-              <Shield size={18} style={{ color: selectedRole === 'admin' ? '#031e41' : '#9ca3af' }} />
-              <span className="font-semibold text-sm" style={{ color: selectedRole === 'admin' ? '#031e41' : '#6b7280' }}>
-                Administrador
-              </span>
-            </button>
+          {/* Admin-only indicator */}
+          <div className="flex items-center gap-2 p-3 rounded-lg border-2" style={{ borderColor: '#031e41', backgroundColor: 'rgba(3,30,65,0.05)' }}>
+            <Shield size={18} style={{ color: '#031e41' }} />
+            <span className="font-semibold text-sm" style={{ color: '#031e41' }}>
+              Acceso Administrador
+            </span>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="username">
-                {selectedRole === 'admin' ? 'Usuario' : 'DNI'}
-              </Label>
+              <Label htmlFor="username">Usuario</Label>
               <Input
                 id="username"
                 type="text"
-                placeholder={selectedRole === 'admin' ? schoolId : 'Tu DNI'}
+                placeholder={schoolId}
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 autoComplete="username"
@@ -136,16 +107,11 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
               <Input
                 id="password"
                 type="password"
-                placeholder={selectedRole === 'admin' ? '••••••••' : 'Tu DNI'}
+                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 autoComplete="current-password"
               />
-              {selectedRole === 'student' && (
-                <p className="text-xs text-gray-500">
-                  Para estudiantes: usuario y contraseña deben ser tu DNI
-                </p>
-              )}
             </div>
 
             {error && (
