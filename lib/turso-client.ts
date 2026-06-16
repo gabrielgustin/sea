@@ -57,8 +57,28 @@ export async function initializeSchema() {
         category TEXT,
         maxStudents INTEGER,
         showOnHome BOOLEAN DEFAULT 0,
+        commissions TEXT DEFAULT '[]',
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
         updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `)
+
+    await turso.execute(`
+      CREATE TABLE IF NOT EXISTS enrollments (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        schoolId TEXT NOT NULL DEFAULT 'savio',
+        courseId TEXT NOT NULL,
+        courseName TEXT NOT NULL,
+        commissionId TEXT,
+        commissionName TEXT,
+        nombre TEXT NOT NULL,
+        apellido TEXT NOT NULL,
+        email TEXT NOT NULL,
+        telefono TEXT NOT NULL,
+        dni TEXT NOT NULL,
+        metodoPago TEXT DEFAULT 'No especificado',
+        status TEXT DEFAULT 'pending',
+        createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )
     `)
 
@@ -95,6 +115,9 @@ export async function initializeSchema() {
     // Add schoolId column to existing tables if missing (migration)
     try {
       await turso.execute(`ALTER TABLE courses ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
+    } catch (_) {}
+    try {
+      await turso.execute(`ALTER TABLE courses ADD COLUMN commissions TEXT DEFAULT '[]'`)
     } catch (_) {}
     try {
       await turso.execute(`ALTER TABLE carousel_slides ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)

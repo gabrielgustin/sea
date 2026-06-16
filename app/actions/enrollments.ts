@@ -1,12 +1,13 @@
 'use server'
 
-import { pool } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 
 export async function submitEnrollment(data: {
   schoolId: string
   courseId: string
   courseName: string
+  commissionId?: string
+  commissionName?: string
   nombre: string
   apellido: string
   email: string
@@ -15,19 +16,35 @@ export async function submitEnrollment(data: {
   metodoPago?: string
 }) {
   try {
-    // Guardar inscripción
-    await pool.query(
-      `INSERT INTO enrollments (courseId, courseName, nombre, apellido, email, telefono, dni, metodoPago, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
-      [data.courseId, data.courseName, data.nombre, data.apellido, data.email, data.telefono, data.dni, data.metodoPago || 'No especificado']
-    )
+    // Persist enrollment via API route (handles capacity check + Turso insert)
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000'
 
-    // También crear o actualizar el estudiante
-    await pool.query(
-      `INSERT INTO students (nombre, apellido, email, telefono, dni, courseId, courseName, status, paymentStatus) VALUES (?, ?, ?, ?, ?, ?, ?, 'pending', 'pending')`,
-      [data.nombre, data.apellido, data.email, data.telefono, data.dni, data.courseId, data.courseName]
-    )
+    const enrollResponse = await fetch(`${baseUrl}/api/enrollments`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        schoolId: data.schoolId,
+        courseId: data.courseId,
+        courseName: data.courseName,
+        commissionId: data.commissionId,
+        commissionName: data.commissionName,
+        nombre: data.nombre,
+        apellido: data.apellido,
+        email: data.email,
+        telefono: data.telefono,
+        dni: data.dni,
+        metodoPago: data.metodoPago || 'No especificado',
+      }),
+    })
 
-    // Guardar en Google Sheets si está configurado
+    if (!enrollResponse.ok) {
+      const errorData = await enrollResponse.json()
+      throw new Error(errorData.error || 'Failed to save enrollment')
+    }
+
+    // Send to Google Sheets
     try {
       const now = new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })
       const sheetValues = [
@@ -38,47 +55,44 @@ export async function submitEnrollment(data: {
         data.telefono,
         data.dni,
         data.courseName,
+        data.commissionName || 'Sin comisión',
         data.metodoPago || 'No especificado',
       ]
 
-      const gsUrl = new URL(
-        '/api/google-sheets/append',
-        process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'
-      ).toString()
-
-      console.log('[v0] Sending to Google Sheets:', { schoolId: data.schoolId, url: gsUrl, valuesCount: sheetValues.length })
-
-      const response = await fetch(gsUrl, {
+      const gsResponse = await fetch(`${baseUrl}/api/google-sheets/append`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           schoolId: data.schoolId,
-          values: sheetValues 
+          values: sheetValues,
         }),
       })
 
-      const responseData = await response.json()
-      console.log('[v0] Google Sheets response:', response.status, responseData)
-
-      if (!response.ok) {
-        throw new Error(`Google Sheets API error: ${response.status} - ${JSON.stringify(responseData)}`)
+      if (!gsResponse.ok) {
+        const gsError = await gsResponse.json()
+        console.error('[v0] Google Sheets error:', gsError)
       }
-    } catch (error) {
-      console.error('[v0] Failed to append to Google Sheets:', error)
-      // No throw - permite que la inscripción se guarde aunque falle Google Sheets
+    } catch (gsError) {
+      console.error('[v0] Failed to send to Google Sheets:', gsError)
+      // Don't throw — enrollment is already saved
     }
 
-    revalidatePath('/savio/admin')
+    revalidatePath(`/${data.schoolId}/admin`)
   } catch (error) {
     console.error('[v0] Error submitting enrollment:', error)
     throw error
   }
 }
 
-export async function getEnrollments() {
+export async function getEnrollments(schoolId = 'savio') {
   try {
-    const result = await pool.query('SELECT * FROM enrollments ORDER BY createdAt DESC')
-    return result.rows || []
+    const baseUrl = process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : 'http://localhost:3000'
+    const res = await fetch(`${baseUrl}/api/enrollments?schoolId=${schoolId}`, { cache: 'no-store' })
+    if (!res.ok) return []
+    const data = await res.json()
+    return data.enrollments || []
   } catch (error) {
     console.error('[v0] Error getting enrollments:', error)
     return []

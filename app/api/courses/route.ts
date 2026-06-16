@@ -25,6 +25,7 @@ export async function GET(request: NextRequest) {
       ...row,
       modules: row.modules ? JSON.parse(row.modules as string) : [],
       teachers: row.teachers ? JSON.parse(row.teachers as string) : [],
+      commissions: row.commissions ? JSON.parse(row.commissions as string) : [],
       showOnHome: Boolean(row.showOnHome),
     })
 
@@ -69,11 +70,12 @@ export async function POST(request: NextRequest) {
     const id = body.id || `course_${Date.now()}`
     const modulesJson = JSON.stringify(body.modules || [])
     const teachersJson = JSON.stringify(body.teachers || [])
+    const commissionsJson = JSON.stringify(body.commissions || [])
 
     if (hasTurso()) {
       const turso = await getTurso()
       await turso.execute(
-        `INSERT INTO courses (id, schoolId, title, subtitle, description, image, badge, slug, startDate, enrollmentDeadline, modality, schedule, location, teacher, teachers, duration, price, requirements, objective, methodology, finalProject, whatsappGroup, level, modules, showOnHome) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO courses (id, schoolId, title, subtitle, description, image, badge, slug, startDate, enrollmentDeadline, modality, schedule, location, teacher, teachers, duration, price, requirements, objective, methodology, finalProject, whatsappGroup, level, modules, showOnHome, commissions) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           id, schoolId, body.title || '', body.subtitle || '',
           body.description || '', body.image || '', body.badge || '',
@@ -85,7 +87,7 @@ export async function POST(request: NextRequest) {
           body.requirements || '', body.objective || '',
           body.methodology || '', body.finalProject || '',
           body.whatsappGroup || '', body.level || 'PRINCIPIANTE',
-          modulesJson, body.showOnHome ? 1 : 0,
+          modulesJson, body.showOnHome ? 1 : 0, commissionsJson,
         ]
       )
       return NextResponse.json({ success: true, id })
@@ -108,10 +110,11 @@ export async function PUT(request: NextRequest) {
 
     if (hasTurso()) {
       const turso = await getTurso()
-      const allowed = ['title','subtitle','description','image','badge','slug','startDate','enrollmentDeadline','modality','schedule','location','teacher','teachers','duration','price','requirements','objective','methodology','finalProject','whatsappGroup','level','modules','showOnHome']
+      const allowed = ['title','subtitle','description','image','badge','slug','startDate','enrollmentDeadline','modality','schedule','location','teacher','teachers','duration','price','requirements','objective','methodology','finalProject','whatsappGroup','level','modules','showOnHome','commissions']
       const data = { ...updatedData }
       if (data.modules) data.modules = JSON.stringify(data.modules)
       if (data.teachers) data.teachers = JSON.stringify(data.teachers)
+      if (data.commissions) data.commissions = JSON.stringify(data.commissions)
       if (typeof data.showOnHome === 'boolean') data.showOnHome = data.showOnHome ? 1 : 0
       const fields = Object.keys(data).filter(k => allowed.includes(k))
       if (fields.length === 0) return NextResponse.json({ success: true })

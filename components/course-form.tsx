@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { Course } from '@/context/CoursesContext';
+import { Course, Commission } from '@/context/CoursesContext';
 import { useSchool } from '@/context/SchoolContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -48,6 +48,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
     whatsappGroup: '',
     level: 'PRINCIPIANTE',
     showOnHome: false,
+    commissions: [] as Commission[],
   });
 
   const [expandedSections, setExpandedSections] = useState({
@@ -420,6 +421,91 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
                     style={{ transform: formData.showOnHome ? 'translateX(20px)' : 'translateX(2px)' }}
                   />
                 </div>
+              </div>
+
+              {/* Commission Manager */}
+              <div className="rounded-xl border-2 overflow-hidden" style={{ borderColor: '#e5e7eb' }}>
+                <div className="flex items-center justify-between px-4 py-3" style={{ backgroundColor: '#f0f4f8' }}>
+                  <div>
+                    <p className="font-semibold text-sm" style={{ color: '#031e41' }}>Comisiones</p>
+                    <p className="text-xs text-gray-500 mt-0.5">
+                      Cada comision tiene su propio horario y limite de inscriptos
+                    </p>
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const newCommission: Commission = {
+                        id: `com_${Date.now()}`,
+                        name: '',
+                        maxCapacity: 20,
+                      };
+                      handleInputChange('commissions', [...(formData.commissions || []), newCommission]);
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors"
+                    style={{ backgroundColor: '#031e41', color: '#ffffff' }}
+                  >
+                    <Plus size={13} />
+                    Agregar
+                  </button>
+                </div>
+
+                {(formData.commissions || []).length === 0 ? (
+                  <div className="px-4 py-5 text-center">
+                    <p className="text-sm text-gray-400">Sin comisiones. Agrega al menos una para que los alumnos puedan inscribirse.</p>
+                  </div>
+                ) : (
+                  <div className="divide-y divide-gray-100">
+                    {(formData.commissions || []).map((commission, idx) => (
+                      <div key={commission.id} className="px-4 py-3 flex items-center gap-3" style={{ backgroundColor: '#ffffff' }}>
+                        <span className="text-xs font-bold text-gray-400 w-5 flex-shrink-0">#{idx + 1}</span>
+                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                          <div>
+                            <label className="text-xs text-gray-500 font-medium mb-1 block">Nombre / Horario</label>
+                            <Input
+                              value={commission.name}
+                              onChange={(e) => {
+                                const updated = [...(formData.commissions || [])];
+                                updated[idx] = { ...updated[idx], name: e.target.value };
+                                handleInputChange('commissions', updated);
+                              }}
+                              placeholder="Ej: Lunes 18hs, Miercoles 20hs"
+                              className="h-8 text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs text-gray-500 font-medium mb-1 block">Limite de inscriptos</label>
+                            <div className="flex items-center gap-2">
+                              <Input
+                                type="number"
+                                min={1}
+                                max={500}
+                                value={commission.maxCapacity}
+                                onChange={(e) => {
+                                  const updated = [...(formData.commissions || [])];
+                                  updated[idx] = { ...updated[idx], maxCapacity: Math.max(1, parseInt(e.target.value) || 1) };
+                                  handleInputChange('commissions', updated);
+                                }}
+                                className="h-8 text-sm w-24"
+                              />
+                              <span className="text-xs text-gray-400">personas</span>
+                            </div>
+                          </div>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            const updated = (formData.commissions || []).filter((_, i) => i !== idx);
+                            handleInputChange('commissions', updated);
+                          }}
+                          className="p-1.5 rounded-lg hover:bg-red-50 transition-colors flex-shrink-0"
+                        >
+                          <Trash2 size={15} style={{ color: '#ef4444' }} />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           )}

@@ -11,6 +11,12 @@ export interface CourseTeacher {
   whatsapp?: string;
 }
 
+export interface Commission {
+  id: string;
+  name: string;       // e.g. "Lunes 18hs", "Miércoles 20hs"
+  maxCapacity: number;
+}
+
 export interface Course {
   id: string;
   schoolId?: string;
@@ -41,6 +47,7 @@ export interface Course {
   whatsappGroup?: string;
   level?: string;
   showOnHome?: boolean;
+  commissions?: Commission[];
 }
 
 interface CoursesContextType {
