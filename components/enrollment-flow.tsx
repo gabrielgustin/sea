@@ -413,8 +413,8 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
           </p>
         </div>
 
-        {course.whatsappGroup ? (
-          <a href={course.whatsappGroup} target="_blank" rel="noopener noreferrer"
+        {course.whatsappGroup || selectedCommission?.whatsappLink ? (
+          <a href={selectedCommission?.whatsappLink || course.whatsappGroup} target="_blank" rel="noopener noreferrer"
             className="flex items-center justify-center gap-3 px-6 py-3.5 rounded-xl font-bold text-white transition-all hover:shadow-lg w-full text-sm"
             style={{ backgroundColor: '#25D366' }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">

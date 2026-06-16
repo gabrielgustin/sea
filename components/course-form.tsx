@@ -459,7 +459,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
                     {(formData.commissions || []).map((commission, idx) => (
                       <div key={commission.id} className="px-4 py-3 flex items-center gap-3" style={{ backgroundColor: '#ffffff' }}>
                         <span className="text-xs font-bold text-gray-400 w-5 flex-shrink-0">#{idx + 1}</span>
-                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-2">
                           <div>
                             <label className="text-xs text-gray-500 font-medium mb-1 block">Nombre / Horario</label>
                             <Input
@@ -475,21 +475,33 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
                           </div>
                           <div>
                             <label className="text-xs text-gray-500 font-medium mb-1 block">Limite de inscriptos</label>
-                            <div className="flex items-center gap-2">
-                              <Input
-                                type="number"
-                                min={1}
-                                max={500}
-                                value={commission.maxCapacity}
-                                onChange={(e) => {
-                                  const updated = [...(formData.commissions || [])];
-                                  updated[idx] = { ...updated[idx], maxCapacity: Math.max(1, parseInt(e.target.value) || 1) };
-                                  handleInputChange('commissions', updated);
-                                }}
-                                className="h-8 text-sm w-24"
-                              />
-                              <span className="text-xs text-gray-400">personas</span>
-                            </div>
+                            <Input
+                              type="number"
+                              min={1}
+                              max={500}
+                              value={commission.maxCapacity}
+                              onChange={(e) => {
+                                const updated = [...(formData.commissions || [])];
+                                updated[idx] = { ...updated[idx], maxCapacity: Math.max(1, parseInt(e.target.value) || 1) };
+                                handleInputChange('commissions', updated);
+                              }}
+                              placeholder="20"
+                              className="h-8 text-sm"
+                            />
+                          </div>
+                          <div>
+                            <label className="text-xs text-gray-500 font-medium mb-1 block">Link WhatsApp (opcional)</label>
+                            <Input
+                              type="url"
+                              value={commission.whatsappLink || ''}
+                              onChange={(e) => {
+                                const updated = [...(formData.commissions || [])];
+                                updated[idx] = { ...updated[idx], whatsappLink: e.target.value };
+                                handleInputChange('commissions', updated);
+                              }}
+                              placeholder="https://chat.whatsapp.com/..."
+                              className="h-8 text-sm"
+                            />
                           </div>
                         </div>
                         <button

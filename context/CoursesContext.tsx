@@ -15,6 +15,7 @@ export interface Commission {
   id: string;
   name: string;       // e.g. "Lunes 18hs", "Miércoles 20hs"
   maxCapacity: number;
+  whatsappLink?: string; // Link al grupo de WhatsApp de esta comisión
 }
 
 export interface Course {
