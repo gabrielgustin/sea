@@ -1,7 +1,7 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -123,6 +123,12 @@ interface CourseTeacher {
   whatsapp?: string;
 }
 
+interface Commission {
+  id: string;
+  name: string;
+  maxCapacity: number;
+}
+
 interface Course {
   id: string;
   title: string;
@@ -148,12 +154,23 @@ interface Course {
   }>;
   methodology: string;
   finalProject: string;
+  commissions?: Commission[];
 }
 
 export default function CourseDetailClient({ course }: { course: Course }) {
   const router = useRouter();
   const { schoolId } = useSchool();
   const [modulesExpanded, setModulesExpanded] = useState(false);
+  const [enrollmentCounts, setEnrollmentCounts] = useState<Record<string, number>>({});
+
+  // Fetch current enrollment counts per commission
+  useEffect(() => {
+    if (!course.commissions?.length) return;
+    fetch(`/api/enrollments?courseId=${course.id}&schoolId=${schoolId}`)
+      .then(r => r.json())
+      .then(data => { if (data.counts) setEnrollmentCounts(data.counts); })
+      .catch(() => {});
+  }, [course.id, course.commissions, schoolId]);
 
   // Parsear una fecha en formato ISO "YYYY-MM-DD" o "Lun 1/06/2026"
   const parseDate = (dateStr: string): Date | null => {
@@ -237,10 +254,46 @@ export default function CourseDetailClient({ course }: { course: Course }) {
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Duración</p>
               <p className="text-sm font-bold text-gray-900">{course.duration}</p>
             </div>
-            <div className="p-4 border-b border-gray-100">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Horario</p>
-              <p className="text-sm font-bold text-gray-900">{course.schedule}</p>
-            </div>
+            {course.commissions && course.commissions.length > 0 ? (
+              <div className="p-4 border-b border-gray-100">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Comisiones disponibles</p>
+                <div className="space-y-2">
+                  {course.commissions.map((commission) => {
+                    const enrolled = enrollmentCounts[commission.id] ?? 0;
+                    const available = commission.maxCapacity - enrolled;
+                    const pct = Math.min(100, Math.round((enrolled / commission.maxCapacity) * 100));
+                    const isFull = available <= 0;
+                    const isAlmostFull = !isFull && pct >= 75;
+                    const barColor = isFull ? '#ef4444' : isAlmostFull ? '#f59e0b' : '#22c55e';
+
+                    return (
+                      <div key={commission.id} className="rounded-lg border overflow-hidden" style={{ borderColor: isFull ? '#fecaca' : '#e5e7eb' }}>
+                        <div className="flex items-center justify-between px-3 py-2" style={{ backgroundColor: isFull ? '#fff5f5' : '#f9fafb' }}>
+                          <span className="text-sm font-semibold text-gray-800">{commission.name}</span>
+                          {isFull ? (
+                            <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#fecaca', color: '#dc2626' }}>Completa</span>
+                          ) : (
+                            <span className="text-xs font-medium text-gray-500">{available} {available === 1 ? 'lugar' : 'lugares'}</span>
+                          )}
+                        </div>
+                        {/* Capacity bar */}
+                        <div className="h-1.5 w-full bg-gray-100">
+                          <div
+                            className="h-1.5 transition-all duration-300"
+                            style={{ width: `${pct}%`, backgroundColor: barColor }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            ) : course.schedule ? (
+              <div className="p-4 border-b border-gray-100">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Horario</p>
+                <p className="text-sm font-bold text-gray-900">{course.schedule}</p>
+              </div>
+            ) : null}
             <div className="p-4 border-b border-gray-100">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Lugar</p>
               <p className="text-sm font-bold text-gray-900">{course.location}</p>
