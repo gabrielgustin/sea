@@ -14,7 +14,6 @@ export async function submitEnrollment(data: {
   email: string
   telefono: string
   dni: string
-  metodoPago?: string
 }) {
   try {
     console.log('[v0] Submitting enrollment:', { courseId: data.courseId, email: data.email, commission: data.commissionName })
@@ -45,7 +44,7 @@ export async function submitEnrollment(data: {
       // Insert enrollment
       console.log('[v0] Inserting enrollment into Turso:', { currentCount, maxCapacity })
       await turso.execute(
-        `INSERT INTO enrollments (schoolId, courseId, courseName, commissionId, commissionName, nombre, apellido, email, telefono, dni, metodoPago) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+        `INSERT INTO enrollments (schoolId, courseId, courseName, commissionId, commissionName, nombre, apellido, email, telefono, dni) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
         [
           data.schoolId,
           data.courseId,
@@ -57,7 +56,6 @@ export async function submitEnrollment(data: {
           data.email,
           data.telefono,
           data.dni,
-          data.metodoPago || 'No especificado',
         ]
       )
       console.log('[v0] Enrollment saved to Turso successfully')
@@ -87,7 +85,6 @@ export async function submitEnrollment(data: {
           dni: data.dni,
           curso: data.courseName,
           comision: data.commissionName || 'Sin comisión',
-          metodoPago: data.metodoPago || 'No especificado',
         }
 
         console.log('[v0] Posting to Apps Script for schoolId:', data.schoolId)

@@ -76,7 +76,6 @@ export async function initializeSchema() {
         email TEXT NOT NULL,
         telefono TEXT NOT NULL,
         dni TEXT NOT NULL,
-        metodoPago TEXT DEFAULT 'No especificado',
         status TEXT DEFAULT 'pending',
         createdAt DATETIME DEFAULT CURRENT_TIMESTAMP
       )

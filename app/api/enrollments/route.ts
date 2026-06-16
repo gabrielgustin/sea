@@ -58,7 +58,6 @@ export async function POST(request: NextRequest) {
       email,
       telefono,
       dni,
-      metodoPago = 'No especificado',
     } = body
 
     if (!courseId || !nombre || !email || !dni) {
@@ -95,8 +94,8 @@ export async function POST(request: NextRequest) {
     }
 
     const insertResult = await turso.execute(
-      `INSERT INTO enrollments (schoolId, courseId, courseName, commissionId, commissionName, nombre, apellido, email, telefono, dni, metodoPago, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
-      [schoolId, courseId, courseName, commissionId || null, commissionName || null, nombre, apellido, email, telefono, dni, metodoPago]
+      `INSERT INTO enrollments (schoolId, courseId, courseName, commissionId, commissionName, nombre, apellido, email, telefono, dni, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
+      [schoolId, courseId, courseName, commissionId || null, commissionName || null, nombre, apellido, email, telefono, dni]
     )
 
     const newId = insertResult.lastInsertRowid?.toString() ?? `enr_${Date.now()}`
