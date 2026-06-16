@@ -14,7 +14,7 @@ export default function Header() {
           {/* Desktop Logo - SEA */}
           <Link href={`/${schoolId}`} className="hidden md:flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
-              src="/images/sea-logo.png" 
+              src="/logo-sea.png" 
               alt="SEA Logo"
               width={110}
               height={110}
@@ -26,7 +26,7 @@ export default function Header() {
           {/* Mobile - Logo SEA Left */}
           <Link href={`/${schoolId}`} className="md:hidden flex items-center cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
-              src="/images/sea-logo.png" 
+              src="/logo-sea.png" 
               alt="SEA Logo"
               width={48}
               height={48}
