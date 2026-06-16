@@ -121,6 +121,16 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
       const nombre = parts[0] ?? '';
       const apellido = parts.slice(1).join(' ') || '';
 
+      console.log('[v0] Starting enrollment submission:', {
+        schoolId,
+        courseId: course.id,
+        courseName: course.title,
+        commissionId: selectedCommission?.id,
+        nombre,
+        apellido,
+        email: studentData.email,
+      });
+
       await submitEnrollment({
         schoolId,
         courseId: String(course.id),
@@ -133,6 +143,8 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
         telefono: studentData.telefono,
         dni: studentData.dni,
       });
+
+      console.log('[v0] Enrollment submitted successfully');
     } catch (err) {
       console.error('[v0] Error submitting enrollment:', err);
     } finally {
