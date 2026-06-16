@@ -526,15 +526,6 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
             <div className="px-6 py-4 space-y-4 bg-gray-50">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <Label>Horario</Label>
-                  <Input
-                    value={formData.schedule}
-                    onChange={(e) => handleInputChange('schedule', e.target.value)}
-                    placeholder="Lunes: 16:30 a 18:00"
-                    className="mt-2 transition-smooth"
-                  />
-                </div>
-                <div>
                   <Label>Lugar</Label>
                   <Input
                     value={formData.location}
