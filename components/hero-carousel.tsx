@@ -127,6 +127,18 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
 
                 {/* Slide content */}
                 <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 w-full h-full flex flex-col justify-end pb-20">
+                  {/* Modality Badge */}
+                  {modality && (
+                    <div className="mb-6 inline-flex w-fit">
+                      <span 
+                        className="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide text-gray-800"
+                        style={{ backgroundColor: '#c7d9e8' }}
+                      >
+                        {modality}
+                      </span>
+                    </div>
+                  )}
+                  
                   <div className="flex flex-col gap-4">
                     <h1 className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white leading-tight max-w-3xl text-pretty line-clamp-3">
                       {slide.title}

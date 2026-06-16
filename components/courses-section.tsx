@@ -70,6 +70,16 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
                 >
                   {course.badge}
                 </div>
+
+                {/* Modality Badge */}
+                {course.modality && (
+                  <div 
+                    className="absolute top-4 left-4 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide"
+                    style={{ backgroundColor: '#c7d9e8', color: '#1f2937' }}
+                  >
+                    {course.modality}
+                  </div>
+                )}
               </div>
 
               {/* Content */}
