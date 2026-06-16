@@ -381,20 +381,6 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
                 </div>
               </div>
 
-              {/* WhatsApp Group */}
-              <div>
-                <Label>Link Grupo de WhatsApp</Label>
-                <Input
-                  value={formData.whatsappGroup || ''}
-                  onChange={(e) => handleInputChange('whatsappGroup', e.target.value)}
-                  placeholder="https://chat.whatsapp.com/..."
-                  className="mt-2 transition-smooth"
-                />
-                <p className="text-xs text-gray-500 mt-1">
-                  Este link se mostrara al finalizar la inscripcion
-                </p>
-              </div>
-
               {/* Show on Home toggle */}
               <div
                 onClick={() => handleInputChange('showOnHome', !formData.showOnHome)}

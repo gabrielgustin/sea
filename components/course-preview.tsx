@@ -62,10 +62,6 @@ export default function CoursePreview({ course, onClose }: CoursePreviewProps) {
               <p className="font-bold" style={{ color: '#031e41' }}>{course.startDate}</p>
             </div>
             <div className="p-4 bg-blue-50 rounded-lg">
-              <p className="text-xs text-gray-600 mb-1">Horario</p>
-              <p className="font-bold text-sm" style={{ color: '#031e41' }}>{course.schedule}</p>
-            </div>
-            <div className="p-4 bg-blue-50 rounded-lg">
               <p className="text-xs text-gray-600 mb-1">Duración</p>
               <p className="font-bold" style={{ color: '#031e41' }}>{course.duration}</p>
             </div>

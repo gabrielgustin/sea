@@ -288,11 +288,6 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                   })}
                 </div>
               </div>
-            ) : course.schedule ? (
-              <div className="p-4 border-b border-gray-100">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Horario</p>
-                <p className="text-sm font-bold text-gray-900">{course.schedule}</p>
-              </div>
             ) : null}
             <div className="p-4 border-b border-gray-100">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Lugar</p>
