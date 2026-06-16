@@ -66,7 +66,7 @@ export async function submitEnrollment(data: {
       throw tursoError
     }
 
-    // 2. Send to Google Sheets — called directly, no internal HTTP fetch
+    // 2. Send to Google Sheets — direct POST with redirect:follow (same pattern as working project)
     try {
       const webhookUrls: Record<string, string> = {
         villada: 'https://script.google.com/macros/s/AKfycby1qkF291jaQnrdOPgyQGTwe8KmwB-53ywsWXvCW-yvDMiBGMARQ7dtn4OWCnEaZSqogg/exec',
@@ -78,38 +78,29 @@ export async function submitEnrollment(data: {
         console.error('[v0] No webhook URL for schoolId:', data.schoolId)
       } else {
         const now = new Date().toLocaleString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' })
-        const sheetValues = [
-          now,
-          data.nombre,
-          data.apellido,
-          data.email,
-          data.telefono,
-          data.dni,
-          data.courseName,
-          data.commissionName || 'Sin comisión',
-          data.metodoPago || 'No especificado',
-        ]
+        const payload = {
+          timestamp: now,
+          nombre: data.nombre,
+          apellido: data.apellido,
+          email: data.email,
+          telefono: data.telefono,
+          dni: data.dni,
+          curso: data.courseName,
+          comision: data.commissionName || 'Sin comisión',
+          metodoPago: data.metodoPago || 'No especificado',
+        }
 
-        console.log('[v0] Posting to Apps Script:', webhookUrl.substring(0, 60) + '...')
+        console.log('[v0] Posting to Apps Script for schoolId:', data.schoolId)
 
-        // Step 1: POST — Apps Script responds with 302 redirect
-        const postResponse = await fetch(webhookUrl, {
+        const response = await fetch(webhookUrl, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ schoolId: data.schoolId, values: sheetValues }),
-          redirect: 'manual',
+          body: JSON.stringify(payload),
+          redirect: 'follow',
         })
-        console.log('[v0] Apps Script POST status:', postResponse.status)
 
-        // Step 2: GET the redirect URL to obtain the real JSON response
-        const redirectUrl = postResponse.headers.get('location')
-        if (redirectUrl) {
-          const getResponse = await fetch(redirectUrl, { method: 'GET' })
-          const responseText = await getResponse.text()
-          console.log('[v0] Apps Script result:', responseText.substring(0, 150))
-        } else {
-          console.error('[v0] Apps Script returned no redirect location')
-        }
+        const responseText = await response.text()
+        console.log('[v0] Apps Script response status:', response.status, '| body:', responseText.substring(0, 200))
       }
     } catch (gsError) {
       console.error('[v0] Failed to send to Google Sheets:', gsError)
