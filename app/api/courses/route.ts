@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true, id })
   } catch (error) {
     console.error('[v0] POST /api/courses error:', error)
-    return NextResponse.json({ error: 'Failed to create course' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to create course', detail: String(error) }, { status: 500 })
   }
 }
 
@@ -164,7 +164,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] PUT /api/courses error:', error)
-    return NextResponse.json({ error: 'Failed to update course' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to update course', detail: String(error) }, { status: 500 })
   }
 }
 
