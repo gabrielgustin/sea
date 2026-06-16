@@ -37,7 +37,6 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
     description: '',
     schedule: '',
     location: 'ITS Savio, Valle Escondido',
-    teacher: '',
     duration: '6 meses',
     price: '',
     requirements: '',
@@ -536,25 +535,14 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <Label>Profesor/a</Label>
-                  <Input
-                    value={formData.teacher}
-                    onChange={(e) => handleInputChange('teacher', e.target.value)}
-                    placeholder="Gabriel Muñoz"
-                    className="mt-2 transition-smooth"
-                  />
-                </div>
-                <div>
-                  <Label>Duración</Label>
-                  <Input
-                    value={formData.duration}
-                    onChange={(e) => handleInputChange('duration', e.target.value)}
-                    placeholder="6 meses"
-                    className="mt-2 transition-smooth"
-                  />
-                </div>
+              <div>
+                <Label>Duración</Label>
+                <Input
+                  value={formData.duration}
+                  onChange={(e) => handleInputChange('duration', e.target.value)}
+                  placeholder="6 meses"
+                  className="mt-2 transition-smooth"
+                />
               </div>
 
               <div>
