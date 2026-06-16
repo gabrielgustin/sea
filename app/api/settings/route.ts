@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Real schema of site_settings:
+// key (TEXT), value (TEXT), updatedAt (DATETIME), schoolId (TEXT)
+// NOTE: no UNIQUE constraint on (key, schoolId) — use DELETE+INSERT or UPDATE+INSERT pattern
+
 const hasTurso = () => !!process.env.TURSO_CONNECTION_URL && !!process.env.TURSO_AUTH_TOKEN
 
 // In-memory fallback
@@ -13,10 +17,10 @@ export async function GET(request: NextRequest) {
     if (hasTurso()) {
       const { turso, initializeSchema } = await import('@/lib/turso-client')
       await initializeSchema()
-      const result = await turso.execute({
-        sql: 'SELECT key, value FROM site_settings WHERE schoolId = ?',
-        args: [schoolId]
-      })
+      const result = await turso.execute(
+        'SELECT key, value FROM site_settings WHERE schoolId = ?',
+        [schoolId]
+      )
       const settings: Record<string, string> = {}
       for (const row of result.rows) {
         settings[row.key as string] = row.value as string
@@ -24,7 +28,6 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ settings })
     }
 
-    // Fallback: return in-memory settings (empty = use client defaults)
     return NextResponse.json({ settings: memorySettings[schoolId] || {} })
   } catch (error) {
     console.error('[v0] GET /api/settings error:', error)
@@ -40,12 +43,24 @@ export async function POST(request: NextRequest) {
     if (hasTurso()) {
       const { turso, initializeSchema } = await import('@/lib/turso-client')
       await initializeSchema()
+
       for (const [key, value] of Object.entries(settings)) {
-        await turso.execute({
-          sql: `INSERT INTO site_settings (key, schoolId, value) VALUES (?, ?, ?)
-                ON CONFLICT(key, schoolId) DO UPDATE SET value = excluded.value`,
-          args: [key, schoolId, String(value)]
-        })
+        // Check if key exists for this school
+        const existing = await turso.execute(
+          'SELECT key FROM site_settings WHERE key = ? AND schoolId = ?',
+          [key, schoolId]
+        )
+        if (existing.rows.length > 0) {
+          await turso.execute(
+            'UPDATE site_settings SET value = ?, updatedAt = CURRENT_TIMESTAMP WHERE key = ? AND schoolId = ?',
+            [String(value), key, schoolId]
+          )
+        } else {
+          await turso.execute(
+            'INSERT INTO site_settings (key, value, schoolId) VALUES (?, ?, ?)',
+            [key, String(value), schoolId]
+          )
+        }
       }
       return NextResponse.json({ success: true })
     }
@@ -58,6 +73,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] POST /api/settings error:', error)
-    return NextResponse.json({ error: 'Failed to save settings' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to save settings', detail: String(error) }, { status: 500 })
   }
 }

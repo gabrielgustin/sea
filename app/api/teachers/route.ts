@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server'
 
+// Real schema of teachers:
+// id (INTEGER PK autoincrement), name (TEXT), description (TEXT), image (TEXT),
+// whatsapp (TEXT), linkedin (TEXT), courseId (TEXT), order (INTEGER),
+// active (INTEGER), createdAt (DATETIME), updatedAt (DATETIME), schoolId (TEXT)
+
 const hasTurso = () => !!process.env.TURSO_CONNECTION_URL && !!process.env.TURSO_AUTH_TOKEN
 
 const memoryStore: Record<string, any[]> = {}
@@ -22,10 +27,14 @@ export async function GET(request: NextRequest) {
     if (hasTurso()) {
       const turso = await getTurso()
       const result = await turso.execute(
-        'SELECT * FROM teachers WHERE schoolId = ? ORDER BY `order` ASC',
+        'SELECT * FROM teachers WHERE schoolId = ? ORDER BY "order" ASC',
         [schoolId]
       )
-      const teachers = (result.rows || []).map((row: any) => ({ ...row, active: Boolean(row.active) }))
+      const teachers = (result.rows || []).map((row: any) => ({
+        ...row,
+        id: String(row.id), // normalize INTEGER id → string for frontend
+        active: Boolean(row.active),
+      }))
       return NextResponse.json({ teachers })
     }
 
@@ -40,22 +49,34 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const schoolId = body.schoolId || 'savio'
-    const id = body.id || `teacher_${Date.now()}`
+    // id is INTEGER autoincrement — do NOT pass it
 
     if (hasTurso()) {
       const turso = await getTurso()
-      await turso.execute(
-        'INSERT INTO teachers (id, schoolId, name, description, image, linkedin, whatsapp, courseId, `order`, active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
-        [id, schoolId, body.name || '', body.description || '', body.image || '', body.linkedin || '', body.whatsapp || '', body.courseId || '', body.order ?? 0, body.active !== false ? 1 : 0]
+      const result = await turso.execute(
+        'INSERT INTO teachers (schoolId, name, description, image, whatsapp, linkedin, courseId, "order", active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [
+          schoolId,
+          body.name || '',
+          body.description || '',
+          body.image || '',
+          body.whatsapp || '',
+          body.linkedin || '',
+          body.courseId || null,
+          body.order ?? 0,
+          body.active !== false ? 1 : 0,
+        ]
       )
-      return NextResponse.json({ success: true, id })
+      const newId = result.lastInsertRowid?.toString() || String(Date.now())
+      return NextResponse.json({ success: true, id: newId })
     }
 
+    const id = `teacher_${Date.now()}`
     getStore(schoolId).push({ ...body, id })
     return NextResponse.json({ success: true, id })
   } catch (error) {
     console.error('[v0] POST /api/teachers error:', error)
-    return NextResponse.json({ error: 'Failed to create teacher' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to create teacher', detail: String(error) }, { status: 500 })
   }
 }
 
@@ -66,23 +87,26 @@ export async function PUT(request: NextRequest) {
 
     if (hasTurso()) {
       const turso = await getTurso()
-      const allowed = ['name', 'description', 'image', 'linkedin', 'whatsapp', 'courseId', 'order', 'active']
+      const allowed = ['name', 'description', 'image', 'whatsapp', 'linkedin', 'courseId', 'order', 'active']
       const data: Record<string, any> = { ...updatedData }
       if (typeof data.active === 'boolean') data.active = data.active ? 1 : 0
       const fields = Object.keys(data).filter(k => allowed.includes(k))
       if (fields.length === 0) return NextResponse.json({ success: true })
-      const setClause = fields.map(f => ['order','active'].includes(f) ? `\`${f}\` = ?` : `${f} = ?`).join(', ')
-      await turso.execute(`UPDATE teachers SET ${setClause} WHERE id = ? AND schoolId = ?`, [...fields.map(k => data[k]), id, schoolId])
+      const setClause = fields.map(f => `"${f}" = ?`).join(', ')
+      await turso.execute(
+        `UPDATE teachers SET ${setClause}, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND schoolId = ?`,
+        [...fields.map(k => data[k]), id, schoolId]
+      )
       return NextResponse.json({ success: true })
     }
 
     const store = getStore(schoolId)
-    const idx = store.findIndex(t => t.id === id)
+    const idx = store.findIndex(t => String(t.id) === String(id))
     if (idx >= 0) store[idx] = { ...store[idx], ...updatedData }
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] PUT /api/teachers error:', error)
-    return NextResponse.json({ error: 'Failed to update teacher' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to update teacher', detail: String(error) }, { status: 500 })
   }
 }
 
@@ -98,11 +122,11 @@ export async function DELETE(request: NextRequest) {
     }
 
     const store = getStore(schoolId)
-    const idx = store.findIndex(t => t.id === id)
+    const idx = store.findIndex(t => String(t.id) === String(id))
     if (idx >= 0) store.splice(idx, 1)
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] DELETE /api/teachers error:', error)
-    return NextResponse.json({ error: 'Failed to delete teacher' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to delete teacher', detail: String(error) }, { status: 500 })
   }
 }

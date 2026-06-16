@@ -65,7 +65,7 @@ const defaultSettings: SiteSettings = {
 
 const SiteSettingsContext = createContext<SiteSettingsContextType | undefined>(undefined);
 
-export function SiteSettingsProvider({ children }: { children: React.ReactNode }) {
+export function SiteSettingsProvider({ children, schoolId }: { children: React.ReactNode; schoolId?: string }) {
   const [faqs, setFAQs] = useState<FAQ[]>(defaultFAQs);
   const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
   const [loading, setLoading] = useState(true);
@@ -74,7 +74,8 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
   useEffect(() => {
     async function loadSettings() {
       try {
-        const res = await fetch('/api/settings');
+        const sid = schoolId || 'villada';
+        const res = await fetch(`/api/settings?schoolId=${sid}`);
         if (res.ok) {
           const data = await res.json();
           if (data.settings && Object.keys(data.settings).length > 0) {
@@ -124,10 +125,11 @@ export function SiteSettingsProvider({ children }: { children: React.ReactNode }
   const updateSettings = async (newSettings: Partial<SiteSettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
     try {
+      const sid = schoolId || 'villada';
       await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newSettings),
+        body: JSON.stringify({ ...newSettings, schoolId: sid }),
       });
     } catch (error) {
       console.error('[v0] Failed to save settings to DB:', error);
