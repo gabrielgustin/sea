@@ -9,7 +9,6 @@ import { Button } from '@/components/ui/button';
 import CourseForm from './course-form';
 import { CourseList } from './course-list';
 import CoursePreview from './course-preview';
-import StudentsList from './students-list';
 import { CarouselManager } from './carousel-manager';
 import FAQManager from './faq-manager';
 import SettingsManager from './settings-manager';
@@ -22,7 +21,7 @@ export default function AdminDashboard() {
   const [showForm, setShowForm] = useState(false);
   const [editingCourse, setEditingCourse] = useState<Course | null>(null);
   const [previewCourse, setPreviewCourse] = useState<Course | null>(null);
-  const [view, setView] = useState<'list' | 'form' | 'preview' | 'students' | 'carousel' | 'faq' | 'settings' | 'teachers'>('list');
+  const [view, setView] = useState<'list' | 'form' | 'preview' | 'carousel' | 'faq' | 'settings' | 'teachers'>('list');
 
   const handleLogout = () => {
     logout();
@@ -82,7 +81,7 @@ export default function AdminDashboard() {
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
           <div>
             <h1 className="text-4xl font-bold" style={{ color: '#031e41' }}>
-              {view === 'carousel' ? 'Gestionar Carrusel' : view === 'students' ? 'Gestionar Estudiantes' : view === 'faq' ? 'Preguntas Frecuentes' : view === 'settings' ? 'Configuracion' : view === 'teachers' ? 'Gestión de Docentes' : 'Panel de Administracion'}
+              {view === 'carousel' ? 'Gestionar Carrusel' : view === 'faq' ? 'Preguntas Frecuentes' : view === 'settings' ? 'Configuracion' : view === 'teachers' ? 'Gestión de Docentes' : 'Panel de Administracion'}
             </h1>
             <p className="text-gray-600 mt-2">
               {view === 'carousel' 
@@ -151,21 +150,6 @@ export default function AdminDashboard() {
           >
             <Sliders size={18} />
             Carrusel
-          </button>
-          <button
-            onClick={() => setView('students')}
-            className={`px-4 py-2 font-semibold transition-colors flex items-center gap-2 ${
-              view === 'students'
-                ? 'text-blue-900 border-b-2' 
-                : 'text-gray-600 hover:text-gray-800'
-            }`}
-            style={{
-              borderBottomColor: view === 'students' ? '#031e41' : 'transparent',
-              color: view === 'students' ? '#031e41' : '#666',
-            }}
-          >
-            <Users size={18} />
-            Estudiantes
           </button>
           <button
             onClick={() => setView('faq')}
@@ -237,10 +221,6 @@ export default function AdminDashboard() {
             course={previewCourse}
             onClose={handleCancel}
           />
-        )}
-
-        {view === 'students' && (
-          <StudentsList />
         )}
 
         {view === 'carousel' && (
