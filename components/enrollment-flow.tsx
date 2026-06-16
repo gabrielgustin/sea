@@ -599,7 +599,10 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
 
             {isConfirmStep() ? (
               <button
-                onClick={handleConfirmEnrollment}
+                onClick={() => {
+                  console.log('[v0] BUTTON CLICKED - handleConfirmEnrollment');
+                  handleConfirmEnrollment();
+                }}
                 disabled={isSubmitting}
                 className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-white transition-all disabled:opacity-50 text-sm"
                 style={{ backgroundColor: '#031e41' }}
