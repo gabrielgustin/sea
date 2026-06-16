@@ -30,6 +30,7 @@ export async function POST(request: NextRequest) {
         values,
         timestamp: new Date().toISOString(),
       }),
+      redirect: 'follow', // Follow redirects from Google Apps Script
     })
 
     const responseText = await response.text()
