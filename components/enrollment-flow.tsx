@@ -78,6 +78,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
       const apellido = parts.slice(1).join(' ') || '';
 
       await submitEnrollment({
+        schoolId,
         courseId: String(course.id),
         courseName: course.title,
         nombre,

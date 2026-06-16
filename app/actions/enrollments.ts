@@ -4,6 +4,7 @@ import { pool } from '@/lib/db'
 import { revalidatePath } from 'next/cache'
 
 export async function submitEnrollment(data: {
+  schoolId: string
   courseId: string
   courseName: string
   nombre: string
@@ -48,7 +49,10 @@ export async function submitEnrollment(data: {
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ values: sheetValues }),
+          body: JSON.stringify({ 
+            schoolId: data.schoolId,
+            values: sheetValues 
+          }),
         }
       )
     } catch (error) {
