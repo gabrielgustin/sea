@@ -9,6 +9,8 @@ export default function Header() {
 
   const schoolLogo = schoolId === 'villada' ? '/logo-its-villada.png' : '/logo-domingo-savio.png';
   const schoolLogoAlt = schoolId === 'villada' ? 'ITS Villada Logo' : 'Domingo Savio Logo';
+  const seaLogo = schoolId === 'savio' ? '/images/sea-savio-logo.png' : '/logo-sea.png';
+  const seaLogoAlt = schoolId === 'savio' ? 'SEA - Secretaría de Extensión Académica' : 'SEA Logo';
 
   return (
     <header className="w-full bg-white fixed md:static top-0 left-0 right-0 z-30 md:z-auto" style={{ borderBottom: '2px solid #031e41' }}>
@@ -17,8 +19,8 @@ export default function Header() {
           {/* Desktop Logo - SEA */}
           <Link href={`/${schoolId}`} className="hidden md:flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
-              src="/logo-sea.png" 
-              alt="SEA Logo"
+              src={seaLogo}
+              alt={seaLogoAlt}
               width={110}
               height={110}
               className="h-20 w-auto object-contain"
@@ -29,8 +31,8 @@ export default function Header() {
           {/* Mobile - Logo SEA Left */}
           <Link href={`/${schoolId}`} className="md:hidden flex items-center cursor-pointer hover:opacity-80 transition-opacity">
             <Image 
-              src="/logo-sea.png" 
-              alt="SEA Logo"
+              src={seaLogo}
+              alt={seaLogoAlt}
               width={48}
               height={48}
               className="h-12 w-auto object-contain"
