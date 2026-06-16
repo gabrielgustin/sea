@@ -10,8 +10,8 @@ export async function POST(request: NextRequest) {
 
     // Webhook URLs por escuela - cada una apunta a su Google Sheet
     const webhookUrls: Record<string, string> = {
-      villada: 'https://script.google.com/macros/s/AKfycbwlg-BjQTtTxOP4Cx77u1uAL1jW7GY9lJ9V5VODsYtSLHM5n3NhaFKC2LDB88pydL0HRg/exec',
-      savio: 'https://script.google.com/macros/s/AKfycby3lnFQs12b3GWxVpdG66Re_RRZOYhJoCI_xHg9-GT3n9BSuKqEZJ8X8t6Ca137sLAzbw/exec',
+      villada: 'https://script.google.com/macros/s/AKfycby1qkF291jaQnrdOPgyQGTwe8KmwB-53ywsWXvCW-yvDMiBGMARQ7dtn4OWCnEaZSqogg/exec',
+      savio: 'https://script.google.com/macros/s/AKfycbz31HHo9UjoqNspFg6yserBcT_5Q3T4N0C6s6aTCwheKlSt6tueNHzqE-kBmsGvYCmmfw/exec',
     }
 
     const webhookUrl = webhookUrls[schoolId]
@@ -21,43 +21,45 @@ export async function POST(request: NextRequest) {
 
     console.log('[v0] Google Sheets append request:', { schoolId, valuesCount: values.length, webhookUrl: webhookUrl.substring(0, 50) + '...' })
 
-    // Send data to Google Apps Script webhook
-    const response = await fetch(webhookUrl, {
+    // Google Apps Script requires a two-step request:
+    // 1. POST to the script URL (returns 302 redirect to googleusercontent.com)
+    // 2. GET the redirect URL to get the actual JSON response
+    // Following the redirect directly converts POST to GET which breaks the script.
+    const postResponse = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ 
-        schoolId,
-        values,
-        timestamp: new Date().toISOString(),
-      }),
-      redirect: 'follow', // Follow redirects from Google Apps Script
+      body: JSON.stringify({ schoolId, values, timestamp: new Date().toISOString() }),
+      redirect: 'manual', // Don't follow redirect — capture it
     })
 
-    const responseText = await response.text()
-    console.log('[v0] Webhook response status:', response.status, 'body:', responseText.substring(0, 300))
+    console.log('[v0] Apps Script POST status:', postResponse.status)
 
-    if (!response.ok) {
-      console.error('[v0] Google Sheets webhook failed:', response.status, responseText)
-      return NextResponse.json({ error: `Webhook error: ${response.status}` }, { status: response.status })
+    // Get the redirect location from the 302 response
+    const redirectUrl = postResponse.headers.get('location')
+    if (!redirectUrl) {
+      console.error('[v0] No redirect URL in Apps Script response')
+      return NextResponse.json({ error: 'No redirect from Google Apps Script' }, { status: 502 })
     }
 
-    // Google Apps Script sometimes returns HTML error pages with status 200
-    // Detect the "unable to open the file" error from Google
-    if (responseText.includes('Sorry, unable to open') || responseText.includes('Page Not Found') || responseText.startsWith('<!DOCTYPE')) {
-      console.error('[v0] Google Apps Script returned an HTML error page — script may be deleted or revoked')
-      return NextResponse.json({ error: 'Google Apps Script not available. Please recreate the webhook deployment.' }, { status: 503 })
+    // Follow the redirect with GET to get the actual JSON result
+    const getResponse = await fetch(redirectUrl, { method: 'GET' })
+    const responseText = await getResponse.text()
+    console.log('[v0] Apps Script result:', responseText.substring(0, 200))
+
+    // Detect HTML error pages
+    if (responseText.startsWith('<!DOCTYPE') || responseText.includes('Sorry, unable to open')) {
+      console.error('[v0] Apps Script returned HTML error page')
+      return NextResponse.json({ error: 'Google Apps Script not available' }, { status: 503 })
     }
 
-    // Try to parse JSON response from Apps Script
+    // Parse JSON response
     try {
       const json = JSON.parse(responseText)
       if (json.error) {
-        console.error('[v0] Apps Script returned error:', json.error)
+        console.error('[v0] Apps Script error:', json.error)
         return NextResponse.json({ error: json.error }, { status: 500 })
       }
-    } catch (_) {
-      // Not JSON — still ok if no HTML error
-    }
+    } catch (_) {}
 
     console.log('[v0] Google Sheets append SUCCESS for schoolId:', schoolId)
     return NextResponse.json({ success: true })
