@@ -45,22 +45,15 @@ export async function POST(request: NextRequest) {
       await initializeSchema()
 
       for (const [key, value] of Object.entries(settings)) {
-        // Check if key exists for this school
-        const existing = await turso.execute(
-          'SELECT key FROM site_settings WHERE key = ? AND schoolId = ?',
+        // DELETE + INSERT to avoid duplicate rows (table has no UNIQUE constraint)
+        await turso.execute(
+          'DELETE FROM site_settings WHERE key = ? AND schoolId = ?',
           [key, schoolId]
         )
-        if (existing.rows.length > 0) {
-          await turso.execute(
-            'UPDATE site_settings SET value = ?, updatedAt = CURRENT_TIMESTAMP WHERE key = ? AND schoolId = ?',
-            [String(value), key, schoolId]
-          )
-        } else {
-          await turso.execute(
-            'INSERT INTO site_settings (key, value, schoolId) VALUES (?, ?, ?)',
-            [key, String(value), schoolId]
-          )
-        }
+        await turso.execute(
+          'INSERT INTO site_settings (key, value, schoolId) VALUES (?, ?, ?)',
+          [key, String(value), schoolId]
+        )
       }
       return NextResponse.json({ success: true })
     }

@@ -95,7 +95,7 @@ export function SiteSettingsProvider({ children, schoolId }: { children: React.R
     if (savedFAQs) {
       try { setFAQs(JSON.parse(savedFAQs)); } catch { setFAQs(defaultFAQs); }
     }
-  }, []);
+  }, [schoolId]);
 
   // Save FAQs to localStorage whenever they change
   useEffect(() => {
