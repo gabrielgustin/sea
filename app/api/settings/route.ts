@@ -17,6 +17,10 @@ export async function GET(request: NextRequest) {
     if (hasTurso()) {
       const { turso, initializeSchema } = await import('@/lib/turso-client')
       await initializeSchema()
+      // Clean up any corrupt rows (e.g. key='settings' with value='[object Object]')
+      await turso.execute(
+        `DELETE FROM site_settings WHERE key = 'settings'`
+      )
       const result = await turso.execute(
         'SELECT key, value FROM site_settings WHERE schoolId = ?',
         [schoolId]
@@ -45,13 +49,11 @@ export async function POST(request: NextRequest) {
       await initializeSchema()
 
       for (const [key, value] of Object.entries(settings)) {
-        // DELETE + INSERT to avoid duplicate rows (table has no UNIQUE constraint)
+        // Use INSERT OR REPLACE to handle any UNIQUE constraint on key
+        // This works regardless of whether the constraint includes schoolId or not
         await turso.execute(
-          'DELETE FROM site_settings WHERE key = ? AND schoolId = ?',
-          [key, schoolId]
-        )
-        await turso.execute(
-          'INSERT INTO site_settings (key, value, schoolId) VALUES (?, ?, ?)',
+          `INSERT INTO site_settings (key, value, schoolId) VALUES (?, ?, ?)
+           ON CONFLICT(key) DO UPDATE SET value = excluded.value, schoolId = excluded.schoolId, updatedAt = CURRENT_TIMESTAMP`,
           [key, String(value), schoolId]
         )
       }
