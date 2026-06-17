@@ -74,7 +74,12 @@ export function SiteSettingsProvider({ children, schoolId }: { children: React.R
   useEffect(() => {
     async function loadSettings() {
       try {
-        const sid = schoolId || 'villada';
+        let sid = schoolId;
+        if (!sid && typeof window !== 'undefined') {
+          const seg = window.location.pathname.split('/').filter(Boolean)[0];
+          if (seg && seg !== 'api') sid = seg;
+        }
+        sid = sid || 'villada';
         const res = await fetch(`/api/settings?schoolId=${sid}`);
         if (res.ok) {
           const data = await res.json();
@@ -121,11 +126,21 @@ export function SiteSettingsProvider({ children, schoolId }: { children: React.R
     setFAQs(newFAQs);
   };
 
+  // Resolve schoolId from prop, or fall back to first path segment
+  const resolveSchoolId = () => {
+    if (schoolId) return schoolId;
+    if (typeof window !== 'undefined') {
+      const seg = window.location.pathname.split('/').filter(Boolean)[0];
+      if (seg && seg !== 'api') return seg;
+    }
+    return 'villada';
+  };
+
   // Save settings to DB and update local state
   const updateSettings = async (newSettings: Partial<SiteSettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
     try {
-      const sid = schoolId || 'villada';
+      const sid = resolveSchoolId();
       await fetch('/api/settings', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
