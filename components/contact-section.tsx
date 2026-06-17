@@ -61,7 +61,7 @@ export default function ContactSection() {
               <div>
                 <h3 className="font-semibold text-lg mb-2 text-foreground">Ubicación</h3>
                 <p className="text-muted-foreground">
-                  Instituto Técnico Salesiano Savio<br />
+                  Instituto Domingo Savio<br />
                   {settings.address}
                 </p>
               </div>

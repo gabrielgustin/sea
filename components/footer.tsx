@@ -31,7 +31,7 @@ export default function Footer() {
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#031e41' }} />
-                <span className="text-gray-600">Instituto Técnico Salesiano Savio<br />Cordoba Capital</span>
+                <span className="text-gray-600">Instituto Domingo Savio<br />Cordoba Capital</span>
               </li>
               <li className="flex items-start gap-2">
                 <Phone className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#031e41' }} />
