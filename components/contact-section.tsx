@@ -78,7 +78,7 @@ export default function ContactSection() {
               <div>
                 <h3 className="font-semibold text-lg mb-2 text-foreground">Horarios</h3>
                 <p className="text-muted-foreground">
-                  Lunes a Viernes: 16:30 - 18:00<br />
+                  Lunes a Viernes: 8:30 - 18:00<br />
                   Sábados: 9:00 - 13:00
                 </p>
               </div>
