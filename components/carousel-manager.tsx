@@ -252,7 +252,7 @@ export function CarouselManager() {
   }
 
   // Find selected course name for display
-  const selectedCourse = courses.find(c => formData.ctaLink === `/${schoolId}/formaciones/${c.slug}`)
+  const selectedCourse = courses.find(c => formData.ctaLink === `/${schoolId}/cursos/${c.slug}`)
 
   return (
     <div className="space-y-6">
@@ -413,7 +413,7 @@ export function CarouselManager() {
                   {/* Opcion: sin redireccion */}
                   <button
                     type="button"
-                    onClick={() => { setFormData(prev => ({ ...prev, ctaLink: `/${schoolId}/formaciones` })); setCourseDropdownOpen(false) }}
+                    onClick={() => { setFormData(prev => ({ ...prev, ctaLink: `/${schoolId}/cursos` })); setCourseDropdownOpen(false) }}
                     className="w-full text-left px-3 py-2.5 text-sm hover:bg-gray-50 transition-colors border-b border-gray-100 text-gray-500 italic"
                   >
                     Ver todas las formaciones
@@ -427,11 +427,11 @@ export function CarouselManager() {
                           key={course.id}
                           type="button"
                           onClick={() => {
-                            setFormData(prev => ({ ...prev, ctaLink: `/${schoolId}/formaciones/${course.slug}` }))
+                            setFormData(prev => ({ ...prev, ctaLink: `/${schoolId}/cursos/${course.slug}` }))
                             setCourseDropdownOpen(false)
                           }}
                           className="w-full text-left px-3 py-2.5 text-sm hover:bg-blue-50 transition-colors"
-                          style={{ color: formData.ctaLink === `/${schoolId}/formaciones/${course.slug}` ? '#031e41' : '#374151', fontWeight: formData.ctaLink === `/${schoolId}/formaciones/${course.slug}` ? 600 : 400 }}
+                          style={{ color: formData.ctaLink === `/${schoolId}/cursos/${course.slug}` ? '#031e41' : '#374151', fontWeight: formData.ctaLink === `/${schoolId}/cursos/${course.slug}` ? 600 : 400 }}
                         >
                           {course.title}
                         </button>
