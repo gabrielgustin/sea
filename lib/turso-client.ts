@@ -134,6 +134,9 @@ export async function initializeSchema() {
       await turso.execute(`ALTER TABLE courses ADD COLUMN commissions TEXT DEFAULT '[]'`)
     } catch (_) {}
     try {
+      await turso.execute(`ALTER TABLE carousel_slides ADD COLUMN description TEXT`)
+    } catch (_) {}
+    try {
       await turso.execute(`ALTER TABLE carousel_slides ADD COLUMN slideDuration TEXT`)
     } catch (_) {}
     try {
