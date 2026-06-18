@@ -49,10 +49,14 @@ export async function POST(request: NextRequest) {
       await initializeSchema()
 
       for (const [key, value] of Object.entries(settings)) {
-        // UNIQUE(key, schoolId) — safe upsert keeping schools fully independent
+        // DELETE the row for this exact (key, schoolId) pair, then INSERT fresh.
+        // This avoids any ON CONFLICT dependency — works regardless of table constraints.
         await turso.execute(
-          `INSERT INTO site_settings (key, value, schoolId) VALUES (?, ?, ?)
-           ON CONFLICT(key, schoolId) DO UPDATE SET value = excluded.value, updatedAt = CURRENT_TIMESTAMP`,
+          `DELETE FROM site_settings WHERE key = ? AND schoolId = ?`,
+          [key, schoolId]
+        )
+        await turso.execute(
+          `INSERT INTO site_settings (key, value, schoolId) VALUES (?, ?, ?)`,
           [key, String(value), schoolId]
         )
       }
@@ -67,6 +71,6 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] POST /api/settings error:', error)
-    return NextResponse.json({ error: 'Failed to save settings', detail: String(error) }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to save settings' }, { status: 500 })
   }
 }
