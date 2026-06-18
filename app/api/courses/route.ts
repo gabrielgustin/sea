@@ -152,8 +152,9 @@ export async function PUT(request: NextRequest) {
       const fields = Object.keys(data).filter(k => allowed.includes(k))
       if (fields.length === 0) return NextResponse.json({ success: true })
       const setClause = fields.map(f => `${f} = ?`).join(', ')
-      const values = [...fields.map(k => data[k]), id, schoolId]
-      await turso.execute(`UPDATE courses SET ${setClause}, updatedAt = CURRENT_TIMESTAMP WHERE id = ? AND schoolId = ?`, values)
+      // Update by id only — also set schoolId in case the row was created with wrong school
+      const values = [...fields.map(k => data[k]), schoolId, id]
+      await turso.execute(`UPDATE courses SET ${setClause}, schoolId = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?`, values)
       return NextResponse.json({ success: true })
     }
 
@@ -164,7 +165,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] PUT /api/courses error:', error)
-    return NextResponse.json({ error: 'Failed to update course' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to update course', detail: String(error) }, { status: 500 })
   }
 }
 
