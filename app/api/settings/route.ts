@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 
-// Real schema of site_settings:
-// key (TEXT), value (TEXT), updatedAt (DATETIME), schoolId (TEXT)
-// NOTE: no UNIQUE constraint on (key, schoolId) — use DELETE+INSERT or UPDATE+INSERT pattern
+// site_settings table has UNIQUE(key). To support multiple schools we store
+// keys prefixed with schoolId: e.g. "savio__instagramUrl", "villada__instagramUrl"
+// This avoids any constraint conflicts and keeps schools fully isolated.
 
 const hasTurso = () => !!process.env.TURSO_CONNECTION_URL && !!process.env.TURSO_AUTH_TOKEN
 
@@ -13,21 +13,21 @@ export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url)
     const schoolId = searchParams.get('schoolId') || 'villada'
+    const prefix = `${schoolId}__`
 
     if (hasTurso()) {
       const { turso, initializeSchema } = await import('@/lib/turso-client')
       await initializeSchema()
-      // Clean up any corrupt rows (e.g. key='settings' with value='[object Object]')
-      await turso.execute(
-        `DELETE FROM site_settings WHERE key = 'settings'`
-      )
+
       const result = await turso.execute(
-        'SELECT key, value FROM site_settings WHERE schoolId = ?',
-        [schoolId]
+        `SELECT key, value FROM site_settings WHERE key LIKE ?`,
+        [`${prefix}%`]
       )
       const settings: Record<string, string> = {}
       for (const row of result.rows) {
-        settings[row.key as string] = row.value as string
+        // Strip the "schoolId__" prefix to return clean keys
+        const cleanKey = (row.key as string).replace(prefix, '')
+        settings[cleanKey] = row.value as string
       }
       return NextResponse.json({ settings })
     }
@@ -43,21 +43,22 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json()
     const { schoolId = 'villada', ...settings } = body
+    const prefix = `${schoolId}__`
 
     if (hasTurso()) {
       const { turso, initializeSchema } = await import('@/lib/turso-client')
       await initializeSchema()
 
       for (const [key, value] of Object.entries(settings)) {
-        // DELETE the row for this exact (key, schoolId) pair, then INSERT fresh.
-        // This avoids any ON CONFLICT dependency — works regardless of table constraints.
+        const prefixedKey = `${prefix}${key}`
+        // DELETE existing row for this prefixed key, then INSERT fresh
         await turso.execute(
-          `DELETE FROM site_settings WHERE key = ? AND schoolId = ?`,
-          [key, schoolId]
+          `DELETE FROM site_settings WHERE key = ?`,
+          [prefixedKey]
         )
         await turso.execute(
           `INSERT INTO site_settings (key, value, schoolId) VALUES (?, ?, ?)`,
-          [key, String(value), schoolId]
+          [prefixedKey, String(value), schoolId]
         )
       }
       return NextResponse.json({ success: true })
