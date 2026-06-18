@@ -12,6 +12,7 @@ export default function SpecialOfferSection() {
   const { settings } = useSiteSettings();
   const { ref, isInView } = useInView({ once: true, threshold: 0.15 });
   const { schoolId } = useSchool();
+  const instituteName = schoolId === 'villada' ? 'Instituto Técnico Salesiano Villada' : 'Instituto Domingo Savio';
   const whatsappLink = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage)}`;
 
   return (
@@ -38,7 +39,7 @@ export default function SpecialOfferSection() {
 
         {/* Description */}
         <p className="text-gray-700 text-center mb-6 md:mb-10 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
-          No esperes más para transformar tu futuro. Todos nuestros cursos incluyen certificación oficial de Instituto Domingo Savio.
+          No esperes más para transformar tu futuro. Todos nuestros cursos incluyen certificación oficial de {instituteName}.
         </p>
 
         {/* Buttons */}

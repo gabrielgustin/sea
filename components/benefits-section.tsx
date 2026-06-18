@@ -2,15 +2,18 @@
 
 import { Award, Zap, Target, Users } from 'lucide-react';
 import { useInView } from '@/hooks/useInView';
+import { useSchool } from '@/context/SchoolContext';
 
 export default function BenefitsSection() {
   const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
+  const { schoolId } = useSchool();
+  const instituteName = schoolId === 'villada' ? 'Instituto Técnico Salesiano Villada' : 'Instituto Domingo Savio';
 
   const benefits = [
     {
       icon: Award,
       title: 'Certificación Oficial',
-      description: 'Todos nuestros cursos cuentan con certificación oficial del Instituto Domingo Savio',
+      description: `Todos nuestros cursos cuentan con certificación oficial del ${instituteName}`,
     },
     {
       icon: Zap,

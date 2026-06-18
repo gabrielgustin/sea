@@ -7,9 +7,12 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { submitContactMessage } from '@/app/actions/contact';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
+import { useSchool } from '@/context/SchoolContext';
 
 export default function ContactSection() {
   const { settings } = useSiteSettings();
+  const { schoolId } = useSchool();
+  const instituteName = schoolId === 'villada' ? 'Instituto Técnico Salesiano Villada' : 'Instituto Domingo Savio';
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -61,7 +64,7 @@ export default function ContactSection() {
               <div>
                 <h3 className="font-semibold text-lg mb-2 text-foreground">Ubicación</h3>
                 <p className="text-muted-foreground">
-                  Instituto Domingo Savio<br />
+                  {instituteName}<br />
                   {settings.address}
                 </p>
               </div>
