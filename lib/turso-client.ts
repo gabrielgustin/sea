@@ -100,6 +100,17 @@ export async function initializeSchema() {
     `)
 
     await turso.execute(`
+      CREATE TABLE IF NOT EXISTS site_settings (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        key TEXT NOT NULL,
+        value TEXT,
+        schoolId TEXT NOT NULL DEFAULT 'savio',
+        updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(key, schoolId)
+      )
+    `)
+
+    await turso.execute(`
       CREATE TABLE IF NOT EXISTS teachers (
         id TEXT PRIMARY KEY,
         schoolId TEXT NOT NULL DEFAULT 'savio',

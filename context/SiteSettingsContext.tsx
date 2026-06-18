@@ -95,17 +95,21 @@ export function SiteSettingsProvider({ children, schoolId }: { children: React.R
     }
     loadSettings();
 
-    // FAQs from localStorage
-    const savedFAQs = localStorage.getItem('site_faqs');
+    // FAQs from localStorage — keyed per school to keep them independent
+    const faqKey = `site_faqs_${schoolId || resolveSchoolId()}`;
+    const savedFAQs = localStorage.getItem(faqKey);
     if (savedFAQs) {
       try { setFAQs(JSON.parse(savedFAQs)); } catch { setFAQs(defaultFAQs); }
+    } else {
+      setFAQs(defaultFAQs);
     }
   }, [schoolId]);
 
-  // Save FAQs to localStorage whenever they change
+  // Save FAQs to localStorage whenever they change, keyed per school
   useEffect(() => {
     if (faqs.length > 0) {
-      localStorage.setItem('site_faqs', JSON.stringify(faqs));
+      const faqKey = `site_faqs_${resolveSchoolId()}`;
+      localStorage.setItem(faqKey, JSON.stringify(faqs));
     }
   }, [faqs]);
 

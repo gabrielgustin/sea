@@ -49,11 +49,10 @@ export async function POST(request: NextRequest) {
       await initializeSchema()
 
       for (const [key, value] of Object.entries(settings)) {
-        // Use INSERT OR REPLACE to handle any UNIQUE constraint on key
-        // This works regardless of whether the constraint includes schoolId or not
+        // UNIQUE(key, schoolId) — safe upsert keeping schools fully independent
         await turso.execute(
           `INSERT INTO site_settings (key, value, schoolId) VALUES (?, ?, ?)
-           ON CONFLICT(key) DO UPDATE SET value = excluded.value, schoolId = excluded.schoolId, updatedAt = CURRENT_TIMESTAMP`,
+           ON CONFLICT(key, schoolId) DO UPDATE SET value = excluded.value, updatedAt = CURRENT_TIMESTAMP`,
           [key, String(value), schoolId]
         )
       }
