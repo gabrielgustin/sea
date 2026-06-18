@@ -99,17 +99,6 @@ export default function AdminDashboard() {
           </div>
           
           <div className="flex gap-3 flex-wrap">
-            {view === 'list' && (
-              <Button
-                onClick={handleAddNew}
-                className="flex items-center gap-2 text-white"
-                style={{ backgroundColor: '#031e41' }}
-              >
-                <Plus size={20} />
-                Nuevo Curso
-              </Button>
-            )}
-            
             <Button
               onClick={handleLogout}
               className="flex items-center gap-2 text-white bg-red-600 hover:bg-red-700 transition-colors"
