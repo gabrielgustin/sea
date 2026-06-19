@@ -155,6 +155,29 @@ export async function initializeSchema() {
     // Fix UNIQUE(slug) → UNIQUE(slug, schoolId) so savio and villada can share slug names.
     // SQLite does not support DROP CONSTRAINT, so we recreate the table.
     try {
+      // First check if courses_old exists (failed migration cleanup)
+      try {
+        const oldExists = await turso.execute(`SELECT COUNT(*) as cnt FROM courses_old`)
+        if (oldExists.rows && oldExists.rows.length > 0) {
+          console.log('[v0] Found courses_old from failed migration, restoring...')
+          // Restore from backup
+          const oldData = await turso.execute(`SELECT * FROM courses_old`)
+          for (const row of oldData.rows || []) {
+            try {
+              await turso.execute(
+                `INSERT INTO courses (id, schoolId, title, subtitle, description, image, badge, slug, startDate, enrollmentDeadline, modality, schedule, location, teacher, teachers, duration, price, requirements, objective, methodology, finalProject, whatsappGroup, level, modules, status, category, maxStudents, showOnHome, commissions, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [row.id, row.schoolId, row.title, row.subtitle, row.description, row.image, row.badge, row.slug, row.startDate, row.enrollmentDeadline, row.modality, row.schedule, row.location, row.teacher, row.teachers, row.duration, row.price, row.requirements, row.objective, row.methodology, row.finalProject, row.whatsappGroup, row.level, row.modules, row.status, row.category, row.maxStudents, row.showOnHome, row.commissions, row.createdAt, row.updatedAt]
+              )
+            } catch (insertErr) {
+              console.error('[v0] Error restoring row:', row.id, insertErr)
+            }
+          }
+          await turso.execute(`DROP TABLE courses_old`)
+          console.log('[v0] Restored courses from backup')
+        }
+      } catch (_) {}
+      
+      // Now check if migration is needed
       const info = await turso.execute(`PRAGMA index_list(courses)`)
       const hasCompositeSlug = (info.rows || []).some((r: any) =>
         String(r.name || '').toLowerCase().includes('slug') && String(r.name || '').toLowerCase().includes('school')
@@ -165,8 +188,15 @@ export async function initializeSchema() {
           String(r.name || '').toLowerCase().includes('slug')
         )
         if (oldIdx) {
-          // Rename old table, create new one with correct constraint, migrate data, drop old
+          console.log('[v0] Starting courses table migration: UNIQUE(slug) → UNIQUE(slug, schoolId)')
+          // Save all data before recreating
+          const courseData = await turso.execute(`SELECT * FROM courses`)
+          const recordCount = (courseData.rows || []).length
+          
+          // Rename old table
           await turso.execute(`ALTER TABLE courses RENAME TO courses_old`)
+          
+          // Create new table with correct constraint
           await turso.execute(`
             CREATE TABLE courses (
               id TEXT PRIMARY KEY,
@@ -203,9 +233,23 @@ export async function initializeSchema() {
               UNIQUE(slug, schoolId)
             )
           `)
-          await turso.execute(`INSERT INTO courses SELECT * FROM courses_old`)
+          
+          // Copy data row by row
+          let successCount = 0
+          for (const row of courseData.rows || []) {
+            try {
+              await turso.execute(
+                `INSERT INTO courses (id, schoolId, title, subtitle, description, image, badge, slug, startDate, enrollmentDeadline, modality, schedule, location, teacher, teachers, duration, price, requirements, objective, methodology, finalProject, whatsappGroup, level, modules, status, category, maxStudents, showOnHome, commissions, createdAt, updatedAt) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                [row.id, row.schoolId, row.title, row.subtitle, row.description, row.image, row.badge, row.slug, row.startDate, row.enrollmentDeadline, row.modality, row.schedule, row.location, row.teacher, row.teachers, row.duration, row.price, row.requirements, row.objective, row.methodology, row.finalProject, row.whatsappGroup, row.level, row.modules, row.status, row.category, row.maxStudents, row.showOnHome, row.commissions, row.createdAt, row.updatedAt]
+              )
+              successCount++
+            } catch (copyErr) {
+              console.error('[v0] Failed to copy course row:', row.id, copyErr)
+            }
+          }
+          
           await turso.execute(`DROP TABLE courses_old`)
-          console.log('[v0] Migrated courses table: UNIQUE(slug) → UNIQUE(slug, schoolId)')
+          console.log(`[v0] Migrated ${successCount}/${recordCount} courses: UNIQUE(slug) → UNIQUE(slug, schoolId)`)
         }
       }
     } catch (migErr) {
