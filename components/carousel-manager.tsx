@@ -252,7 +252,7 @@ export function CarouselManager() {
   }
 
   // Find selected course name for display
-  const selectedCourse = courses.find(c => formData.ctaLink === `/${schoolId}/cursos/${c.slug}`)
+  const selectedCourse = courses.find(c => formData.ctaLink === `/${schoolId}/cursos/${c.slug}` || formData.ctaLink === `/${schoolId}/catalogo-formaciones/${c.slug}`)
 
   return (
     <div className="space-y-6">
@@ -410,10 +410,10 @@ export function CarouselManager() {
 
               {courseDropdownOpen && (
                 <div className="absolute z-50 mt-1 w-full bg-white border border-gray-200 rounded-lg shadow-lg overflow-hidden">
-                  {/* Opcion: sin redireccion */}
+                  {/* Opcion: ver catalogo completo */}
                   <button
                     type="button"
-                    onClick={() => { setFormData(prev => ({ ...prev, ctaLink: `/${schoolId}/cursos` })); setCourseDropdownOpen(false) }}
+                    onClick={() => { setFormData(prev => ({ ...prev, ctaLink: `/${schoolId}/catalogo-formaciones` })); setCourseDropdownOpen(false) }}
                     className="w-full text-left px-3 py-2.5 text-sm hover:bg-gray-50 transition-colors border-b border-gray-100 text-gray-500 italic"
                   >
                     Ver todas las formaciones
