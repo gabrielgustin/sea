@@ -133,16 +133,6 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
                   <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-black/50" />
                 </div>
 
-                {/* Badge superior derecho */}
-                {slide.slideBadge && (
-                  <div className="absolute top-5 right-5 z-20">
-                    <span className="px-4 py-2 rounded-full text-xs font-bold uppercase tracking-widest text-white"
-                      style={{ backgroundColor: 'rgba(0,0,0,0.55)', backdropFilter: 'blur(6px)', border: '1px solid rgba(255,255,255,0.15)' }}>
-                      {slide.slideBadge}
-                    </span>
-                  </div>
-                )}
-
                 {/* Slide content */}
                 <div className="relative z-10 max-w-6xl mx-auto px-4 md:px-8 w-full h-full flex flex-col justify-end pb-20">
                   <div className="flex flex-col gap-4">
