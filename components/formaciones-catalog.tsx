@@ -73,10 +73,7 @@ export default function FormacionesCatalog() {
                       {course.badge}
                     </div>
 
-                    {/* Overlay on Hover */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4 md:p-5">
-                      <span className="text-white text-sm font-semibold">Ver detalles →</span>
-                    </div>
+
                   </div>
 
                   {/* Content */}
@@ -105,13 +102,7 @@ export default function FormacionesCatalog() {
                           </p>
                         </div>
                       </div>
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#9cbadb' }}></div>
-                        <div className="flex-1">
-                          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Modalidad</span>
-                          <p className="text-sm md:text-base font-medium text-gray-900">{course.modality}</p>
-                        </div>
-                      </div>
+
                     </div>
 
                     {/* Footer */}
