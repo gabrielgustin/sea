@@ -152,6 +152,66 @@ export async function initializeSchema() {
       await turso.execute(`ALTER TABLE teachers ADD COLUMN schoolId TEXT NOT NULL DEFAULT 'savio'`)
     } catch (_) {}
 
+    // Fix UNIQUE(slug) → UNIQUE(slug, schoolId) so savio and villada can share slug names.
+    // SQLite does not support DROP CONSTRAINT, so we recreate the table.
+    try {
+      const info = await turso.execute(`PRAGMA index_list(courses)`)
+      const hasCompositeSlug = (info.rows || []).some((r: any) =>
+        String(r.name || '').toLowerCase().includes('slug') && String(r.name || '').toLowerCase().includes('school')
+      )
+      if (!hasCompositeSlug) {
+        // Check if the old unique index on slug alone exists
+        const oldIdx = (info.rows || []).find((r: any) =>
+          String(r.name || '').toLowerCase().includes('slug')
+        )
+        if (oldIdx) {
+          // Rename old table, create new one with correct constraint, migrate data, drop old
+          await turso.execute(`ALTER TABLE courses RENAME TO courses_old`)
+          await turso.execute(`
+            CREATE TABLE courses (
+              id TEXT PRIMARY KEY,
+              schoolId TEXT NOT NULL DEFAULT 'savio',
+              title TEXT NOT NULL,
+              subtitle TEXT,
+              description TEXT,
+              image TEXT,
+              badge TEXT,
+              slug TEXT,
+              startDate TEXT,
+              enrollmentDeadline TEXT,
+              modality TEXT,
+              schedule TEXT,
+              location TEXT,
+              teacher TEXT,
+              teachers TEXT,
+              duration TEXT,
+              price TEXT,
+              requirements TEXT,
+              objective TEXT,
+              methodology TEXT,
+              finalProject TEXT,
+              whatsappGroup TEXT,
+              level TEXT DEFAULT 'PRINCIPIANTE',
+              modules TEXT,
+              status TEXT DEFAULT 'ACTIVE',
+              category TEXT,
+              maxStudents INTEGER,
+              showOnHome BOOLEAN DEFAULT 0,
+              commissions TEXT DEFAULT '[]',
+              createdAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+              updatedAt DATETIME DEFAULT CURRENT_TIMESTAMP,
+              UNIQUE(slug, schoolId)
+            )
+          `)
+          await turso.execute(`INSERT INTO courses SELECT * FROM courses_old`)
+          await turso.execute(`DROP TABLE courses_old`)
+          console.log('[v0] Migrated courses table: UNIQUE(slug) → UNIQUE(slug, schoolId)')
+        }
+      }
+    } catch (migErr) {
+      console.error('[v0] courses slug migration error:', migErr)
+    }
+
     console.log('[v0] Turso schema initialized successfully')
   } catch (error: any) {
     if (error.message?.includes('already exists')) {

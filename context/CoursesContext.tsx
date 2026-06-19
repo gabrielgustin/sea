@@ -116,7 +116,7 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
     });
     const resData = await res.json();
     if (!res.ok) {
-      throw new Error((resData.detail || resData.error) || 'Failed to update course');
+      throw new Error(resData.error || 'Failed to update course');
     }
     await fetchCourses();
   };
