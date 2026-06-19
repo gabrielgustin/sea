@@ -184,7 +184,7 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
         <button
           onClick={handleVerMas}
           data-target={slides[currentSlide]?.ctaLink || `/${schoolId}/cursos`}
-          className="text-white font-bold text-sm md:text-base hover:underline underline-offset-4 transition-all bg-transparent border-none cursor-pointer p-0"
+          className="hidden text-white font-bold text-sm md:text-base hover:underline underline-offset-4 transition-all bg-transparent border-none cursor-pointer p-0"
         >
           {slides[currentSlide]?.ctaText || 'Ver mas'} →
         </button>
