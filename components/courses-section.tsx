@@ -79,15 +79,7 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
                   {course.badge}
                 </div>
 
-                {/* Modality Badge */}
-                {course.modality && (
-                  <div 
-                    className="absolute top-4 left-4 px-4 py-2 rounded-full text-xs font-bold uppercase tracking-wide"
-                    style={{ backgroundColor: '#c7d9e8', color: '#1f2937' }}
-                  >
-                    {course.modality}
-                  </div>
-                )}
+
               </div>
 
               {/* Content */}
@@ -103,15 +95,14 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
                 </p>
 
                 {/* Details */}
-                <div className="space-y-1">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 text-gray-700">
                     <span className="font-semibold text-xs">Inicia:</span>
                     <span className="text-xs">{formatDate(course.startDate)}</span>
                   </div>
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <span className="font-semibold text-xs">Modalidad:</span>
-                    <span className="text-xs">{course.modality}</span>
-                  </div>
+                  <span className="text-xs font-semibold transition-colors duration-200 group-hover:underline" style={{ color: '#031e41' }}>
+                    Ver más →
+                  </span>
                 </div>
               </div>
             </Link>
