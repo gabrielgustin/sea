@@ -59,7 +59,9 @@ export default function CoursePreview({ course, onClose }: CoursePreviewProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="p-4 bg-blue-50 rounded-lg">
               <p className="text-xs text-gray-600 mb-1">Inicia</p>
-              <p className="font-bold" style={{ color: '#031e41' }}>{course.startDate}</p>
+              <p className="font-bold" style={{ color: '#031e41' }}>
+                {course.startDate ? (() => { const [y,m,d] = course.startDate.split('-'); return d && m && y ? `${parseInt(d)}/${m}/${y}` : course.startDate; })() : ''}
+              </p>
             </div>
             <div className="p-4 bg-blue-50 rounded-lg">
               <p className="text-xs text-gray-600 mb-1">Duración</p>

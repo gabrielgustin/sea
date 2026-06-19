@@ -178,7 +178,7 @@ export default function FormacionesPage() {
                       {course.startDate && (
                         <div className="flex items-center gap-2 text-xs text-gray-600">
                           <span className="font-semibold">Inicia:</span>
-                          <span>{course.startDate}</span>
+                          <span>{course.startDate ? (() => { const [y,m,d] = course.startDate.split('-'); return d && m && y ? `${parseInt(d)}/${m}/${y}` : course.startDate; })() : ''}</span>
                         </div>
                       )}
                       {course.modality && (

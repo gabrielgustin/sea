@@ -172,6 +172,14 @@ export default function CourseDetailClient({ course }: { course: Course }) {
       .catch(() => {});
   }, [course.id, course.commissions, schoolId]);
 
+  // Formatear fecha de YYYY-MM-DD a DD/MM/YYYY
+  const formatDate = (dateStr: string): string => {
+    if (!dateStr) return dateStr;
+    const [year, month, day] = dateStr.split('-');
+    if (!year || !month || !day) return dateStr;
+    return `${parseInt(day)}/${month}/${year}`;
+  };
+
   // Parsear una fecha en formato ISO "YYYY-MM-DD" o "Lun 1/06/2026"
   const parseDate = (dateStr: string): Date | null => {
     try {
@@ -231,10 +239,10 @@ export default function CourseDetailClient({ course }: { course: Course }) {
     if (!course.startDate) return null;
     if (courseHasStarted) {
       return canEnroll
-        ? `El curso comenzó el ${course.startDate}, pero aún puedes inscribirte!`
-        : `El curso comenzó el ${course.startDate} y ya no es posible inscribirse.`;
+        ? `El curso comenzó el ${formatDate(course.startDate)}, pero aún puedes inscribirte!`
+        : `El curso comenzó el ${formatDate(course.startDate)} y ya no es posible inscribirse.`;
     }
-    return `El curso comienza el ${course.startDate}`;
+    return `El curso comienza el ${formatDate(course.startDate)}`;
   };
 
   // Info box content — reutilizado en móvil y desktop
@@ -248,7 +256,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">
                 {hasCourseStarted() ? 'Inició' : 'Inicia'}
               </p>
-              <p className="text-sm font-bold text-gray-900">{course.startDate}</p>
+              <p className="text-sm font-bold text-gray-900">{formatDate(course.startDate)}</p>
             </div>
             <div className="p-4 border-b border-gray-100">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Duración</p>
