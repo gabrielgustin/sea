@@ -89,13 +89,13 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
     if (emblaApi) dir === 'prev' ? emblaApi.scrollPrev() : emblaApi.scrollNext();
   };
 
-  // Navigate using the button's closest slide element
-  const handleVerMas = (e: React.MouseEvent<HTMLButtonElement>) => {
-    const slideEl = e.currentTarget.closest('[data-slide-index]');
-    const idx = slideEl ? parseInt(slideEl.getAttribute('data-slide-index') || '0', 10) : 0;
+  // Navigate using the current slide from Embla
+  const handleVerMas = () => {
+    const idx = currentSlideRef.current;
     const allSlides = slidesRef.current;
     const slide = allSlides[idx];
     const target = slide?.ctaLink || `/${schoolId}/cursos`;
+    console.log('[v0] Navigating to:', target, 'from slide index:', idx, 'slide title:', slide?.title);
     router.push(target);
   };
 
@@ -120,7 +120,7 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
             const displayDuration = slide.slideDuration || parsed.duration;
 
             return (
-              <div key={slide.id} className="relative min-w-full h-full flex-shrink-0" data-slide-index={index}>
+              <div key={slide.id} className="relative min-w-full h-full flex-shrink-0">
                 {/* Background image */}
                 <div className="absolute inset-0">
                   <Image
