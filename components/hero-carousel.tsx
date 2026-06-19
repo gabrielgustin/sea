@@ -95,7 +95,6 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
     const allSlides = slidesRef.current;
     const slide = allSlides[idx];
     const target = slide?.ctaLink || `/${schoolId}/cursos`;
-    console.log('[v0] Navigating to:', target, 'from slide index:', idx, 'slide title:', slide?.title);
     router.push(target);
   };
 
