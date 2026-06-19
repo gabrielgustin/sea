@@ -89,15 +89,6 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
     if (emblaApi) dir === 'prev' ? emblaApi.scrollPrev() : emblaApi.scrollNext();
   };
 
-  // Navigate using the current slide from Embla
-  const handleVerMas = () => {
-    const idx = currentSlideRef.current;
-    const allSlides = slidesRef.current;
-    const slide = allSlides[idx];
-    const target = slide?.ctaLink || `/${schoolId}/cursos`;
-    router.push(target);
-  };
-
   if (slides.length === 0) {
     return (
       <div className="w-full bg-gray-900 flex items-center justify-center" style={{ height: '65vh' }}>
@@ -161,6 +152,14 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
                         )}
                       </div>
                     )}
+                    {slide.ctaLink && (
+                      <button
+                        onClick={() => router.push(slide.ctaLink!)}
+                        className="self-start mt-2 px-6 py-2.5 rounded-full text-sm font-bold text-white border-2 border-white hover:bg-white hover:text-gray-900 transition-all duration-200"
+                      >
+                        {slide.ctaText || 'Ver más'} →
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -169,16 +168,8 @@ export default function HeroCarousel({ initialSlides = [] }: HeroCarouselProps) 
         </div>
       </div>
 
-      {/* Bottom bar: Ver mas + arrows */}
-      <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-between px-4 md:px-8 py-4 bg-gradient-to-t from-black/60 to-transparent">
-        <button
-          onClick={handleVerMas}
-          data-target={slides[currentSlide]?.ctaLink || `/${schoolId}/cursos`}
-          className="hidden text-white font-bold text-sm md:text-base hover:underline underline-offset-4 transition-all bg-transparent border-none cursor-pointer p-0"
-        >
-          {slides[currentSlide]?.ctaText || 'Ver mas'} →
-        </button>
-
+      {/* Bottom bar: arrows */}
+      <div className="absolute bottom-0 left-0 right-0 z-20 flex items-center justify-end px-4 md:px-8 py-4">
         <div className="flex gap-3">
           <button
             onClick={() => scroll('prev')}
