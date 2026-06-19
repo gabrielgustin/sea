@@ -16,6 +16,14 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
   const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
   const { schoolId } = useSchool();
 
+  // Format date from YYYY-MM-DD to DD/MM/YYYY
+  const formatDate = (dateStr: string) => {
+    if (!dateStr) return '';
+    const [year, month, day] = dateStr.split('-');
+    if (!year || !month || !day) return dateStr;
+    return `${parseInt(day)}/${month}/${year}`;
+  };
+
   // Always derive from context (reactive to toggle changes).
   // Fall back to initialCourses only while the context is still loading.
   const courses = loading && initialCourses && initialCourses.length > 0
@@ -98,7 +106,7 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
                 <div className="space-y-1">
                   <div className="flex items-center gap-2 text-gray-700">
                     <span className="font-semibold text-xs">Inicia:</span>
-                    <span className="text-xs">{course.startDate}</span>
+                    <span className="text-xs">{formatDate(course.startDate)}</span>
                   </div>
                   <div className="flex items-center gap-2 text-gray-700">
                     <span className="font-semibold text-xs">Modalidad:</span>
