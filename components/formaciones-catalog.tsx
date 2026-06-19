@@ -96,7 +96,9 @@ export default function FormacionesCatalog() {
                       <div className="flex items-center gap-3">
                         <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#9cbadb' }}></div>
                         <div className="flex-1">
-                          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Inicia</span>
+                          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
+                            {course.startDate && new Date(course.startDate + 'T00:00:00') < new Date() ? 'Inició' : 'Inicia'}
+                          </span>
                           <p className="text-sm md:text-base font-medium text-gray-900">
                             {course.startDate ? (() => { const [y,m,d] = course.startDate.split('-'); return d && m && y ? `${parseInt(d)}/${m}/${y}` : course.startDate; })() : ''}
                           </p>
