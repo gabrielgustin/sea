@@ -165,7 +165,7 @@ export async function PUT(request: NextRequest) {
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('[v0] PUT /api/courses error:', error)
-    return NextResponse.json({ error: 'Failed to update course' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to update course', detail: String(error) }, { status: 500 })
   }
 }
 
