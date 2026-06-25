@@ -416,7 +416,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
       `📚 CURSO SELECCIONADO`,
       `Curso: ${course.title}`,
       `Comisión: ${selectedCommission?.name || 'Sin comisión'}`,
-      `Profesor: ${course.teacher || 'Por confirmar'}`,
+      `Profesor: ${selectedCommission?.teacher || course.teacher || 'Por confirmar'}`,
       ``,
       `¿Podrían confirmarme los próximos pasos? 🚀`,
     ].join('\n');
