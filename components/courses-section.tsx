@@ -47,7 +47,7 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
         </div>
 
         {/* Courses Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {courses.map((course, index) => (
             <Link
               key={course.id}
@@ -68,7 +68,7 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
                   alt={course.title}
                   fill
                   className="object-cover transition-transform duration-500 group-hover:scale-105"
-                  sizes="(max-width: 768px) 100vw, 50vw"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
                 
                 {/* Badge */}
