@@ -84,9 +84,17 @@ export default function FormacionesCatalog() {
                     </h3>
 
                     {/* Subtitle */}
-                    <p className="text-gray-600 text-xs md:text-sm mb-4 line-clamp-2">
+                    <p className="text-gray-600 text-xs md:text-sm mb-3 line-clamp-2">
                       {course.subtitle}
                     </p>
+
+                    {/* Requirements */}
+                    {course.requirements && (
+                      <div className="mb-4 p-3 rounded-xl bg-gray-50 border border-gray-100">
+                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Requisitos</p>
+                        <p className="text-xs text-gray-700 leading-relaxed line-clamp-2">{course.requirements}</p>
+                      </div>
+                    )}
 
                     {/* Divider */}
                     <div className="h-px bg-gray-200 my-4"></div>
