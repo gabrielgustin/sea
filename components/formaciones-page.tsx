@@ -4,15 +4,11 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { CheckCircle, Users, Award, Zap, TrendingUp, Building2, Lightbulb, Code } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { useCourses } from '@/context/CoursesContext';
-import { useSchool } from '@/context/SchoolContext';
+
 
 export default function FormacionesPage() {
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const processRef = useRef<HTMLDivElement>(null);
-  const { courses } = useCourses();
-  const { schoolId } = useSchool();
-
   useEffect(() => {
     const section = processRef.current;
     if (!section) return;
@@ -134,67 +130,6 @@ export default function FormacionesPage() {
           </Link>
         </div>
       </section>
-
-      {/* Courses Grid — all available courses */}
-      {courses.length > 0 && (
-        <section className="py-12 md:py-16 px-4 bg-white">
-          <div className="max-w-6xl mx-auto">
-            <div className="mb-10 text-center">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3" style={{ color: '#031e41' }}>
-                Cursos Disponibles
-              </h2>
-              <p className="text-gray-600 text-base md:text-lg">
-                Inscripciones abiertas
-              </p>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {courses.map((course) => (
-                <Link
-                  key={course.id}
-                  href={`/${schoolId}/cursos/${course.slug || course.id}`}
-                  className="overflow-hidden rounded-2xl border-2 border-gray-100 hover:border-blue-200 transition-all duration-300 hover:shadow-lg bg-white group block"
-                >
-                  <div className="relative h-44 overflow-hidden bg-gray-100">
-                    <Image
-                      src={course.image}
-                      alt={course.title}
-                      fill
-                      className="object-cover group-hover:scale-105 transition-transform duration-500"
-                      sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                    />
-                    <div
-                      className="absolute top-3 right-3 px-3 py-1 rounded-full text-white text-xs font-bold"
-                      style={{ backgroundColor: '#031e41' }}
-                    >
-                      {course.badge}
-                    </div>
-                  </div>
-                  <div className="p-4">
-                    <h3 className="text-lg font-bold text-gray-900 mb-1 group-hover:text-blue-900 transition-colors leading-tight">
-                      {course.title}
-                    </h3>
-                    <p className="text-gray-500 text-xs mb-3 line-clamp-2">{course.subtitle}</p>
-                    <div className="space-y-1">
-                      {course.startDate && (
-                        <div className="flex items-center gap-2 text-xs text-gray-600">
-                          <span className="font-semibold">Inicia:</span>
-                          <span>{course.startDate ? (() => { const [y,m,d] = course.startDate.split('-'); return d && m && y ? `${parseInt(d)}/${m}/${y}` : course.startDate; })() : ''}</span>
-                        </div>
-                      )}
-                      {course.modality && (
-                        <div className="flex items-center gap-2 text-xs text-gray-600">
-                          <span className="font-semibold">Modalidad:</span>
-                          <span>{course.modality}</span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
 
       {/* Why Us */}
       <section className="py-8 md:py-16 px-4 bg-gray-50">
