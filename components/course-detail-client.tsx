@@ -297,16 +297,16 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                 </div>
               </div>
             ) : null}
+            {course.requirements && (
+              <div className="p-4 border-b border-gray-100">
+                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Requisitos</p>
+                <p className="text-sm text-gray-900 leading-relaxed">{course.requirements}</p>
+              </div>
+            )}
             <div className="p-4 border-b border-gray-100">
               <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Lugar</p>
               <p className="text-sm font-bold text-gray-900">{course.location}</p>
             </div>
-            {course.requirements && (
-              <div className="p-4">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Requisitos</p>
-                <p className="text-sm font-bold text-gray-900">{course.requirements}</p>
-              </div>
-            )}
           </div>
 
           {/* Precio + CTA */}
