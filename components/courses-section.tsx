@@ -52,7 +52,7 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
             <Link
               key={course.id}
               href={`/${schoolId}/cursos/${course.slug || course.id}`}
-              className={`overflow-hidden rounded-3xl border-2 transition-all duration-300 hover-lift shadow-blue-sm hover:shadow-blue-md block group ${
+              className={`overflow-hidden rounded-3xl border-2 transition-all duration-300 hover-lift shadow-blue-sm hover:shadow-blue-md flex flex-col group ${
                 isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
               }`}
               style={{ 
@@ -83,34 +83,40 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
               </div>
 
               {/* Content */}
-              <div className="p-4 md:p-5">
-                {/* Title */}
-                <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight transition-colors duration-300 group-hover:text-blue-900" style={{ color: 'inherit' }}>
-                  {course.title}
-                </h3>
+              <div className="p-4 md:p-5 flex flex-col flex-1">
+                {/* Top: title + subtitle grow to fill space */}
+                <div className="flex-1">
+                  {/* Title */}
+                  <h3 className="text-xl md:text-2xl font-bold text-gray-900 mb-2 leading-tight transition-colors duration-300 group-hover:text-blue-900" style={{ color: 'inherit' }}>
+                    {course.title}
+                  </h3>
 
-                {/* Subtitle */}
-                <p className="text-gray-600 text-xs md:text-sm mb-3">
-                  {course.subtitle}
-                </p>
+                  {/* Subtitle */}
+                  <p className="text-gray-600 text-xs md:text-sm">
+                    {course.subtitle}
+                  </p>
+                </div>
 
-                {/* Requirements */}
-                {course.requirements && (
-                  <div className="mb-4 p-3 rounded-xl bg-gray-50 border border-gray-100">
-                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Requisitos</p>
-                    <p className="text-xs text-gray-700 leading-relaxed line-clamp-2">{course.requirements}</p>
+                {/* Bottom: requirements + date + ver más always at the bottom */}
+                <div className="mt-4 space-y-3">
+                  {/* Requirements */}
+                  {course.requirements && (
+                    <div className="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                      <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Requisitos</p>
+                      <p className="text-xs text-gray-700 leading-relaxed line-clamp-2">{course.requirements}</p>
+                    </div>
+                  )}
+
+                  {/* Details */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-gray-700">
+                      <span className="font-semibold text-xs">Inicia:</span>
+                      <span className="text-xs">{formatDate(course.startDate)}</span>
+                    </div>
+                    <span className="text-xs font-semibold transition-colors duration-200 group-hover:underline" style={{ color: '#031e41' }}>
+                      Ver más →
+                    </span>
                   </div>
-                )}
-
-                {/* Details */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-gray-700">
-                    <span className="font-semibold text-xs">Inicia:</span>
-                    <span className="text-xs">{formatDate(course.startDate)}</span>
-                  </div>
-                  <span className="text-xs font-semibold transition-colors duration-200 group-hover:underline" style={{ color: '#031e41' }}>
-                    Ver más →
-                  </span>
                 </div>
               </div>
             </Link>

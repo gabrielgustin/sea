@@ -46,7 +46,7 @@ export default function FormacionesCatalog() {
                 <Link
                   key={course.id}
                   href={`/${schoolId}/cursos/${course.slug || course.id}`}
-                  className={`overflow-hidden rounded-2xl md:rounded-3xl border-2 transition-all duration-500 hover:shadow-2xl block group ${
+                  className={`overflow-hidden rounded-2xl md:rounded-3xl border-2 transition-all duration-500 hover:shadow-2xl flex flex-col group ${
                     isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
                   }`}
                   style={{ 
@@ -77,30 +77,31 @@ export default function FormacionesCatalog() {
                   </div>
 
                   {/* Content */}
-                  <div className="p-4 md:p-6">
-                    {/* Title */}
-                    <h3 className="text-lg md:text-2xl font-bold mb-2 leading-snug transition-colors duration-300 line-clamp-2" style={{ color: '#031e41' }}>
-                      {course.title}
-                    </h3>
+                  <div className="p-4 md:p-6 flex flex-col flex-1">
+                    {/* Top: title + subtitle grow to fill space */}
+                    <div className="flex-1">
+                      <h3 className="text-lg md:text-2xl font-bold mb-2 leading-snug transition-colors duration-300 line-clamp-2" style={{ color: '#031e41' }}>
+                        {course.title}
+                      </h3>
+                      <p className="text-gray-600 text-xs md:text-sm line-clamp-2">
+                        {course.subtitle}
+                      </p>
+                    </div>
 
-                    {/* Subtitle */}
-                    <p className="text-gray-600 text-xs md:text-sm mb-3 line-clamp-2">
-                      {course.subtitle}
-                    </p>
+                    {/* Bottom: requirements + date + footer always pinned */}
+                    <div className="mt-4 space-y-3">
+                      {/* Requirements */}
+                      {course.requirements && (
+                        <div className="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Requisitos</p>
+                          <p className="text-xs text-gray-700 leading-relaxed line-clamp-2">{course.requirements}</p>
+                        </div>
+                      )}
 
-                    {/* Requirements */}
-                    {course.requirements && (
-                      <div className="mb-4 p-3 rounded-xl bg-gray-50 border border-gray-100">
-                        <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Requisitos</p>
-                        <p className="text-xs text-gray-700 leading-relaxed line-clamp-2">{course.requirements}</p>
-                      </div>
-                    )}
+                      {/* Divider */}
+                      <div className="h-px bg-gray-200"></div>
 
-                    {/* Divider */}
-                    <div className="h-px bg-gray-200 my-4"></div>
-
-                    {/* Details */}
-                    <div className="space-y-2.5 md:space-y-3">
+                      {/* Details */}
                       <div className="flex items-center gap-3">
                         <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#9cbadb' }}></div>
                         <div className="flex-1">
@@ -113,13 +114,12 @@ export default function FormacionesCatalog() {
                         </div>
                       </div>
 
-                    </div>
-
-                    {/* Footer */}
-                    <div className="mt-4 md:mt-5 pt-4 md:pt-5 border-t border-gray-100">
-                      <div className="flex items-center justify-between">
-                        <span className="text-xs font-semibold" style={{ color: '#9cbadb' }}>Más información</span>
-                        <span className="text-lg transition-transform group-hover:translate-x-1">→</span>
+                      {/* Footer */}
+                      <div className="pt-2 border-t border-gray-100">
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs font-semibold" style={{ color: '#9cbadb' }}>Más información</span>
+                          <span className="text-lg transition-transform group-hover:translate-x-1">→</span>
+                        </div>
                       </div>
                     </div>
                   </div>
