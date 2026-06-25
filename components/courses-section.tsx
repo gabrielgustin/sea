@@ -90,9 +90,17 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
                 </h3>
 
                 {/* Subtitle */}
-                <p className="text-gray-600 text-xs md:text-sm mb-4">
+                <p className="text-gray-600 text-xs md:text-sm mb-3">
                   {course.subtitle}
                 </p>
+
+                {/* Requirements */}
+                {course.requirements && (
+                  <div className="mb-4 p-3 rounded-xl bg-gray-50 border border-gray-100">
+                    <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Requisitos</p>
+                    <p className="text-xs text-gray-700 leading-relaxed line-clamp-2">{course.requirements}</p>
+                  </div>
+                )}
 
                 {/* Details */}
                 <div className="flex items-center justify-between">
