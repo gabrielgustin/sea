@@ -59,7 +59,7 @@ export async function GET(request: NextRequest) {
 
       // All courses for this school
       const result = await turso.execute(
-        'SELECT * FROM courses WHERE schoolId = ? ORDER BY createdAt DESC',
+        'SELECT * FROM courses WHERE schoolId = ? ORDER BY sortOrder ASC, createdAt DESC',
         [schoolId]
       )
       

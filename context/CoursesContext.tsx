@@ -60,6 +60,7 @@ interface CoursesContextType {
   deleteCourse: (id: string) => Promise<void>;
   getCourseById: (id: string) => Course | undefined;
   refreshCourses: () => Promise<void>;
+  reorderCourses: (orderedIds: string[]) => Promise<void>;
 }
 
 const CoursesContext = createContext<CoursesContextType | undefined>(undefined);
@@ -138,8 +139,26 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
     return courses.find(course => course.id === id);
   };
 
+  const reorderCourses = async (orderedIds: string[]) => {
+    // Optimistically reorder in state
+    setCourses(prev => {
+      const map = new Map(prev.map(c => [c.id, c]));
+      return orderedIds.map(id => map.get(id)!).filter(Boolean);
+    });
+    const res = await fetch('/api/courses/reorder', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ schoolId, orderedIds }),
+    });
+    if (!res.ok) {
+      // Rollback on error
+      await fetchCourses();
+      throw new Error('Failed to reorder courses');
+    }
+  };
+
   return (
-    <CoursesContext.Provider value={{ courses, loading, schoolId, addCourse, updateCourse, deleteCourse, getCourseById, refreshCourses: fetchCourses }}>
+    <CoursesContext.Provider value={{ courses, loading, schoolId, addCourse, updateCourse, deleteCourse, getCourseById, refreshCourses: fetchCourses, reorderCourses }}>
       {children}
     </CoursesContext.Provider>
   );
