@@ -401,10 +401,8 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
   // ── Paso 5: Exito ─────────────────────────────────────────────────────────
   const buildWhatsAppURL = () => {
     const phone = '5493516307002'; // +54 9 3516 30-7002 sin espacios ni +
-    const nombre = studentData.nombre || '';
-    const primerNombre = nombre.trim().split(' ')[0] || 'alumno';
     const message = [
-      `Hola ${primerNombre}! 👋`,
+      `Hola Gabriel! 👋`,
       `Acabo de completar mi inscripción y aquí están mis datos:`,
       ``,
       `📝 DATOS PERSONALES`,
