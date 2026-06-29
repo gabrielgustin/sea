@@ -34,7 +34,6 @@ function SortableCourseRow({
   onToggle,
   deletingId,
   togglingId,
-  getStatusBadge,
 }: any) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: course.id })
 
@@ -49,7 +48,7 @@ function SortableCourseRow({
     <div
       ref={setNodeRef}
       style={style}
-      className={`border rounded-xl overflow-hidden bg-white hover:shadow-md transition-all flex flex-col sm:flex-row ${course.status === 'INACTIVE' ? 'opacity-60' : ''}`}
+      className={`border rounded-xl overflow-hidden bg-white hover:shadow-md transition-all flex flex-col sm:flex-row ${!course.showOnHome ? 'opacity-60' : ''}`}
       {...(course.status === 'INACTIVE' ? {} : {})}
     >
       {/* Drag handle */}
@@ -80,7 +79,10 @@ function SortableCourseRow({
       <div className="flex-1 p-4 min-w-0">
         <div className="flex items-start gap-2 flex-wrap">
           <h3 className="font-bold text-gray-900 text-lg leading-tight">{course.title}</h3>
-          {getStatusBadge(course.status || 'ACTIVE')}
+          {course.showOnHome
+            ? <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-green-100 text-green-700">Visible</span>
+            : <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">Oculto</span>
+          }
           {course.badge && (
             <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-700">
               {course.badge}
@@ -121,14 +123,14 @@ function SortableCourseRow({
           disabled={togglingId === course.id}
           size="sm"
           variant="outline"
-          className={`flex items-center gap-1.5 ${course.status === 'ACTIVE' ? 'text-amber-600 border-amber-200 hover:bg-amber-50' : 'text-green-600 border-green-200 hover:bg-green-50'}`}
+          className={`flex items-center gap-1.5 ${course.showOnHome ? 'text-amber-600 border-amber-200 hover:bg-amber-50' : 'text-green-600 border-green-200 hover:bg-green-50'}`}
         >
           {togglingId === course.id ? (
             <span className="text-xs">...</span>
-          ) : course.status === 'ACTIVE' ? (
+          ) : course.showOnHome ? (
             <><EyeOff className="h-3.5 w-3.5" /> Ocultar</>
           ) : (
-            <><Eye className="h-3.5 w-3.5" /> Activar</>
+            <><Eye className="h-3.5 w-3.5" /> Mostrar</>
           )}
         </Button>
         <Button
@@ -186,22 +188,9 @@ export function CourseList({ onEdit, onNew }: CourseListProps) {
   const handleToggleStatus = async (course: any) => {
     setTogglingId(course.id)
     try {
-      await updateCourse(course.id, { status: course.status === 'ACTIVE' ? 'INACTIVE' : 'ACTIVE' })
+      await updateCourse(course.id, { showOnHome: !course.showOnHome })
     } finally {
       setTogglingId(null)
-    }
-  }
-
-  const getStatusBadge = (status: string) => {
-    switch (status) {
-      case 'ACTIVE':
-        return <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-green-100 text-green-700">Activo</span>
-      case 'INACTIVE':
-        return <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">Inactivo</span>
-      case 'DRAFT':
-        return <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-yellow-100 text-yellow-700">Borrador</span>
-      default:
-        return <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-gray-100 text-gray-500">{status}</span>
     }
   }
 
@@ -258,7 +247,6 @@ export function CourseList({ onEdit, onNew }: CourseListProps) {
                     onToggle={handleToggleStatus}
                     deletingId={deletingId}
                     togglingId={togglingId}
-                    getStatusBadge={getStatusBadge}
                   />
                 ))}
               </div>
