@@ -83,7 +83,7 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
               </div>
 
               {/* Content */}
-              <div className="p-4 md:p-5 flex flex-col flex-1">
+              <div className="p-4 md:p-5 flex flex-col flex-1 gap-4">
                 {/* Top: title + subtitle grow to fill space */}
                 <div className="flex-1">
                   {/* Title */}
@@ -98,7 +98,7 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
                 </div>
 
                 {/* Bottom: requirements + date + ver más always at the bottom */}
-                <div className="mt-4 space-y-3">
+                <div className="space-y-3">
                   {/* Requirements */}
                   {course.requirements && (
                     <div className="p-3 rounded-xl bg-gray-50 border border-gray-100">

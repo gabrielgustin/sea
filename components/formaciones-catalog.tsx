@@ -77,7 +77,7 @@ export default function FormacionesCatalog() {
                   </div>
 
                   {/* Content */}
-                  <div className="p-4 md:p-6 flex flex-col flex-1">
+                  <div className="p-4 md:p-6 flex flex-col flex-1 gap-4">
                     {/* Top: title + subtitle grow to fill space */}
                     <div className="flex-1">
                       <h3 className="text-lg md:text-2xl font-bold mb-2 leading-snug transition-colors duration-300 line-clamp-2" style={{ color: '#031e41' }}>
@@ -89,7 +89,7 @@ export default function FormacionesCatalog() {
                     </div>
 
                     {/* Bottom: requirements + date + footer always pinned */}
-                    <div className="mt-4 space-y-3">
+                    <div className="space-y-3">
                       {/* Requirements */}
                       {course.requirements && (
                         <div className="p-3 rounded-xl bg-gray-50 border border-gray-100">
