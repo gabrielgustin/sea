@@ -7,6 +7,24 @@ import { NextRequest, NextResponse } from 'next/server'
 
 const hasTurso = () => !!process.env.TURSO_CONNECTION_URL && !!process.env.TURSO_AUTH_TOKEN
 
+// Normalize courseId input to a JSON array string, or null if empty
+function normalizeCourseId(courseId: any): string | null {
+  if (!courseId) return null
+  if (Array.isArray(courseId)) {
+    const ids = courseId.map(String).filter(Boolean)
+    return ids.length > 0 ? JSON.stringify(ids) : null
+  }
+  try {
+    const parsed = JSON.parse(courseId)
+    if (Array.isArray(parsed)) {
+      const ids = parsed.map(String).filter(Boolean)
+      return ids.length > 0 ? JSON.stringify(ids) : null
+    }
+  } catch {}
+  const single = String(courseId).trim()
+  return single ? JSON.stringify([single]) : null
+}
+
 const memoryStore: Record<string, any[]> = {}
 function getStore(schoolId: string) {
   if (!memoryStore[schoolId]) memoryStore[schoolId] = []
@@ -30,11 +48,26 @@ export async function GET(request: NextRequest) {
         'SELECT * FROM teachers WHERE schoolId = ? ORDER BY "order" ASC',
         [schoolId]
       )
-      const teachers = (result.rows || []).map((row: any) => ({
-        ...row,
-        id: String(row.id), // normalize INTEGER id → string for frontend
-        active: Boolean(row.active),
-      }))
+      const teachers = (result.rows || []).map((row: any) => {
+        // Normalize courseId: stored as JSON array string or single id string
+        let courseIds: string[] = []
+        if (row.courseId) {
+          try {
+            const parsed = JSON.parse(row.courseId)
+            courseIds = Array.isArray(parsed) ? parsed.map(String) : [String(parsed)]
+          } catch {
+            // Legacy single id value
+            courseIds = [String(row.courseId)]
+          }
+        }
+        return {
+          ...row,
+          id: String(row.id),
+          active: Boolean(row.active),
+          courseId: courseIds.length > 0 ? JSON.stringify(courseIds) : null,
+          courseIds,
+        }
+      })
       return NextResponse.json({ teachers })
     }
 
@@ -62,7 +95,7 @@ export async function POST(request: NextRequest) {
           body.image || '',
           body.whatsapp || '',
           body.linkedin || '',
-          body.courseId || null,
+          normalizeCourseId(body.courseId),
           body.order ?? 0,
           body.active !== false ? 1 : 0,
         ]
@@ -90,6 +123,7 @@ export async function PUT(request: NextRequest) {
       const allowed = ['name', 'description', 'image', 'whatsapp', 'linkedin', 'courseId', 'order', 'active']
       const data: Record<string, any> = { ...updatedData }
       if (typeof data.active === 'boolean') data.active = data.active ? 1 : 0
+      if ('courseId' in data) data.courseId = normalizeCourseId(data.courseId)
       const fields = Object.keys(data).filter(k => allowed.includes(k))
       if (fields.length === 0) return NextResponse.json({ success: true })
       const setClause = fields.map(f => `"${f}" = ?`).join(', ')

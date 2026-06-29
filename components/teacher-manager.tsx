@@ -22,6 +22,7 @@ interface Teacher {
   whatsapp: string | null
   linkedin: string | null
   courseId: string | null
+  courseIds: string[]
   order: number
   active: boolean
 }
@@ -32,7 +33,7 @@ const EMPTY_FORM = {
   image: '',
   whatsapp: '',
   linkedin: '',
-  courseId: '',
+  courseIds: [] as string[],
   order: 0,
 }
 
@@ -131,7 +132,7 @@ export function TeacherManager() {
         ...(editingId !== 'new' && { id: String(editingId) }),
         ...formData,
         schoolId,
-        courseId: formData.courseId || null,
+        courseId: formData.courseIds.length > 0 ? JSON.stringify(formData.courseIds) : null,
       }
 
       const res = await fetch('/api/teachers', {
@@ -162,7 +163,7 @@ export function TeacherManager() {
       image: teacher.image || '',
       whatsapp: teacher.whatsapp || '',
       linkedin: teacher.linkedin || '',
-      courseId: teacher.courseId ? String(teacher.courseId) : '',
+      courseIds: teacher.courseIds || [],
       order: teacher.order,
     })
     setImagePreview(teacher.image || '')
@@ -193,9 +194,20 @@ export function TeacherManager() {
     setError('')
   }
 
-  const getCourseName = (courseId: string | null) => {
-    if (!courseId) return null
-    return courses.find(c => String(c.id) === String(courseId))?.title || null
+  const getCourseNames = (courseIds: string[]) => {
+    if (!courseIds || courseIds.length === 0) return []
+    return courseIds
+      .map(id => courses.find(c => String(c.id) === String(id))?.title)
+      .filter(Boolean) as string[]
+  }
+
+  const toggleCourseId = (id: string) => {
+    setFormData(prev => ({
+      ...prev,
+      courseIds: prev.courseIds.includes(id)
+        ? prev.courseIds.filter(c => c !== id)
+        : [...prev.courseIds, id],
+    }))
   }
 
   return (
@@ -331,21 +343,50 @@ export function TeacherManager() {
             />
           </div>
 
-          {/* Curso asignado */}
+          {/* Cursos asignados */}
           <div>
-            <label className="block text-sm font-medium mb-1">Curso Asignado</label>
-            <select
-              value={formData.courseId}
-              onChange={(e) => setFormData(prev => ({ ...prev, courseId: e.target.value }))}
-              className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-sm"
-            >
-              <option value="">-- Sin curso asignado --</option>
-              {courses.map((course) => (
-                <option key={course.id} value={String(course.id)}>
-                  {course.title}
-                </option>
-              ))}
-            </select>
+            <label className="block text-sm font-medium mb-2">Cursos Asignados</label>
+            {courses.length === 0 ? (
+              <p className="text-sm text-gray-400">No hay cursos disponibles</p>
+            ) : (
+              <div className="space-y-2 border border-gray-200 rounded-lg p-3 bg-white">
+                {courses.map((course) => {
+                  const checked = formData.courseIds.includes(String(course.id))
+                  return (
+                    <label
+                      key={course.id}
+                      className="flex items-center gap-3 cursor-pointer group"
+                    >
+                      <div
+                        onClick={() => toggleCourseId(String(course.id))}
+                        className={`w-5 h-5 rounded flex items-center justify-center border-2 flex-shrink-0 transition-colors ${
+                          checked
+                            ? 'border-blue-900 bg-blue-900'
+                            : 'border-gray-300 bg-white group-hover:border-blue-400'
+                        }`}
+                      >
+                        {checked && (
+                          <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                          </svg>
+                        )}
+                      </div>
+                      <span
+                        onClick={() => toggleCourseId(String(course.id))}
+                        className={`text-sm select-none ${checked ? 'font-semibold text-blue-900' : 'text-gray-700'}`}
+                      >
+                        {course.title}
+                      </span>
+                    </label>
+                  )
+                })}
+              </div>
+            )}
+            {formData.courseIds.length > 0 && (
+              <p className="text-xs text-gray-500 mt-1.5">
+                {formData.courseIds.length} curso{formData.courseIds.length > 1 ? 's' : ''} seleccionado{formData.courseIds.length > 1 ? 's' : ''}
+              </p>
+            )}
           </div>
 
           {/* Botones */}
@@ -402,10 +443,14 @@ export function TeacherManager() {
                 {teacher.description && (
                   <p className="text-sm text-gray-500 line-clamp-1 mt-0.5">{teacher.description}</p>
                 )}
-                {getCourseName(teacher.courseId) && (
-                  <span className="inline-block mt-1 text-xs font-medium px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
-                    {getCourseName(teacher.courseId)}
-                  </span>
+                {getCourseNames(teacher.courseIds || []).length > 0 && (
+                  <div className="flex flex-wrap gap-1 mt-1">
+                    {getCourseNames(teacher.courseIds || []).map((name) => (
+                      <span key={name} className="inline-block text-xs font-medium px-2 py-0.5 rounded-full bg-blue-50 text-blue-700">
+                        {name}
+                      </span>
+                    ))}
+                  </div>
                 )}
                 <div className="flex gap-3 mt-1">
                   {teacher.whatsapp && (
