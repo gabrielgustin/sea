@@ -28,7 +28,10 @@ export default function CoursesSection({ initialCourses }: CoursesSectionProps) 
   // Fall back to initialCourses only while the context is still loading.
   const courses = loading && initialCourses && initialCourses.length > 0
     ? initialCourses
-    : contextCourses.filter((c) => c.showOnHome === true);
+    : contextCourses.filter((c) => {
+        console.log('[v0] Course filter:', c.title, 'showOnHome:', c.showOnHome, 'type:', typeof c.showOnHome);
+        return c.showOnHome;
+      });
 
   // Si no hay cursos marcados para mostrar en el inicio, no renderizar la sección
   if (!loading && courses.length === 0) return null;
