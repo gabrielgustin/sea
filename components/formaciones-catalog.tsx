@@ -10,6 +10,9 @@ export default function FormacionesCatalog() {
   const { courses } = useCourses();
   const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
   const { schoolId } = useSchool();
+  
+  // Only show courses marked to display
+  const visibleCourses = courses.filter((c) => c.showOnHome);
 
   return (
     <div className="w-full">
@@ -34,15 +37,15 @@ export default function FormacionesCatalog() {
       <section id="cursos" ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20 bg-white">
         <div className="max-w-6xl mx-auto">
 
-          {courses.length === 0 ? (
+          {visibleCourses.length === 0 ? (
             <div className="text-center py-16 md:py-24">
               <p style={{ color: '#031e41' }} className="text-lg font-semibold">
-                Cargando formaciones...
+                No hay formaciones disponibles en este momento...
               </p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {courses.map((course, index) => (
+              {visibleCourses.map((course, index) => (
                 <Link
                   key={course.id}
                   href={`/${schoolId}/cursos/${course.slug || course.id}`}
