@@ -35,7 +35,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start gap-2">
                 <Phone className="w-4 h-4 mt-0.5 flex-shrink-0" style={{ color: '#031e41' }} />
-                <span className="text-gray-600">+54 3516307002</span>
+                <span className="text-gray-600">+54 3513697444</span>
               </li>
             </ul>
           </div>

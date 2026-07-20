@@ -76,7 +76,7 @@ export default function ContactSection() {
               </div>
               <div>
                 <h3 className="font-semibold text-lg mb-2 text-foreground">Teléfono</h3>
-                <p className="text-muted-foreground">+54 3516307002</p>
+                <p className="text-muted-foreground">+54 3513697444</p>
               </div>
               <div>
                 <h3 className="font-semibold text-lg mb-2 text-foreground">Horarios</h3>

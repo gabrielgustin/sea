@@ -41,10 +41,11 @@ export async function GET(request: NextRequest) {
         let course = result.rows?.[0] ? mapRow(result.rows[0]) : null
         
         // Fetch associated teachers from teachers table
+        // courseId is stored as JSON array e.g. ["5","7"], so use LIKE to match
         if (course) {
           const teachersResult = await turso.execute(
-            'SELECT id, name, description, image, whatsapp, linkedin FROM teachers WHERE courseId = ? AND active = 1 ORDER BY "order" ASC',
-            [course.id]
+            `SELECT id, name, description, image, whatsapp, linkedin FROM teachers WHERE (courseId = ? OR courseId LIKE ? OR courseId LIKE ? OR courseId LIKE ?) AND active = 1 ORDER BY "order" ASC`,
+            [String(course.id), `["${course.id}"]`, `["${course.id}",%`, `%,"${course.id}"]`]
           )
           course.teachers = (teachersResult.rows || []).map((row: any) => ({
             name: row.name,
@@ -64,11 +65,12 @@ export async function GET(request: NextRequest) {
       )
       
       // Fetch teachers for each course
+      // courseId stored as JSON array e.g. ["5","7"], match with LIKE
       const courses = await Promise.all((result.rows || []).map(async (courseRow: any) => {
         const course = mapRow(courseRow)
         const teachersResult = await turso.execute(
-          'SELECT id, name, description, image, whatsapp, linkedin FROM teachers WHERE courseId = ? AND active = 1 ORDER BY "order" ASC',
-          [course.id]
+          `SELECT id, name, description, image, whatsapp, linkedin FROM teachers WHERE (courseId = ? OR courseId LIKE ? OR courseId LIKE ? OR courseId LIKE ?) AND active = 1 ORDER BY "order" ASC`,
+          [String(course.id), `["${course.id}"]`, `["${course.id}",%`, `%,"${course.id}"]`]
         )
         course.teachers = (teachersResult.rows || []).map((row: any) => ({
           name: row.name,

@@ -298,7 +298,7 @@ export default function FormacionesPage() {
 
           <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center items-center">
             <Link
-              href="https://wa.me/5493516307002?text=Hola!%20Me%20interesa%20conocer%20sobre%20Centro%20de%20Formaciones"
+              href="https://wa.me/543513697444?text=Hola!%20Me%20interesa%20conocer%20sobre%20Centro%20de%20Formaciones"
               target="_blank"
               className="w-full sm:w-auto px-6 md:px-8 py-3 md:py-4 rounded-lg font-bold text-sm md:text-base transition-all duration-300 hover:shadow-2xl hover:scale-105 active:scale-95 flex items-center justify-center gap-2"
               style={{ backgroundColor: '#25D366', color: 'white' }}

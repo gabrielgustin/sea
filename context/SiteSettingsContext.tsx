@@ -57,7 +57,7 @@ const defaultFAQs: FAQ[] = [
 
 const defaultSettings: SiteSettings = {
   instagramUrl: 'https://www.instagram.com/itssavio/?hl=es',
-  whatsappNumber: '5493516307002',
+  whatsappNumber: '543513697444',
   whatsappMessage: 'Hola! Me interesa obtener más información sobre los cursos disponibles.',
   email: 'formaciones@portalsea.com.ar',
   address: 'Cno a La Calera km 7 1/2 Valle',

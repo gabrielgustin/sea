@@ -19,7 +19,7 @@ export const coursesData = [
         photo: 'https://hebbkx1anhila5yf.public.blob.vercel-storage.com/Gabriel%20Mun%CC%83oz%20-aQMeW95ur6rqkVhtQS3Rl905V7MrM6.png',
         description: '',
         linkedin: 'https://www.linkedin.com/in/gabiagustin',
-        whatsapp: '5493516307002'
+        whatsapp: '543513697444'
       }
     ],
     duration: '24 clases',
