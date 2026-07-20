@@ -186,7 +186,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
           </div>
           <div className="rounded-xl p-3 md:p-4" style={{ backgroundColor: '#f8f9fa', border: '1px solid #9cbadb' }}>
             <div className="flex items-center gap-2 mb-1"><User size={14} style={{ color: '#031e41' }} /><span className="text-xs text-gray-500 font-medium">Docente</span></div>
-            <p className="font-semibold text-sm" style={{ color: '#031e41' }}>{course.teacher || 'Por confirmar'}</p>
+            <p className="font-semibold text-sm" style={{ color: '#031e41' }}>{course.teacher || course.teachers?.[0]?.name || 'Por confirmar'}</p>
           </div>
         </div>
 
@@ -414,7 +414,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
       `📚 CURSO SELECCIONADO`,
       `Curso: ${course.title}`,
       `Comisión: ${selectedCommission?.name || 'Sin comisión'}`,
-      `Profesor: ${selectedCommission?.teacher || course.teacher || 'Por confirmar'}`,
+      `Profesor: ${selectedCommission?.teacher || course.teacher || course.teachers?.[0]?.name || 'Por confirmar'}`,
       ``,
       `¿Podrían confirmarme los próximos pasos? 🚀`,
     ].join('\n');
