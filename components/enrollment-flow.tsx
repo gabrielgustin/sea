@@ -37,21 +37,23 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
 
   const progress = (currentStep / totalSteps) * 100;
 
-  // Fetch enrollment counts when component mounts (to show capacity)
-  useEffect(() => {
+  // Fetch enrollment counts (called on mount and after a successful submission)
+  const fetchEnrollmentCounts = async () => {
     if (!hasCommissions) return;
-    const fetchCounts = async () => {
-      setLoadingCounts(true);
-      try {
-        const res = await fetch(`/api/enrollments?courseId=${course.id}&schoolId=${schoolId}`);
-        if (res.ok) {
-          const data = await res.json();
-          setEnrollmentCounts(data.counts || {});
-        }
-      } catch (_) {}
-      setLoadingCounts(false);
-    };
-    fetchCounts();
+    setLoadingCounts(true);
+    try {
+      const res = await fetch(`/api/enrollments?courseId=${encodeURIComponent(String(course.id))}&schoolId=${schoolId}`);
+      if (res.ok) {
+        const data = await res.json();
+        setEnrollmentCounts(data.counts || {});
+      }
+    } catch (_) {}
+    setLoadingCounts(false);
+  };
+
+  useEffect(() => {
+    fetchEnrollmentCounts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [course.id, schoolId, hasCommissions]);
 
   const getAvailableSpots = (commission: Commission) => {
@@ -143,6 +145,8 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
       });
 
       console.log('[v0] Enrollment submitted successfully');
+      // Refresh counts so capacity reflects the new enrollment
+      await fetchEnrollmentCounts();
     } catch (err) {
       console.error('[v0] Error submitting enrollment:', err);
     } finally {
@@ -392,7 +396,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
       </div>
 
       <div className="rounded-xl p-4 flex items-center justify-between" style={{ backgroundColor: '#f0f9ff', border: '2px solid #031e41' }}>
-        <span className="text-sm font-semibold" style={{ color: '#031e41' }}>Inversion mensual</span>
+        <span className="text-sm font-semibold" style={{ color: '#031e41' }}>Inversión</span>
         <span className="text-lg font-bold" style={{ color: '#031e41' }}>{course.price}</span>
       </div>
     </div>
