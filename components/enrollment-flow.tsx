@@ -222,7 +222,16 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
               const spots = getAvailableSpots(commission);
               const full = spots === 0;
               const enrolled = enrollmentCounts[commission.id] || 0;
-              const fillPct = Math.min(100, (enrolled / commission.maxCapacity) * 100);
+
+              // Deterministic marketing percentage: 40–75% in steps of 5
+              // Uses commission id hash so each commission always shows the same value
+              const idHash = commission.id.split('').reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+              const steps = [40, 45, 50, 55, 60, 65, 70, 75]; // 8 values between 40–75%
+              const marketingPct = steps[idHash % steps.length];
+              const fillPct = full ? 100 : Math.max(marketingPct, Math.min(100, (enrolled / commission.maxCapacity) * 100));
+              // Fake enrolled count derived from the marketing percentage
+              const displayEnrolled = full ? commission.maxCapacity : Math.round((fillPct / 100) * commission.maxCapacity);
+
               const isSelected = selectedCommission?.id === commission.id;
 
               return (
@@ -251,13 +260,13 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
                           {commission.name || `Comision ${(course.commissions || []).indexOf(commission) + 1}`}
                         </p>
                         <p className="text-xs mt-0.5" style={{ color: full ? '#ef4444' : '#6b7280' }}>
-                          {full ? 'Sin lugares disponibles' : `${spots} lugar${spots !== 1 ? 'es' : ''} disponible${spots !== 1 ? 's' : ''}`}
+                          {full ? 'Sin lugares disponibles' : `${commission.maxCapacity - displayEnrolled} lugar${commission.maxCapacity - displayEnrolled !== 1 ? 'es' : ''} disponible${commission.maxCapacity - displayEnrolled !== 1 ? 's' : ''}`}
                         </p>
                       </div>
                     </div>
                     <div className="flex items-center gap-1.5 flex-shrink-0">
                       <Users size={13} style={{ color: '#6b7280' }} />
-                      <span className="text-xs font-medium text-gray-500">{enrolled}/{commission.maxCapacity}</span>
+                      <span className="text-xs font-medium text-gray-500">{displayEnrolled}/{commission.maxCapacity}</span>
                     </div>
                   </div>
 
