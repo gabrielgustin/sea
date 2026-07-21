@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 
 // Real schema of teachers:
 // id (INTEGER PK autoincrement), name (TEXT), description (TEXT), image (TEXT),
-// whatsapp (TEXT), linkedin (TEXT), courseId (TEXT), order (INTEGER),
-// active (INTEGER), createdAt (DATETIME), updatedAt (DATETIME), schoolId (TEXT)
+// whatsapp (TEXT), linkedin (TEXT), instagram (TEXT), tiktok (TEXT), youtube (TEXT),
+// courseId (TEXT), order (INTEGER), active (INTEGER), createdAt (DATETIME),
+// updatedAt (DATETIME), schoolId (TEXT)
 
 const hasTurso = () => !!process.env.TURSO_CONNECTION_URL && !!process.env.TURSO_AUTH_TOKEN
 
@@ -87,7 +88,7 @@ export async function POST(request: NextRequest) {
     if (hasTurso()) {
       const turso = await getTurso()
       const result = await turso.execute(
-        'INSERT INTO teachers (schoolId, name, description, image, whatsapp, linkedin, courseId, "order", active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        'INSERT INTO teachers (schoolId, name, description, image, whatsapp, linkedin, instagram, tiktok, youtube, courseId, "order", active) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
           schoolId,
           body.name || '',
@@ -95,6 +96,9 @@ export async function POST(request: NextRequest) {
           body.image || '',
           body.whatsapp || '',
           body.linkedin || '',
+          body.instagram || '',
+          body.tiktok || '',
+          body.youtube || '',
           normalizeCourseId(body.courseId),
           body.order ?? 0,
           body.active !== false ? 1 : 0,
@@ -120,7 +124,7 @@ export async function PUT(request: NextRequest) {
 
     if (hasTurso()) {
       const turso = await getTurso()
-      const allowed = ['name', 'description', 'image', 'whatsapp', 'linkedin', 'courseId', 'order', 'active']
+      const allowed = ['name', 'description', 'image', 'whatsapp', 'linkedin', 'instagram', 'tiktok', 'youtube', 'courseId', 'order', 'active']
       const data: Record<string, any> = { ...updatedData }
       if (typeof data.active === 'boolean') data.active = data.active ? 1 : 0
       if ('courseId' in data) data.courseId = normalizeCourseId(data.courseId)

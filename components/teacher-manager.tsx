@@ -21,6 +21,9 @@ interface Teacher {
   image: string | null
   whatsapp: string | null
   linkedin: string | null
+  instagram: string | null
+  tiktok: string | null
+  youtube: string | null
   courseId: string | null
   courseIds: string[]
   order: number
@@ -33,6 +36,9 @@ const EMPTY_FORM = {
   image: '',
   whatsapp: '',
   linkedin: '',
+  instagram: '',
+  tiktok: '',
+  youtube: '',
   courseIds: [] as string[],
   order: 0,
 }
@@ -163,6 +169,9 @@ export function TeacherManager() {
       image: teacher.image || '',
       whatsapp: teacher.whatsapp || '',
       linkedin: teacher.linkedin || '',
+      instagram: teacher.instagram || '',
+      tiktok: teacher.tiktok || '',
+      youtube: teacher.youtube || '',
       courseIds: teacher.courseIds || [],
       order: teacher.order,
     })
@@ -343,6 +352,36 @@ export function TeacherManager() {
             />
           </div>
 
+          {/* Instagram */}
+          <div>
+            <label className="block text-sm font-medium mb-1">Instagram <span className="text-gray-400 font-normal">(opcional)</span></label>
+            <Input
+              value={formData.instagram}
+              onChange={(e) => setFormData(prev => ({ ...prev, instagram: e.target.value }))}
+              placeholder="https://instagram.com/juangarcia"
+            />
+          </div>
+
+          {/* TikTok */}
+          <div>
+            <label className="block text-sm font-medium mb-1">TikTok <span className="text-gray-400 font-normal">(opcional)</span></label>
+            <Input
+              value={formData.tiktok}
+              onChange={(e) => setFormData(prev => ({ ...prev, tiktok: e.target.value }))}
+              placeholder="https://tiktok.com/@juangarcia"
+            />
+          </div>
+
+          {/* YouTube */}
+          <div>
+            <label className="block text-sm font-medium mb-1">YouTube <span className="text-gray-400 font-normal">(opcional)</span></label>
+            <Input
+              value={formData.youtube}
+              onChange={(e) => setFormData(prev => ({ ...prev, youtube: e.target.value }))}
+              placeholder="https://youtube.com/@juangarcia"
+            />
+          </div>
+
           {/* Cursos asignados */}
           <div>
             <label className="block text-sm font-medium mb-2">Cursos Asignados</label>
@@ -452,12 +491,21 @@ export function TeacherManager() {
                     ))}
                   </div>
                 )}
-                <div className="flex gap-3 mt-1">
+                <div className="flex flex-wrap gap-3 mt-1">
                   {teacher.whatsapp && (
                     <span className="text-xs text-green-600">WhatsApp</span>
                   )}
                   {teacher.linkedin && (
                     <span className="text-xs text-blue-600">LinkedIn</span>
+                  )}
+                  {teacher.instagram && (
+                    <span className="text-xs text-pink-600">Instagram</span>
+                  )}
+                  {teacher.tiktok && (
+                    <span className="text-xs text-gray-700">TikTok</span>
+                  )}
+                  {teacher.youtube && (
+                    <span className="text-xs text-red-600">YouTube</span>
                   )}
                 </div>
               </div>

@@ -154,6 +154,15 @@ export async function initializeSchema() {
     try {
       await turso.execute(`ALTER TABLE courses ADD COLUMN sortOrder INTEGER DEFAULT 0`)
     } catch (_) {}
+    try {
+      await turso.execute(`ALTER TABLE teachers ADD COLUMN instagram TEXT`)
+    } catch (_) {}
+    try {
+      await turso.execute(`ALTER TABLE teachers ADD COLUMN tiktok TEXT`)
+    } catch (_) {}
+    try {
+      await turso.execute(`ALTER TABLE teachers ADD COLUMN youtube TEXT`)
+    } catch (_) {}
 
     // Fix UNIQUE(slug) → UNIQUE(slug, schoolId) so savio and villada can share slug names.
     // SQLite does not support DROP CONSTRAINT, so we recreate the table.

@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { ChevronDown, ChevronUp } from 'lucide-react';
+import { ChevronDown, ChevronUp, Instagram, Youtube, Music2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useSchool } from '@/context/SchoolContext';
@@ -121,6 +121,9 @@ interface CourseTeacher {
   description: string;
   linkedin?: string;
   whatsapp?: string;
+  instagram?: string;
+  tiktok?: string;
+  youtube?: string;
 }
 
 interface Commission {
@@ -547,6 +550,39 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                               title="Contactar por WhatsApp"
                             >
                               <Image src="/whatsapp.png" alt="WhatsApp" width={24} height={24} />
+                            </a>
+                          )}
+                          {teacher.instagram && (
+                            <a
+                              href={teacher.instagram}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="transition-all duration-300 hover:scale-110 text-[#E4405F]"
+                              title="Ver perfil de Instagram"
+                            >
+                              <Instagram size={24} />
+                            </a>
+                          )}
+                          {teacher.tiktok && (
+                            <a
+                              href={teacher.tiktok}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="transition-all duration-300 hover:scale-110 text-gray-900"
+                              title="Ver perfil de TikTok"
+                            >
+                              <Music2 size={24} />
+                            </a>
+                          )}
+                          {teacher.youtube && (
+                            <a
+                              href={teacher.youtube}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="transition-all duration-300 hover:scale-110 text-[#FF0000]"
+                              title="Ver canal de YouTube"
+                            >
+                              <Youtube size={24} />
                             </a>
                           )}
                         </div>
