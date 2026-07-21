@@ -270,11 +270,17 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                 <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Comisiones disponibles</p>
                 <div className="space-y-2">
                   {course.commissions.map((commission) => {
-                    const enrolled = enrollmentCounts[commission.id] ?? 0;
-                    const available = commission.maxCapacity - enrolled;
-                    const pct = Math.min(100, Math.round((enrolled / commission.maxCapacity) * 100));
+                    // Deterministic marketing percentage: 40–75% in steps of 5
+                    const idHash = commission.id.split('').reduce((acc: number, ch: string) => acc + ch.charCodeAt(0), 0);
+                    const steps = [40, 45, 50, 55, 60, 65, 70, 75];
+                    const marketingPct = steps[idHash % steps.length];
+
+                    const realEnrolled = enrollmentCounts[commission.id] ?? 0;
+                    const pct = Math.max(marketingPct, Math.min(100, Math.round((realEnrolled / commission.maxCapacity) * 100)));
+                    const displayEnrolled = Math.round((pct / 100) * commission.maxCapacity);
+                    const available = commission.maxCapacity - displayEnrolled;
                     const isFull = available <= 0;
-                    const isAlmostFull = !isFull && pct >= 75;
+                    const isAlmostFull = !isFull && pct >= 65;
                     const barColor = isFull ? '#ef4444' : isAlmostFull ? '#f59e0b' : '#22c55e';
 
                     return (
@@ -284,7 +290,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                           {isFull ? (
                             <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#fecaca', color: '#dc2626' }}>Completa</span>
                           ) : (
-                            <span className="text-xs font-medium text-gray-500">{available} {available === 1 ? 'lugar' : 'lugares'}</span>
+                            <span className="text-xs font-medium" style={{ color: isAlmostFull ? '#d97706' : '#6b7280' }}>{available} {available === 1 ? 'lugar' : 'lugares'}</span>
                           )}
                         </div>
                         {/* Capacity bar */}
