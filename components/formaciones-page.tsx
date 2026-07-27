@@ -2,11 +2,13 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { CheckCircle, Users, Award, Zap, TrendingUp, Building2, Lightbulb, Code } from 'lucide-react';
+import { CheckCircle, Users, Award, Zap, TrendingUp, Building2, Lightbulb, Code, Shield } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
+import { useSchool } from '@/components/school-provider';
 
 
 export default function FormacionesPage() {
+  const { schoolId } = useSchool();
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const processRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -319,6 +321,17 @@ export default function FormacionesPage() {
           </p>
         </div>
       </section>
+
+      {/* Privacy policy footer link */}
+      <div className="py-6 px-4 flex justify-center border-t border-gray-100 bg-white">
+        <Link
+          href={`/${schoolId}/politicas-de-privacidad`}
+          className="inline-flex items-center gap-2 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          <Shield size={13} />
+          Politicas de Privacidad
+        </Link>
+      </div>
     </div>
   );
 }
