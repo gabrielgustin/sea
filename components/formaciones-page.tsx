@@ -4,11 +4,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { CheckCircle, Users, Award, Zap, TrendingUp, Building2, Lightbulb, Code, Shield } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { useSchool } from '@/components/school-provider';
+import { usePathname } from 'next/navigation';
 
 
 export default function FormacionesPage() {
-  const { schoolId } = useSchool();
+  const pathname = usePathname();
+  const schoolId = pathname?.split('/')[1] || 'savio';
   const [selectedService, setSelectedService] = useState<string | null>(null);
   const processRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
