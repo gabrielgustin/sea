@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { CheckCircle, Users, Award, Zap, TrendingUp, Building2, Lightbulb, Code, Shield } from 'lucide-react';
+import { CheckCircle, Users, Award, Zap, TrendingUp, Building2, Lightbulb, Code, Shield, FileText } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
 import { usePathname } from 'next/navigation';
 
@@ -323,14 +323,22 @@ export default function FormacionesPage() {
         </div>
       </section>
 
-      {/* Privacy policy footer link */}
-      <div className="py-6 px-4 flex justify-center border-t border-gray-100 bg-white">
+      {/* Legal footer links */}
+      <div className="py-6 px-4 flex items-center justify-center gap-4 border-t border-gray-100 bg-white">
         <Link
           href={`/${schoolId}/politicas-de-privacidad`}
-          className="inline-flex items-center gap-2 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors"
         >
           <Shield size={13} />
           Politicas de Privacidad
+        </Link>
+        <span className="text-gray-200 select-none">|</span>
+        <Link
+          href={`/${schoolId}/condiciones-de-servicio`}
+          className="inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-gray-600 transition-colors"
+        >
+          <FileText size={13} />
+          Condiciones de Servicio
         </Link>
       </div>
     </div>
