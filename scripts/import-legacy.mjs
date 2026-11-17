@@ -62,11 +62,15 @@ async function copy(table, where, args, transform) {
 }
 
 const W = 'WHERE schoolId = ?'
-for (const table of ['courses', 'carousel_slides', 'teachers', 'enrollments', 'students']) await copy(table, W, [slug])
+for (const table of ['courses', 'carousel_slides', 'teachers', 'students']) await copy(table, W, [slug])
+// Las inscripciones antiguas no tenían schoolId: se atribuyen al cliente por el curso al que pertenecen.
+await copy('enrollments', 'WHERE courseId IN (SELECT id FROM courses WHERE schoolId = ?)', [slug])
 
 // site_settings: las claves viejas venían con prefijo "<slug>__".
 const prefix = `${slug}__`
-await copy('site_settings', 'WHERE schoolId = ? OR key LIKE ?', [slug, `${prefix}%`], (r) => {
+// El sitio viejo solo leía las claves CON prefijo; las sin prefijo son restos. Se copian primero las con prefijo
+// para que, si una clave aparece en ambas formas, gane la que realmente mostraba el sitio.
+await copy('site_settings', 'WHERE schoolId = ? OR key LIKE ? ORDER BY (key LIKE ?) DESC', [slug, `${prefix}%`, `${prefix}%`], (r) => {
   r.key = String(r.key).startsWith(prefix) ? String(r.key).slice(prefix.length) : r.key
   return r
 })
