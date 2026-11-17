@@ -1,12 +1,14 @@
 {
-  "name": "my-project",
+  "name": "sea-portal",
   "version": "0.1.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "tenant": "NODE_NO_WARNINGS=1 node --env-file-if-exists=.env.local scripts/tenant.mjs",
+    "tenant:import": "NODE_NO_WARNINGS=1 node --env-file-if-exists=.env.local scripts/import-legacy.mjs"
   },
   "dependencies": {
     "@dnd-kit/core": "^6.3.1",
@@ -67,6 +69,7 @@
     "react-hook-form": "^7.54.1",
     "react-resizable-panels": "^2.1.7",
     "recharts": "2.15.0",
+    "server-only": "^0.0.1",
     "sonner": "^1.7.1",
     "tailwind-merge": "^3.3.1",
     "vaul": "^1.1.2",

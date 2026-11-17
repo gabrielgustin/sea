@@ -11,8 +11,8 @@ import { useSchool } from '@/context/SchoolContext';
 
 export default function ContactSection() {
   const { settings } = useSiteSettings();
-  const { schoolId } = useSchool();
-  const instituteName = schoolId === 'villada' ? 'Instituto Técnico Salesiano Villada' : 'Instituto Domingo Savio';
+  const { schoolId, tenant } = useSchool();
+  const instituteName = tenant.config.name;
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -32,7 +32,7 @@ export default function ContactSection() {
     e.preventDefault();
     setLoading(true);
     try {
-      await submitContactMessage({
+      await submitContactMessage(schoolId, {
         nombre: formData.name,
         email: formData.email,
         telefono: formData.phone || undefined,

@@ -6,8 +6,8 @@ import { useSchool } from '@/context/SchoolContext';
 
 export default function BenefitsSection() {
   const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
-  const { schoolId } = useSchool();
-  const instituteName = schoolId === 'villada' ? 'Instituto Técnico Salesiano Villada' : 'Instituto Domingo Savio';
+  const { tenant } = useSchool();
+  const instituteName = tenant.config.name;
 
   const benefits = [
     {

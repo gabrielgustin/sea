@@ -11,8 +11,8 @@ import { useSchool } from '@/context/SchoolContext';
 export default function SpecialOfferSection() {
   const { settings } = useSiteSettings();
   const { ref, isInView } = useInView({ once: true, threshold: 0.15 });
-  const { schoolId } = useSchool();
-  const instituteName = schoolId === 'villada' ? 'Instituto Técnico Salesiano Villada' : 'Instituto Domingo Savio';
+  const { schoolId, tenant } = useSchool();
+  const instituteName = tenant.config.name;
   const whatsappLink = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage)}`;
 
   return (

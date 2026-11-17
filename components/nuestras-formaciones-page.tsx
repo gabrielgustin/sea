@@ -27,7 +27,7 @@ export default function NuestrasFormacionesPage() {
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await fetch('/api/carousel');
+        const response = await fetch(`/api/${schoolId}/carousel`);
         const data = await response.json();
         setCourses(data.slides || []);
       } catch (error) {

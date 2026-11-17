@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { Mail, Phone, FileText, User } from 'lucide-react';
+import { useSchool } from '@/context/SchoolContext';
 import { submitJobApplication } from '@/app/actions/job-applications';
 
 export default function TrabajaConNosotrosPage() {
+  const { schoolId } = useSchool();
   const [formData, setFormData] = useState({
     nombre: '',
     email: '',
@@ -40,7 +42,7 @@ export default function TrabajaConNosotrosPage() {
       const nombre = parts[0] ?? '';
       const apellido = parts.slice(1).join(' ') || '';
 
-      await submitJobApplication({
+      await submitJobApplication(schoolId, {
         nombre,
         apellido,
         email: formData.email,

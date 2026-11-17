@@ -1,21 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
+import type { FAQ, SiteSettings } from '@/lib/default-settings';
 
-export interface FAQ {
-  id: number;
-  question: string;
-  answer: string;
-  order: number;
-}
-
-export interface SiteSettings {
-  instagramUrl: string;
-  whatsappNumber: string;
-  whatsappMessage: string;
-  email: string;
-  address: string;
-}
+export type { FAQ, SiteSettings };
 
 interface SiteSettingsContextType {
   faqs: FAQ[];
@@ -28,137 +16,49 @@ interface SiteSettingsContextType {
   updateSettings: (settings: Partial<SiteSettings>) => Promise<void>;
 }
 
-const defaultFAQs: FAQ[] = [
-  {
-    id: 1,
-    question: '¿Cómo me inscribo a un curso?',
-    answer: 'Para inscribirte, simplemente navega al curso de tu interés y haz clic en el botón "Inscribirme". Completa el formulario con tus datos y recibirás confirmación por email.',
-    order: 1,
-  },
-  {
-    id: 2,
-    question: '¿Cuáles son las formas de pago?',
-    answer: 'Aceptamos transferencias bancarias, Mercado Pago y pagos en efectivo en nuestra sede. Consulta con el equipo administrativo para planes de financiación.',
-    order: 2,
-  },
-  {
-    id: 3,
-    question: '¿Otorgan certificados?',
-    answer: 'Sí, todos nuestros cursos otorgan certificado oficial de la Secretaría de Extensión Académica del ITS Savio al completar satisfactoriamente el programa.',
-    order: 3,
-  },
-  {
-    id: 4,
-    question: '¿Puedo tomar cursos si no soy estudiante del ITS Savio?',
-    answer: 'Sí, nuestros cursos están abiertos a toda la comunidad. No es necesario ser estudiante del instituto para inscribirse.',
-    order: 4,
-  },
-];
-
-const defaultSettings: SiteSettings = {
-  instagramUrl: 'https://www.instagram.com/itssavio/?hl=es',
-  whatsappNumber: '543513697444',
-  whatsappMessage: 'Hola! Me interesa obtener más información sobre los cursos disponibles.',
-  email: 'formaciones@portalsea.com.ar',
-  address: 'Cno a La Calera km 7 1/2 Valle',
-};
-
 const SiteSettingsContext = createContext<SiteSettingsContextType | undefined>(undefined);
 
-export function SiteSettingsProvider({ children, schoolId }: { children: React.ReactNode; schoolId?: string }) {
-  const [faqs, setFAQs] = useState<FAQ[]>(defaultFAQs);
-  const [settings, setSettings] = useState<SiteSettings>(defaultSettings);
-  const [loading, setLoading] = useState(true);
+export function SiteSettingsProvider({
+  children,
+  schoolId,
+  initialSettings,
+  initialFaqs,
+}: {
+  children: React.ReactNode;
+  schoolId: string;
+  initialSettings: SiteSettings;
+  initialFaqs: FAQ[];
+}) {
+  const [faqs, setFAQs] = useState<FAQ[]>(initialFaqs);
+  const [settings, setSettings] = useState<SiteSettings>(initialSettings);
+  const api = `/api/${schoolId}/settings`;
 
-  // Load settings from DB on mount
-  useEffect(() => {
-    async function loadSettings() {
-      try {
-        let sid = schoolId;
-        if (!sid && typeof window !== 'undefined') {
-          const seg = window.location.pathname.split('/').filter(Boolean)[0];
-          if (seg && seg !== 'api') sid = seg;
-        }
-        sid = sid || 'villada';
-        const res = await fetch(`/api/settings?schoolId=${sid}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.settings && Object.keys(data.settings).length > 0) {
-            setSettings((prev) => ({ ...prev, ...data.settings }));
-          }
-        }
-      } catch (error) {
-        console.error('[v0] Failed to load settings from DB:', error);
-      } finally {
-        setLoading(false);
-      }
+  const saveFaqs = async (next: FAQ[]) => {
+    setFAQs(next);
+    // Las preguntas frecuentes se guardan en la base del cliente (antes quedaban solo en el navegador de quien las editaba).
+    try {
+      await fetch(api, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ faqs: JSON.stringify(next) }) });
+    } catch (error) {
+      console.error('Failed to save FAQs:', error);
     }
-    loadSettings();
-
-    // FAQs from localStorage — keyed per school to keep them independent
-    const faqKey = `site_faqs_${schoolId || resolveSchoolId()}`;
-    const savedFAQs = localStorage.getItem(faqKey);
-    if (savedFAQs) {
-      try { setFAQs(JSON.parse(savedFAQs)); } catch { setFAQs(defaultFAQs); }
-    } else {
-      setFAQs(defaultFAQs);
-    }
-  }, [schoolId]);
-
-  // Save FAQs to localStorage whenever they change, keyed per school
-  useEffect(() => {
-    if (faqs.length > 0) {
-      const faqKey = `site_faqs_${resolveSchoolId()}`;
-      localStorage.setItem(faqKey, JSON.stringify(faqs));
-    }
-  }, [faqs]);
-
-  const addFAQ = (faq: Omit<FAQ, 'id'>) => {
-    const newFAQ: FAQ = { ...faq, id: Date.now() };
-    setFAQs((prev) => [...prev, newFAQ]);
   };
 
-  const updateFAQ = (id: number, faqData: Partial<FAQ>) => {
-    setFAQs((prev) => prev.map((faq) => (faq.id === id ? { ...faq, ...faqData } : faq)));
-  };
+  const addFAQ = (faq: Omit<FAQ, 'id'>) => saveFaqs([...faqs, { ...faq, id: Date.now() }]);
+  const updateFAQ = (id: number, data: Partial<FAQ>) => saveFaqs(faqs.map((f) => (f.id === id ? { ...f, ...data } : f)));
+  const deleteFAQ = (id: number) => saveFaqs(faqs.filter((f) => f.id !== id));
+  const reorderFAQs = (next: FAQ[]) => saveFaqs(next);
 
-  const deleteFAQ = (id: number) => {
-    setFAQs((prev) => prev.filter((faq) => faq.id !== id));
-  };
-
-  const reorderFAQs = (newFAQs: FAQ[]) => {
-    setFAQs(newFAQs);
-  };
-
-  // Resolve schoolId from prop, or fall back to first path segment
-  const resolveSchoolId = () => {
-    if (schoolId) return schoolId;
-    if (typeof window !== 'undefined') {
-      const seg = window.location.pathname.split('/').filter(Boolean)[0];
-      if (seg && seg !== 'api') return seg;
-    }
-    return 'villada';
-  };
-
-  // Save settings to DB and update local state
   const updateSettings = async (newSettings: Partial<SiteSettings>) => {
     setSettings((prev) => ({ ...prev, ...newSettings }));
     try {
-      const sid = resolveSchoolId();
-      await fetch('/api/settings', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...newSettings, schoolId: sid }),
-      });
+      await fetch(api, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(newSettings) });
     } catch (error) {
-      console.error('[v0] Failed to save settings to DB:', error);
+      console.error('Failed to save settings:', error);
     }
   };
 
   return (
-    <SiteSettingsContext.Provider
-      value={{ faqs, settings, loading, addFAQ, updateFAQ, deleteFAQ, reorderFAQs, updateSettings }}
-    >
+    <SiteSettingsContext.Provider value={{ faqs, settings, loading: false, addFAQ, updateFAQ, deleteFAQ, reorderFAQs, updateSettings }}>
       {children}
     </SiteSettingsContext.Provider>
   );
@@ -166,8 +66,6 @@ export function SiteSettingsProvider({ children, schoolId }: { children: React.R
 
 export function useSiteSettings() {
   const context = useContext(SiteSettingsContext);
-  if (!context) {
-    throw new Error('useSiteSettings must be used within a SiteSettingsProvider');
-  }
+  if (!context) throw new Error('useSiteSettings must be used within a SiteSettingsProvider');
   return context;
 }

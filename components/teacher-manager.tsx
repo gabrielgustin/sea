@@ -66,7 +66,7 @@ export function TeacherManager() {
 
   const fetchCourses = async () => {
     try {
-      const res = await fetch(`/api/courses?schoolId=${schoolId}`)
+      const res = await fetch(`/api/${schoolId}/courses`)
       const data = await res.json()
       setCourses(Array.isArray(data) ? data : (data.courses || []))
     } catch (err) {
@@ -76,7 +76,7 @@ export function TeacherManager() {
 
   const fetchTeachers = async () => {
     try {
-      const res = await fetch(`/api/teachers?schoolId=${schoolId}`)
+      const res = await fetch(`/api/${schoolId}/teachers`)
       const data = await res.json()
       setTeachers(data.teachers || [])
     } catch (err) {
@@ -101,7 +101,7 @@ export function TeacherManager() {
       const fd = new FormData()
       fd.append('file', file)
       fd.append('folder', 'teachers')
-      const res = await fetch('/api/upload-image', { method: 'POST', body: fd })
+      const res = await fetch(`/api/${schoolId}/upload-image`, { method: 'POST', body: fd })
       const data = await res.json()
       if (!res.ok || !data.url) throw new Error(data.error || 'Error al subir imagen')
       setFormData(prev => ({ ...prev, image: data.url }))
@@ -141,7 +141,7 @@ export function TeacherManager() {
         courseId: formData.courseIds.length > 0 ? JSON.stringify(formData.courseIds) : null,
       }
 
-      const res = await fetch('/api/teachers', {
+      const res = await fetch(`/api/${schoolId}/teachers`, {
         method,
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -183,7 +183,7 @@ export function TeacherManager() {
   const handleDelete = async (id: number) => {
     if (!confirm('¿Eliminar este docente?')) return
     try {
-      const res = await fetch('/api/teachers', {
+      const res = await fetch(`/api/${schoolId}/teachers`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, schoolId }),

@@ -169,7 +169,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
   // Fetch current enrollment counts per commission
   useEffect(() => {
     if (!course.commissions?.length) return;
-    fetch(`/api/enrollments?courseId=${course.id}&schoolId=${schoolId}`)
+    fetch(`/api/${schoolId}/enrollments?courseId=${course.id}`)
       .then(r => r.json())
       .then(data => { if (data.counts) setEnrollmentCounts(data.counts); })
       .catch(() => {});

@@ -1,8 +1,9 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 export type UserRole = 'student' | 'admin' | null;
+export type InitialSession = { role: UserRole; dni?: string; course?: string };
 
 interface AuthContextType {
   isAuthenticated: boolean;
@@ -10,117 +11,60 @@ interface AuthContextType {
   selectedRole: 'student' | 'admin';
   userDNI?: string;
   userCourse?: string;
-  schoolId?: string;
+  schoolId: string;
   hydrated: boolean;
   setSelectedRole: (role: 'student' | 'admin') => void;
-  login: (username: string, password: string, schoolId: string) => Promise<{ success: boolean; redirectUrl?: string; error?: string }>;
-  logout: () => void;
+  login: (username: string, password: string) => Promise<{ success: boolean; redirectUrl?: string; error?: string }>;
+  logout: () => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export function AuthProvider({ children, schoolId = 'savio' }: { children: React.ReactNode; schoolId?: string }) {
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userRole, setUserRole] = useState<UserRole>(null);
-  const [userDNI, setUserDNI] = useState<string>();
-  const [userCourse, setUserCourse] = useState<string>();
+// La sesión vive en una cookie httpOnly que firma el servidor (una por cliente). Acá solo se refleja su estado:
+// el navegador ya no decide quién es admin.
+export function AuthProvider({ children, schoolId, initialSession }: { children: React.ReactNode; schoolId: string; initialSession: InitialSession }) {
+  const [session, setSession] = useState<InitialSession>(initialSession);
   const [selectedRole, setSelectedRole] = useState<'student' | 'admin'>('admin');
-  const [hydrated, setHydrated] = useState(false);
 
-  useEffect(() => {
-    // Restaurar sesión desde localStorage si existe
-    // localStorage persiste incluso al cerrar la pestaña
-    const savedAuth = localStorage.getItem('userAuth') === 'true';
-    const savedRole = localStorage.getItem('userRole') as UserRole;
-    const savedDNI = localStorage.getItem('userDNI');
-    const savedCourse = localStorage.getItem('userCourse');
-    
-    if (savedAuth && savedRole) {
-      setIsAuthenticated(true);
-      setUserRole(savedRole);
-      setUserDNI(savedDNI || undefined);
-      setUserCourse(savedCourse || undefined);
+  const login = async (username: string, password: string) => {
+    try {
+      const res = await fetch(`/api/${schoolId}/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ role: selectedRole, username, password }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.success) return { success: false, error: data.error ?? 'Credenciales incorrectas' };
+      setSession({ role: data.role, dni: data.dni, course: data.course });
+      if (data.role === 'admin') return { success: true, redirectUrl: `/${schoolId}/admin` };
+      // Alumnos de este curso usan una plataforma externa.
+      if (data.course === 'Diseño e Impresión 3D') return { success: true, redirectUrl: 'https://v0-hello-eight-ochre.vercel.app/academy' };
+      return { success: true, redirectUrl: `/${schoolId}/aula-virtual` };
+    } catch {
+      return { success: false, error: 'Error de conexión. Intenta de nuevo.' };
     }
-
-    setHydrated(true);
-  }, []);
-
-  const login = async (username: string, password: string, loginSchoolId: string): Promise<{ success: boolean; redirectUrl?: string; error?: string }> => {
-    // Validar credenciales basadas en el rol seleccionado
-    if (selectedRole === 'admin') {
-      try {
-        const res = await fetch('/api/admin-login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ email: username.toLowerCase(), password, schoolId: loginSchoolId }),
-        })
-        const data = await res.json()
-        if (!res.ok || !data.success) {
-          return { success: false, error: data.error ?? 'Credenciales incorrectas' }
-        }
-        setIsAuthenticated(true);
-        setUserRole('admin');
-        localStorage.setItem('userAuth', 'true');
-        localStorage.setItem('userRole', 'admin');
-        return { success: true, redirectUrl: `/${loginSchoolId}/admin` };
-      } catch (err) {
-        return { success: false, error: 'Error de conexión. Intenta de nuevo.' };
-      }
-    } else if (selectedRole === 'student') {
-      // Validar DNI como usuario y contraseña
-      if (!username || !password || username !== password) {
-        return { success: false, error: 'El usuario y la contraseña deben ser el mismo (tu DNI)' };
-      }
-
-      // Buscar el estudiante por DNI
-      try {
-        const response = await fetch('/api/students');
-        const data = await response.json();
-        const students = data.students || [];
-        
-        const student = students.find((s: any) => s.dni === username);
-        
-        if (!student) {
-          return { success: false, error: 'DNI no encontrado en el sistema' };
-        }
-
-        // Autenticar al estudiante
-        setIsAuthenticated(true);
-        setUserRole('student');
-        setUserDNI(username);
-        setUserCourse(student.curso);
-        localStorage.setItem('userAuth', 'true');
-        localStorage.setItem('userRole', 'student');
-        localStorage.setItem('userDNI', username);
-        localStorage.setItem('userCourse', student.curso);
-
-        // Redirigir a URL externa si es alumno de Diseño e Impresión 3D
-        if (student.curso === 'Diseño e Impresión 3D') {
-          return { success: true, redirectUrl: 'https://v0-hello-eight-ochre.vercel.app/academy' };
-        }
-
-        return { success: true, redirectUrl: '/savio/aula-virtual' };
-      } catch (error) {
-        console.error('[v0] Error validating student:', error);
-        return { success: false, error: 'Error al validar credenciales. Intenta de nuevo.' };
-      }
-    }
-    return { success: false, error: 'Rol no válido' };
   };
 
-  const logout = () => {
-    setIsAuthenticated(false);
-    setUserRole(null);
-    setUserDNI(undefined);
-    setUserCourse(undefined);
-    localStorage.removeItem('userAuth');
-    localStorage.removeItem('userRole');
-    localStorage.removeItem('userDNI');
-    localStorage.removeItem('userCourse');
+  const logout = async () => {
+    await fetch(`/api/${schoolId}/auth/logout`, { method: 'POST' }).catch(() => {});
+    setSession({ role: null });
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, userRole, userDNI, userCourse, schoolId, hydrated, selectedRole, setSelectedRole, login, logout }}>
+    <AuthContext.Provider
+      value={{
+        isAuthenticated: session.role !== null,
+        userRole: session.role,
+        userDNI: session.dni,
+        userCourse: session.course,
+        schoolId,
+        hydrated: true,
+        selectedRole,
+        setSelectedRole,
+        login,
+        logout,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -128,8 +72,6 @@ export function AuthProvider({ children, schoolId = 'savio' }: { children: React
 
 export function useAuth() {
   const context = useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
+  if (context === undefined) throw new Error('useAuth must be used within an AuthProvider');
   return context;
 }

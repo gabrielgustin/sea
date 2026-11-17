@@ -1,226 +1,51 @@
-# Extension Académica - Portal Universitario
+# Portal SEA — multi‑cliente
 
-Un portal educativo moderno y profesional construido con Next.js 16, React 19, Tailwind CSS y TypeScript.
+Un solo sitio y un solo dominio. Cada cliente vive en `/<slug>` (por ejemplo `/savio`, `/villada`) con su
+propia información y **su propia base de datos** en Turso.
 
-## 🎯 Características
+## Cómo funciona
 
-### Secciones Principales
-- **Header Responsivo**: Navegación principal con menú móvil
-- **Hero Carousel**: Carrusel interactivo con 3 slides
-- **Programas**: Muestra de 4 programas académicos principales
-- **Noticias**: Últimas novedades con categorías
-- **Formaciones**: Catálogo de diplomaduras y cursos con información de fechas
-- **FAQ**: Preguntas frecuentes con acordeón expandible
-- **Contacto**: Formulario de contacto y información ubicación
-- **Footer**: Enlaces rápidos y redes sociales
+```
+/savio ──┐                       ┌─ base de control (tabla `tenants`: slug, marca, URL+token de su base)
+/villada ┼─► [tenant]/layout ───►│
+/xxxxx  ─┘     (servidor)        └─ base del cliente  ──► cursos, docentes, slides, ajustes,
+                                                          inscripciones, alumnos, admins, mensajes
+```
 
-### Funcionalidades
-- ✅ Diseño completamente responsivo (mobile-first)
-- ✅ Tema de colores profesional (azul y blanco)
-- ✅ Navegación suave entre secciones
-- ✅ Carrusel de imágenes con navegación automática
-- ✅ Formulario de contacto funcional
-- ✅ Componentes reutilizables
-- ✅ Accesibilidad mejorada
-- ✅ Animaciones y transiciones suaves
+- `lib/tenants/` — registro de clientes, conexión a la base de cada uno y migraciones del esquema.
+- `lib/data/` — consultas (cursos, docentes, carrusel, ajustes, inscripciones). Reciben la base del cliente; nunca filtran por `schoolId`.
+- `lib/auth/` — sesión en cookie `httpOnly` firmada, **una por cliente**; `route()` protege las rutas de API.
+- `app/[tenant]/…` — páginas renderizadas en el servidor con los datos ya cargados.
+- `app/api/[tenant]/…` — API. Escritura y datos personales: solo administrador de ese cliente.
 
-## 🚀 Instalación y Uso
+## Sumar un cliente nuevo
 
-### Requisitos
-- Node.js 18+
-- pnpm (o npm/yarn)
-
-### Instalación
 ```bash
-# Clonar el proyecto
-git clone [URL_DEL_PROYECTO]
-cd extension-academica
-
-# Instalar dependencias
-pnpm install
-
-# Ejecutar en desarrollo
-pnpm dev
+pnpm tenant create xxxxx --name "Nombre de la institución" --logo /logo-xxxxx.png --logo-alt "Logo" \
+  --admin-email admin --admin-password '<clave>' --provision
 ```
 
-Abre http://localhost:3000 en tu navegador.
+`--provision` crea la base en Turso (necesita `TURSO_ORG` y `TURSO_API_TOKEN`); sin eso usar `--db-url`/`--db-token`.
+El sitio responde en `/xxxxx` de inmediato, sin tocar código ni redeploy.
 
-### Build para Producción
+Otros comandos: `pnpm tenant migrate --all` (aplica migraciones nuevas a todas las bases), `pnpm tenant list`,
+`pnpm tenant set-admin <slug> <email> <clave>`.
+
+## Cambiar el esquema
+
+Agregar una migración **al final** de `MIGRATIONS` en `lib/tenants/schema.ts` y correr `pnpm tenant migrate --all`.
+Nunca editar una migración ya aplicada.
+
+## Migrar los datos de la base única antigua
+
 ```bash
-pnpm build
-pnpm start
+LEGACY_DB_URL=... LEGACY_DB_TOKEN=... pnpm tenant:import savio            # ensayo, no escribe
+LEGACY_DB_URL=... LEGACY_DB_TOKEN=... pnpm tenant:import savio --apply    # copia de verdad
 ```
 
-## 📁 Estructura del Proyecto
+No toca la base antigua. Los mensajes de contacto/formularios eran compartidos: usar `--include-shared` en un solo cliente.
 
-```
-src/
-├── app/
-│   ├── layout.tsx          # Layout raíz
-│   ├── page.tsx            # Página principal
-│   └── globals.css         # Estilos globales y tema
-├── components/
-│   ├── header.tsx          # Header con navegación
-│   ├── hero-carousel.tsx   # Carrusel principal
-│   ├── programs-section.tsx # Sección de programas
-│   ├── news-section.tsx    # Sección de noticias
-│   ├── formations-section.tsx # Sección de formaciones
-│   ├── faq-section.tsx     # Preguntas frecuentes
-│   ├── contact-section.tsx # Formulario de contacto
-│   ├── footer.tsx          # Footer
-│   └── ui/                 # Componentes UI reutilizables
-└── lib/
-    └── utils.ts            # Utilidades (cn, etc)
-```
+## Desarrollo local
 
-## 🎨 Personalización
-
-### Cambiar Colores
-Edita `/app/globals.css` en la sección `:root`:
-
-```css
-:root {
-  --primary: oklch(0.45 0.22 264);        /* Color primario (azul) */
-  --accent: oklch(0.6 0.15 264);          /* Color de acento */
-  --background: oklch(0.99 0 0);          /* Fondo */
-  --foreground: oklch(0.2 0 0);           /* Texto */
-  /* ... otros colores */
-}
-```
-
-### Modificar Contenido
-
-#### Programas
-Edita `components/programs-section.tsx`:
-```typescript
-const programs = [
-  {
-    id: 1,
-    title: 'Tu Programa',
-    description: 'Descripción...',
-    icon: IconComponent,
-    color: 'from-color-400 to-color-600',
-  },
-  // ...
-];
-```
-
-#### Noticias
-Edita `components/news-section.tsx`:
-```typescript
-const news = [
-  {
-    id: 1,
-    title: 'Tu Noticia',
-    description: '...',
-    category: 'Categoría',
-    date: 'DD/MM/YYYY',
-    image: 'gradient-css',
-  },
-  // ...
-];
-```
-
-#### Formaciones
-Edita `components/formations-section.tsx`:
-```typescript
-const formations = [
-  {
-    id: 1,
-    title: 'Tu Formación',
-    type: 'Diplomatura',
-    modality: 'Online',
-    startDate: 'Inicia...',
-    image: 'gradient-css',
-  },
-  // ...
-];
-```
-
-#### FAQ
-Edita `components/faq-section.tsx`:
-```typescript
-const faqItems = [
-  {
-    id: 1,
-    question: '¿Tu pregunta?',
-    answer: 'Tu respuesta...',
-  },
-  // ...
-];
-```
-
-#### Información de Contacto
-Edita `components/footer.tsx` y `components/contact-section.tsx` con:
-- Dirección
-- Teléfono
-- Email
-- Horarios
-
-### Cambiar Logo
-En `components/header.tsx`:
-```typescript
-<div className="w-10 h-10 bg-gradient-to-br from-primary to-accent rounded-lg flex items-center justify-center">
-  <span className="text-white font-bold text-lg">TU_LOGO</span>
-</div>
-```
-
-## 🔧 Tecnologías Utilizadas
-
-- **Next.js 16**: Framework React con SSR
-- **React 19**: Librería UI
-- **Tailwind CSS**: Estilos y diseño
-- **TypeScript**: Tipado estático
-- **Lucide React**: Iconos
-- **shadcn/ui**: Componentes UI accesibles
-
-## 📱 Responsividad
-
-El portal es completamente responsivo:
-- **Mobile**: < 640px
-- **Tablet**: 640px - 1024px
-- **Desktop**: > 1024px
-
-## ♿ Accesibilidad
-
-- Etiquetas ARIA correctas
-- Navegación por teclado
-- Textos alt en imágenes
-- Contraste de colores adecuado
-- Semántica HTML5
-
-## 🔐 Seguridad
-
-El formulario de contacto es funcional pero actualmente no envía emails. Para implementar envíos:
-
-```typescript
-// Agregar en app/api/contact/route.ts
-export async function POST(req: Request) {
-  const data = await req.json();
-  // Aquí ir email con tu servicio preferido
-}
-```
-
-## 📈 Mejoras Futuras Sugeridas
-
-- [ ] Conectar base de datos para cursos dinámicos
-- [ ] Sistema de autenticación de usuarios
-- [ ] Panel de administración
-- [ ] Sistema de comentarios/reviews
-- [ ] Blog con artículos
-- [ ] Integración con email (Sendgrid, Resend)
-- [ ] Analytics
-- [ ] SEO mejorado
-
-## 📝 Licencia
-
-Este proyecto está disponible bajo licencia MIT.
-
-## 💬 Soporte
-
-Para consultas o sugerencias, contacta a través del formulario de contacto en el sitio.
-
----
-
-**Versión**: 1.0.0
-**Última actualización**: Mayo 2026
+Copiar `.env.example` a `.env.local`. Para no tocar producción, usar bases de archivo
+(`CONTROL_DB_URL=file:.data/control.db` y `--db-url file:.data/savio.db`). Luego `pnpm dev`.

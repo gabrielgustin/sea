@@ -5,12 +5,12 @@ import Link from 'next/link';
 import { useSchool } from '@/context/SchoolContext';
 
 export default function Header() {
-  const { schoolId } = useSchool();
+  const { schoolId, tenant } = useSchool();
 
-  const schoolLogo = schoolId === 'villada' ? '/logo-its-villada.png' : '/logo-domingo-savio.png';
-  const schoolLogoAlt = schoolId === 'villada' ? 'ITS Villada Logo' : 'Domingo Savio Logo';
-  const seaLogo = schoolId === 'savio' ? '/images/sea-savio-logo.png' : '/logo-sea.png';
-  const seaLogoAlt = schoolId === 'savio' ? 'SEA - Secretaría de Extensión Académica' : 'SEA Logo';
+  // Los logos salen de la configuración del cliente (tabla tenants), no del código.
+  const { logo: schoolLogo, logoAlt: schoolLogoAlt } = tenant.config;
+  const seaLogo = tenant.config.seaLogo ?? '/logo-sea.png';
+  const seaLogoAlt = tenant.config.seaLogoAlt ?? 'SEA Logo';
 
   return (
     <header className="w-full bg-white fixed md:static top-0 left-0 right-0 z-30 md:z-auto" style={{ borderBottom: '2px solid #031e41' }}>

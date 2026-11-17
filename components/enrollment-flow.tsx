@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 import { Course, Commission } from '@/context/CoursesContext';
 import { useSchool } from '@/context/SchoolContext';
 import { ArrowLeft, ArrowRight, Calendar, Clock, User, CheckCircle, Mail, Phone, CreditCard, AlertCircle, Users } from 'lucide-react';
-import { submitEnrollment } from '@/app/actions/enrollments';
 
 interface EnrollmentFlowProps {
   course: Course;
@@ -32,6 +31,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
   const [loadingCounts, setLoadingCounts] = useState(false);
   const [studentData, setStudentData] = useState<StudentData>({ nombre: '', dni: '', email: '', telefono: '' });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const [isStudentDataVerified, setIsStudentDataVerified] = useState(false);
 
 
@@ -42,7 +42,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
     if (!hasCommissions) return;
     setLoadingCounts(true);
     try {
-      const res = await fetch(`/api/enrollments?courseId=${encodeURIComponent(String(course.id))}&schoolId=${schoolId}`);
+      const res = await fetch(`/api/${schoolId}/enrollments?courseId=${encodeURIComponent(String(course.id))}`);
       if (res.ok) {
         const data = await res.json();
         setEnrollmentCounts(data.counts || {});
@@ -121,36 +121,33 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
       const nombre = parts[0] ?? '';
       const apellido = parts.slice(1).join(' ') || '';
 
-      console.log('[v0] Starting enrollment submission:', {
-        schoolId,
-        courseId: course.id,
-        courseName: course.title,
-        commissionId: selectedCommission?.id,
-        nombre,
-        apellido,
-        email: studentData.email,
+      const res = await fetch(`/api/${schoolId}/enrollments`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          courseId: String(course.id),
+          courseName: course.title,
+          commissionId: selectedCommission?.id,
+          commissionName: selectedCommission?.name,
+          nombre,
+          apellido,
+          email: studentData.email,
+          telefono: studentData.telefono,
+          dni: studentData.dni,
+        }),
       });
-
-      await submitEnrollment({
-        schoolId,
-        courseId: String(course.id),
-        courseName: course.title,
-        commissionId: selectedCommission?.id,
-        commissionName: selectedCommission?.name,
-        nombre,
-        apellido,
-        email: studentData.email,
-        telefono: studentData.telefono,
-        dni: studentData.dni,
-      });
-
-      console.log('[v0] Enrollment submitted successfully');
-      // Refresh counts so capacity reflects the new enrollment
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        setSubmitError(data.message || 'No pudimos registrar tu inscripción. Intentá de nuevo en unos minutos.');
+        await fetchEnrollmentCounts();
+        return; // se queda en el paso de revisión: antes mostraba "éxito" aunque fallara
+      }
       await fetchEnrollmentCounts();
+      setCurrentStep(totalSteps);
     } catch (err) {
-      console.error('[v0] Error submitting enrollment:', err);
+      console.error('Error submitting enrollment:', err);
+      setSubmitError('Error de conexión. Intentá de nuevo.');
     } finally {
-      setCurrentStep(totalSteps); // Go to success step
       setIsSubmitting(false);
     }
   };
@@ -555,6 +552,7 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
       {/* Navigation */}
       {logical !== 'done' && (
         <div className="fixed bottom-0 left-0 right-0 p-4" style={{ backgroundColor: '#ffffff', borderTop: '1px solid #e5e7eb' }}>
+          {submitError && <p role="alert" className="max-w-2xl mx-auto mb-2 text-sm text-red-600">{submitError}</p>}
           <div className="max-w-2xl mx-auto flex gap-3">
             <button
               onClick={handleBack}

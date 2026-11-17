@@ -195,7 +195,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
       fd.append('file', file);
       fd.append('folder', `courses/${schoolId}`);
 
-      const res = await fetch('/api/upload-image', { method: 'POST', body: fd });
+      const res = await fetch(`/api/${schoolId}/upload-image`, { method: 'POST', body: fd });
       const data = await res.json();
 
       if (!res.ok || !data.url) {

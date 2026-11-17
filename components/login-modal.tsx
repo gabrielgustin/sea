@@ -7,7 +7,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Button } from '@/components/ui/button';
 import { Shield } from 'lucide-react';
-import { useParams } from 'next/navigation';
 
 interface LoginModalProps {
   open: boolean;
@@ -20,9 +19,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  const params = useParams();
-  const schoolId = typeof params?.schoolId === 'string' ? params.schoolId : 'savio';
-  const { login, selectedRole, setSelectedRole } = useAuth();
+  const { login, selectedRole, setSelectedRole, schoolId } = useAuth();
 
   useEffect(() => {
     if (open) {
@@ -46,7 +43,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
     }
 
     try {
-      const result = await login(username, password, schoolId);
+      const result = await login(username, password);
 
       if (result.success) {
         setUsername('');

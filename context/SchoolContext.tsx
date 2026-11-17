@@ -1,45 +1,21 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import React, { createContext, useContext } from 'react';
+import type { PublicTenant } from '@/lib/tenants/types';
 
 interface SchoolContextType {
-  schoolId: string;
-  isReady: boolean;
+  schoolId: string; // slug del cliente (lo que va en la URL)
+  tenant: PublicTenant;
 }
 
 const SchoolContext = createContext<SchoolContextType | undefined>(undefined);
 
-export function SchoolProvider({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const [schoolId, setSchoolId] = useState<string>('savio');
-  const [isReady, setIsReady] = useState(false);
-
-  useEffect(() => {
-    // Detecta si la ruta empieza con /savio o /savio
-    const segments = pathname.split('/').filter(Boolean);
-    const possibleSchoolId = segments[0];
-
-    if (possibleSchoolId === 'savio' || possibleSchoolId === 'villada') {
-      setSchoolId(possibleSchoolId);
-    } else {
-      // Default a savio si no hay schoolId en la ruta
-      setSchoolId('savio');
-    }
-    setIsReady(true);
-  }, [pathname]);
-
-  return (
-    <SchoolContext.Provider value={{ schoolId, isReady }}>
-      {children}
-    </SchoolContext.Provider>
-  );
+export function SchoolProvider({ children, tenant }: { children: React.ReactNode; tenant: PublicTenant }) {
+  return <SchoolContext.Provider value={{ schoolId: tenant.slug, tenant }}>{children}</SchoolContext.Provider>;
 }
 
 export function useSchool() {
   const context = useContext(SchoolContext);
-  if (!context) {
-    throw new Error('useSchool must be used within a SchoolProvider');
-  }
+  if (!context) throw new Error('useSchool must be used within a SchoolProvider');
   return context;
 }

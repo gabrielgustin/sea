@@ -1,37 +1,21 @@
 'use server'
 
-import { pool } from '@/lib/db'
-import { revalidatePath } from 'next/cache'
+import { tenantDb } from '@/lib/tenants/db'
 
-export async function submitJobApplication(data: {
-  nombre: string
-  apellido: string
-  email: string
-  telefono?: string
-  dni?: string
-  titulo?: string
-  especialidad?: string
-  experiencia?: string
-  motivacion?: string
-}) {
-  try {
-    await pool.query(
-      `INSERT INTO job_applications (nombre, apellido, email, telefono, dni, titulo, especialidad, experiencia, motivacion, status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')`,
-      [data.nombre, data.apellido, data.email, data.telefono || null, data.dni || null, data.titulo || null, data.especialidad || null, data.experiencia || null, data.motivacion || null]
-    )
-    revalidatePath('/savio/admin')
-  } catch (error) {
-    console.error('[v0] Error submitting job application:', error)
-    throw error
-  }
-}
+const clip = (v: unknown, max: number) => String(v ?? '').trim().slice(0, max) || null
 
-export async function getJobApplications() {
-  try {
-    const result = await pool.query('SELECT * FROM job_applications ORDER BY createdAt DESC')
-    return result.rows || []
-  } catch (error) {
-    console.error('[v0] Error getting job applications:', error)
-    return []
-  }
+export async function submitJobApplication(
+  tenant: string,
+  d: {
+    nombre: string; apellido: string; email: string; telefono?: string; dni?: string
+    titulo?: string; especialidad?: string; experiencia?: string; motivacion?: string
+  },
+) {
+  if (!clip(d.nombre, 200) || !clip(d.email, 200)) throw new Error('Faltan datos obligatorios')
+  const { db } = await tenantDb(tenant)
+  await db.execute({
+    sql: `INSERT INTO job_applications (nombre, apellido, email, telefono, dni, titulo, especialidad, experiencia, motivacion, status)
+          VALUES (?,?,?,?,?,?,?,?,?, 'pending')`,
+    args: [clip(d.nombre, 200), clip(d.apellido, 200), clip(d.email, 200), clip(d.telefono, 50), clip(d.dni, 20), clip(d.titulo, 200), clip(d.especialidad, 200), clip(d.experiencia, 5000), clip(d.motivacion, 5000)],
+  })
 }

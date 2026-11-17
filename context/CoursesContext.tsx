@@ -1,7 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { usePathname } from 'next/navigation';
+import React, { createContext, useContext, useState } from 'react';
 
 export interface CourseTeacher {
   name: string;
@@ -65,19 +64,16 @@ interface CoursesContextType {
 
 const CoursesContext = createContext<CoursesContextType | undefined>(undefined);
 
-export function CoursesProvider({ children }: { children: React.ReactNode }) {
-  const pathname = usePathname();
-  const [courses, setCourses] = useState<Course[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  // Derive schoolId from the URL path
-  const segments = pathname.split('/').filter(Boolean);
-  const schoolId = (segments[0] === 'savio' || segments[0] === 'villada') ? segments[0] : 'savio';
+export function CoursesProvider({ children, schoolId, initialCourses }: { children: React.ReactNode; schoolId: string; initialCourses: Course[] }) {
+  // Los cursos llegan ya cargados desde el servidor; el fetch solo se usa para refrescar tras editar.
+  const [courses, setCourses] = useState<Course[]>(initialCourses);
+  const [loading, setLoading] = useState(false);
+  const api = `/api/${schoolId}/courses`;
 
   const fetchCourses = async () => {
     try {
       setLoading(true);
-      const res = await fetch(`/api/courses?schoolId=${schoolId}`);
+      const res = await fetch(api);
       if (res.ok) {
         const data = await res.json();
         setCourses(Array.isArray(data) ? data : (data.courses ?? []));
@@ -92,15 +88,11 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  useEffect(() => {
-    fetchCourses();
-  }, [schoolId]);
-
   const addCourse = async (course: Omit<Course, 'id'>) => {
-    const res = await fetch('/api/courses', {
+    const res = await fetch(api, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...course, schoolId }),
+      body: JSON.stringify(course),
     });
     if (!res.ok) {
       const error = await res.json();
@@ -110,10 +102,10 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
   };
 
   const updateCourse = async (id: string, updatedData: Partial<Course>) => {
-    const res = await fetch('/api/courses', {
+    const res = await fetch(api, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, ...updatedData, schoolId }),
+      body: JSON.stringify({ id, ...updatedData }),
     });
     const resData = await res.json();
     if (!res.ok) {
@@ -123,10 +115,10 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
   };
 
   const deleteCourse = async (id: string) => {
-    const res = await fetch('/api/courses', {
+    const res = await fetch(api, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, schoolId }),
+      body: JSON.stringify({ id }),
     });
     if (!res.ok) {
       const error = await res.json();
@@ -145,10 +137,10 @@ export function CoursesProvider({ children }: { children: React.ReactNode }) {
       const map = new Map(prev.map(c => [c.id, c]));
       return orderedIds.map(id => map.get(id)!).filter(Boolean);
     });
-    const res = await fetch('/api/courses/reorder', {
+    const res = await fetch(`${api}/reorder`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ schoolId, orderedIds }),
+      body: JSON.stringify({ orderedIds }),
     });
     if (!res.ok) {
       // Rollback on error

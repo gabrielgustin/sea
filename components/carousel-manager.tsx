@@ -76,7 +76,7 @@ export function CarouselManager() {
   const fetchSlides = async () => {
     setIsLoading(true)
     try {
-      const res = await fetch(`/api/carousel?schoolId=${schoolId}`)
+      const res = await fetch(`/api/${schoolId}/carousel`)
       const data = await res.json()
       const sorted = (data.slides || []).sort((a: Slide, b: Slide) => a.order - b.order)
       setSlides(sorted)
@@ -89,7 +89,7 @@ export function CarouselManager() {
 
   const fetchCourses = async () => {
     try {
-      const res = await fetch(`/api/courses?schoolId=${schoolId}`)
+      const res = await fetch(`/api/${schoolId}/courses`)
       const data = await res.json()
       setCourses(data.courses || [])
     } catch {}
@@ -114,7 +114,7 @@ export function CarouselManager() {
       const fd = new FormData()
       fd.append('file', file)
       fd.append('folder', `carousel/${schoolId}`)
-      const res = await fetch('/api/upload-image', { method: 'POST', body: fd })
+      const res = await fetch(`/api/${schoolId}/upload-image`, { method: 'POST', body: fd })
       const data = await res.json()
       if (!res.ok || !data.url) throw new Error(data.error || 'Error al subir')
       setFormData(prev => ({ ...prev, image: data.url }))
@@ -182,7 +182,7 @@ export function CarouselManager() {
         schoolId,
         ...(isNew ? { id: `slide_${Date.now()}` } : { id: editingId }),
       }
-      const res = await fetch('/api/carousel', {
+      const res = await fetch(`/api/${schoolId}/carousel`, {
         method: isNew ? 'POST' : 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -203,7 +203,7 @@ export function CarouselManager() {
   const handleDelete = async (id: string) => {
     if (!confirm('¿Eliminar este slide del carrusel?')) return
     try {
-      const res = await fetch('/api/carousel', {
+      const res = await fetch(`/api/${schoolId}/carousel`, {
         method: 'DELETE',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, schoolId }),
@@ -218,7 +218,7 @@ export function CarouselManager() {
 
   const handleToggleActive = async (slide: Slide) => {
     try {
-      await fetch('/api/carousel', {
+      await fetch(`/api/${schoolId}/carousel`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: slide.id, schoolId, active: !slide.active }),
@@ -239,7 +239,7 @@ export function CarouselManager() {
     try {
       await Promise.all(
         updates.map(u =>
-          fetch('/api/carousel', {
+          fetch(`/api/${schoolId}/carousel`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ id: u.id, schoolId, order: u.order }),
