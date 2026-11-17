@@ -1,4 +1,4 @@
-import type { Client, InValue } from '@libsql/client'
+import type { Db } from '@/lib/tenants/pg'
 import { updateById, bool, json, parseJson, type Row } from './sql'
 import { courseIdsOf } from './teachers'
 
@@ -19,8 +19,8 @@ const mapCourse = (r: Row, teachers: TeacherCard[]) => ({
 })
 
 // Una sola consulta de docentes para todos los cursos (antes era una por curso).
-async function teachersByCourse(db: Client): Promise<Map<string, TeacherCard[]>> {
-  const res = await db.execute('SELECT * FROM teachers WHERE active = 1 ORDER BY "order" ASC, id ASC')
+async function teachersByCourse(db: Db): Promise<Map<string, TeacherCard[]>> {
+  const res = await db.execute('SELECT * FROM teachers WHERE active = true ORDER BY "order" ASC, id ASC')
   const map = new Map<string, TeacherCard[]>()
   for (const t of res.rows) {
     const card: TeacherCard = {
@@ -32,24 +32,24 @@ async function teachersByCourse(db: Client): Promise<Map<string, TeacherCard[]>>
   return map
 }
 
-export async function listCourses(db: Client, opts: { homeOnly?: boolean } = {}) {
+export async function listCourses(db: Db, opts: { homeOnly?: boolean } = {}) {
   const [res, byCourse] = await Promise.all([
-    db.execute(`SELECT * FROM courses ${opts.homeOnly ? 'WHERE showOnHome = 1' : ''} ORDER BY sortOrder ASC, createdAt DESC`),
+    db.execute(`SELECT * FROM courses ${opts.homeOnly ? 'WHERE "showOnHome" = true' : ''} ORDER BY "sortOrder" ASC, "createdAt" DESC`),
     teachersByCourse(db),
   ])
   return res.rows.map((r) => mapCourse(r, byCourse.get(String(r.id)) ?? []))
 }
 
-export async function getCourse(db: Client, slugOrId: string) {
+export async function getCourse(db: Db, slugOrId: string) {
   const res = await db.execute({ sql: 'SELECT * FROM courses WHERE slug = ? OR id = ? LIMIT 1', args: [slugOrId, slugOrId] })
   if (!res.rows[0]) return null
   return mapCourse(res.rows[0], (await teachersByCourse(db)).get(String(res.rows[0].id)) ?? [])
 }
 
-export async function createCourse(db: Client, b: Row, defaultLocation = '') {
+export async function createCourse(db: Db, b: Row, defaultLocation = '') {
   const id = String(b.id || `course_${Date.now()}`)
   await db.execute({
-    sql: `INSERT INTO courses (id, title, subtitle, description, image, badge, slug, startDate, enrollmentDeadline, modality, schedule, location, teacher, teachers, duration, price, requirements, objective, methodology, finalProject, whatsappGroup, level, modules, showOnHome, commissions)
+    sql: `INSERT INTO courses (id, title, subtitle, description, image, badge, slug, "startDate", "enrollmentDeadline", modality, schedule, location, teacher, teachers, duration, price, requirements, objective, methodology, "finalProject", "whatsappGroup", level, modules, "showOnHome", commissions)
           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
     args: [
       id, b.title || '', b.subtitle || '', b.description || '', b.image || '', b.badge || '',
@@ -57,23 +57,20 @@ export async function createCourse(db: Client, b: Row, defaultLocation = '') {
       b.location || defaultLocation, b.teacher || '', json(b.teachers, []), b.duration || '6 meses', b.price || '',
       b.requirements || '', b.objective || '', b.methodology || '', b.finalProject || '', b.whatsappGroup || '',
       b.level || 'PRINCIPIANTE', json(b.modules, []), bool(b.showOnHome), json(b.commissions, []),
-    ] as InValue[],
+    ],
   })
   return id
 }
 
-export async function updateCourse(db: Client, id: string, b: Row) {
+export async function updateCourse(db: Db, id: string, b: Row) {
   const data: Row = { ...b }
   for (const k of ['modules', 'teachers', 'commissions']) if (data[k] !== undefined) data[k] = JSON.stringify(data[k])
   if (data.showOnHome !== undefined) data.showOnHome = bool(data.showOnHome)
-  await updateById(db, 'courses', id, data, FIELDS, ', updatedAt = CURRENT_TIMESTAMP')
+  await updateById(db, 'courses', id, data, FIELDS, '"updatedAt" = now()')
 }
 
-export const deleteCourse = (db: Client, id: string) => db.execute({ sql: 'DELETE FROM courses WHERE id = ?', args: [id] })
+export const deleteCourse = (db: Db, id: string) => db.execute({ sql: 'DELETE FROM courses WHERE id = ?', args: [id] })
 
-export async function reorderCourses(db: Client, orderedIds: string[]) {
-  await db.batch(
-    orderedIds.map((id, i) => ({ sql: 'UPDATE courses SET sortOrder = ?, updatedAt = CURRENT_TIMESTAMP WHERE id = ?', args: [i, id] })),
-    'write',
-  )
+export async function reorderCourses(db: Db, orderedIds: string[]) {
+  await db.batch(orderedIds.map((id, i) => ({ sql: 'UPDATE courses SET "sortOrder" = ?, "updatedAt" = now() WHERE id = ?', args: [i, id] })))
 }

@@ -1,14 +1,14 @@
 # Portal SEA — multi‑cliente
 
 Un solo sitio y un solo dominio. Cada cliente vive en `/<slug>` (por ejemplo `/savio`, `/villada`) con su
-propia información y **su propia base de datos** en Turso.
+propia información y **su propia base de datos** en Neon (Postgres).
 
 ## Cómo funciona
 
 ```
 /savio ──┐                       ┌─ base de control (tabla `tenants`: slug, marca, URL+token de su base)
 /villada ┼─► [tenant]/layout ───►│
-/xxxxx  ─┘     (servidor)        └─ base del cliente  ──► cursos, docentes, slides, ajustes,
+/xxxxx  ─┘     (servidor)        └─ base del cliente (Neon) ──► cursos, docentes, slides, ajustes,
                                                           inscripciones, alumnos, admins, mensajes
 ```
 
@@ -25,7 +25,7 @@ pnpm tenant create xxxxx --name "Nombre de la institución" --logo /logo-xxxxx.p
   --admin-email admin --admin-password '<clave>' --provision
 ```
 
-`--provision` crea la base en Turso (necesita `TURSO_ORG` y `TURSO_API_TOKEN`); sin eso usar `--db-url`/`--db-token`.
+`--provision` crea un usuario y una base propios en Neon (necesita `NEON_ADMIN_URL`; sin probar aún contra Neon real, revisar la primera vez); sin eso usar `--db-url` con la cadena de conexión de una base ya creada.
 El sitio responde en `/xxxxx` de inmediato, sin tocar código ni redeploy.
 
 Otros comandos: `pnpm tenant migrate --all` (aplica migraciones nuevas a todas las bases), `pnpm tenant list`,
@@ -36,16 +36,21 @@ Otros comandos: `pnpm tenant migrate --all` (aplica migraciones nuevas a todas l
 Agregar una migración **al final** de `MIGRATIONS` en `lib/tenants/schema.ts` y correr `pnpm tenant migrate --all`.
 Nunca editar una migración ya aplicada.
 
-## Migrar los datos de la base única antigua
+## Migrar los datos de la base única antigua (Turso)
 
 ```bash
-LEGACY_DB_URL=... LEGACY_DB_TOKEN=... pnpm tenant:import savio            # ensayo, no escribe
-LEGACY_DB_URL=... LEGACY_DB_TOKEN=... pnpm tenant:import savio --apply    # copia de verdad
+LEGACY_DB_URL=libsql://... LEGACY_DB_TOKEN=... pnpm tenant:import savio    # ensayo, no escribe
+LEGACY_DB_URL=libsql://... LEGACY_DB_TOKEN=... pnpm tenant:import savio --apply
 ```
 
 No toca la base antigua. Los mensajes de contacto/formularios eran compartidos: usar `--include-shared` en un solo cliente.
 
 ## Desarrollo local
 
-Copiar `.env.example` a `.env.local`. Para no tocar producción, usar bases de archivo
-(`CONTROL_DB_URL=file:.data/control.db` y `--db-url file:.data/savio.db`). Luego `pnpm dev`.
+Copiar `.env.example` a `.env.local`. Para no tocar producción, trabajar con un cliente de prueba
+(un cliente `test` con su propia base en Neon). Luego `pnpm dev`.
+
+## Aislamiento
+
+Cada cliente tiene su propio usuario de Postgres, dueño de su base. Ese usuario **no puede leer** las bases de los demás
+clientes ni la de control (verificado: `permission denied`). Un error de consulta no puede mezclar datos entre clientes.

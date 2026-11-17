@@ -1,26 +1,21 @@
 import 'server-only'
-import { createClient, type Client } from '@libsql/client'
 import { notFound } from 'next/navigation'
+import { connect, type Db } from './pg'
 import { getTenant } from './registry'
 import type { Tenant } from './types'
 
-const clients = new Map<string, Client>()
+const clients = new Map<string, Db>()
 
-function clientFor(t: Tenant): Client {
+export function clientFor(t: Tenant): Db {
   const key = `${t.slug}|${t.dbUrl}`
   let c = clients.get(key)
-  if (!c) {
-    c = createClient({ url: t.dbUrl, authToken: t.dbToken || undefined })
-    clients.set(key, c)
-  }
+  if (!c) clients.set(key, (c = connect(t.dbUrl)))
   return c
 }
 
 // Punto único de acceso a datos: la base del cliente que pide la ruta. 404 si el cliente no existe.
-export async function tenantDb(slug: string): Promise<{ tenant: Tenant; db: Client }> {
+export async function tenantDb(slug: string): Promise<{ tenant: Tenant; db: Db }> {
   const tenant = await getTenant(slug)
   if (!tenant) notFound()
   return { tenant, db: clientFor(tenant) }
 }
-
-export { clientFor }

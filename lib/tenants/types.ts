@@ -12,8 +12,7 @@ export type TenantConfig = {
 export type Tenant = {
   slug: string
   name: string
-  dbUrl: string
-  dbToken: string | null
+  dbUrl: string // cadena de conexión a Neon de ESTE cliente (incluye su usuario y clave propios)
   config: TenantConfig
   active: boolean
 }

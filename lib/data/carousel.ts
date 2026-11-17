@@ -1,10 +1,10 @@
-import type { Client } from '@libsql/client'
+import type { Db } from '@/lib/tenants/pg'
 import { updateById, bool, type Row } from './sql'
 
 const FIELDS = ['title', 'subtitle', 'description', 'image', 'ctaText', 'ctaLink', 'slideDuration', 'slideModality', 'slideStart', 'slideBadge', 'active', 'order'] as const
 
-export async function listSlides(db: Client, opts: { activeOnly?: boolean } = {}) {
-  const res = await db.execute(`SELECT * FROM carousel_slides ${opts.activeOnly ? 'WHERE active = 1' : ''} ORDER BY "order" ASC, id ASC`)
+export async function listSlides(db: Db, opts: { activeOnly?: boolean } = {}) {
+  const res = await db.execute(`SELECT * FROM carousel_slides ${opts.activeOnly ? 'WHERE active = true' : ''} ORDER BY "order" ASC, id ASC`)
   return res.rows.map((r) => ({
     ...r,
     id: String(r.id),
@@ -17,19 +17,19 @@ export async function listSlides(db: Client, opts: { activeOnly?: boolean } = {}
   }))
 }
 
-export async function createSlide(db: Client, b: Row) {
+export async function createSlide(db: Db, b: Row) {
   const res = await db.execute({
-    sql: 'INSERT INTO carousel_slides (title, description, image, ctaLink, slideDuration, slideModality, slideStart, slideBadge, active, "order") VALUES (?,?,?,?,?,?,?,?,?,?)',
+    sql: 'INSERT INTO carousel_slides (title, description, image, "ctaLink", "slideDuration", "slideModality", "slideStart", "slideBadge", active, "order") VALUES (?,?,?,?,?,?,?,?,?,?) RETURNING id',
     args: [
       String(b.title || ''), String(b.description || b.subtitle || ''), String(b.image || ''), String(b.ctaLink || ''),
       String(b.slideDuration || ''), String(b.slideModality || ''), String(b.slideStart || ''), String(b.slideBadge || ''),
-      b.active === false ? 0 : 1, Number(b.order ?? 0),
+      b.active !== false, Number(b.order ?? 0),
     ],
   })
-  return String(res.lastInsertRowid)
+  return String(res.rows[0].id)
 }
 
-export async function updateSlide(db: Client, id: string, b: Row) {
+export async function updateSlide(db: Db, id: string, b: Row) {
   const data: Row = { ...b }
   if (data.description !== undefined && data.subtitle === undefined) data.subtitle = data.description
   delete data.description
@@ -37,4 +37,4 @@ export async function updateSlide(db: Client, id: string, b: Row) {
   await updateById(db, 'carousel_slides', id, data, FIELDS)
 }
 
-export const deleteSlide = (db: Client, id: string) => db.execute({ sql: 'DELETE FROM carousel_slides WHERE id = ?', args: [id] })
+export const deleteSlide = (db: Db, id: string) => db.execute({ sql: 'DELETE FROM carousel_slides WHERE id = ?', args: [id] })

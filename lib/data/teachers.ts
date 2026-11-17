@@ -1,4 +1,4 @@
-import type { Client } from '@libsql/client'
+import type { Db } from '@/lib/tenants/pg'
 import { updateById, bool, type Row } from './sql'
 
 // courseId se guarda como arreglo JSON de ids de curso, p. ej. ["5","7"].
@@ -23,7 +23,7 @@ export const courseIdsOf = (v: unknown): string[] => {
   return n ? (JSON.parse(n) as string[]) : []
 }
 
-export async function listTeachers(db: Client) {
+export async function listTeachers(db: Db) {
   const res = await db.execute('SELECT * FROM teachers ORDER BY "order" ASC, id ASC')
   return res.rows.map((r) => {
     const courseIds = courseIdsOf(r.courseId)
@@ -33,23 +33,23 @@ export async function listTeachers(db: Client) {
 
 const FIELDS = ['name', 'description', 'image', 'whatsapp', 'linkedin', 'instagram', 'tiktok', 'youtube', 'courseId', 'order', 'active'] as const
 
-export async function createTeacher(db: Client, b: Row) {
+export async function createTeacher(db: Db, b: Row) {
   const res = await db.execute({
-    sql: 'INSERT INTO teachers (name, description, image, whatsapp, linkedin, instagram, tiktok, youtube, courseId, "order", active) VALUES (?,?,?,?,?,?,?,?,?,?,?)',
+    sql: 'INSERT INTO teachers (name, description, image, whatsapp, linkedin, instagram, tiktok, youtube, "courseId", "order", active) VALUES (?,?,?,?,?,?,?,?,?,?,?) RETURNING id',
     args: [
       String(b.name || ''), String(b.description || ''), String(b.image || ''), String(b.whatsapp || ''),
       String(b.linkedin || ''), String(b.instagram || ''), String(b.tiktok || ''), String(b.youtube || ''),
-      normalizeCourseIds(b.courseId), Number(b.order ?? 0), b.active === false ? 0 : 1,
+      normalizeCourseIds(b.courseId), Number(b.order ?? 0), b.active !== false,
     ],
   })
-  return String(res.lastInsertRowid)
+  return String(res.rows[0].id)
 }
 
-export async function updateTeacher(db: Client, id: string, b: Row) {
+export async function updateTeacher(db: Db, id: string, b: Row) {
   const data: Row = { ...b }
   if ('active' in data) data.active = bool(data.active)
   if ('courseId' in data) data.courseId = normalizeCourseIds(data.courseId)
-  await updateById(db, 'teachers', id, data, FIELDS, ', updatedAt = CURRENT_TIMESTAMP')
+  await updateById(db, 'teachers', id, data, FIELDS, '"updatedAt" = now()')
 }
 
-export const deleteTeacher = (db: Client, id: string) => db.execute({ sql: 'DELETE FROM teachers WHERE id = ?', args: [id] })
+export const deleteTeacher = (db: Db, id: string) => db.execute({ sql: 'DELETE FROM teachers WHERE id = ?', args: [id] })

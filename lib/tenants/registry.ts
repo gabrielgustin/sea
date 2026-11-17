@@ -15,14 +15,13 @@ export function isValidSlug(slug: string) {
 const TTL_MS = 30_000
 const mem = new Map<string, { at: number; tenant: Tenant | null }>()
 
-function rowToTenant(r: Record<string, unknown>): Tenant {
+function rowToTenant(r: Record<string, any>): Tenant { // eslint-disable-line @typescript-eslint/no-explicit-any
   return {
     slug: String(r.slug),
     name: String(r.name),
     dbUrl: String(r.db_url),
-    dbToken: r.db_token ? String(r.db_token) : null,
-    config: JSON.parse(String(r.config || '{}')),
-    active: Number(r.active) === 1,
+    config: typeof r.config === 'string' ? JSON.parse(r.config || '{}') : (r.config ?? {}),
+    active: Boolean(r.active),
   }
 }
 
@@ -30,7 +29,7 @@ async function load(slug: string): Promise<Tenant | null> {
   const hit = mem.get(slug)
   if (hit && Date.now() - hit.at < TTL_MS) return hit.tenant
   const res = await controlDb().execute({ sql: 'SELECT * FROM tenants WHERE slug = ? LIMIT 1', args: [slug] })
-  const tenant = res.rows[0] ? rowToTenant(res.rows[0] as unknown as Record<string, unknown>) : null
+  const tenant = res.rows[0] ? rowToTenant(res.rows[0]) : null
   mem.set(slug, { at: Date.now(), tenant })
   return tenant
 }
@@ -43,8 +42,8 @@ export const getTenant = cache(async (slug: string): Promise<Tenant | null> => {
 })
 
 export async function listTenants(): Promise<Tenant[]> {
-  const res = await controlDb().execute('SELECT * FROM tenants WHERE active = 1 ORDER BY slug')
-  return res.rows.map((r) => rowToTenant(r as unknown as Record<string, unknown>))
+  const res = await controlDb().execute('SELECT * FROM tenants WHERE active = true ORDER BY slug')
+  return res.rows.map(rowToTenant)
 }
 
 export function toPublic(t: Tenant): PublicTenant {

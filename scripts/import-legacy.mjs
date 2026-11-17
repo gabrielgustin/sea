@@ -1,11 +1,12 @@
-// Copia los datos de UN cliente desde la base única antigua (con columna schoolId) a su base propia.
+// Copia los datos de UN cliente desde la base única antigua (Turso, con columna schoolId) a su base propia en Neon.
 // No modifica ni borra nada en la base antigua. Es repetible: lo ya copiado no se duplica.
-// Uso: LEGACY_DB_URL=... LEGACY_DB_TOKEN=... CONTROL_DB_URL=... node scripts/import-legacy.mjs <slug> [--apply] [--include-shared]
+// Uso: LEGACY_DB_URL=libsql://... LEGACY_DB_TOKEN=... CONTROL_DB_URL=... node scripts/import-legacy.mjs <slug> [--apply] [--include-shared]
 //   sin --apply: solo cuenta lo que copiaría (ensayo).
 //   --include-shared: copia también contact_messages, interest_forms y job_applications (en la base antigua no tenían
 //   schoolId, eran compartidas por todos los clientes); usarlo en UN solo cliente para no duplicarlas.
 import { createClient } from '@libsql/client'
 import bcrypt from 'bcryptjs'
+import { connect } from '../lib/tenants/pg.ts'
 import { migrateTenant } from '../lib/tenants/schema.ts'
 
 const slug = process.argv[2]
@@ -15,35 +16,49 @@ if (!slug || slug.startsWith('--')) { console.error('Uso: import-legacy.mjs <slu
 const must = (n) => process.env[n] || (console.error(`Falta ${n}`), process.exit(1))
 
 const legacy = createClient({ url: must('LEGACY_DB_URL'), authToken: process.env.LEGACY_DB_TOKEN || undefined })
-const control = createClient({ url: must('CONTROL_DB_URL'), authToken: process.env.CONTROL_DB_TOKEN || undefined })
+const control = connect(must('CONTROL_DB_URL'))
 const t = (await control.execute({ sql: 'SELECT * FROM tenants WHERE slug = ?', args: [slug] })).rows[0]
 if (!t) { console.error(`El cliente "${slug}" no está registrado. Crealo antes con tenant.mjs create.`); process.exit(1) }
-const dest = createClient({ url: String(t.db_url), authToken: t.db_token ? String(t.db_token) : undefined })
+const dest = connect(t.db_url)
 await migrateTenant(dest)
 
-const cols = async (db, table) => (await db.execute(`PRAGMA table_info(${table})`)).rows.map((r) => String(r.name))
-const exists = async (db, table) => (await cols(db, table)).length > 0
-const INT_PK = new Set(['carousel_slides', 'teachers', 'enrollments', 'students', 'contact_messages', 'interest_forms', 'job_applications'])
+const legacyExists = async (table) => (await legacy.execute(`PRAGMA table_info(${table})`)).rows.length > 0
+const destCols = async (table) =>
+  Object.fromEntries((await dest.execute({ sql: `SELECT column_name, data_type FROM information_schema.columns WHERE table_schema = 'public' AND table_name = ?`, args: [table] })).rows.map((r) => [r.column_name, r.data_type]))
+// Tablas con id autonumérico: sin natural key para detectar repetidos.
+const AUTO_ID = new Set(['carousel_slides', 'teachers', 'enrollments', 'students', 'contact_messages', 'interest_forms', 'job_applications'])
+const KEY = { courses: 'id', site_settings: 'key', admins: 'email' }
+
+// Convierte lo que venía de SQLite al tipo de la columna de Postgres.
+const coerce = (v, type) => {
+  if (v === null || v === undefined) return null
+  if (type === 'boolean') return v === true || Number(v) === 1 || v === 'true'
+  if (type === 'integer' || type === 'bigint') return Number(v)
+  return typeof v === 'bigint' ? String(v) : v
+}
 
 async function copy(table, where, args, transform) {
-  if (!(await exists(legacy, table))) return console.log(`${table}: no existe en la base antigua`)
-  // Tablas con id autonumérico: si el destino ya tiene filas, no se copia de nuevo (evita duplicados al repetir).
-  if (INT_PK.has(table) && Number((await dest.execute(`SELECT COUNT(*) AS n FROM ${table}`)).rows[0].n) > 0) {
+  if (!(await legacyExists(table))) return console.log(`${table}: no existe en la base antigua`)
+  if (AUTO_ID.has(table) && Number((await dest.execute(`SELECT COUNT(*) AS n FROM ${table}`)).rows[0].n) > 0) {
     return console.log(`${table}: el destino ya tiene datos, se omite`)
   }
+  const types = await destCols(table)
   const src = await legacy.execute({ sql: `SELECT * FROM ${table} ${where}`, args })
-  const dcols = await cols(dest, table)
-  let n = 0
+  const stmts = []
   for (const raw of src.rows) {
     const row = transform ? transform({ ...raw }) : { ...raw }
     if (!row) continue
-    delete row.schoolId
-    if (INT_PK.has(table) && row.id !== undefined && !/^\d+$/.test(String(row.id))) delete row.id
-    const keys = Object.keys(row).filter((k) => dcols.includes(k) && row[k] !== undefined)
-    if (apply) await dest.execute({ sql: `INSERT OR IGNORE INTO ${table} (${keys.map((k) => `"${k}"`).join(',')}) VALUES (${keys.map(() => '?').join(',')})`, args: keys.map((k) => row[k]) })
-    n++
+    if (AUTO_ID.has(table) && row.id !== undefined && !/^\d+$/.test(String(row.id))) delete row.id
+    const keys = Object.keys(row).filter((k) => types[k] && row[k] !== undefined)
+    const conflict = KEY[table] ? `ON CONFLICT ("${KEY[table]}") DO NOTHING` : 'ON CONFLICT DO NOTHING'
+    stmts.push({ sql: `INSERT INTO ${table} (${keys.map((k) => `"${k}"`).join(',')}) VALUES (${keys.map(() => '?').join(',')}) ${conflict}`, args: keys.map((k) => coerce(row[k], types[k])) })
   }
-  console.log(`${table}: ${n} filas ${apply ? 'copiadas' : '(ensayo)'}`)
+  // Una transacción por tabla: se copia completa o no se copia.
+  if (apply && stmts.length) await dest.batch(stmts)
+  if (apply && AUTO_ID.has(table) && 'id' in types) {
+    await dest.execute(`SELECT setval(pg_get_serial_sequence('${table}', 'id'), GREATEST((SELECT COALESCE(MAX(id), 1) FROM ${table}), 1))`)
+  }
+  console.log(`${table}: ${stmts.length} filas ${apply ? 'copiadas' : '(ensayo)'}`)
 }
 
 const W = 'WHERE schoolId = ?'
@@ -58,20 +73,16 @@ await copy('site_settings', 'WHERE schoolId = ? OR key LIKE ?', [slug, `${prefix
 
 // Administradores: admin_users ya trae hash bcrypt; admins traía la contraseña en texto plano (se hashea al copiar).
 async function copyAdmins() {
-  let n = 0
-  if (await exists(legacy, 'admin_users')) {
-    for (const r of (await legacy.execute({ sql: 'SELECT * FROM admin_users WHERE schoolId = ?', args: [slug] })).rows) {
-      if (apply) await dest.execute({ sql: 'INSERT OR IGNORE INTO admins (email, name, password_hash) VALUES (?,?,?)', args: [String(r.email).toLowerCase(), r.name ?? null, String(r.passwordHash)] })
-      n++
-    }
+  const stmts = []
+  const add = (email, name, hash) => stmts.push({ sql: 'INSERT INTO admins (email, name, password_hash) VALUES (?,?,?) ON CONFLICT (email) DO NOTHING', args: [String(email).toLowerCase(), name, hash] })
+  if (await legacyExists('admin_users')) {
+    for (const r of (await legacy.execute({ sql: 'SELECT * FROM admin_users WHERE schoolId = ?', args: [slug] })).rows) add(r.email, r.name ?? null, String(r.passwordHash))
   }
-  if (await exists(legacy, 'admins')) {
-    for (const r of (await legacy.execute({ sql: 'SELECT * FROM admins WHERE schoolId = ?', args: [slug] })).rows) {
-      if (apply) await dest.execute({ sql: 'INSERT OR IGNORE INTO admins (email, name, password_hash) VALUES (?,?,?)', args: [String(r.email).toLowerCase(), null, await bcrypt.hash(String(r.password), 10)] })
-      n++
-    }
+  if (await legacyExists('admins')) {
+    for (const r of (await legacy.execute({ sql: 'SELECT * FROM admins WHERE schoolId = ?', args: [slug] })).rows) add(r.email, null, await bcrypt.hash(String(r.password), 10))
   }
-  console.log(`admins: ${n} ${apply ? 'copiados' : '(ensayo)'}  -> cambiá sus contraseñas con: node scripts/tenant.mjs set-admin ${slug} <email> <nueva>`)
+  if (apply && stmts.length) await dest.batch(stmts)
+  console.log(`admins: ${stmts.length} ${apply ? 'copiados' : '(ensayo)'}  -> cambiá sus contraseñas con: node scripts/tenant.mjs set-admin ${slug} <email> <nueva>`)
 }
 await copyAdmins()
 

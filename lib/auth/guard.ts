@@ -3,10 +3,10 @@ import { NextResponse } from 'next/server'
 import { getTenant } from '@/lib/tenants/registry'
 import { clientFor } from '@/lib/tenants/db'
 import { getSession, type Session } from './session'
-import type { Client } from '@libsql/client'
+import type { Db } from '@/lib/tenants/pg'
 import type { Tenant } from '@/lib/tenants/types'
 
-type Ctx = { tenant: Tenant; db: Client; session: Session | null }
+type Ctx = { tenant: Tenant; db: Db; session: Session | null }
 type Params = { params: Promise<{ tenant: string }> }
 
 // Envoltorio de las rutas /api/[tenant]/...: resuelve el cliente, su base y su sesión.

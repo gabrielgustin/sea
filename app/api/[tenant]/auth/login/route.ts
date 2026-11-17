@@ -27,14 +27,14 @@ export const POST = route(async (req, { db, tenant }) => {
   if (role === 'student') {
     // Mismo criterio que antes: el DNI es usuario y contraseña. Ahora se valida en el servidor y no se expone la lista de alumnos.
     if (user !== pass.toLowerCase()) return NextResponse.json({ success: false, error: 'El usuario y la contraseña deben ser el mismo (tu DNI)' }, { status: 401 })
-    const res = await db.execute({ sql: 'SELECT id, courseName FROM students WHERE dni = ? LIMIT 1', args: [user] })
+    const res = await db.execute({ sql: 'SELECT id, "courseName" FROM students WHERE dni = ? LIMIT 1', args: [user] })
     const s = res.rows[0]
     if (!s) return NextResponse.json({ success: false, error: 'DNI no encontrado en el sistema' }, { status: 401 })
     await setSession({ tenant: tenant.slug, role: 'student', sub: String(s.id), dni: user, course: String(s.courseName ?? '') })
     return NextResponse.json({ success: true, role: 'student', dni: user, course: s.courseName ?? '' })
   }
 
-  const res = await db.execute({ sql: 'SELECT id, password_hash FROM admins WHERE email = ? AND active = 1 LIMIT 1', args: [user] })
+  const res = await db.execute({ sql: 'SELECT id, password_hash FROM admins WHERE email = ? AND active = true LIMIT 1', args: [user] })
   const a = res.rows[0]
   const ok = await verifyPassword(pass, a ? String(a.password_hash) : await DUMMY)
   if (!a || !ok) return NextResponse.json({ success: false, error: 'Credenciales incorrectas' }, { status: 401 })
