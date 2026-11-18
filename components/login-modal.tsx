@@ -92,7 +92,7 @@ export default function LoginModal({ open, onOpenChange, onLoginSuccess }: Login
               <Input
                 id="username"
                 type="text"
-                placeholder={schoolId}
+                placeholder="Usuario"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 autoComplete="username"
