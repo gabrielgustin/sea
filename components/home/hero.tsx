@@ -33,10 +33,10 @@ function meta(s: Slide) {
   ].filter((m) => m.v);
 }
 
-// Lugar de cada foto en la pila según su distancia a la actual: 0 arriba, después las de atrás, y la anterior sale volando.
-function place(offset: number, n: number): React.CSSProperties {
+// Lugar de cada foto en la pila según su distancia a la actual: 0 arriba y después las de atrás.
+// La que deja de estar arriba pasa al fondo de la pila (sin salir volando), igual tenga la escuela 2 fotos o 10.
+function place(offset: number): React.CSSProperties {
   if (offset === 0) return { transform: 'translate(0,0) rotate(-3deg) scale(1)', zIndex: 30, opacity: 1 };
-  if (offset === n - 1 && n > 2) return { transform: 'translate(-115%, 12%) rotate(-28deg) scale(.9)', zIndex: 40, opacity: 0 };
   if (offset === 1) return { transform: 'translate(7%, -5%) rotate(6deg) scale(.93)', zIndex: 20, opacity: 1 };
   if (offset === 2) return { transform: 'translate(-6%, 4%) rotate(-9deg) scale(.88)', zIndex: 10, opacity: 1 };
   return { transform: 'translate(0, 6%) rotate(3deg) scale(.82)', zIndex: 0, opacity: 0 };
@@ -136,7 +136,7 @@ export default function Hero({ slides, schoolName, catalogHref }: { slides: Slid
                   key={s.id}
                   aria-hidden={offset !== 0}
                   className="absolute inset-0 transition-[transform,opacity] duration-[900ms] ease-[cubic-bezier(.2,.9,.25,1.15)]"
-                  style={place(offset, n)}
+                  style={place(offset)}
                 >
                   <div className="relative h-full rounded-[26px] border-2 border-[#031e41] bg-white p-2.5 pb-12 shadow-[8px_8px_0_#031e41] sm:p-3 sm:pb-14">
                     <span aria-hidden className="absolute -top-3.5 left-1/2 z-10 h-7 w-24 -translate-x-1/2 -rotate-3 rounded-sm opacity-90" style={{ background: TAPE[i % TAPE.length] }} />
