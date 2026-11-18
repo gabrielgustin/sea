@@ -7,7 +7,8 @@ export default function SitioLayout({ children }: { children: React.ReactNode })
   return (
     <>
       <SiteNav />
-      <main>{children}</main>
+      {/* La barra es fija: este espacio evita que tape el contenido; los héroes oscuros suben con -mt-[76px]. */}
+      <main className="pt-[76px]">{children}</main>
       <SiteFooter />
       <WhatsAppButton />
     </>

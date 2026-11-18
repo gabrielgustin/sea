@@ -4,12 +4,14 @@ import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { Instagram, Menu, X, LayoutDashboard, LogIn } from 'lucide-react';
+import { Instagram, LayoutDashboard, LogIn } from 'lucide-react';
 import { useSchool } from '@/context/SchoolContext';
 import { useAuth } from '@/context/AuthContext';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
 import LoginModal from '@/components/login-modal';
 
+// Barra fija tipo píldora (como somoswavi.com): siempre visible y cambia de color según la sección que tiene debajo.
+// Las secciones oscuras se marcan con data-nav="dark".
 export default function SiteNav() {
   const { schoolId, tenant } = useSchool();
   const { isAuthenticated } = useAuth();
@@ -17,6 +19,7 @@ export default function SiteNav() {
   const router = useRouter();
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
+  const [dark, setDark] = useState(true);
   const [loginOpen, setLoginOpen] = useState(false);
 
   useEffect(() => setOpen(false), [pathname]);
@@ -24,6 +27,25 @@ export default function SiteNav() {
     document.body.style.overflow = open ? 'hidden' : '';
     return () => { document.body.style.overflow = ''; };
   }, [open]);
+
+  useEffect(() => {
+    let frame = 0;
+    const check = () => {
+      frame = 0;
+      // Qué hay debajo del centro de la barra (la barra misma se ignora porque no tiene data-nav).
+      const under = document.elementsFromPoint(window.innerWidth / 2, 46);
+      setDark(under.some((el) => el.closest('[data-nav="dark"]')));
+    };
+    const onScroll = () => { if (!frame) frame = requestAnimationFrame(check); };
+    check();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, [pathname]);
 
   const base = `/${schoolId}`;
   const links = [
@@ -34,103 +56,117 @@ export default function SiteNav() {
     { href: `${base}#contacto`, label: 'Contacto' },
   ];
   const isActive = (href: string) => (href === base ? pathname === base : pathname.startsWith(href));
-  const seaLogo = tenant.config.seaLogo ?? '/logo-sea.png';
-
   const account = () => (isAuthenticated ? router.push(`${base}/admin`) : setLoginOpen(true));
+  const light = !dark && !open;
+  // Los logos son PNG de color: sobre fondo oscuro se muestran en blanco.
+  const logoTone = light ? '' : 'brightness-0 invert';
 
   return (
     <>
-      <header className="sticky top-0 z-50 px-3 pt-3 sm:px-5">
-        <nav
-          aria-label="Principal"
-          className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 rounded-2xl border border-white/60 bg-white/75 pl-3 pr-2 shadow-[0_8px_30px_rgb(3_30_65/0.08)] backdrop-blur-xl backdrop-saturate-150 sm:pl-4"
-        >
-          <Link href={base} className="flex shrink-0 items-center gap-3" aria-label={`Inicio — ${tenant.name}`}>
-            <Image src={seaLogo} alt={tenant.config.seaLogoAlt ?? 'SEA'} width={96} height={48} className="h-9 w-auto object-contain" priority />
-            <span className="h-7 w-px bg-slate-200" aria-hidden />
-            <Image src={tenant.config.logo} alt={tenant.config.logoAlt} width={120} height={48} className="h-9 w-auto object-contain" priority />
-          </Link>
+      {/* Barra de progreso de lectura (CSS puro; si el navegador no lo soporta, no se muestra) */}
+      <div
+        aria-hidden
+        className="pointer-events-none fixed inset-x-0 top-0 z-[70] hidden h-[3px] origin-left bg-[#9cbadb] [animation:fill-x_linear_both] [animation-timeline:scroll(root)] supports-[animation-timeline:scroll()]:block"
+      />
 
-          <ul className="hidden items-center gap-1 lg:flex">
-            {links.map((l) => (
-              <li key={l.href}>
-                <Link
-                  href={l.href}
-                  className={`relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors hover:text-[#031e41] ${
-                    isActive(l.href) ? 'text-[#031e41]' : 'text-slate-500'
-                  }`}
-                >
-                  {l.label}
-                  {isActive(l.href) && <span className="absolute inset-x-3.5 -bottom-0.5 h-0.5 rounded-full bg-[#031e41]" />}
-                </Link>
-              </li>
-            ))}
-          </ul>
+      <header
+        className={`rise fixed inset-x-3 top-3.5 z-[60] flex h-16 items-center gap-4 rounded-full pl-5 pr-2 backdrop-blur-md transition-[background-color,color,box-shadow] duration-500 sm:inset-x-6 ${
+          light
+            ? 'bg-white/75 text-slate-900 shadow-[inset_0_0_0_1px_rgb(3_30_65/0.08),0_10px_30px_-18px_rgb(3_30_65/0.45)]'
+            : 'bg-[#031e41]/55 text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.14)]'
+        }`}
+      >
+        <Link href={base} className="mr-auto flex shrink-0 items-center gap-3" aria-label={`Inicio — ${tenant.name}`}>
+          <Image src={tenant.config.seaLogo ?? '/logo-sea.png'} alt={tenant.config.seaLogoAlt ?? 'SEA'} width={96} height={48} priority className={`h-8 w-auto object-contain transition duration-500 ${logoTone}`} />
+          <span className={`h-6 w-px transition-colors duration-500 ${light ? 'bg-slate-300' : 'bg-white/30'}`} aria-hidden />
+          <Image src={tenant.config.logo} alt={tenant.config.logoAlt} width={120} height={48} priority className={`h-8 w-auto object-contain transition duration-500 ${logoTone}`} />
+        </Link>
 
-          <div className="flex items-center gap-1.5">
-            {settings.instagramUrl && (
-              <a
-                href={settings.instagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="hidden size-10 items-center justify-center rounded-full text-slate-500 transition hover:bg-slate-100 hover:text-[#031e41] sm:flex"
-              >
-                <Instagram size={19} />
-              </a>
-            )}
-            <button
-              onClick={account}
-              className="hidden items-center gap-2 rounded-xl bg-[#031e41] px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-[#0b2d5c] active:scale-95 sm:flex"
+        <nav aria-label="Principal" className="hidden gap-1.5 lg:flex">
+          {links.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              aria-current={isActive(l.href) ? 'page' : undefined}
+              className={`rounded-full px-3.5 py-2 text-[14.5px] font-medium transition-colors duration-300 ${
+                light ? 'hover:bg-[#031e41]/[0.08]' : 'hover:bg-white/15'
+              } ${isActive(l.href) ? (light ? 'bg-[#031e41]/[0.08]' : 'bg-white/15') : ''}`}
             >
-              {isAuthenticated ? <LayoutDashboard size={16} /> : <LogIn size={16} />}
-              {isAuthenticated ? 'Panel' : 'Ingresar'}
-            </button>
-            <button
-              onClick={() => setOpen((v) => !v)}
-              aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
-              aria-expanded={open}
-              className="flex size-11 items-center justify-center rounded-xl text-[#031e41] transition hover:bg-slate-100 lg:hidden"
-            >
-              {open ? <X size={22} /> : <Menu size={22} />}
-            </button>
-          </div>
+              {l.label}
+            </Link>
+          ))}
         </nav>
 
-        {/* Menú móvil */}
-        <div
-          className={`absolute inset-x-3 top-[calc(100%+0.5rem)] origin-top sm:inset-x-5 overflow-hidden rounded-2xl border border-slate-200 bg-white/95 shadow-xl backdrop-blur-xl transition-all duration-300 lg:hidden ${
-            open ? 'visible scale-100 opacity-100' : 'invisible scale-95 opacity-0'
-          }`}
+        {settings.instagramUrl && (
+          <a
+            href={settings.instagramUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Instagram"
+            className={`hidden size-10 items-center justify-center rounded-full transition-colors sm:flex ${light ? 'hover:bg-[#031e41]/[0.08]' : 'hover:bg-white/15'}`}
+          >
+            <Instagram size={19} />
+          </a>
+        )}
+        <button
+          onClick={account}
+          className="group hidden items-center gap-2 rounded-full bg-[#9cbadb] px-5 py-3 text-sm font-semibold text-[#031e41] transition hover:bg-white active:scale-95 sm:flex"
         >
-          <ul className="p-2">
-            {links.map((l, i) => (
-              <li key={l.href} style={{ transitionDelay: open ? `${60 + i * 40}ms` : '0ms' }} className={`transition-all duration-300 ${open ? 'translate-y-0 opacity-100' : '-translate-y-2 opacity-0'}`}>
-                <Link
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className={`flex items-center justify-between rounded-xl px-4 py-3.5 text-base font-medium ${isActive(l.href) ? 'bg-slate-100 text-[#031e41]' : 'text-slate-600'}`}
-                >
-                  {l.label}
-                  <span aria-hidden className="text-slate-300">→</span>
-                </Link>
-              </li>
-            ))}
-          </ul>
-          <div className="flex gap-2 border-t border-slate-100 p-3">
-            <button onClick={() => { setOpen(false); account(); }} className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#031e41] py-3 text-sm font-semibold text-white">
-              {isAuthenticated ? <LayoutDashboard size={16} /> : <LogIn size={16} />}
-              {isAuthenticated ? 'Panel' : 'Ingresar'}
-            </button>
-            {settings.instagramUrl && (
-              <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" aria-label="Instagram" className="flex w-14 items-center justify-center rounded-xl border border-slate-200 text-[#031e41]">
-                <Instagram size={19} />
-              </a>
-            )}
-          </div>
-        </div>
+          {isAuthenticated ? <LayoutDashboard size={16} /> : <LogIn size={16} />}
+          {isAuthenticated ? 'Panel' : 'Ingresar'}
+          <span className="transition-transform group-hover:translate-x-0.5" aria-hidden>→</span>
+        </button>
+
+        {/* Hamburguesa: dos líneas que se cruzan en X */}
+        <button
+          onClick={() => setOpen((v) => !v)}
+          aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
+          aria-expanded={open}
+          aria-controls="menu-movil"
+          className="relative size-11 shrink-0 rounded-full bg-white lg:hidden"
+        >
+          <span className={`absolute inset-x-[13px] top-[18px] h-0.5 rounded bg-[#031e41] transition duration-300 ${open ? 'translate-y-[3.5px] rotate-45' : ''}`} />
+          <span className={`absolute inset-x-[13px] top-[25px] h-0.5 rounded bg-[#031e41] transition duration-300 ${open ? '-translate-y-[3.5px] -rotate-45' : ''}`} />
+        </button>
       </header>
-      {open && <div className="fixed inset-0 z-40 bg-slate-900/20 backdrop-blur-[2px] lg:hidden" onClick={() => setOpen(false)} aria-hidden />}
+
+      {/* Menú móvil a pantalla completa: se abre en círculo desde la hamburguesa */}
+      <div
+        id="menu-movil"
+        aria-hidden={!open}
+        className={`fixed inset-0 z-50 flex flex-col justify-center gap-1 bg-[#031e41] px-6 transition-[clip-path,visibility] duration-700 ease-[cubic-bezier(.7,0,.2,1)] lg:hidden ${
+          open ? 'visible [clip-path:circle(150%_at_calc(100%-44px)_46px)]' : 'invisible [clip-path:circle(0%_at_calc(100%-44px)_46px)]'
+        }`}
+      >
+        <div className="grid-bg pointer-events-none absolute inset-0" aria-hidden />
+        {links.map((l, i) => (
+          <Link
+            key={l.href}
+            href={l.href}
+            onClick={() => setOpen(false)}
+            tabIndex={open ? 0 : -1}
+            style={{ transitionDelay: open ? `${200 + i * 60}ms` : '0ms' }}
+            className={`relative text-[clamp(28px,8vw,44px)] font-semibold uppercase leading-[1.15] tracking-tight transition duration-500 ${
+              open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
+            } ${isActive(l.href) ? 'text-[#9cbadb]' : 'text-white'}`}
+          >
+            {l.label}
+          </Link>
+        ))}
+        <button
+          onClick={() => { setOpen(false); account(); }}
+          tabIndex={open ? 0 : -1}
+          style={{ transitionDelay: open ? `${200 + links.length * 60}ms` : '0ms' }}
+          className={`relative mt-6 self-start text-[clamp(28px,8vw,44px)] font-semibold uppercase leading-[1.15] tracking-tight text-[#9cbadb] transition duration-500 ${open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}
+        >
+          {isAuthenticated ? 'Panel →' : 'Ingresar →'}
+        </button>
+        {settings.instagramUrl && (
+          <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" tabIndex={open ? 0 : -1} className={`relative mt-10 flex items-center gap-2 text-sm text-white/60 transition duration-500 ${open ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: open ? '600ms' : '0ms' }}>
+            <Instagram size={18} /> Instagram
+          </a>
+        )}
+      </div>
 
       <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
     </>

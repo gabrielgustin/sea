@@ -101,7 +101,7 @@ export function Benefits({ schoolName }: { schoolName: string }) {
   ];
   return (
     <section className="px-3 pt-24 sm:px-5 sm:pt-32">
-      <div className="aurora relative mx-auto max-w-[96rem] rounded-[2.5rem] bg-[#031e41] px-5 py-20 text-white sm:px-8 sm:py-28">
+      <div data-nav="dark" className="aurora relative mx-auto max-w-[96rem] rounded-[2.5rem] bg-[#031e41] px-5 py-20 text-white sm:px-8 sm:py-28">
         <div className="grid-bg pointer-events-none absolute inset-0" aria-hidden />
         <div className="relative mx-auto grid max-w-7xl gap-14 lg:grid-cols-[1fr_1.3fr] lg:gap-20">
           <div className="reveal lg:sticky lg:top-32 lg:self-start">

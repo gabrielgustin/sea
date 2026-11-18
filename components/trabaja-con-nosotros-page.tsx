@@ -78,6 +78,7 @@ export default function TrabajaConNosotrosPage() {
     <div className="w-full bg-white">
       {/* Hero Section */}
       <section
+        data-nav="dark"
         className="aurora relative -mt-[76px] w-full pt-40 pb-20 md:min-h-[70vh] flex items-center justify-center px-4"
         style={{
           background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)',

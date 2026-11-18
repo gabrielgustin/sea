@@ -47,7 +47,7 @@ export default function Hero({ slides, schoolName, catalogHref }: { slides: Slid
 
   if (slides.length === 0) {
     return (
-      <section className="aurora relative -mt-[76px] flex min-h-[80svh] items-end bg-[#031e41] px-5 pb-20 pt-40 text-white sm:px-10">
+      <section data-nav="dark" className="aurora relative -mt-[76px] flex min-h-[80svh] items-end bg-[#031e41] px-5 pb-20 pt-40 text-white sm:px-10">
         <div className="grid-bg pointer-events-none absolute inset-0" aria-hidden />
         <div className="relative mx-auto w-full max-w-7xl">
           <p className="rise text-sm font-medium uppercase tracking-[0.2em] text-[#9cbadb]">{schoolName}</p>
@@ -66,7 +66,7 @@ export default function Hero({ slides, schoolName, catalogHref }: { slides: Slid
   const info = meta(slide);
 
   return (
-    <section className="relative -mt-[76px] h-[100svh] min-h-[620px] max-h-[980px] overflow-hidden bg-[#031e41] text-white" aria-roledescription="carrusel">
+    <section data-nav="dark" className="relative -mt-[76px] h-[100svh] min-h-[620px] max-h-[980px] overflow-hidden bg-[#031e41] text-white" aria-roledescription="carrusel">
       <div ref={emblaRef} className="absolute inset-0 overflow-hidden">
         <div className="flex h-full">
           {slides.map((s, i) => (

@@ -16,8 +16,8 @@ export const viewport: Viewport = { themeColor: '#031e41' }
 
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="es" className={`${geist.variable} ${geistMono.variable} bg-background overflow-x-hidden`}>
-      <body className="font-sans antialiased bg-background text-foreground overflow-x-hidden">
+    <html lang="es" className={`${geist.variable} ${geistMono.variable} bg-background overflow-x-clip`}>
+      <body className="font-sans antialiased bg-background text-foreground overflow-x-clip">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>

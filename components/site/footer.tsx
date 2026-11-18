@@ -31,7 +31,7 @@ export default function SiteFooter() {
   ];
 
   return (
-    <footer className="aurora relative mt-24 bg-[#031e41] text-white">
+    <footer data-nav="dark" className="aurora relative mt-24 bg-[#031e41] text-white">
       <div className="grid-bg pointer-events-none absolute inset-0" aria-hidden />
       <div className="relative mx-auto max-w-7xl px-5 pb-10 pt-16 sm:px-8">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">

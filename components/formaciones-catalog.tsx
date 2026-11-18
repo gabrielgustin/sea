@@ -22,7 +22,7 @@ export default function FormacionesCatalog() {
 
   return (
     <>
-      <section className="relative -mt-[76px] overflow-hidden bg-[#031e41] px-5 pb-20 pt-40 text-white sm:px-8 aurora">
+      <section data-nav="dark" className="relative -mt-[76px] overflow-hidden bg-[#031e41] px-5 pb-20 pt-40 text-white sm:px-8 aurora">
         <div className="grid-bg pointer-events-none absolute inset-0" aria-hidden />
         <div className="relative mx-auto max-w-7xl">
           <p className="rise text-xs font-semibold uppercase tracking-[0.2em] text-[#9cbadb]">{tenant.name}</p>
