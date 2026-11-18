@@ -342,8 +342,8 @@ export default function CourseDetailClient({ course }: { course: Course }) {
       {/* Hero */}
       <section data-nav="dark" className="relative -mt-[76px] flex min-h-[78svh] items-end overflow-hidden bg-[#031e41] text-white">
         <Image src={course.image} alt="" fill priority sizes="100vw" className="kenburns object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#031e41] via-[#031e41]/55 to-[#031e41]/15" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#031e41]/70 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
+        <div className="absolute inset-0 bg-gradient-to-r from-black/55 to-transparent" />
         <div className="relative mx-auto w-full max-w-7xl px-5 pb-14 pt-40 sm:px-8 sm:pb-20">
           <nav aria-label="Ruta" className="rise flex items-center gap-1.5 text-sm text-white/60">
             <Link href={`/${schoolId}/catalogo-formaciones`} className="transition hover:text-white">Formaciones</Link>

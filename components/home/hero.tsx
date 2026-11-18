@@ -85,8 +85,8 @@ export default function Hero({ slides, schoolName, catalogHref }: { slides: Slid
       </div>
 
       {/* Velos para que el texto se lea sobre cualquier foto */}
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[#031e41] via-[#031e41]/45 to-[#031e41]/10" />
-      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-[#031e41]/80 via-[#031e41]/20 to-transparent" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-black/10" />
+      <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/55 via-black/10 to-transparent" />
 
       <div className="relative mx-auto flex h-full max-w-7xl flex-col justify-end px-5 pb-28 sm:px-8 sm:pb-32">
         {/* key: al cambiar de slide el bloque se vuelve a montar y repite la animación de entrada */}
