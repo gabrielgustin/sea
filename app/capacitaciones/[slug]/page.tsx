@@ -5,7 +5,7 @@ import { notFound } from 'next/navigation';
 import { ArrowLeft, Clock, MessageCircle, School } from 'lucide-react';
 import { LandingNav } from '@/components/landing/client';
 import { LandingFooter } from '@/components/landing/footer';
-import { D, display, loadCatalog, pegboard, wa } from '@/lib/landing';
+import { D, display, loadCatalog, pegboard, shortTitle, wa } from '@/lib/landing';
 
 export const dynamic = 'force-dynamic';
 
@@ -165,7 +165,7 @@ export default async function CapacitacionPage({ params }: { params: Promise<{ s
                     <span className="relative block aspect-[4/3] overflow-hidden rounded-[14px] bg-[#EAF2FB]">
                       {c.image && <Image src={c.image} alt="" fill sizes="(min-width:1024px) 25vw, 50vw" className="object-cover transition duration-500 group-hover:scale-105" />}
                     </span>
-                    <span className={`mt-3.5 block px-1.5 text-lg font-bold leading-snug ${D}`}>{c.title}</span>
+                    <span className={`mt-3.5 block px-1.5 text-lg font-bold leading-snug ${D}`}>{shortTitle(c.title)}</span>
                   </Link>
                 </li>
               ))}

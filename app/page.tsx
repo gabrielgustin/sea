@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { Bot, Box, Check, Cog, Cpu, Flame, Gamepad2, Mail, MessageCircle, Smartphone, Sparkles, Wrench, Zap, type LucideIcon } from 'lucide-react';
 import { CourseWall, Faq, LandingNav } from '@/components/landing/client';
 import { LandingFooter } from '@/components/landing/footer';
-import { D, EMAIL, JOIN, display, loadCatalog, pegboard } from '@/lib/landing';
+import { D, EMAIL, JOIN, display, loadCatalog, pegboard, shortTitle } from '@/lib/landing';
 
 export const dynamic = 'force-dynamic'; // lista los clientes activos y sus cursos: nunca se congela en el build
 
@@ -31,6 +31,15 @@ const iconFor = (title: string) => {
 };
 const TILE = ['#ffffff', '#FF6FA8', '#2FD3A0', '#9cbadb'];
 
+// Posición y giro de cada polaroid del collage del hero.
+const POLA = [
+  { pos: 'left-0 top-6 w-[54%]', rot: -7, z: 1 },
+  { pos: 'right-0 top-0 w-[50%]', rot: 6, z: 2 },
+  { pos: 'left-[1%] bottom-0 w-[52%]', rot: 4, z: 3 },
+  { pos: 'right-0 bottom-12 w-[46%]', rot: -5, z: 4 },
+];
+const TAPE = ['#FFC531', '#FF6FA8', '#2FD3A0', '#9cbadb'];
+
 const SPARKS = [0, 45, 90, 135, 180, 225, 270, 315];
 
 const INCLUDES = [
@@ -52,29 +61,75 @@ const FAQS = [
 
 export default async function LandingPage() {
   const { schools, catalog } = await loadCatalog();
-  const courses = catalog.map((c) => ({ key: c.slug, title: c.title, href: `/capacitaciones/${c.slug}`, image: c.image, area: c.area }));
+  // Collage del hero: alterna tecnología y oficio para que se vea la variedad.
+  const withPic = catalog.filter((c) => c.image);
+  const tec = withPic.filter((c) => c.area === 'tec');
+  const ofi = withPic.filter((c) => c.area === 'ofi');
+  const heroPics = [tec[1], ofi[1], ofi[0], tec[0]].map((c, i) => c ?? withPic[i]).filter(Boolean).slice(0, 4);
+  const courses = catalog.map((c) => ({ key: c.slug, title: shortTitle(c.title), href: `/capacitaciones/${c.slug}`, image: c.image, area: c.area }));
 
   return (
     <div className={`${display.variable} bg-[#F7FAFD] text-[#031e41]`}>
       <LandingNav />
       <main>
-        {/* Hero: tablero de taller */}
-        <section className="relative flex min-h-[92svh] items-center justify-center overflow-hidden bg-[#EAF2FB] px-5 pb-24 pt-36 sm:px-8" style={pegboard}>
-          <div className="relative mx-auto max-w-4xl text-center">
-            <h1 className={`rise text-balance text-[clamp(3.2rem,11vw,8.5rem)] font-extrabold leading-[0.9] tracking-[-0.045em] ${D}`}>
-              Acá se aprende haciendo
-            </h1>
-            <p className="rise mx-auto mt-7 max-w-2xl text-lg leading-relaxed text-[#031e41]/75 sm:text-xl" style={{ animationDelay: '.12s' }}>
-              Llevamos cursos extracurriculares de tecnología y oficios a tu escuela. Nosotros ponemos los docentes y el programa; tu escuela, el espacio y la comunidad.
-            </p>
-            <div className="rise mt-9 flex flex-wrap justify-center gap-3" style={{ animationDelay: '.2s' }}>
-              <a href={JOIN} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border-2 border-[#031e41] bg-[#031e41] px-7 py-4 font-bold text-white shadow-[4px_4px_0_#FFC531] transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#FFC531] active:translate-y-0 active:shadow-none">
-                <MessageCircle size={18} /> Quiero cursos en mi escuela
-              </a>
-              <a href="#cursos" className="inline-flex items-center rounded-full border-2 border-[#031e41] bg-white px-7 py-4 font-bold transition hover:bg-[#FFC531]">
-                Ver capacitaciones
-              </a>
+        {/* Hero: lo que se vende, a la vista. Collage de fotos reales de los cursos. */}
+        <section className="relative overflow-hidden bg-[#EAF2FB] px-5 pb-20 pt-32 sm:px-8 lg:flex lg:min-h-[100svh] lg:items-center lg:pb-16 lg:pt-28" style={pegboard}>
+          <div className="relative mx-auto grid w-full max-w-7xl items-center gap-14 lg:grid-cols-[1.05fr_1fr] lg:gap-10">
+            <div>
+              <p className="rise inline-flex items-center gap-2.5 rounded-full border-2 border-[#031e41] bg-white px-4 py-2 text-sm font-semibold">
+                <span className="relative flex size-2.5"><span className="absolute inset-0 animate-ping rounded-full bg-[#2FD3A0]" /><span className="relative size-2.5 rounded-full bg-[#2FD3A0]" /></span>
+                Cursos extracurriculares para escuelas
+              </p>
+              <h1 className={`rise mt-7 text-balance text-[clamp(3.1rem,8vw,7rem)] font-extrabold leading-[0.9] tracking-[-0.045em] ${D}`} style={{ animationDelay: '.06s' }}>
+                Acá se aprende haciendo
+              </h1>
+              <p className="rise mt-7 max-w-xl text-lg leading-relaxed text-[#031e41]/75 sm:text-xl" style={{ animationDelay: '.12s' }}>
+                Llevamos cursos de tecnología y oficios a tu escuela. Nosotros ponemos los docentes y el programa; tu escuela, el espacio y la comunidad.
+              </p>
+              <div className="rise mt-9 flex flex-wrap gap-3" style={{ animationDelay: '.18s' }}>
+                <a href={JOIN} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 rounded-full border-2 border-[#031e41] bg-[#031e41] px-7 py-4 font-bold text-white shadow-[4px_4px_0_#FFC531] transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_#FFC531] active:translate-y-0 active:shadow-none">
+                  <MessageCircle size={18} /> Quiero cursos en mi escuela
+                </a>
+                <a href="#cursos" className="inline-flex items-center rounded-full border-2 border-[#031e41] bg-white px-7 py-4 font-bold transition hover:bg-[#FFC531]">
+                  Ver capacitaciones
+                </a>
+              </div>
+              {/* Prueba: escuelas que ya los dictan */}
+              <div className="rise mt-10 flex flex-wrap items-center gap-x-5 gap-y-3" style={{ animationDelay: '.26s' }}>
+                <span className="flex -space-x-3">
+                  {schools.map((s) => (
+                    <span key={s.slug} className="flex size-12 items-center justify-center rounded-full border-2 border-[#031e41] bg-white p-1.5">
+                      <Image src={s.config.logo} alt={s.name} width={40} height={40} className="max-h-full w-auto object-contain" />
+                    </span>
+                  ))}
+                </span>
+                <p className="text-[15px] leading-snug text-[#031e41]/75">
+                  <strong className="text-[#031e41]">{schools.length} {schools.length === 1 ? 'escuela ya los dicta' : 'escuelas ya los dictan'}</strong>
+                  <br />{catalog.length} capacitaciones de tecnología y oficios
+                </p>
+              </div>
             </div>
+
+            {/* Collage: caen de a una al cargar y después flotan */}
+            <ul className="relative mx-auto h-[420px] w-full max-w-[560px] sm:h-[500px] lg:h-[580px]" aria-label="Algunas capacitaciones">
+              {heroPics.map((c, k) => (
+                <li key={c.slug} className={`drop absolute ${POLA[k].pos}`} style={{ animationDelay: `${0.35 + k * 0.15}s`, zIndex: POLA[k].z }}>
+                  <div className="float" style={{ animationDelay: `${k * -1.6}s` }}>
+                    <Link
+                      href={`/capacitaciones/${c.slug}`}
+                      className="group relative block rounded-[20px] border-2 border-[#031e41] bg-white p-2 pb-3 shadow-[6px_6px_0_#031e41] transition duration-300 rotate-[var(--r)] hover:z-50 hover:scale-105 hover:rotate-0 focus-visible:rotate-0 focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#3D6BFF] sm:p-2.5 sm:pb-3.5"
+                      style={{ ['--r' as string]: `${POLA[k].rot}deg` }}
+                    >
+                      <span aria-hidden className="absolute -top-3 left-1/2 z-10 h-6 w-16 -translate-x-1/2 -rotate-3 rounded-sm opacity-90 sm:w-20" style={{ background: TAPE[k] }} />
+                      <span className="relative block aspect-[4/3] overflow-hidden rounded-[13px] bg-[#EAF2FB]">
+                        <Image src={c.image!} alt="" fill priority={k < 2} sizes="(min-width:1024px) 300px, 55vw" className="object-cover" />
+                      </span>
+                      <span className={`mt-2 block px-1 text-[13px] font-bold leading-tight sm:text-base ${D}`}>{shortTitle(c.title)}</span>
+                    </Link>
+                  </div>
+                </li>
+              ))}
+            </ul>
           </div>
         </section>
 
@@ -104,7 +159,9 @@ export default async function LandingPage() {
         </section>
 
         {/* Cómo funciona: es una secuencia real, por eso va numerada */}
-        <section id="como" className="mx-auto max-w-7xl px-5 pt-28 sm:px-8 sm:pt-36">
+        {/* En escritorio la sección se fija (boom-pin/boom-stage en globals.css) y el scroll va disparando cada paso. */}
+        <section id="como" className="boom-pin relative">
+          <div className="boom-stage mx-auto max-w-7xl px-5 pt-28 sm:px-8 sm:pt-36">
           <h2 className={`max-w-2xl text-4xl font-extrabold tracking-tight sm:text-6xl ${D}`}>Así llegamos a tu escuela</h2>
           <ol className="relative mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
             <span aria-hidden className="boom-line absolute left-8 right-8 top-8 hidden border-t-[3px] border-dashed border-[#031e41]/25 lg:block" />
@@ -130,6 +187,7 @@ export default async function LandingPage() {
               </li>
             ))}
           </ol>
+          </div>
         </section>
 
         {/* Escuelas que ya trabajan con nosotros */}

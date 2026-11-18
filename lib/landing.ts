@@ -11,6 +11,9 @@ export const EMAIL = 'formaciones@portalsea.com.ar';
 export const wa = (msg: string) => `https://wa.me/5493513697444?text=${encodeURIComponent(msg)}`;
 export const JOIN = wa('Hola! Quiero sumar cursos extracurriculares en mi escuela.');
 
+// Título corto para las tarjetas, así todas quedan de alto parejo ("Categoría III" → "Cat. III").
+export const shortTitle = (t: string) => t.replace(/\bCategor[ií]a\s+/gi, 'Cat.\u00a0');
+
 export const pegboard = { backgroundImage: 'radial-gradient(rgb(3 30 65 / .14) 1.4px, transparent 1.6px)', backgroundSize: '26px 26px' };
 
 const SCHOOL_COLORS = [

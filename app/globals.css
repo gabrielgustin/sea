@@ -466,6 +466,17 @@ html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
     .boom-spark { animation-name: boom-spark; animation-range: cover calc(14% + var(--i) * 6%) cover calc(36% + var(--i) * 6%); }
     .boom-text { animation-name: reveal-up; animation-range: cover calc(16% + var(--i) * 6%) cover calc(30% + var(--i) * 6%); }
     .boom-line { transform-origin: left; animation: grow-x linear both; animation-timeline: view(); animation-range: cover 10% cover 40%; }
+    /* Escritorio: la sección queda fija mientras se scrollea su altura extra; los pasos estallan de a uno. */
+    @media (min-width: 1024px) {
+      .boom-pin { height: 360vh; view-timeline: --como block; }
+      .boom-stage { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-top: 0; width: 100%; }
+      .boom-num, .boom-ring, .boom-spark, .boom-text, .boom-line { animation-timeline: --como; }
+      .boom-num { animation-range: contain calc(4% + var(--i) * 21%) contain calc(16% + var(--i) * 21%); }
+      .boom-ring { animation-range: contain calc(11% + var(--i) * 21%) contain calc(24% + var(--i) * 21%); }
+      .boom-spark { animation-range: contain calc(11% + var(--i) * 21%) contain calc(26% + var(--i) * 21%); }
+      .boom-text { animation-range: contain calc(12% + var(--i) * 21%) contain calc(21% + var(--i) * 21%); }
+      .boom-line { animation-range: contain 2% contain 72%; }
+    }
     .parallax-img {
       animation: parallax linear both;
       animation-timeline: view();
@@ -489,6 +500,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
   .kenburns { animation: kenburns 9s ease-out both; }
   .rise { animation: rise .9s cubic-bezier(.2,.7,.2,1) both; }
   .marquee-track { animation: marquee 40s linear infinite; }
+  .drop { animation: drop 1s cubic-bezier(.2,1.25,.4,1) both; }
+  .float { animation: float 5s ease-in-out infinite alternate; }
   .marquee:hover .marquee-track { animation-play-state: paused; }
   .aurora::before, .aurora::after { animation: drift 14s ease-in-out infinite alternate; }
   .aurora::after { animation-duration: 18s; animation-direction: alternate-reverse; }
@@ -497,6 +510,8 @@ html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
 @keyframes rise { from { opacity: 0; transform: translateY(24px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }
 @keyframes marquee { to { transform: translateX(-50%); } }
 @keyframes drift { from { transform: translate(-10%, -10%) rotate(0deg); } to { transform: translate(15%, 10%) rotate(25deg); } }
+@keyframes drop { from { opacity: 0; transform: translateY(-90px) rotate(-14deg) scale(.85); } to { opacity: 1; transform: none; } }
+@keyframes float { from { transform: translateY(0); } to { transform: translateY(-12px); } }
 @keyframes fill-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
 
 /* Brillo que sigue al cursor (las variables --x/--y las pone onPointerMove). */

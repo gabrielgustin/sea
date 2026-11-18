@@ -141,18 +141,18 @@ export function CourseWall({ courses }: { courses: WallCourse[] }) {
 
       <ul className="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
         {shown.map((c, i) => (
-          <li key={c.key}>
+          <li key={c.key} className="h-full">
             <Link
               href={c.href}
               style={{ ['--tilt' as string]: `${TILT[i % TILT.length]}deg` }}
-              className="group relative block rotate-[var(--tilt)] rounded-[22px] border-2 border-[#031e41] bg-white p-2.5 pb-4 shadow-[5px_5px_0_#031e41] transition duration-300 hover:-translate-y-1.5 hover:rotate-0 hover:shadow-[8px_9px_0_#031e41] focus-visible:rotate-0 focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#3D6BFF]"
+              className="group relative flex h-full rotate-[var(--tilt)] flex-col rounded-[22px] border-2 border-[#031e41] bg-white p-2.5 pb-4 shadow-[5px_5px_0_#031e41] transition duration-300 hover:-translate-y-1.5 hover:rotate-0 hover:shadow-[8px_9px_0_#031e41] focus-visible:rotate-0 focus-visible:outline-4 focus-visible:outline-offset-4 focus-visible:outline-[#3D6BFF]"
             >
               <span aria-hidden className="absolute -top-3 left-1/2 z-10 h-6 w-20 -translate-x-1/2 -rotate-3 rounded-sm opacity-90" style={{ background: TAPE[i % TAPE.length] }} />
               <span className="relative block aspect-[4/3] overflow-hidden rounded-[14px] bg-[#EAF2FB]">
                 {c.image && <Image src={c.image} alt="" fill sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw" className="object-cover transition duration-500 group-hover:scale-105" />}
               </span>
-              <span className="mt-3.5 block px-1.5 text-lg font-bold leading-snug text-[#031e41] [font-family:var(--font-display)]">{c.title}</span>
-              <span className={`mx-1.5 mt-2 inline-block rounded-full px-2.5 py-0.5 text-xs font-semibold ${c.area === 'ofi' ? 'bg-[#FFE7D6] text-[#8a3a00]' : 'bg-[#E3EAFF] text-[#1f3fae]'}`}>
+              <span className="mb-2 mt-3.5 block px-1.5 text-lg font-bold leading-snug text-[#031e41] [font-family:var(--font-display)]">{c.title}</span>
+              <span className={`mx-1.5 mt-auto w-fit rounded-full px-2.5 py-0.5 text-xs font-semibold ${c.area === 'ofi' ? 'bg-[#FFE7D6] text-[#8a3a00]' : 'bg-[#E3EAFF] text-[#1f3fae]'}`}>
                 {c.area === 'ofi' ? 'Oficio' : 'Tecnología'}
               </span>
             </Link>
