@@ -126,8 +126,8 @@ export function Benefits({ schoolName }: { schoolName: string }) {
     </section>
   );
 }
+
 // Mismo efecto que "Así llegamos a tu escuela" en la landing: al entrar en pantalla cada paso estalla de corrido.
-// Mismo efecto que "Así llegamos a tu escuela" en la landing: en escritorio la sección se fija y cada paso estalla.
 export function Journey() {
   const steps = [
     { icon: BookOpen, title: 'Aprendé', text: 'Clases guiadas y materiales creados por profesionales de la industria.' },
@@ -141,11 +141,13 @@ export function Journey() {
       <div className="boom-stage mx-auto max-w-7xl px-5 pt-24 sm:px-8 sm:pt-32">
         <h2 className={`max-w-2xl text-4xl font-extrabold tracking-tight sm:text-6xl ${D}`}>Nuestra ruta de aprendizaje</h2>
         <p className="mt-3 max-w-xl text-lg text-slate-600">Un camino probado para construir habilidades reales y confianza.</p>
-        <ol className="relative mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+        <ol className="relative mt-10 grid gap-7 sm:mt-14 sm:grid-cols-2 sm:gap-10 lg:grid-cols-4 lg:gap-6">
           <span aria-hidden className="boom-line absolute left-8 right-8 top-8 hidden border-t-[3px] border-dashed border-[#031e41]/25 lg:block" />
           {steps.map(({ icon: Icon, title, text }, i) => (
-            <li key={title} className="boom-step relative" style={{ ['--i' as string]: i }}>
-              <span className="relative block size-16">
+            <li key={title} className="boom-step relative flex items-start gap-5 sm:block" style={{ ['--i' as string]: i }}>
+              {/* Celular: tramo de línea hasta el paso siguiente */}
+              {i < steps.length - 1 && <span aria-hidden className="absolute -bottom-7 left-8 top-16 border-l-[3px] border-dashed border-[#031e41]/25 sm:hidden" />}
+              <span className="relative block size-16 shrink-0">
                 <span aria-hidden className="boom-ring absolute inset-0 rounded-full border-4" style={{ borderColor: i % 2 ? COLORS[i] : 'var(--accent)' }} />
                 {SPARKS.map((a, k) => (
                   <span key={a} aria-hidden className="boom-spark absolute left-1/2 top-1/2 h-6 w-2.5 rounded-full" style={{ ['--a' as string]: `${a}deg`, background: k % 2 ? 'var(--accent)' : COLORS[(k + i) % COLORS.length] }} />
@@ -155,8 +157,8 @@ export function Journey() {
                 </span>
               </span>
               <div className="boom-text">
-                <h3 className={`mt-6 text-2xl font-bold tracking-tight ${D}`}>{title}</h3>
-                <p className="mt-2 max-w-xs leading-relaxed text-slate-600">{text}</p>
+                <h3 className={`mt-1 text-xl font-bold tracking-tight sm:mt-6 sm:text-2xl ${D}`}>{title}</h3>
+                <p className="mt-1.5 max-w-xs leading-relaxed text-slate-600 sm:mt-2">{text}</p>
               </div>
             </li>
           ))}

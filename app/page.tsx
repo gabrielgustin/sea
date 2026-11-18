@@ -175,12 +175,14 @@ export default async function LandingPage() {
           <BoomObserver />
           <div className="boom-stage mx-auto max-w-7xl px-5 pt-28 sm:px-8 sm:pt-36">
           <h2 className={`max-w-2xl text-4xl font-extrabold tracking-tight sm:text-6xl ${D}`}>Así llegamos a tu escuela</h2>
-          <ol className="relative mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
+          <ol className="relative mt-10 grid gap-7 sm:mt-14 sm:grid-cols-2 sm:gap-10 lg:grid-cols-4 lg:gap-6">
             <span aria-hidden className="boom-line absolute left-8 right-8 top-8 hidden border-t-[3px] border-dashed border-[#031e41]/25 lg:block" />
             {STEPS.map((s, i) => (
-              <li key={s.title} className="boom-step relative" style={{ ['--i' as string]: i }}>
+              <li key={s.title} className="boom-step relative flex items-start gap-5 sm:block" style={{ ['--i' as string]: i }}>
                 {/* Número con onda expansiva y chispas (animaciones en globals.css, atadas al scroll) */}
-                <span className="relative block size-16">
+                {/* Celular: tramo de línea hasta el paso siguiente */}
+                {i < STEPS.length - 1 && <span aria-hidden className="absolute -bottom-7 left-8 top-16 border-l-[3px] border-dashed border-[#031e41]/25 sm:hidden" />}
+                <span className="relative block size-16 shrink-0">
                   <span aria-hidden className="boom-ring absolute inset-0 rounded-full border-4" style={{ borderColor: s.bg }} />
                   {SPARKS.map((a, k) => (
                     <span
@@ -193,8 +195,8 @@ export default async function LandingPage() {
                   <span className={`boom-num relative flex size-16 items-center justify-center rounded-full border-2 border-[#031e41] text-2xl font-extrabold shadow-[3px_3px_0_#031e41] ${D}`} style={{ background: s.bg }}>{i + 1}</span>
                 </span>
                 <div className="boom-text">
-                  <h3 className={`mt-6 text-2xl font-bold tracking-tight ${D}`}>{s.title}</h3>
-                  <p className="mt-2 max-w-xs leading-relaxed text-slate-600">{s.text}</p>
+                  <h3 className={`mt-1 text-xl font-bold tracking-tight sm:mt-6 sm:text-2xl ${D}`}>{s.title}</h3>
+                  <p className="mt-1.5 max-w-xs leading-relaxed text-slate-600 sm:mt-2">{s.text}</p>
                 </div>
               </li>
             ))}
