@@ -8,6 +8,7 @@ export type TenantConfig = {
   footerAddress?: string
   // true: la barra superior es siempre blanca (no cambia de color según la sección)
   navLight?: boolean
+  accent?: string // color propio de la escuela (hex), el mismo en su sitio y en la landing madre
   enrollmentWebhook?: string // Google Apps Script que recibe las inscripciones
 }
 

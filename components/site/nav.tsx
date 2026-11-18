@@ -66,7 +66,7 @@ export default function SiteNav() {
       {/* Barra de progreso de lectura (CSS puro; si el navegador no lo soporta, no se muestra) */}
       <div
         aria-hidden
-        className="pointer-events-none fixed inset-x-0 top-0 z-[70] hidden h-[3px] origin-left bg-[#9cbadb] [animation:fill-x_linear_both] [animation-timeline:scroll(root)] supports-[animation-timeline:scroll()]:block"
+        className="pointer-events-none fixed inset-x-0 top-0 z-[70] hidden h-[3px] origin-left bg-[var(--accent)] [animation:fill-x_linear_both] [animation-timeline:scroll(root)] supports-[animation-timeline:scroll()]:block"
       />
 
       <header
@@ -110,11 +110,10 @@ export default function SiteNav() {
         )}
         <button
           onClick={account}
-          className="group hidden items-center gap-2 rounded-full bg-[#9cbadb] px-5 py-3 text-sm font-semibold text-[#031e41] transition hover:bg-white active:scale-95 sm:flex"
+          className="group hidden items-center gap-2 rounded-full border-2 border-[#031e41] bg-[var(--accent)] px-5 py-2.5 text-sm font-bold text-[var(--accent-ink)] shadow-[3px_3px_0_#031e41] transition hover:-translate-y-0.5 hover:shadow-[4px_5px_0_#031e41] active:translate-y-0 active:shadow-none sm:flex"
         >
           {isAuthenticated ? <LayoutDashboard size={16} /> : <LogIn size={16} />}
           {isAuthenticated ? 'Panel' : 'Ingresar'}
-          <span className="transition-transform group-hover:translate-x-0.5" aria-hidden>→</span>
         </button>
 
         {/* Hamburguesa: dos líneas que se cruzan en X */}
@@ -123,10 +122,10 @@ export default function SiteNav() {
           aria-label={open ? 'Cerrar menú' : 'Abrir menú'}
           aria-expanded={open}
           aria-controls="menu-movil"
-          className="relative size-11 shrink-0 rounded-full bg-white lg:hidden"
+          className="relative size-11 shrink-0 rounded-full bg-[#031e41] ring-2 ring-white/40 lg:hidden"
         >
-          <span className={`absolute inset-x-[13px] top-[18px] h-0.5 rounded bg-[#031e41] transition duration-300 ${open ? 'translate-y-[3.5px] rotate-45' : ''}`} />
-          <span className={`absolute inset-x-[13px] top-[25px] h-0.5 rounded bg-[#031e41] transition duration-300 ${open ? '-translate-y-[3.5px] -rotate-45' : ''}`} />
+          <span className={`absolute inset-x-[13px] top-[18px] h-0.5 rounded bg-white transition duration-300 ${open ? 'translate-y-[3.5px] rotate-45' : ''}`} />
+          <span className={`absolute inset-x-[13px] top-[25px] h-0.5 rounded bg-white transition duration-300 ${open ? '-translate-y-[3.5px] -rotate-45' : ''}`} />
         </button>
       </header>
 
@@ -146,9 +145,9 @@ export default function SiteNav() {
             onClick={() => setOpen(false)}
             tabIndex={open ? 0 : -1}
             style={{ transitionDelay: open ? `${200 + i * 60}ms` : '0ms' }}
-            className={`relative text-[clamp(28px,8vw,44px)] font-semibold uppercase leading-[1.15] tracking-tight transition duration-500 ${
+            className={`relative text-[clamp(30px,9vw,46px)] font-extrabold leading-[1.15] tracking-tight transition duration-500 [font-family:var(--font-display)] ${
               open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'
-            } ${isActive(l.href) ? 'text-[#9cbadb]' : 'text-white'}`}
+            } ${isActive(l.href) ? 'text-[var(--accent)]' : 'text-white'}`}
           >
             {l.label}
           </Link>
@@ -157,9 +156,9 @@ export default function SiteNav() {
           onClick={() => { setOpen(false); account(); }}
           tabIndex={open ? 0 : -1}
           style={{ transitionDelay: open ? `${200 + links.length * 60}ms` : '0ms' }}
-          className={`relative mt-6 self-start text-[clamp(28px,8vw,44px)] font-semibold uppercase leading-[1.15] tracking-tight text-[#9cbadb] transition duration-500 ${open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}
+          className={`relative mt-8 self-start rounded-full border-2 border-white bg-[var(--accent)] px-7 py-4 text-lg font-bold text-[var(--accent-ink)] transition duration-500 ${open ? 'translate-y-0 opacity-100' : 'translate-y-6 opacity-0'}`}
         >
-          {isAuthenticated ? 'Panel →' : 'Ingresar →'}
+          {isAuthenticated ? 'Ir al panel' : 'Ingresar'}
         </button>
         {settings.instagramUrl && (
           <a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" tabIndex={open ? 0 : -1} className={`relative mt-10 flex items-center gap-2 text-sm text-white/60 transition duration-500 ${open ? 'opacity-100' : 'opacity-0'}`} style={{ transitionDelay: open ? '600ms' : '0ms' }}>

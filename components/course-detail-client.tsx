@@ -27,24 +27,24 @@ function InterestForm() {
 
   return (
     <>
-      <div className="p-4 md:p-6 space-y-4">
-        <div>
-          <h3 className="text-base md:text-lg font-bold mb-1" style={{ color: '#031e41' }}>
+      <div className="space-y-4">
+        <div className="border-b-2 border-[#031e41] bg-[var(--accent)] px-6 py-5 text-[var(--accent-ink)]">
+          <h3 className="text-2xl font-extrabold [font-family:var(--font-display)]">
             Me interesa esta formación
           </h3>
-          <p className="text-xs md:text-sm text-gray-500 leading-relaxed">
+          <p className="mt-1 text-sm leading-relaxed opacity-80">
             Dejanos tus datos y te avisamos cuando se abra una nueva edición.
           </p>
         </div>
         {!formSubmitted && (
-          <form onSubmit={handleSubmit} className="space-y-3">
+          <form onSubmit={handleSubmit} className="space-y-3 px-6 pb-6">
             <Input
               type="text"
               placeholder="Nombre y Apellido"
               value={interestForm.nombre}
               onChange={(e) => setInterestForm(prev => ({ ...prev, nombre: e.target.value }))}
               required
-              className="w-full border-gray-300 rounded-lg text-sm"
+              className="h-12 w-full rounded-2xl border-2 border-[#031e41] bg-white"
             />
             <Input
               type="email"
@@ -52,7 +52,7 @@ function InterestForm() {
               value={interestForm.email}
               onChange={(e) => setInterestForm(prev => ({ ...prev, email: e.target.value }))}
               required
-              className="w-full border-gray-300 rounded-lg text-sm"
+              className="h-12 w-full rounded-2xl border-2 border-[#031e41] bg-white"
             />
             <Input
               type="tel"
@@ -60,14 +60,13 @@ function InterestForm() {
               value={interestForm.telefono}
               onChange={(e) => setInterestForm(prev => ({ ...prev, telefono: e.target.value }))}
               required
-              className="w-full border-gray-300 rounded-lg text-sm"
+              className="h-12 w-full rounded-2xl border-2 border-[#031e41] bg-white"
             />
             <button
               type="submit"
-              className="w-full py-3 rounded-xl font-bold text-white text-sm transition-all duration-300 hover:shadow-lg hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: '#031e41' }}
+              className="w-full rounded-full border-2 border-[#031e41] bg-[#031e41] py-3.5 font-bold text-white shadow-[4px_4px_0_var(--accent)] transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none"
             >
-              Enviar
+              Avisarme
             </button>
           </form>
         )}
@@ -80,11 +79,11 @@ function InterestForm() {
           <div className="absolute inset-0 bg-black/50" />
           
           {/* Modal */}
-          <div className="relative bg-white rounded-2xl shadow-2xl p-6 md:p-8 max-w-md w-full text-center space-y-4 animate-in fade-in zoom-in-95">
+          <div className="relative w-full max-w-md space-y-4 rounded-[28px] border-2 border-[#031e41] bg-white p-6 text-center shadow-[8px_8px_0_#031e41] animate-in fade-in zoom-in-95 md:p-8">
             {/* Icono de check */}
             <div className="flex justify-center">
-              <div className="w-16 h-16 rounded-full flex items-center justify-center" style={{ backgroundColor: '#031e41' }}>
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex size-16 items-center justify-center rounded-full border-2 border-[#031e41] bg-[#2FD3A0]">
+                <svg className="size-8 text-[#031e41]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
                 </svg>
               </div>
@@ -92,7 +91,7 @@ function InterestForm() {
 
             {/* Contenido */}
             <div>
-              <h2 className="text-xl md:text-2xl font-bold mb-2" style={{ color: '#031e41' }}>
+              <h2 className="mb-2 text-2xl font-extrabold [font-family:var(--font-display)]">
                 ¡Consulta recibida!
               </h2>
               <p className="text-gray-600 text-sm md:text-base leading-relaxed">
@@ -103,8 +102,7 @@ function InterestForm() {
             {/* Botón cerrar */}
             <button
               onClick={handleCloseModal}
-              className="w-full py-3 rounded-xl font-semibold text-white text-sm transition-all duration-300 hover:shadow-lg hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: '#031e41' }}
+              className="w-full rounded-full border-2 border-[#031e41] bg-[var(--accent)] py-3.5 font-bold text-[var(--accent-ink)] transition hover:-translate-y-0.5"
             >
               Entendido
             </button>
@@ -259,24 +257,24 @@ export default function CourseDetailClient({ course }: { course: Course }) {
 
   // Info box: se reutiliza en móvil (bajo el hero) y en escritorio (fija al costado)
   const InfoBox = () => (
-    <div className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-[0_30px_60px_-30px_rgb(3_30_65/0.35)]">
+    <div className="overflow-hidden rounded-[28px] border-2 border-[#031e41] bg-white shadow-[7px_7px_0_#031e41]">
       {canEnroll ? (
         <>
-          <div className="flex items-end justify-between gap-4 bg-[#031e41] px-6 py-5 text-white">
+          <div className="flex items-end justify-between gap-4 border-b-2 border-[#031e41] bg-[var(--accent)] px-6 py-5 text-[var(--accent-ink)]">
             <div>
-              <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/55">Inversión</p>
-              <p className="mt-1 text-2xl font-semibold">{course.price || 'Consultar'}</p>
+              <p className="text-sm font-medium opacity-75">Inversión</p>
+              <p className="mt-0.5 text-3xl font-extrabold [font-family:var(--font-display)]">{course.price || 'Consultar'}</p>
             </div>
             {days !== null && (
-              <p className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium">
-                Faltan <span className="font-semibold text-[#9cbadb]">{days} {days === 1 ? 'día' : 'días'}</span>
+              <p className="rounded-full border-2 border-[#031e41] bg-white px-3 py-1.5 text-xs font-bold text-[#031e41]">
+                Faltan {days} {days === 1 ? 'día' : 'días'}
               </p>
             )}
           </div>
           <div className="space-y-5 p-6">
             {course.commissions && course.commissions.length > 0 && (
               <div>
-                <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-slate-400">Comisiones</p>
+                <p className="mb-2.5 font-bold">Comisiones</p>
                 <div className="space-y-2">
                   {course.commissions.map((commission) => {
                     // Deterministic marketing percentage: 40–75% in steps of 5
@@ -291,7 +289,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                     const isAlmostFull = !isFull && pct >= 65;
                     const barColor = isFull ? '#ef4444' : isAlmostFull ? '#f59e0b' : '#22c55e';
                     return (
-                      <div key={commission.id} className="rounded-2xl border border-slate-200 p-3">
+                      <div key={commission.id} className="rounded-2xl border-2 border-[#031e41] p-3">
                         <div className="flex items-center justify-between gap-3">
                           <span className="text-sm font-medium text-slate-800">{commission.name}</span>
                           {isFull ? (
@@ -300,7 +298,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                             <span className={`text-xs font-medium ${isAlmostFull ? 'text-amber-600' : 'text-slate-500'}`}>{available} {available === 1 ? 'lugar' : 'lugares'}</span>
                           )}
                         </div>
-                        <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
+                        <div className="mt-2.5 h-2.5 overflow-hidden rounded-full border-2 border-[#031e41] bg-white">
                           <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct}%`, backgroundColor: barColor }} />
                         </div>
                       </div>
@@ -311,7 +309,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
             )}
             {course.requirements && (
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Requisitos</p>
+                <p className="font-bold">Requisitos</p>
                 <p className="mt-1 text-sm leading-relaxed text-slate-700">{course.requirements}</p>
               </div>
             )}
@@ -323,7 +321,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
             )}
             <button
               onClick={() => router.push(`/${schoolId}/inscripcion/${course.id}`)}
-              className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-[#031e41] py-4 font-semibold text-white transition hover:bg-[#0b2d5c] active:scale-[.98]"
+              className="group flex w-full items-center justify-center gap-2 rounded-full border-2 border-[#031e41] bg-[#031e41] py-4 font-bold text-white shadow-[4px_4px_0_var(--accent)] transition hover:-translate-y-0.5 hover:shadow-[6px_6px_0_var(--accent)] active:translate-y-0 active:shadow-none"
             >
               Inscribirme <ArrowRight size={17} className="transition group-hover:translate-x-1" />
             </button>
@@ -339,38 +337,47 @@ export default function CourseDetailClient({ course }: { course: Course }) {
 
   return (
     <div className="w-full">
-      {/* Hero */}
-      <section data-nav="dark" className="relative -mt-[76px] flex min-h-[78svh] items-end overflow-hidden bg-[#031e41] text-white">
-        <Image src={course.image} alt="" fill priority sizes="100vw" className="kenburns object-cover" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-black/10" />
-        <div className="absolute inset-0 bg-gradient-to-r from-black/55 to-transparent" />
-        <div className="relative mx-auto w-full max-w-7xl px-5 pb-14 pt-40 sm:px-8 sm:pb-20">
-          <nav aria-label="Ruta" className="rise flex items-center gap-1.5 text-sm text-white/60">
-            <Link href={`/${schoolId}/catalogo-formaciones`} className="transition hover:text-white">Formaciones</Link>
-            <ChevronRight size={14} />
-            <span className="line-clamp-1 text-white/85">{course.title}</span>
-          </nav>
-          {course.badge && (
-            <span className="rise mt-5 inline-block rounded-full bg-[#9cbadb] px-3.5 py-1 text-xs font-semibold text-[#031e41]" style={{ animationDelay: '.05s' }}>{course.badge}</span>
-          )}
-          <h1 className="rise mt-4 max-w-4xl text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl" style={{ animationDelay: '.1s' }}>
-            {course.title}
-          </h1>
-          {course.subtitle && <p className="rise mt-5 max-w-2xl text-lg text-white/70" style={{ animationDelay: '.15s' }}>{course.subtitle}</p>}
-          {facts.length > 0 && (
-            <dl className="rise mt-8 flex flex-wrap gap-2" style={{ animationDelay: '.2s' }}>
-              {facts.map((f) => (
-                <div key={f.k} className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2.5 backdrop-blur-md">
-                  <dt className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/55">{f.k}</dt>
-                  <dd className="text-sm font-semibold">{f.v}</dd>
-                </div>
-              ))}
-            </dl>
-          )}
+      {/* Hero: tablero claro, datos a la izquierda y la foto como polaroid */}
+      <section className="relative -mt-[76px] overflow-hidden bg-[#EAF2FB] px-5 pb-16 pt-32 sm:px-8 sm:pt-40" style={{ backgroundImage: 'radial-gradient(rgb(3 30 65 / .14) 1.4px, transparent 1.6px)', backgroundSize: '26px 26px' }}>
+        <div className="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[1.15fr_1fr]">
+          <div>
+            <nav aria-label="Ruta" className="rise flex items-center gap-1.5 text-sm font-medium text-[#031e41]/60">
+              <Link href={`/${schoolId}/catalogo-formaciones`} className="rounded-full border-2 border-[#031e41] bg-white px-3 py-1 text-[#031e41] transition hover:bg-[var(--accent)] hover:text-[var(--accent-ink)]">Formaciones</Link>
+              <ChevronRight size={14} />
+              <span className="line-clamp-1">{course.title}</span>
+            </nav>
+            {course.badge && (
+              <span className="rise mt-6 inline-block rounded-full border-2 border-[#031e41] bg-[var(--accent)] px-3.5 py-1 text-sm font-bold text-[var(--accent-ink)]" style={{ animationDelay: '.05s' }}>{course.badge}</span>
+            )}
+            <h1 className="rise mt-4 max-w-4xl text-balance text-5xl font-extrabold leading-[0.95] tracking-[-0.035em] [font-family:var(--font-display)] sm:text-7xl" style={{ animationDelay: '.1s' }}>
+              {course.title}
+            </h1>
+            {course.subtitle && <p className="rise mt-5 max-w-2xl text-xl leading-relaxed text-[#031e41]/75" style={{ animationDelay: '.15s' }}>{course.subtitle}</p>}
+            {facts.length > 0 && (
+              <dl className="rise mt-8 flex flex-wrap gap-2.5" style={{ animationDelay: '.2s' }}>
+                {facts.map((f) => (
+                  <div key={f.k} className="rounded-2xl border-2 border-[#031e41] bg-white px-4 py-2">
+                    <dt className="text-xs font-medium text-[#031e41]/55">{f.k}</dt>
+                    <dd className="font-bold">{f.v}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </div>
+          <div className="drop relative mx-auto w-[88%] max-w-lg" style={{ animationDelay: '.25s' }}>
+            <div className="float">
+              <div className="relative rotate-2 rounded-[28px] border-2 border-[#031e41] bg-white p-3 shadow-[8px_8px_0_#031e41]">
+                <span aria-hidden className="absolute -top-3.5 left-1/2 z-10 h-7 w-24 -translate-x-1/2 -rotate-3 rounded-sm bg-[var(--accent)] opacity-90" />
+                <span className="relative block aspect-[4/3] overflow-hidden rounded-[18px] bg-[#EAF2FB]">
+                  <Image src={course.image} alt={course.title} fill priority sizes="(min-width:1024px) 40vw, 90vw" className="object-cover" />
+                </span>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <div className="relative z-10 -mt-6 px-4 lg:hidden">
+      <div className="relative z-10 px-4 pt-2 lg:hidden">
         <InfoBox />
       </div>
 
@@ -378,14 +385,14 @@ export default function CourseDetailClient({ course }: { course: Course }) {
         <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
           <div className="min-w-0 flex-1 space-y-14">
             <div className="reveal">
-              <h2 className="text-3xl font-semibold tracking-tight text-slate-900">Sobre este curso</h2>
-              <p className="mt-4 whitespace-pre-wrap text-lg leading-relaxed text-slate-600">{course.description}</p>
+              <h2 className="text-3xl font-extrabold tracking-tight [font-family:var(--font-display)] sm:text-4xl">Sobre este curso</h2>
+              <p className="mt-4 whitespace-pre-wrap text-lg leading-relaxed text-slate-700">{course.description}</p>
             </div>
 
             {course.objective && (
-              <div className="reveal relative overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#eef3f9] to-white p-7 ring-1 ring-slate-200">
-                <Target className="absolute -right-4 -top-4 size-28 text-[#9cbadb]/30" aria-hidden />
-                <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-[#031e41]/60">Objetivo</h2>
+              <div className="reveal relative overflow-hidden rounded-[28px] border-2 border-[#031e41] bg-[#FFF4D1] p-7 shadow-[6px_6px_0_#031e41]">
+                <Target className="absolute -right-4 -top-4 size-28 text-[#031e41]/10" aria-hidden />
+                <h2 className="text-2xl font-extrabold [font-family:var(--font-display)]">Objetivo</h2>
                 <p className="relative mt-3 text-lg leading-relaxed text-slate-800">{course.objective}</p>
               </div>
             )}
@@ -393,26 +400,26 @@ export default function CourseDetailClient({ course }: { course: Course }) {
             {course.modules && course.modules.length > 0 && (
               <div className="reveal">
                 <div className="flex items-end justify-between gap-4">
-                  <h2 className="text-3xl font-semibold tracking-tight text-slate-900">Programa</h2>
-                  <p className="text-sm text-slate-400">{course.modules.length} unidades</p>
+                  <h2 className="text-3xl font-extrabold tracking-tight [font-family:var(--font-display)] sm:text-4xl">Programa</h2>
+                  <p className="rounded-full border-2 border-[#031e41] bg-white px-3 py-1 text-sm font-bold">{course.modules.length} unidades</p>
                 </div>
                 <ol className="mt-6 space-y-3">
                   {course.modules.map((module, index) => {
                     const isOpen = openModule === index;
                     return (
-                      <li key={index} className={`overflow-hidden rounded-3xl border transition-colors ${isOpen ? 'border-[#031e41]/20 bg-[#f4f7fb]' : 'border-slate-200 bg-white hover:border-slate-300'}`}>
+                      <li key={index} className={`overflow-hidden rounded-3xl border-2 border-[#031e41] transition-colors ${isOpen ? 'bg-[#EAF2FB]' : 'bg-white'}`}>
                         <button onClick={() => setOpenModule(isOpen ? null : index)} aria-expanded={isOpen} className="flex w-full items-center gap-4 px-5 py-4 text-left">
-                          <span className={`flex size-10 shrink-0 items-center justify-center rounded-xl font-mono text-sm font-semibold transition ${isOpen ? 'bg-[#031e41] text-white' : 'bg-slate-100 text-[#031e41]'}`}>
+                          <span className={`flex size-10 shrink-0 items-center justify-center rounded-full border-2 border-[#031e41] text-sm font-extrabold transition [font-family:var(--font-display)] ${isOpen ? 'bg-[var(--accent)] text-[var(--accent-ink)]' : 'bg-white'}`}>
                             {module.number || index + 1}
                           </span>
-                          <span className="flex-1 font-medium text-slate-900">{module.title}</span>
-                          <ChevronDown size={18} className={`shrink-0 text-slate-400 transition duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                          <span className="flex-1 font-semibold">{module.title}</span>
+                          <ChevronDown size={20} className={`shrink-0 transition duration-300 ${isOpen ? 'rotate-180' : ''}`} />
                         </button>
                         <div className={`grid transition-[grid-template-rows] duration-500 ease-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
                           <div className="overflow-hidden">
                             <ul className="space-y-2 px-5 pb-5 pl-[4.75rem]">
                               {module.topics?.map((topic, t) => (
-                                <li key={t} className="flex gap-2.5 text-slate-600"><Check size={16} className="mt-1 shrink-0 text-[#031e41]" />{topic}</li>
+                                <li key={t} className="flex gap-2.5 text-slate-700"><Check size={16} strokeWidth={3} className="mt-1 shrink-0" />{topic}</li>
                               ))}
                             </ul>
                           </div>
@@ -430,10 +437,10 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                   { icon: Lightbulb, title: 'Metodología', text: course.methodology },
                   { icon: Rocket, title: 'Proyecto final', text: course.finalProject },
                 ].filter((b) => b.text).map(({ icon: Icon, title, text }) => (
-                  <div key={title} className="reveal rounded-[1.75rem] border border-slate-200 p-7">
-                    <span className="flex size-11 items-center justify-center rounded-xl bg-[#eef3f9] text-[#031e41]"><Icon size={20} /></span>
-                    <h3 className="mt-5 text-lg font-semibold text-slate-900">{title}</h3>
-                    <p className="mt-2 leading-relaxed text-slate-600">{text}</p>
+                  <div key={title} className="reveal rounded-[28px] border-2 border-[#031e41] bg-white p-7 shadow-[6px_6px_0_#031e41]">
+                    <span className="flex size-12 items-center justify-center rounded-full border-2 border-[#031e41] bg-[var(--accent)] text-[var(--accent-ink)]"><Icon size={21} /></span>
+                    <h3 className="mt-5 text-2xl font-bold [font-family:var(--font-display)]">{title}</h3>
+                    <p className="mt-2 whitespace-pre-wrap leading-relaxed text-slate-700">{text}</p>
                   </div>
                 ))}
               </div>
@@ -441,7 +448,7 @@ export default function CourseDetailClient({ course }: { course: Course }) {
 
             {course.teachers && course.teachers.length > 0 ? (
               <div className="reveal">
-                <h2 className="text-3xl font-semibold tracking-tight text-slate-900">Docente{course.teachers.length > 1 ? 's' : ''}</h2>
+                <h2 className="text-3xl font-extrabold tracking-tight [font-family:var(--font-display)] sm:text-4xl">Docente{course.teachers.length > 1 ? 's' : ''}</h2>
                 <div className="mt-6 grid gap-4 sm:grid-cols-2">
                   {course.teachers.map((teacher, index) => {
                     const socials = [
@@ -452,18 +459,18 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                       teacher.youtube && { href: teacher.youtube, label: 'YouTube', icon: Youtube },
                     ].filter(Boolean) as { href: string; label: string; icon: typeof Instagram }[];
                     return (
-                      <div key={index} className="group rounded-[1.75rem] border border-slate-200 bg-white p-6 transition hover:-translate-y-1 hover:shadow-[0_20px_40px_-20px_rgb(3_30_65/0.3)]">
+                      <div key={index} className="group rounded-[28px] border-2 border-[#031e41] bg-white p-6 shadow-[6px_6px_0_#031e41] transition hover:-translate-y-1">
                         <div className="flex items-center gap-4">
-                          <div className="relative size-16 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
+                          <div className="relative size-16 shrink-0 overflow-hidden rounded-full border-2 border-[#031e41] bg-[#EAF2FB]">
                             {teacher.photo && <Image src={teacher.photo} alt={teacher.name} fill sizes="64px" className="object-cover" />}
                           </div>
-                          <h3 className="text-lg font-semibold text-slate-900">{teacher.name}</h3>
+                          <h3 className="text-xl font-bold [font-family:var(--font-display)]">{teacher.name}</h3>
                         </div>
                         {teacher.description && <p className="mt-4 text-sm leading-relaxed text-slate-600">{teacher.description}</p>}
                         {socials.length > 0 && (
                           <div className="mt-4 flex gap-2">
                             {socials.map(({ href, label, icon: Icon }) => (
-                              <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={`${label} de ${teacher.name}`} className="flex size-9 items-center justify-center rounded-full bg-slate-100 text-[#031e41] transition hover:bg-[#031e41] hover:text-white">
+                              <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={`${label} de ${teacher.name}`} className="flex size-9 items-center justify-center rounded-full border-2 border-[#031e41] bg-white transition hover:bg-[var(--accent)] hover:text-[var(--accent-ink)]">
                                 <Icon size={16} />
                               </a>
                             ))}
@@ -475,8 +482,8 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                 </div>
               </div>
             ) : course.teacher ? (
-              <div className="reveal flex items-center gap-4 rounded-[1.75rem] border border-slate-200 p-6">
-                <span className="flex size-14 items-center justify-center rounded-2xl bg-slate-100 text-xl font-semibold text-slate-500">{course.teacher.charAt(0)}</span>
+              <div className="reveal flex items-center gap-4 rounded-[28px] border-2 border-[#031e41] bg-white p-6 shadow-[6px_6px_0_#031e41]">
+                <span className="flex size-14 items-center justify-center rounded-full border-2 border-[#031e41] bg-[var(--accent)] text-xl font-bold text-[var(--accent-ink)]">{course.teacher.charAt(0)}</span>
                 <div>
                   <h3 className="text-lg font-semibold text-slate-900">{course.teacher}</h3>
                   <p className="text-sm text-slate-500">Docente del curso</p>

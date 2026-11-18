@@ -20,8 +20,7 @@ export default async function CondicionesDeServicioPage({
             {/* Back button */}
             <Link
               href={`/${schoolId}/formaciones`}
-              className="inline-flex items-center gap-2 text-sm font-medium mb-8 transition-colors hover:opacity-75"
-              style={{ color: '#031e41' }}
+              className="mb-10 inline-flex items-center gap-2 rounded-full border-2 border-[#031e41] bg-white px-4 py-2 text-sm font-semibold transition hover:bg-[var(--accent)] hover:text-[var(--accent-ink)]"
             >
               <ArrowLeft size={16} />
               Volver a Formaciones
@@ -29,14 +28,11 @@ export default async function CondicionesDeServicioPage({
 
             {/* Header */}
             <div className="flex items-center gap-3 mb-2">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: '#031e41' }}
-              >
-                <FileText size={20} className="text-white" />
+              <div className="flex size-14 shrink-0 items-center justify-center rounded-full border-2 border-[#031e41] bg-[var(--accent)] text-[var(--accent-ink)] shadow-[3px_3px_0_#031e41]">
+                <FileText size={24} />
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold" style={{ color: '#031e41' }}>
-                Condiciones de Servicio
+              <h1 className="text-4xl font-extrabold tracking-tight [font-family:var(--font-display)] md:text-5xl">
+                Condiciones de servicio
               </h1>
             </div>
             <p className="text-sm text-gray-500 mb-10 ml-[52px]">
@@ -47,7 +43,7 @@ export default async function CondicionesDeServicioPage({
             <div className="space-y-10 text-gray-700 leading-relaxed text-sm md:text-base">
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   1. Aceptacion de los terminos
                 </h2>
                 <p>
@@ -56,7 +52,7 @@ export default async function CondicionesDeServicioPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   2. Descripcion del servicio
                 </h2>
                 <p className="mb-3">
@@ -73,7 +69,7 @@ export default async function CondicionesDeServicioPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   3. Inscripcion y cupos
                 </h2>
                 <p className="mb-3">
@@ -85,7 +81,7 @@ export default async function CondicionesDeServicioPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   4. Aranceles y pagos
                 </h2>
                 <p className="mb-3">
@@ -99,7 +95,7 @@ export default async function CondicionesDeServicioPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   5. Cancelaciones y reembolsos
                 </h2>
                 <p className="mb-3">
@@ -111,7 +107,7 @@ export default async function CondicionesDeServicioPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   6. Conducta del usuario
                 </h2>
                 <p className="mb-3">
@@ -126,7 +122,7 @@ export default async function CondicionesDeServicioPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   7. Propiedad intelectual
                 </h2>
                 <p>
@@ -135,7 +131,7 @@ export default async function CondicionesDeServicioPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   8. Limitacion de responsabilidad
                 </h2>
                 <p>
@@ -144,7 +140,7 @@ export default async function CondicionesDeServicioPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   9. Enlaces a terceros
                 </h2>
                 <p>
@@ -153,7 +149,7 @@ export default async function CondicionesDeServicioPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   10. Modificaciones a las condiciones
                 </h2>
                 <p>
@@ -162,7 +158,7 @@ export default async function CondicionesDeServicioPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   11. Ley aplicable y jurisdiccion
                 </h2>
                 <p>
@@ -171,7 +167,7 @@ export default async function CondicionesDeServicioPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   12. Contacto
                 </h2>
                 <p>

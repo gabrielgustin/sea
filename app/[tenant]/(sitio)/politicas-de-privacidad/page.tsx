@@ -20,8 +20,7 @@ export default async function PoliticasDePrivacidadPage({
             {/* Back button */}
             <Link
               href={`/${schoolId}/formaciones`}
-              className="inline-flex items-center gap-2 text-sm font-medium mb-8 transition-colors hover:opacity-75"
-              style={{ color: '#031e41' }}
+              className="mb-10 inline-flex items-center gap-2 rounded-full border-2 border-[#031e41] bg-white px-4 py-2 text-sm font-semibold transition hover:bg-[var(--accent)] hover:text-[var(--accent-ink)]"
             >
               <ArrowLeft size={16} />
               Volver a Formaciones
@@ -29,14 +28,11 @@ export default async function PoliticasDePrivacidadPage({
 
             {/* Header */}
             <div className="flex items-center gap-3 mb-2">
-              <div
-                className="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0"
-                style={{ backgroundColor: '#031e41' }}
-              >
-                <Shield size={20} className="text-white" />
+              <div className="flex size-14 shrink-0 items-center justify-center rounded-full border-2 border-[#031e41] bg-[var(--accent)] text-[var(--accent-ink)] shadow-[3px_3px_0_#031e41]">
+                <Shield size={24} />
               </div>
-              <h1 className="text-2xl md:text-3xl font-bold" style={{ color: '#031e41' }}>
-                Politicas de Privacidad
+              <h1 className="text-4xl font-extrabold tracking-tight [font-family:var(--font-display)] md:text-5xl">
+                Políticas de privacidad
               </h1>
             </div>
             <p className="text-sm text-gray-500 mb-10 ml-[52px]">
@@ -47,7 +43,7 @@ export default async function PoliticasDePrivacidadPage({
             <div className="space-y-10 text-gray-700 leading-relaxed text-sm md:text-base">
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   1. Informacion general
                 </h2>
                 <p>
@@ -56,7 +52,7 @@ export default async function PoliticasDePrivacidadPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   2. Datos que recopilamos
                 </h2>
                 <p className="mb-3">
@@ -71,7 +67,7 @@ export default async function PoliticasDePrivacidadPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   3. Uso de los datos
                 </h2>
                 <p className="mb-3">SEA utiliza los datos recopilados para los siguientes fines:</p>
@@ -85,7 +81,7 @@ export default async function PoliticasDePrivacidadPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   4. Uso de Meta Platforms (Facebook e Instagram)
                 </h2>
                 <p className="mb-3">
@@ -115,7 +111,7 @@ export default async function PoliticasDePrivacidadPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   5. Base legal para el tratamiento de datos
                 </h2>
                 <p className="mb-3">
@@ -129,7 +125,7 @@ export default async function PoliticasDePrivacidadPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   6. Compartir datos con terceros
                 </h2>
                 <p className="mb-3">
@@ -143,7 +139,7 @@ export default async function PoliticasDePrivacidadPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   7. Retencion de datos
                 </h2>
                 <p>
@@ -152,7 +148,7 @@ export default async function PoliticasDePrivacidadPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   8. Sus derechos
                 </h2>
                 <p className="mb-3">
@@ -181,7 +177,7 @@ export default async function PoliticasDePrivacidadPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   9. Seguridad de los datos
                 </h2>
                 <p>
@@ -190,7 +186,7 @@ export default async function PoliticasDePrivacidadPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   10. Cambios en esta politica
                 </h2>
                 <p>
@@ -199,7 +195,7 @@ export default async function PoliticasDePrivacidadPage({
               </section>
 
               <section>
-                <h2 className="text-base md:text-lg font-bold mb-3" style={{ color: '#031e41' }}>
+                <h2 className="mb-3 text-xl font-bold [font-family:var(--font-display)]">
                   11. Contacto
                 </h2>
                 <p>

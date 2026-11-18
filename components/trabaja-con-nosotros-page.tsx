@@ -19,6 +19,7 @@ export default function TrabajaConNosotrosPage() {
 
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [failed, setFailed] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -35,6 +36,7 @@ export default function TrabajaConNosotrosPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setFailed(false);
 
     try {
       // Split nombre into nombre + apellido (first word = nombre, rest = apellido)
@@ -55,11 +57,13 @@ export default function TrabajaConNosotrosPage() {
       setSubmitted(true);
     } catch (err) {
       console.error('Error submitting job application:', err);
+      setFailed(true); // conserva lo escrito para reintentar
+      return;
     } finally {
       setLoading(false);
     }
 
-    // Resetear después de 3 segundos
+    // Resetear después de 3 segundos (solo si se envió)
     setTimeout(() => {
       setSubmitted(false);
       setFormData({
@@ -75,33 +79,28 @@ export default function TrabajaConNosotrosPage() {
   };
 
   return (
-    <div className="w-full bg-white">
-      {/* Hero Section */}
-      <section
-        data-nav="dark"
-        className="aurora relative -mt-[76px] w-full pt-40 pb-20 md:min-h-[70vh] flex items-center justify-center px-4"
-        style={{
-          background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)',
-        }}
-      >
-        <div className="w-full text-center text-white">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance">
-            Trabaja con Nosotros
+    <div className="w-full">
+      {/* Hero */}
+      <section className="relative -mt-[76px] overflow-hidden bg-[#EAF2FB] px-5 pb-40 pt-36 sm:px-8 sm:pt-44" style={{ backgroundImage: 'radial-gradient(rgb(3 30 65 / .14) 1.4px, transparent 1.6px)', backgroundSize: '26px 26px' }}>
+        <div className="mx-auto max-w-4xl text-center">
+          <p className="rise inline-flex items-center gap-2 rounded-full border-2 border-[#031e41] bg-white px-4 py-2 text-sm font-semibold"><span className="size-2.5 rounded-full bg-[var(--accent)] ring-2 ring-[#031e41]" /> Búsqueda abierta</p>
+          <h1 className="rise mt-6 text-balance text-[clamp(3rem,8vw,6.5rem)] font-extrabold leading-[0.92] tracking-[-0.04em] [font-family:var(--font-display)]" style={{ animationDelay: '.08s' }}>
+            Trabajá con nosotros
           </h1>
-          <p className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto">
-            Si eres graduado/a o estudiante avanzado/a y te interesa trabajar con nosotros en nuestros proyectos o dictando cursos, ¡completa tu aplicación aquí!
+          <p className="rise mx-auto mt-6 max-w-2xl text-xl leading-relaxed text-[#031e41]/75" style={{ animationDelay: '.14s' }}>
+            Si sos graduado/a o estudiante avanzado/a y te interesa sumarte a nuestros proyectos o dictar cursos, completá tu postulación.
           </p>
         </div>
       </section>
 
-      {/* Form Section */}
-      <section className="py-16 px-4">
-        <div className="w-full max-w-2xl mx-auto">
+      {/* Formulario: tarjeta que sube sobre el héroe */}
+      <section className="relative z-10 -mt-28 px-4">
+        <div className="mx-auto w-full max-w-2xl rounded-[32px] border-2 border-[#031e41] bg-white p-6 shadow-[8px_8px_0_#031e41] sm:p-10">
           {submitted ? (
-            <div className="bg-green-50 border-2 border-green-500 rounded-2xl p-12 text-center">
-              <div className="text-5xl mb-4">✓</div>
-              <h2 className="text-3xl font-bold text-green-700 mb-2">¡Aplicación Enviada!</h2>
-              <p className="text-green-600 text-lg">
+            <div className="py-10 text-center">
+              <span className="mx-auto flex size-16 items-center justify-center rounded-full border-2 border-[#031e41] bg-[#2FD3A0] text-3xl font-bold">✓</span>
+              <h2 className="mt-5 text-3xl font-extrabold [font-family:var(--font-display)]">¡Postulación enviada!</h2>
+              <p className="mt-2 text-lg text-slate-600">
                 Gracias por tu interés. Nos pondremos en contacto pronto.
               </p>
             </div>
@@ -109,9 +108,9 @@ export default function TrabajaConNosotrosPage() {
             <form onSubmit={handleSubmit} className="space-y-6">
               {/* Nombre */}
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{ color: '#031e41' }}>
+                <label className="mb-2 block font-semibold">
                   <User size={16} className="inline mr-2" />
-                  Nombre Completo *
+                  Nombre completo *
                 </label>
                 <input
                   type="text"
@@ -119,14 +118,14 @@ export default function TrabajaConNosotrosPage() {
                   value={formData.nombre}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                  className="w-full rounded-2xl border-2 border-[#031e41] bg-white px-4 py-3 outline-none transition focus:shadow-[4px_4px_0_var(--accent)]"
                   placeholder="Tu nombre"
                 />
               </div>
 
               {/* Email */}
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{ color: '#031e41' }}>
+                <label className="mb-2 block font-semibold">
                   <Mail size={16} className="inline mr-2" />
                   Email *
                 </label>
@@ -136,14 +135,14 @@ export default function TrabajaConNosotrosPage() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                  className="w-full rounded-2xl border-2 border-[#031e41] bg-white px-4 py-3 outline-none transition focus:shadow-[4px_4px_0_var(--accent)]"
                   placeholder="tu@email.com"
                 />
               </div>
 
               {/* Teléfono */}
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{ color: '#031e41' }}>
+                <label className="mb-2 block font-semibold">
                   <Phone size={16} className="inline mr-2" />
                   Teléfono *
                 </label>
@@ -153,14 +152,14 @@ export default function TrabajaConNosotrosPage() {
                   value={formData.telefono}
                   onChange={handleChange}
                   required
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                  className="w-full rounded-2xl border-2 border-[#031e41] bg-white px-4 py-3 outline-none transition focus:shadow-[4px_4px_0_var(--accent)]"
                   placeholder="+54 9 351 XXX XXXX"
                 />
               </div>
 
               {/* Perfil */}
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{ color: '#031e41' }}>
+                <label className="mb-2 block font-semibold">
                   ¿Cuál es tu perfil? *
                 </label>
                 <textarea
@@ -169,15 +168,15 @@ export default function TrabajaConNosotrosPage() {
                   onChange={handleChange}
                   required
                   rows={3}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                  placeholder="Cuéntanos sobre tu perfil:"
+                  className="w-full rounded-2xl border-2 border-[#031e41] bg-white px-4 py-3 outline-none transition focus:shadow-[4px_4px_0_var(--accent)]"
+                  placeholder="Contanos sobre tu perfil"
                 />
               </div>
 
               {/* Experiencia */}
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{ color: '#031e41' }}>
-                  Experiencia Relevante *
+                <label className="mb-2 block font-semibold">
+                  Experiencia relevante *
                 </label>
                 <textarea
                   name="experiencia"
@@ -185,23 +184,23 @@ export default function TrabajaConNosotrosPage() {
                   onChange={handleChange}
                   required
                   rows={4}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                  placeholder="Cuéntanos sobre tu experiencia en educación, trabajos anteriores o proyectos relevantes..."
+                  className="w-full rounded-2xl border-2 border-[#031e41] bg-white px-4 py-3 outline-none transition focus:shadow-[4px_4px_0_var(--accent)]"
+                  placeholder="Contanos sobre tu experiencia en educación, trabajos anteriores o proyectos relevantes..."
                 />
               </div>
 
               {/* CV */}
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{ color: '#031e41' }}>
+                <label className="mb-2 block font-semibold">
                   <FileText size={16} className="inline mr-2" />
-                  Cargar CV (Opcional)
+                  Cargar CV (opcional)
                 </label>
                 <input
                   type="file"
                   name="cv"
                   onChange={handleFileChange}
                   accept=".pdf,.doc,.docx"
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
+                  className="w-full rounded-2xl border-2 border-[#031e41] bg-white px-4 py-3 outline-none transition focus:shadow-[4px_4px_0_var(--accent)]"
                 />
                 {formData.cv && (
                   <p className="text-sm text-green-600 mt-2">
@@ -212,16 +211,16 @@ export default function TrabajaConNosotrosPage() {
 
               {/* Mensaje */}
               <div>
-                <label className="block text-sm font-semibold mb-2" style={{ color: '#031e41' }}>
-                  Mensaje Adicional
+                <label className="mb-2 block font-semibold">
+                  Mensaje adicional
                 </label>
                 <textarea
                   name="mensaje"
                   value={formData.mensaje}
                   onChange={handleChange}
                   rows={3}
-                  className="w-full px-4 py-3 border-2 border-gray-300 rounded-lg focus:outline-none focus:border-blue-500"
-                  placeholder="Cuéntanos algo más sobre ti o qué área te interesa..."
+                  className="w-full rounded-2xl border-2 border-[#031e41] bg-white px-4 py-3 outline-none transition focus:shadow-[4px_4px_0_var(--accent)]"
+                  placeholder="Contanos algo más sobre vos o qué área te interesa..."
                 />
               </div>
 
@@ -229,14 +228,13 @@ export default function TrabajaConNosotrosPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full py-3 px-6 rounded-lg font-bold text-white transition-all duration-300 hover:scale-105 active:scale-95 disabled:opacity-50"
-                style={{ backgroundColor: '#031e41' }}
+                className="w-full rounded-full border-2 border-[#031e41] bg-[var(--accent)] px-6 py-4 font-bold text-[var(--accent-ink)] shadow-[4px_4px_0_#031e41] transition hover:-translate-y-0.5 active:translate-y-0 active:shadow-none disabled:opacity-50"
               >
-                {loading ? 'Enviando...' : 'Enviar Aplicación'}
+                {loading ? 'Enviando…' : 'Enviar postulación'}
               </button>
 
-              <p className="text-center text-sm text-gray-600">
-                Los campos marcados con * son obligatorios
+              <p aria-live="polite" className="text-center text-sm text-gray-600">
+                {failed ? <span className="font-semibold text-red-600">No pudimos enviar tu postulación. Revisá tu conexión y probá de nuevo.</span> : 'Los campos marcados con * son obligatorios'}
               </p>
             </form>
           )}

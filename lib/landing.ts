@@ -1,27 +1,16 @@
 // Datos y estilo compartidos por la landing madre (/) y las páginas de cada capacitación.
-import { Bricolage_Grotesque } from 'next/font/google';
 import { listTenants, toPublic } from '@/lib/tenants/registry';
 import { clientFor } from '@/lib/tenants/db';
+import { brandOf } from '@/lib/brand';
 
-export const display = Bricolage_Grotesque({ subsets: ['latin'], variable: '--font-display' });
-export const D = '[font-family:var(--font-display)]';
+export { display, D } from '@/lib/fonts';
 
-// Contacto de la Secretaría. shortcut: fijo en código; pasar a configuración si cambia seguido.
-export const EMAIL = 'formaciones@portalsea.com.ar';
-export const wa = (msg: string) => `https://wa.me/5493513697444?text=${encodeURIComponent(msg)}`;
-export const JOIN = wa('Hola! Quiero sumar cursos extracurriculares en mi escuela.');
+export { EMAIL, wa, JOIN } from '@/lib/contact';
 
 // Título corto para las tarjetas, así todas quedan de alto parejo ("Categoría III" → "Cat. III").
 export const shortTitle = (t: string) => t.replace(/\bCategor[ií]a\s+/gi, 'Cat.\u00a0');
 
 export const pegboard = { backgroundImage: 'radial-gradient(rgb(3 30 65 / .14) 1.4px, transparent 1.6px)', backgroundSize: '26px 26px' };
-
-const SCHOOL_COLORS = [
-  { bg: '#FFC531', fg: '#031e41' },
-  { bg: '#3D6BFF', fg: '#ffffff' },
-  { bg: '#2FD3A0', fg: '#031e41' },
-  { bg: '#FF6FA8', fg: '#031e41' },
-];
 
 export type Area = 'tec' | 'ofi';
 export type Module = { number?: string; title: string; topics?: string[] };
@@ -66,12 +55,12 @@ function modulesOf(v: unknown): Module[] {
 export async function loadCatalog() {
   const tenants = await listTenants();
   const schools = await Promise.all(
-    tenants.map(async (t, i) => {
+    tenants.map(async (t) => {
       let rows: Row[] = [];
       try {
         rows = (await clientFor(t).execute('SELECT * FROM courses ORDER BY "sortOrder" ASC, "createdAt" DESC')).rows;
       } catch {} // si una base no responde, la escuela igual se muestra
-      return { ...toPublic(t), color: SCHOOL_COLORS[i % SCHOOL_COLORS.length], rows: rows.filter((r) => areaOf(str(r.title))) };
+      return { ...toPublic(t), color: brandOf(t.config), rows: rows.filter((r) => areaOf(str(r.title))) };
     }),
   );
 

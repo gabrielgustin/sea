@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Plus } from 'lucide-react';
@@ -117,11 +117,30 @@ const TAPE = ['#FFC531', '#FF6FA8', '#2FD3A0', '#9cbadb'];
 
 export function CourseWall({ courses }: { courses: WallCourse[] }) {
   const [area, setArea] = useState<(typeof AREAS)[number]['id']>('all');
+  const [active, setActive] = useState(0);
+  const track = useRef<HTMLUListElement>(null);
   const shown = area === 'all' ? courses : courses.filter((c) => c.area === area);
+
+  // Carrusel del celular: qué tarjeta está centrada (en compu es grilla y no se usa).
+  const onScroll = () => {
+    const el = track.current;
+    const first = el?.firstElementChild as HTMLElement | null;
+    if (!el || !first) return;
+    setActive(Math.min(shown.length - 1, Math.round(el.scrollLeft / (first.offsetWidth + 20))));
+  };
+  const goTo = (i: number) => {
+    const item = track.current?.children[i] as HTMLElement | undefined;
+    item?.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+  };
+  const pick = (id: (typeof AREAS)[number]['id']) => {
+    setArea(id);
+    setActive(0);
+    track.current?.scrollTo({ left: 0 });
+  };
 
   return (
     <>
-      <div role="group" aria-label="Filtrar cursos por tema" className="mt-10 flex flex-wrap gap-2.5">
+      <div role="group" aria-label="Filtrar cursos por tema" className="mt-8 flex flex-wrap gap-2 sm:mt-10 sm:gap-2.5">
         {AREAS.map((a) => {
           const n = a.id === 'all' ? courses.length : courses.filter((c) => c.area === a.id).length;
           if (n === 0) return null;
@@ -129,9 +148,9 @@ export function CourseWall({ courses }: { courses: WallCourse[] }) {
           return (
             <button
               key={a.id}
-              onClick={() => setArea(a.id)}
+              onClick={() => pick(a.id)}
               aria-pressed={on}
-              className={`rounded-full border-2 border-[#031e41] px-5 py-2.5 font-semibold transition active:scale-95 ${on ? 'bg-[#031e41] text-white' : 'bg-white text-[#031e41] hover:bg-[#FFC531]'}`}
+              className={`rounded-full border-2 border-[#031e41] px-4 py-2 text-[15px] font-semibold transition active:scale-95 sm:px-5 sm:py-2.5 sm:text-base ${on ? 'bg-[#031e41] text-white' : 'bg-white text-[#031e41] hover:bg-[#FFC531]'}`}
             >
               {a.label} <span className={on ? 'text-white/60' : 'text-[#031e41]/50'}>{n}</span>
             </button>
@@ -139,9 +158,14 @@ export function CourseWall({ courses }: { courses: WallCourse[] }) {
         })}
       </div>
 
-      <ul className="mt-12 grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4">
+      {/* Celular: carrusel horizontal que se desliza de a una tarjeta. Desde sm: grilla. */}
+      <ul
+        ref={track}
+        onScroll={onScroll}
+        className="-mx-5 mt-4 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-[11%] pb-8 pt-8 [scrollbar-width:none] sm:mx-0 sm:mt-12 sm:grid sm:snap-none sm:grid-cols-2 sm:gap-x-6 sm:gap-y-10 sm:overflow-visible sm:p-0 lg:grid-cols-4 [&::-webkit-scrollbar]:hidden"
+      >
         {shown.map((c, i) => (
-          <li key={c.key} className="h-full">
+          <li key={c.key} className="w-[78%] shrink-0 snap-center sm:w-auto sm:h-full">
             <Link
               href={c.href}
               style={{ ['--tilt' as string]: `${TILT[i % TILT.length]}deg` }}
@@ -159,6 +183,21 @@ export function CourseWall({ courses }: { courses: WallCourse[] }) {
           </li>
         ))}
       </ul>
+
+      {/* Puntos del carrusel (solo celular): muestran dónde estás y llevan a cada tarjeta */}
+      {shown.length > 1 && (
+        <div className="flex items-center justify-center gap-2 sm:hidden">
+          {shown.map((c, i) => (
+            <button
+              key={c.key}
+              onClick={() => goTo(i)}
+              aria-label={`Ver ${c.title}`}
+              aria-current={i === active}
+              className={`h-2.5 rounded-full transition-all duration-300 ${i === active ? 'w-7 bg-[#031e41]' : 'w-2.5 bg-[#031e41]/25'}`}
+            />
+          ))}
+        </div>
+      )}
     </>
   );
 }

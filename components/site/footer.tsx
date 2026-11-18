@@ -31,12 +31,13 @@ export default function SiteFooter() {
   ];
 
   return (
-    <footer data-nav="dark" className="aurora relative mt-24 bg-[#031e41] text-white">
-      <div className="grid-bg pointer-events-none absolute inset-0" aria-hidden />
+    <footer data-nav="dark" className="relative mt-28 bg-[#031e41] text-white" style={{ backgroundImage: 'radial-gradient(rgb(255 255 255 / .07) 1.4px, transparent 1.6px)', backgroundSize: '26px 26px' }}>
+      {/* Franja con el color de la escuela */}
+      <div className="h-2 bg-[var(--accent)]" aria-hidden />
       <div className="relative mx-auto max-w-7xl px-5 pb-10 pt-16 sm:px-8">
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div>
-            <div className="inline-flex items-center gap-3 rounded-2xl bg-white px-4 py-3">
+            <div className="inline-flex items-center gap-3 rounded-2xl border-2 border-white bg-white px-4 py-3 shadow-[4px_4px_0_var(--accent)]">
               <Image src={tenant.config.seaLogo ?? '/logo-sea.png'} alt="SEA" width={80} height={40} className="h-8 w-auto object-contain" />
               <span className="h-6 w-px bg-slate-200" aria-hidden />
               <Image src={tenant.config.logo} alt={tenant.config.logoAlt} width={100} height={40} className="h-8 w-auto object-contain" />
@@ -48,7 +49,7 @@ export default function SiteFooter() {
 
           {cols.map((c) => (
             <div key={c.title}>
-              <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-white/40">{c.title}</h3>
+              <h3 className="text-lg font-bold [font-family:var(--font-display)]">{c.title}</h3>
               <ul className="mt-4 space-y-3">
                 {c.links.map((l) => (
                   <li key={l.href}>
@@ -62,19 +63,19 @@ export default function SiteFooter() {
           ))}
 
           <div>
-            <h3 className="text-xs font-semibold uppercase tracking-[0.18em] text-white/40">Contacto</h3>
+            <h3 className="text-lg font-bold [font-family:var(--font-display)]">Contacto</h3>
             <ul className="mt-4 space-y-3 text-sm text-white/75">
               {settings.address && (
-                <li className="flex gap-2.5"><MapPin size={16} className="mt-0.5 shrink-0 text-[#9cbadb]" />{settings.address}</li>
+                <li className="flex gap-2.5"><MapPin size={16} className="mt-0.5 shrink-0 text-[var(--accent)]" />{settings.address}</li>
               )}
               {settings.email && (
-                <li><a href={`mailto:${settings.email}`} className="flex gap-2.5 transition hover:text-white"><Mail size={16} className="mt-0.5 shrink-0 text-[#9cbadb]" />{settings.email}</a></li>
+                <li><a href={`mailto:${settings.email}`} className="flex gap-2.5 transition hover:text-white"><Mail size={16} className="mt-0.5 shrink-0 text-[var(--accent)]" />{settings.email}</a></li>
               )}
               {settings.whatsappNumber && (
-                <li><a href={`https://wa.me/${settings.whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="flex gap-2.5 transition hover:text-white"><MessageCircle size={16} className="mt-0.5 shrink-0 text-[#9cbadb]" />WhatsApp</a></li>
+                <li><a href={`https://wa.me/${settings.whatsappNumber}`} target="_blank" rel="noopener noreferrer" className="flex gap-2.5 transition hover:text-white"><MessageCircle size={16} className="mt-0.5 shrink-0 text-[var(--accent)]" />WhatsApp</a></li>
               )}
               {settings.instagramUrl && (
-                <li><a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" className="flex gap-2.5 transition hover:text-white"><Instagram size={16} className="mt-0.5 shrink-0 text-[#9cbadb]" />Instagram</a></li>
+                <li><a href={settings.instagramUrl} target="_blank" rel="noopener noreferrer" className="flex gap-2.5 transition hover:text-white"><Instagram size={16} className="mt-0.5 shrink-0 text-[var(--accent)]" />Instagram</a></li>
               )}
             </ul>
           </div>
