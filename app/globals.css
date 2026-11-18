@@ -458,25 +458,6 @@ html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
       animation-timeline: view();
       animation-range: entry 20% cover 45%;
     }
-    /* Landing, "Así llegamos a tu escuela": cada paso estalla al entrar (avanza y retrocede con el scroll). */
-    .boom-step { view-timeline: --step block; }
-    .boom-num, .boom-ring, .boom-spark, .boom-text { animation-timeline: --step; animation-fill-mode: both; animation-timing-function: linear; }
-    .boom-num { animation-name: boom; animation-range: cover calc(6% + var(--i) * 6%) cover calc(24% + var(--i) * 6%); }
-    .boom-ring { animation-name: boom-ring; animation-range: cover calc(14% + var(--i) * 6%) cover calc(34% + var(--i) * 6%); }
-    .boom-spark { animation-name: boom-spark; animation-range: cover calc(14% + var(--i) * 6%) cover calc(36% + var(--i) * 6%); }
-    .boom-text { animation-name: reveal-up; animation-range: cover calc(16% + var(--i) * 6%) cover calc(30% + var(--i) * 6%); }
-    .boom-line { transform-origin: left; animation: grow-x linear both; animation-timeline: view(); animation-range: cover 10% cover 40%; }
-    /* Escritorio: la sección queda fija mientras se scrollea su altura extra; los pasos estallan de a uno. */
-    @media (min-width: 1024px) {
-      .boom-pin { height: 360vh; view-timeline: --como block; }
-      .boom-stage { position: sticky; top: 0; height: 100vh; display: flex; flex-direction: column; justify-content: center; padding-top: 0; width: 100%; }
-      .boom-num, .boom-ring, .boom-spark, .boom-text, .boom-line { animation-timeline: --como; }
-      .boom-num { animation-range: contain calc(4% + var(--i) * 21%) contain calc(16% + var(--i) * 21%); }
-      .boom-ring { animation-range: contain calc(11% + var(--i) * 21%) contain calc(24% + var(--i) * 21%); }
-      .boom-spark { animation-range: contain calc(11% + var(--i) * 21%) contain calc(26% + var(--i) * 21%); }
-      .boom-text { animation-range: contain calc(12% + var(--i) * 21%) contain calc(21% + var(--i) * 21%); }
-      .boom-line { animation-range: contain 2% contain 72%; }
-    }
     .parallax-img {
       animation: parallax linear both;
       animation-timeline: view();
@@ -505,6 +486,18 @@ html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
   .marquee:hover .marquee-track { animation-play-state: paused; }
   .aurora::before, .aurora::after { animation: drift 14s ease-in-out infinite alternate; }
   .aurora::after { animation-duration: 18s; animation-direction: alternate-reverse; }
+  /* "Así llegamos a tu escuela": al entrar en pantalla cada paso estalla y la animación corre entera sola (BoomObserver pone .is-on). */
+  .boom-ready .boom-step:not(.is-on) .boom-num { transform: scale(0); }
+  .boom-ready .boom-step:not(.is-on) .boom-text { opacity: 0; }
+  .boom-ready:not(.is-on) .boom-line { transform: scaleX(0); }
+  .boom-line { transform-origin: left; }
+  .boom-step { --d: 0s; }
+  @media (min-width: 1024px) { .boom-step { --d: calc(var(--i) * .3s); } }
+  .is-on .boom-line { animation: grow-x 1.2s cubic-bezier(.3,.7,.3,1) both; }
+  .boom-step.is-on .boom-num { animation: boom .6s cubic-bezier(.2,.8,.3,1) var(--d) both; }
+  .boom-step.is-on .boom-ring { animation: boom-ring .7s ease-out calc(var(--d) + .25s) both; }
+  .boom-step.is-on .boom-spark { animation: boom-spark .75s ease-out calc(var(--d) + .25s) both; }
+  .boom-step.is-on .boom-text { animation: reveal-up .5s ease-out calc(var(--d) + .3s) both; }
 }
 @keyframes kenburns { from { transform: scale(1.14); } to { transform: scale(1); } }
 @keyframes rise { from { opacity: 0; transform: translateY(24px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }

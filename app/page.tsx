@@ -1,9 +1,10 @@
 import type { Metadata } from 'next';
 import Image from 'next/image';
 import Link from 'next/link';
-import { Bot, Box, Check, Cog, Cpu, Flame, Gamepad2, Mail, MessageCircle, Smartphone, Sparkles, Wrench, Zap, type LucideIcon } from 'lucide-react';
+import { BookOpenText, Bot, Box, ChartLine, Check, CircleCheck, ClipboardCheck, Cog, Cpu, Flame, Gamepad2, Mail, MessageCircle, MonitorPlay, Smartphone, Sparkles, Wrench, Zap, type LucideIcon } from 'lucide-react';
 import { CourseWall, Faq, LandingNav } from '@/components/landing/client';
 import { LandingFooter } from '@/components/landing/footer';
+import { BoomObserver } from '@/components/home/boom-observer';
 import { D, EMAIL, JOIN, display, loadCatalog, pegboard, shortTitle } from '@/lib/landing';
 
 export const dynamic = 'force-dynamic'; // lista los clientes activos y sus cursos: nunca se congela en el build
@@ -42,9 +43,18 @@ const TAPE = ['#FFC531', '#FF6FA8', '#2FD3A0', '#9cbadb'];
 
 const SPARKS = [0, 45, 90, 135, 180, 225, 270, 315];
 
+// Plataforma de aprendizaje propia: lo que tiene cada estudiante durante la cursada.
+const PLATFORM: { icon: LucideIcon; title: string; text: string; bg: string }[] = [
+  { icon: MonitorPlay, title: 'Cada clase, a mano', text: 'Lo que se vio en el aula queda en la plataforma para repasarlo cuando quieran.', bg: '#FFC531' },
+  { icon: ClipboardCheck, title: 'Tareas y entregas', text: 'Las consignas, las fechas y las entregas, todo en un mismo lugar.', bg: '#FF6FA8' },
+  { icon: BookOpenText, title: 'Material de estudio', text: 'Apuntes, videos y recursos de cada curso, ordenados clase por clase.', bg: '#ffffff' },
+  { icon: ChartLine, title: 'Evaluación y seguimiento', text: 'Evaluamos ahí mismo y seguimos el avance de cada estudiante.', bg: '#9cbadb' },
+];
+
 const INCLUDES = [
   'Docentes con experiencia en cada área',
   'Programa de cada curso, clase por clase',
+  'Plataforma de aprendizaje con seguimiento de cada estudiante',
   'La página de tu escuela, con tu logo y tus cursos',
   'Inscripciones online con cupos por horario',
   'Certificados para cada estudiante',
@@ -55,6 +65,7 @@ const FAQS = [
   { q: '¿Quién dicta los cursos?', a: 'Docentes de nuestro equipo, con experiencia en cada área. También podés sumar a graduados y docentes de tu propia escuela.' },
   { q: '¿Los cursos se cruzan con las clases?', a: 'No. Son extracurriculares: se dictan aparte del horario de clases de la escuela.' },
   { q: '¿Para quién son?', a: 'Para toda la comunidad de tu escuela: estudiantes, familias, graduados y vecinos.' },
+  { q: '¿Cómo siguen las clases los estudiantes?', a: 'Durante la cursada cada estudiante tiene acceso a nuestra plataforma de aprendizaje: ahí están las clases, las tareas y el material de estudio. También es donde evaluamos y seguimos el avance de cada uno.' },
   { q: '¿Se entregan certificados?', a: 'Sí. Cada curso cierra con una constancia que respalda lo aprendido.' },
   { q: '¿Puedo ver cómo funciona en otra escuela?', a: 'Sí. El Instituto Domingo Savio y el ITS Villada ya dictan nuestros cursos: podés entrar a sus páginas desde esta misma web.' },
 ];
@@ -159,8 +170,9 @@ export default async function LandingPage() {
         </section>
 
         {/* Cómo funciona: es una secuencia real, por eso va numerada */}
-        {/* En escritorio la sección se fija (boom-pin/boom-stage en globals.css) y el scroll va disparando cada paso. */}
+        {/* Al entrar en pantalla cada paso estalla de corrido (BoomObserver + .boom-* en globals.css). */}
         <section id="como" className="boom-pin relative">
+          <BoomObserver />
           <div className="boom-stage mx-auto max-w-7xl px-5 pt-28 sm:px-8 sm:pt-36">
           <h2 className={`max-w-2xl text-4xl font-extrabold tracking-tight sm:text-6xl ${D}`}>Así llegamos a tu escuela</h2>
           <ol className="relative mt-14 grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-6">
@@ -187,6 +199,68 @@ export default async function LandingPage() {
               </li>
             ))}
           </ol>
+          </div>
+        </section>
+
+        {/* Plataforma de aprendizaje propia: texto + maqueta de la cursada y del seguimiento */}
+        <section id="plataforma" className="px-3 pt-28 sm:px-6 sm:pt-36">
+          <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[40px] border-2 border-[#031e41] bg-[#2FD3A0] px-6 py-14 shadow-[8px_8px_0_#031e41] sm:px-12 sm:py-20" style={pegboard}>
+            <div className="grid items-center gap-14 lg:grid-cols-[1fr_1.05fr] lg:gap-12">
+              <div className="reveal">
+                <p className="inline-flex items-center gap-2 rounded-full border-2 border-[#031e41] bg-white px-4 py-2 text-sm font-semibold">
+                  <Sparkles size={16} aria-hidden /> Incluida en todos los cursos
+                </p>
+                <h2 className={`mt-6 text-balance text-4xl font-extrabold leading-[1.02] tracking-tight sm:text-6xl ${D}`}>Nuestra propia plataforma de aprendizaje</h2>
+                <p className="mt-5 max-w-xl text-lg leading-relaxed text-[#031e41]/80">
+                  Durante la cursada, cada estudiante entra a nuestra plataforma para seguir las clases, hacer las tareas y estudiar. Y es también donde evaluamos: tu escuela sabe cómo va cada uno.
+                </p>
+                <ul className="mt-9 grid gap-4 sm:grid-cols-2">
+                  {PLATFORM.map(({ icon: Icon, title, text, bg }) => (
+                    <li key={title} className="rounded-2xl border-2 border-[#031e41] bg-white/85 p-4 shadow-[3px_3px_0_#031e41]">
+                      <span className="flex size-10 items-center justify-center rounded-xl border-2 border-[#031e41]" style={{ background: bg }}><Icon size={20} strokeWidth={2.2} aria-hidden /></span>
+                      <h3 className={`mt-3 text-lg font-bold leading-tight ${D}`}>{title}</h3>
+                      <p className="mt-1 text-[15px] leading-snug text-[#031e41]/75">{text}</p>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Maqueta ilustrativa (datos de ejemplo) */}
+              <div className="reveal relative pb-24 sm:pb-20" role="img" aria-label="Ejemplo de la plataforma: la cursada de Robótica con clases, una tarea y el seguimiento de los estudiantes">
+                <div aria-hidden className="overflow-hidden rounded-3xl border-2 border-[#031e41] bg-white shadow-[6px_6px_0_#031e41] lg:-rotate-1">
+                  <div className="flex items-center gap-1.5 border-b-2 border-[#031e41] bg-[#EAF2FB] px-4 py-3">
+                    <span className="size-3 rounded-full bg-[#FF6FA8]" /><span className="size-3 rounded-full bg-[#FFC531]" /><span className="size-3 rounded-full bg-[#2FD3A0]" />
+                    <span className="ml-3 truncate rounded-full bg-white px-3 py-1 text-xs text-[#031e41]/60">Mi cursada · Robótica</span>
+                  </div>
+                  <div className="p-5 sm:p-6">
+                    <div className="flex items-baseline justify-between gap-3">
+                      <span className={`text-2xl font-extrabold ${D}`}>Robótica</span>
+                      <span className="text-sm font-semibold text-[#031e41]/60">Clase 6 de 12</span>
+                    </div>
+                    <span className="mt-3 block h-3 overflow-hidden rounded-full border-2 border-[#031e41] bg-[#EAF2FB]"><span className="block h-full w-1/2 bg-[#2FD3A0]" /></span>
+                    <ul className="mt-5 space-y-2.5 text-[15px]">
+                      <li className="flex items-center gap-3 rounded-xl bg-[#F7FAFD] px-3 py-2.5"><CircleCheck size={20} className="shrink-0 text-[#12a37a]" /> <span className="flex-1">Clase 5 · Sensores y motores</span></li>
+                      <li className="flex items-center gap-3 rounded-xl border-2 border-[#031e41] bg-[#FFC531]/30 px-3 py-2.5 font-semibold"><MonitorPlay size={20} className="shrink-0" /> <span className="flex-1">Clase 6 · Programar el recorrido</span><span className="rounded-full bg-[#031e41] px-2.5 py-0.5 text-xs text-white">Hoy</span></li>
+                      <li className="flex items-center gap-3 rounded-xl bg-[#F7FAFD] px-3 py-2.5"><ClipboardCheck size={20} className="shrink-0 text-[#d94c86]" /> <span className="flex-1">Tarea · Seguidor de línea</span><span className="text-xs font-semibold text-[#031e41]/60">Entrega vie.</span></li>
+                      <li className="flex items-center gap-3 rounded-xl bg-[#F7FAFD] px-3 py-2.5"><BookOpenText size={20} className="shrink-0 text-[#3D6BFF]" /> <span className="flex-1">Apunte · Cómo funciona un servo</span></li>
+                    </ul>
+                  </div>
+                </div>
+                {/* Tarjeta del seguimiento, encimada */}
+                <div aria-hidden className="absolute -bottom-8 right-0 w-[78%] max-w-[320px] rotate-2 rounded-2xl border-2 border-[#031e41] bg-[#031e41] p-4 text-white shadow-[5px_5px_0_#FFC531] sm:right-[-4%]">
+                  <p className="flex items-center gap-2 text-sm font-bold"><ChartLine size={16} /> Seguimiento del grupo</p>
+                  <ul className="mt-3 space-y-2.5 text-[13px]">
+                    {[['Martina', 92, '#2FD3A0'], ['Tomás', 75, '#FFC531'], ['Lucía', 58, '#FF6FA8']].map(([n, p, c]) => (
+                      <li key={n as string} className="grid grid-cols-[64px_1fr_34px] items-center gap-2">
+                        <span>{n}</span>
+                        <span className="h-2 overflow-hidden rounded-full bg-white/15"><span className="block h-full rounded-full" style={{ width: `${p}%`, background: c as string }} /></span>
+                        <span className="text-right font-semibold">{p}%</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
         </section>
 

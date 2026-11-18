@@ -38,7 +38,7 @@ export default function SiteFooter() {
         <div className="grid gap-12 md:grid-cols-[1.4fr_1fr_1fr_1.2fr]">
           <div>
             <div className="inline-flex items-center gap-3 rounded-2xl border-2 border-white bg-white px-4 py-3 shadow-[4px_4px_0_var(--accent)]">
-              <Image src={tenant.config.seaLogo ?? '/logo-sea.png'} alt="SEA" width={80} height={40} className="h-8 w-auto object-contain" />
+              <Image src={tenant.config.seaLogo ?? '/logo-sea.svg'} alt="SEA" width={40} height={40} className="h-9 w-auto object-contain" />
               <span className="h-6 w-px bg-slate-200" aria-hidden />
               <Image src={tenant.config.logo} alt={tenant.config.logoAlt} width={100} height={40} className="h-8 w-auto object-contain" />
             </div>

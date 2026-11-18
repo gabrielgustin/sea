@@ -77,7 +77,11 @@ export default function SiteNav() {
         }`}
       >
         <Link href={base} className="mr-auto flex shrink-0 items-center gap-3" aria-label={`Inicio — ${tenant.name}`}>
-          <Image src={tenant.config.seaLogo ?? '/logo-sea.png'} alt={tenant.config.seaLogoAlt ?? 'SEA'} width={96} height={48} priority className={`h-8 w-auto object-contain transition duration-500 ${logoTone}`} />
+          {tenant.config.seaLogo ? (
+            <Image src={tenant.config.seaLogo} alt={tenant.config.seaLogoAlt ?? 'SEA'} width={96} height={48} priority className={`h-8 w-auto object-contain transition duration-500 ${logoTone}`} />
+          ) : (
+            <Image src={light ? '/logo-sea.svg' : '/logo-sea-dark.svg'} alt="SEA" width={40} height={40} priority className="size-10" />
+          )}
           <span className={`h-6 w-px transition-colors duration-500 ${light ? 'bg-slate-300' : 'bg-white/30'}`} aria-hidden />
           <Image src={tenant.config.logo} alt={tenant.config.logoAlt} width={120} height={48} priority className={`h-8 w-auto object-contain transition duration-500 ${logoTone}`} />
         </Link>

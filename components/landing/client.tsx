@@ -8,6 +8,7 @@ import { Plus } from 'lucide-react';
 const LINKS = [
   { href: '/#cursos', label: 'Capacitaciones' },
   { href: '/#como', label: 'Cómo funciona' },
+  { href: '/#plataforma', label: 'Plataforma' },
   { href: '/#instituciones', label: 'Escuelas' },
   { href: '/#faq', label: 'Preguntas' },
 ];
@@ -48,7 +49,7 @@ export function LandingNav() {
         }`}
       >
         <Link href="/" className="mr-auto flex items-center gap-3" aria-label="Portal SEA, inicio">
-          <Image src="/logo-sea.png" alt="SEA" width={96} height={48} priority className={`h-9 w-auto object-contain transition duration-500 ${light ? '' : 'brightness-0 invert'}`} />
+          <Image src={light ? '/logo-sea.svg' : '/logo-sea-dark.svg'} alt="SEA" width={40} height={40} priority className="size-10" />
           <span className="hidden text-sm font-semibold leading-tight sm:block">Secretaría de<br />Extensión Académica</span>
         </Link>
         <nav aria-label="Principal" className="hidden gap-1 lg:flex">

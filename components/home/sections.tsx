@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { ArrowRight, ArrowUpRight, Award, Building2, GraduationCap, Hammer, Rocket, Target, Users, BookOpen } from 'lucide-react';
 import type { Course } from '@/context/CoursesContext';
 import CourseCard from './course-card';
+import { BoomObserver } from './boom-observer';
 
 const D = '[font-family:var(--font-display)]';
 const COLORS = ['#FFC531', '#FF6FA8', '#2FD3A0', '#9cbadb'];
@@ -125,7 +126,7 @@ export function Benefits({ schoolName }: { schoolName: string }) {
     </section>
   );
 }
-
+// Mismo efecto que "Así llegamos a tu escuela" en la landing: al entrar en pantalla cada paso estalla de corrido.
 // Mismo efecto que "Así llegamos a tu escuela" en la landing: en escritorio la sección se fija y cada paso estalla.
 export function Journey() {
   const steps = [
@@ -136,6 +137,7 @@ export function Journey() {
   ];
   return (
     <section className="boom-pin relative">
+      <BoomObserver />
       <div className="boom-stage mx-auto max-w-7xl px-5 pt-24 sm:px-8 sm:pt-32">
         <h2 className={`max-w-2xl text-4xl font-extrabold tracking-tight sm:text-6xl ${D}`}>Nuestra ruta de aprendizaje</h2>
         <p className="mt-3 max-w-xl text-lg text-slate-600">Un camino probado para construir habilidades reales y confianza.</p>

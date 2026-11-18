@@ -8,7 +8,7 @@ export function LandingFooter({ schools }: { schools: { slug: string; name: stri
     <footer data-nav="dark" className="bg-[#031e41] text-white">
       <div className="mx-auto grid max-w-7xl gap-12 px-5 pb-10 pt-16 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
-          <span className="inline-flex rounded-2xl bg-white px-4 py-3"><Image src="/logo-sea.png" alt="SEA" width={80} height={40} className="h-9 w-auto object-contain" /></span>
+          <Image src="/logo-sea-dark.svg" alt="SEA" width={64} height={64} className="size-16" />
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-white/60">Secretaría de Extensión Académica. Cursos extracurriculares de tecnología y oficios, dictados en tu escuela.</p>
         </div>
         <div>
