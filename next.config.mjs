@@ -4,8 +4,10 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
-    unoptimized: true,
-    dangerouslyAllowSVG: true,
+    // Las fotos se suben a Vercel Blob; Next las sirve redimensionadas y en AVIF/WebP según el dispositivo.
+    remotePatterns: [{ protocol: 'https', hostname: '*.public.blob.vercel-storage.com' }],
+    formats: ['image/avif', 'image/webp'],
+    minimumCacheTTL: 2678400,
   },
   experimental: {
     serverActions: {

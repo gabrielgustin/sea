@@ -1,137 +1,83 @@
 'use client';
 
-import Image from 'next/image';
-import Link from 'next/link';
-import { useInView } from '@/hooks/useInView';
+import { useState } from 'react';
+import { Search, X } from 'lucide-react';
 import { useCourses } from '@/context/CoursesContext';
 import { useSchool } from '@/context/SchoolContext';
+import CourseCard from '@/components/home/course-card';
+
+const norm = (s: string) => s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
 
 export default function FormacionesCatalog() {
   const { courses } = useCourses();
-  const { ref, isInView } = useInView({ once: true, threshold: 0.1 });
-  const { schoolId } = useSchool();
-  
-  // Only show courses marked to display
-  const visibleCourses = courses.filter((c) => c.showOnHome);
+  const { schoolId, tenant } = useSchool();
+  const [q, setQ] = useState('');
+  const [modality, setModality] = useState('Todas');
+
+  const visible = courses.filter((c) => c.showOnHome);
+  const modalities = ['Todas', ...new Set(visible.map((c) => c.modality).filter(Boolean))];
+  const list = visible.filter(
+    (c) => (modality === 'Todas' || c.modality === modality) && norm(`${c.title} ${c.subtitle} ${c.description}`).includes(norm(q.trim())),
+  );
 
   return (
-    <div className="w-full">
-      {/* Hero Section */}
-      <section
-        className="w-full pt-24 md:pt-16 pb-8 md:pb-16 md:min-h-[70vh] flex items-center justify-center px-4"
-        style={{
-          background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)',
-        }}
-      >
-        <div className="w-full text-center text-white">
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-balance">
-            Catálogo de Formaciones
-          </h1>
-          <p className="text-lg md:text-xl text-blue-100 max-w-3xl mx-auto">
-            Explora todos nuestros cursos y programas disponibles. Elige la formación que mejor se adapte a tus necesidades y comienza tu camino hacia el éxito.
+    <>
+      <section className="relative -mt-[76px] overflow-hidden bg-[#031e41] px-5 pb-20 pt-40 text-white sm:px-8 aurora">
+        <div className="grid-bg pointer-events-none absolute inset-0" aria-hidden />
+        <div className="relative mx-auto max-w-7xl">
+          <p className="rise text-xs font-semibold uppercase tracking-[0.2em] text-[#9cbadb]">{tenant.name}</p>
+          <h1 className="rise mt-4 text-5xl font-semibold tracking-tight sm:text-7xl" style={{ animationDelay: '.08s' }}>Catálogo de formaciones</h1>
+          <p className="rise mt-5 max-w-2xl text-lg text-white/65" style={{ animationDelay: '.16s' }}>
+            {visible.length} {visible.length === 1 ? 'formación disponible' : 'formaciones disponibles'}. Elegí la que mejor se adapte a vos y empezá a aprender haciendo.
           </p>
+
+          <div className="rise mt-10 flex max-w-2xl items-center gap-3 rounded-2xl border border-white/15 bg-white/10 px-4 backdrop-blur-md focus-within:border-white/40" style={{ animationDelay: '.24s' }}>
+            <Search size={20} className="shrink-0 text-white/60" />
+            <input
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+              placeholder="Buscá por nombre o tema…"
+              aria-label="Buscar formaciones"
+              className="h-14 w-full bg-transparent text-white outline-none placeholder:text-white/45"
+            />
+            {q && (
+              <button onClick={() => setQ('')} aria-label="Limpiar búsqueda" className="rounded-full p-1.5 text-white/60 hover:bg-white/10 hover:text-white"><X size={18} /></button>
+            )}
+          </div>
         </div>
       </section>
 
-      {/* Courses Grid */}
-      <section id="cursos" ref={ref} className="w-full px-4 sm:px-6 lg:px-8 py-12 md:py-16 lg:py-20 bg-white">
-        <div className="max-w-6xl mx-auto">
+      <section className="mx-auto max-w-7xl px-5 pt-10 sm:px-8">
+        {modalities.length > 2 && (
+          <div className="mb-8 flex flex-wrap gap-2" role="group" aria-label="Filtrar por modalidad">
+            {modalities.map((m) => (
+              <button
+                key={m}
+                onClick={() => setModality(m)}
+                aria-pressed={modality === m}
+                className={`rounded-full px-4 py-2 text-sm font-medium transition ${modality === m ? 'bg-[#031e41] text-white' : 'bg-slate-100 text-slate-600 hover:bg-slate-200'}`}
+              >
+                {m}
+              </button>
+            ))}
+          </div>
+        )}
 
-          {visibleCourses.length === 0 ? (
-            <div className="text-center py-16 md:py-24">
-              <p style={{ color: '#031e41' }} className="text-lg font-semibold">
-                No hay formaciones disponibles en este momento...
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-              {visibleCourses.map((course, index) => (
-                <Link
-                  key={course.id}
-                  href={`/${schoolId}/cursos/${course.slug || course.id}`}
-                  className={`overflow-hidden rounded-2xl md:rounded-3xl border-2 transition-all duration-500 hover:shadow-2xl flex flex-col group ${
-                    isInView ? 'animate-fade-in-up' : 'opacity-0 translate-y-8'
-                  }`}
-                  style={{ 
-                    borderColor: '#e5e5e5',
-                    backgroundColor: '#ffffff',
-                    animationDelay: isInView ? `${index * 0.1}s` : '0s'
-                  }}
-                >
-                  {/* Image Container */}
-                  <div className="relative h-40 md:h-56 overflow-hidden bg-gray-100 group-hover:bg-gray-200 transition-colors">
-                    <Image
-                      src={course.image}
-                      alt={course.title}
-                      fill
-                      className="object-cover transition-transform duration-500 group-hover:scale-110"
-                      sizes="(max-width: 768px) 100vw, 50vw"
-                    />
-                    
-                    {/* Badge */}
-                    <div 
-                      className="absolute top-3 md:top-4 right-3 md:right-4 px-3 md:px-4 py-1.5 md:py-2 rounded-full text-white text-xs font-bold transition-all duration-300 group-hover:translate-y-0 group-hover:shadow-lg transform hover:scale-105"
-                      style={{ backgroundColor: '#031e41' }}
-                    >
-                      {course.badge}
-                    </div>
-
-
-                  </div>
-
-                  {/* Content */}
-                  <div className="p-4 md:p-6 flex flex-col flex-1 gap-4">
-                    {/* Top: title + subtitle grow to fill space */}
-                    <div className="flex-1">
-                      <h3 className="text-lg md:text-2xl font-bold mb-2 leading-snug transition-colors duration-300 line-clamp-2" style={{ color: '#031e41' }}>
-                        {course.title}
-                      </h3>
-                      <p className="text-gray-600 text-xs md:text-sm line-clamp-2">
-                        {course.subtitle}
-                      </p>
-                    </div>
-
-                    {/* Bottom: requirements + date + footer always pinned */}
-                    <div className="space-y-3">
-                      {/* Requirements */}
-                      {course.requirements && (
-                        <div className="p-3 rounded-xl bg-gray-50 border border-gray-100">
-                          <p className="text-xs font-semibold text-gray-500 uppercase tracking-wide mb-1">Requisitos</p>
-                          <p className="text-xs text-gray-700 leading-relaxed line-clamp-2">{course.requirements}</p>
-                        </div>
-                      )}
-
-                      {/* Divider */}
-                      <div className="h-px bg-gray-200"></div>
-
-                      {/* Details */}
-                      <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: '#9cbadb' }}></div>
-                        <div className="flex-1">
-                          <span className="text-xs font-semibold text-gray-500 uppercase tracking-wide">
-                            {course.startDate && new Date(course.startDate + 'T00:00:00') < new Date() ? 'Inició' : 'Inicia'}
-                          </span>
-                          <p className="text-sm md:text-base font-medium text-gray-900">
-                            {course.startDate ? (() => { const [y,m,d] = course.startDate.split('-'); return d && m && y ? `${parseInt(d)}/${m}/${y}` : course.startDate; })() : ''}
-                          </p>
-                        </div>
-                      </div>
-
-                      {/* Footer */}
-                      <div className="pt-2 border-t border-gray-100">
-                        <div className="flex items-center justify-between">
-                          <span className="text-xs font-semibold" style={{ color: '#9cbadb' }}>Más información</span>
-                          <span className="text-lg transition-transform group-hover:translate-x-1">→</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
-          )}
-        </div>
+        {list.length === 0 ? (
+          <div className="rounded-[2rem] border border-dashed border-slate-300 py-24 text-center">
+            <p className="text-lg font-medium text-slate-700">{visible.length === 0 ? 'No hay formaciones disponibles en este momento.' : 'No encontramos formaciones con esa búsqueda.'}</p>
+            {visible.length > 0 && (
+              <button onClick={() => { setQ(''); setModality('Todas'); }} className="mt-4 text-sm font-semibold text-[#031e41] underline underline-offset-4">Ver todas</button>
+            )}
+          </div>
+        ) : (
+          <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            {list.map((c, i) => (
+              <CourseCard key={c.id} course={c} href={`/${schoolId}/cursos/${c.slug || c.id}`} priority={i < 3} />
+            ))}
+          </div>
+        )}
       </section>
-    </div>
+    </>
   );
 }

@@ -2,9 +2,9 @@
 
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ChevronDown, ChevronUp, Instagram, Youtube, Music2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { ArrowRight, Check, ChevronDown, ChevronRight, Instagram, Lightbulb, Linkedin, MapPin, MessageCircle, Music2, Rocket, Target, Youtube } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useSchool } from '@/context/SchoolContext';
 
@@ -157,13 +157,14 @@ interface Course {
   }>;
   methodology: string;
   finalProject: string;
+  requirements?: string;
   commissions?: Commission[];
 }
 
 export default function CourseDetailClient({ course }: { course: Course }) {
   const router = useRouter();
   const { schoolId } = useSchool();
-  const [modulesExpanded, setModulesExpanded] = useState(false);
+  const [openModule, setOpenModule] = useState<number | null>(0);
   const [enrollmentCounts, setEnrollmentCounts] = useState<Record<string, number>>({});
 
   // Fetch current enrollment counts per commission
@@ -248,33 +249,40 @@ export default function CourseDetailClient({ course }: { course: Course }) {
     return `El curso comienza el ${formatDate(course.startDate)}`;
   };
 
-  // Info box content — reutilizado en móvil y desktop
+  const days = getDaysUntilStart();
+  const facts = [
+    { k: courseHasStarted ? 'Inició' : 'Inicia', v: course.startDate ? formatDate(course.startDate) : '' },
+    { k: 'Duración', v: course.duration },
+    { k: 'Modalidad', v: course.modality },
+    { k: 'Horario', v: course.schedule },
+  ].filter((f) => f.v);
+
+  // Info box: se reutiliza en móvil (bajo el hero) y en escritorio (fija al costado)
   const InfoBox = () => (
-    <div className="bg-white rounded-2xl border-2 overflow-hidden" style={{ borderColor: '#031e41' }}>
+    <div className="overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white shadow-[0_30px_60px_-30px_rgb(3_30_65/0.35)]">
       {canEnroll ? (
         <>
-          {/* Datos del curso en bloques apilados */}
-          <div className="space-y-1">
-            <div className="p-4 border-b border-gray-100">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">
-                {hasCourseStarted() ? 'Inició' : 'Inicia'}
+          <div className="flex items-end justify-between gap-4 bg-[#031e41] px-6 py-5 text-white">
+            <div>
+              <p className="text-[11px] font-medium uppercase tracking-[0.18em] text-white/55">Inversión</p>
+              <p className="mt-1 text-2xl font-semibold">{course.price || 'Consultar'}</p>
+            </div>
+            {days !== null && (
+              <p className="rounded-full bg-white/10 px-3 py-1.5 text-xs font-medium">
+                Faltan <span className="font-semibold text-[#9cbadb]">{days} {days === 1 ? 'día' : 'días'}</span>
               </p>
-              <p className="text-sm font-bold text-gray-900">{formatDate(course.startDate)}</p>
-            </div>
-            <div className="p-4 border-b border-gray-100">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Duración</p>
-              <p className="text-sm font-bold text-gray-900">{course.duration}</p>
-            </div>
-            {course.commissions && course.commissions.length > 0 ? (
-              <div className="p-4 border-b border-gray-100">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-2">Comisiones disponibles</p>
+            )}
+          </div>
+          <div className="space-y-5 p-6">
+            {course.commissions && course.commissions.length > 0 && (
+              <div>
+                <p className="mb-2.5 text-xs font-semibold uppercase tracking-wider text-slate-400">Comisiones</p>
                 <div className="space-y-2">
                   {course.commissions.map((commission) => {
                     // Deterministic marketing percentage: 40–75% in steps of 5
                     const idHash = commission.id.split('').reduce((acc: number, ch: string) => acc + ch.charCodeAt(0), 0);
                     const steps = [40, 45, 50, 55, 60, 65, 70, 75];
                     const marketingPct = steps[idHash % steps.length];
-
                     const realEnrolled = enrollmentCounts[commission.id] ?? 0;
                     const pct = Math.max(marketingPct, Math.min(100, Math.round((realEnrolled / commission.maxCapacity) * 100)));
                     const displayEnrolled = Math.round((pct / 100) * commission.maxCapacity);
@@ -282,75 +290,44 @@ export default function CourseDetailClient({ course }: { course: Course }) {
                     const isFull = available <= 0;
                     const isAlmostFull = !isFull && pct >= 65;
                     const barColor = isFull ? '#ef4444' : isAlmostFull ? '#f59e0b' : '#22c55e';
-
                     return (
-                      <div key={commission.id} className="rounded-lg border overflow-hidden" style={{ borderColor: isFull ? '#fecaca' : '#e5e7eb' }}>
-                        <div className="flex items-center justify-between px-3 py-2" style={{ backgroundColor: isFull ? '#fff5f5' : '#f9fafb' }}>
-                          <span className="text-sm font-semibold text-gray-800">{commission.name}</span>
+                      <div key={commission.id} className="rounded-2xl border border-slate-200 p-3">
+                        <div className="flex items-center justify-between gap-3">
+                          <span className="text-sm font-medium text-slate-800">{commission.name}</span>
                           {isFull ? (
-                            <span className="text-xs font-bold px-2 py-0.5 rounded-full" style={{ backgroundColor: '#fecaca', color: '#dc2626' }}>Completa</span>
+                            <span className="rounded-full bg-red-50 px-2 py-0.5 text-xs font-semibold text-red-600">Completa</span>
                           ) : (
-                            <span className="text-xs font-medium" style={{ color: isAlmostFull ? '#d97706' : '#6b7280' }}>{available} {available === 1 ? 'lugar' : 'lugares'}</span>
+                            <span className={`text-xs font-medium ${isAlmostFull ? 'text-amber-600' : 'text-slate-500'}`}>{available} {available === 1 ? 'lugar' : 'lugares'}</span>
                           )}
                         </div>
-                        {/* Capacity bar */}
-                        <div className="h-1.5 w-full bg-gray-100">
-                          <div
-                            className="h-1.5 transition-all duration-300"
-                            style={{ width: `${pct}%`, backgroundColor: barColor }}
-                          />
+                        <div className="mt-2.5 h-1.5 overflow-hidden rounded-full bg-slate-100">
+                          <div className="h-full rounded-full transition-all duration-700" style={{ width: `${pct}%`, backgroundColor: barColor }} />
                         </div>
                       </div>
                     );
                   })}
                 </div>
               </div>
-            ) : null}
+            )}
             {course.requirements && (
-              <div className="p-4 border-b border-gray-100">
-                <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Requisitos</p>
-                <p className="text-sm text-gray-900 leading-relaxed">{course.requirements}</p>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">Requisitos</p>
+                <p className="mt-1 text-sm leading-relaxed text-slate-700">{course.requirements}</p>
               </div>
             )}
-            <div className="p-4 border-b border-gray-100">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1">Lugar</p>
-              <p className="text-sm font-bold text-gray-900">{course.location}</p>
-            </div>
-          </div>
-
-          {/* Precio + CTA */}
-          <div className="p-4 md:p-5 border-t border-gray-100">
-            <div className="flex items-center justify-between mb-4">
-              <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">Inversión</p>
-              <p className="text-xl font-bold" style={{ color: '#031e41' }}>{course.price}</p>
-            </div>
+            {course.location && (
+              <div className="flex items-start gap-2.5 text-sm text-slate-700">
+                <MapPin size={16} className="mt-0.5 shrink-0 text-[#031e41]" />
+                {course.location}
+              </div>
+            )}
             <button
               onClick={() => router.push(`/${schoolId}/inscripcion/${course.id}`)}
-              className="w-full py-3 rounded-xl font-bold text-white text-sm md:text-base transition-all duration-300 hover:shadow-lg hover:opacity-90 active:scale-95"
-              style={{ backgroundColor: '#031e41' }}
+              className="group flex w-full items-center justify-center gap-2 rounded-2xl bg-[#031e41] py-4 font-semibold text-white transition hover:bg-[#0b2d5c] active:scale-[.98]"
             >
-              Inscribirme
+              Inscribirme <ArrowRight size={17} className="transition group-hover:translate-x-1" />
             </button>
-
-            {/* Mensaje dinámico: días faltantes o curso ya comenzado */}
-            {course.startDate && (
-              <div className="mt-3">
-                {!hasCourseStarted() && getDaysUntilStart() !== null ? (
-                  /* Curso no comenzado: mostrar días faltantes */
-                  <div className="flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-amber-50 border border-amber-200">
-                    <div className="w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0" />
-                    <p className="text-xs font-semibold text-amber-700 text-center">
-                      Faltan <span className="text-amber-900 font-bold">{getDaysUntilStart()} {getDaysUntilStart() === 1 ? 'día' : 'días'}</span> para que comience
-                    </p>
-                  </div>
-                ) : (
-                  /* Curso ya comenzado: mostrar mensaje actual */
-                  <p className="text-xs text-gray-400 text-center leading-relaxed">
-                    {getStartDateMessage()}
-                  </p>
-                )}
-              </div>
-            )}
+            {course.startDate && days === null && <p className="text-center text-xs leading-relaxed text-slate-400">{getStartDateMessage()}</p>}
           </div>
         </>
       ) : (
@@ -361,265 +338,158 @@ export default function CourseDetailClient({ course }: { course: Course }) {
   );
 
   return (
-    <div className="w-full bg-white">
-
+    <div className="w-full">
       {/* Hero */}
-      <section className="relative w-full h-56 sm:h-72 md:h-80 lg:h-96 overflow-hidden">
-        <Image
-          src={course.image}
-          alt={course.title}
-          fill
-          className="object-cover"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/30 to-transparent" />
-
-        {/* Badge + Título sobre la imagen */}
-        <div className="absolute inset-0 flex flex-col justify-end px-4 sm:px-6 lg:px-10 pb-6 md:pb-8">
-          <span
-            className="inline-block self-start px-3 py-1 rounded-full text-white font-bold text-xs md:text-sm mb-3"
-            style={{ backgroundColor: '#9cbadb', color: '#031e41' }}
-          >
-            {course.badge}
-          </span>
-          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-bold text-white leading-tight max-w-3xl text-balance">
+      <section className="relative -mt-[76px] flex min-h-[78svh] items-end overflow-hidden bg-[#031e41] text-white">
+        <Image src={course.image} alt="" fill priority sizes="100vw" className="kenburns object-cover" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#031e41] via-[#031e41]/55 to-[#031e41]/15" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#031e41]/70 to-transparent" />
+        <div className="relative mx-auto w-full max-w-7xl px-5 pb-14 pt-40 sm:px-8 sm:pb-20">
+          <nav aria-label="Ruta" className="rise flex items-center gap-1.5 text-sm text-white/60">
+            <Link href={`/${schoolId}/catalogo-formaciones`} className="transition hover:text-white">Formaciones</Link>
+            <ChevronRight size={14} />
+            <span className="line-clamp-1 text-white/85">{course.title}</span>
+          </nav>
+          {course.badge && (
+            <span className="rise mt-5 inline-block rounded-full bg-[#9cbadb] px-3.5 py-1 text-xs font-semibold text-[#031e41]" style={{ animationDelay: '.05s' }}>{course.badge}</span>
+          )}
+          <h1 className="rise mt-4 max-w-4xl text-balance text-4xl font-semibold leading-[1.05] tracking-tight sm:text-6xl lg:text-7xl" style={{ animationDelay: '.1s' }}>
             {course.title}
           </h1>
-          <p className="text-sm md:text-base text-white/80 mt-2 max-w-xl line-clamp-2">
-            {course.subtitle}
-          </p>
+          {course.subtitle && <p className="rise mt-5 max-w-2xl text-lg text-white/70" style={{ animationDelay: '.15s' }}>{course.subtitle}</p>}
+          {facts.length > 0 && (
+            <dl className="rise mt-8 flex flex-wrap gap-2" style={{ animationDelay: '.2s' }}>
+              {facts.map((f) => (
+                <div key={f.k} className="rounded-2xl border border-white/15 bg-white/10 px-4 py-2.5 backdrop-blur-md">
+                  <dt className="text-[10px] font-medium uppercase tracking-[0.18em] text-white/55">{f.k}</dt>
+                  <dd className="text-sm font-semibold">{f.v}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
         </div>
       </section>
 
-      {/* Info box en móvil — aparece JUSTO bajo el hero */}
-      <div className="lg:hidden px-4 sm:px-6 py-5">
+      <div className="relative z-10 -mt-6 px-4 lg:hidden">
         <InfoBox />
       </div>
 
-      {/* Contenido principal */}
-      <section className="w-full px-4 sm:px-6 lg:px-10 py-8 md:py-12">
-        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-10">
-
-          {/* Columna izquierda */}
-          <div className="flex-1 min-w-0">
-
-            {/* Descripción */}
-            <div className="mb-8">
-              <h2 className="text-xl md:text-2xl font-bold mb-3 md:mb-4" style={{ color: '#031e41' }}>
-                Sobre este curso
-              </h2>
-              <p className="text-sm md:text-base text-gray-600 leading-relaxed whitespace-pre-wrap">
-                {course.description}
-              </p>
+      <section className="mx-auto max-w-7xl px-5 py-14 sm:px-8 sm:py-20">
+        <div className="flex flex-col gap-12 lg:flex-row lg:gap-16">
+          <div className="min-w-0 flex-1 space-y-14">
+            <div className="reveal">
+              <h2 className="text-3xl font-semibold tracking-tight text-slate-900">Sobre este curso</h2>
+              <p className="mt-4 whitespace-pre-wrap text-lg leading-relaxed text-slate-600">{course.description}</p>
             </div>
 
-            {/* Objetivo */}
             {course.objective && (
-              <div className="mb-8 p-4 md:p-5 rounded-xl bg-blue-50 border border-blue-100">
-                <h2 className="text-base md:text-lg font-bold mb-2" style={{ color: '#031e41' }}>
-                  Objetivo del curso
-                </h2>
-                <p className="text-sm md:text-base text-gray-700 leading-relaxed">
-                  {course.objective}
-                </p>
+              <div className="reveal relative overflow-hidden rounded-[1.75rem] bg-gradient-to-br from-[#eef3f9] to-white p-7 ring-1 ring-slate-200">
+                <Target className="absolute -right-4 -top-4 size-28 text-[#9cbadb]/30" aria-hidden />
+                <h2 className="text-sm font-semibold uppercase tracking-[0.16em] text-[#031e41]/60">Objetivo</h2>
+                <p className="relative mt-3 text-lg leading-relaxed text-slate-800">{course.objective}</p>
               </div>
             )}
 
-            {/* Contenidos colapsables */}
-            <div className="mb-8">
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl md:text-2xl font-bold" style={{ color: '#031e41' }}>
-                  Contenidos
-                </h2>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setModulesExpanded(!modulesExpanded)}
-                  className="flex items-center gap-2 border-2 transition-all duration-300 text-xs md:text-sm"
-                  style={{ borderColor: '#031e41', color: '#031e41' }}
-                >
-                  {modulesExpanded ? (
-                    <><span>Ocultar</span><ChevronUp size={16} /></>
-                  ) : (
-                    <><span>Ver unidades ({course.modules?.length || 0})</span><ChevronDown size={16} /></>
-                  )}
-                </Button>
-              </div>
-
-              <div
-                className={`overflow-hidden transition-all duration-500 ease-in-out ${
-                  modulesExpanded ? 'max-h-[3000px] opacity-100' : 'max-h-0 opacity-0'
-                }`}
-              >
-                <div className="space-y-3">
-                  {course.modules && course.modules.map((module: any, index: number) => (
-                    <div key={index} className="bg-white border-l-4 p-4 rounded-xl shadow-sm" style={{ borderColor: '#9cbadb' }}>
-                      <div className="flex items-start gap-3">
-                        <div
-                          className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 text-white font-bold text-xs"
-                          style={{ backgroundColor: '#031e41' }}
-                        >
-                          {module.number}
+            {course.modules && course.modules.length > 0 && (
+              <div className="reveal">
+                <div className="flex items-end justify-between gap-4">
+                  <h2 className="text-3xl font-semibold tracking-tight text-slate-900">Programa</h2>
+                  <p className="text-sm text-slate-400">{course.modules.length} unidades</p>
+                </div>
+                <ol className="mt-6 space-y-3">
+                  {course.modules.map((module, index) => {
+                    const isOpen = openModule === index;
+                    return (
+                      <li key={index} className={`overflow-hidden rounded-3xl border transition-colors ${isOpen ? 'border-[#031e41]/20 bg-[#f4f7fb]' : 'border-slate-200 bg-white hover:border-slate-300'}`}>
+                        <button onClick={() => setOpenModule(isOpen ? null : index)} aria-expanded={isOpen} className="flex w-full items-center gap-4 px-5 py-4 text-left">
+                          <span className={`flex size-10 shrink-0 items-center justify-center rounded-xl font-mono text-sm font-semibold transition ${isOpen ? 'bg-[#031e41] text-white' : 'bg-slate-100 text-[#031e41]'}`}>
+                            {module.number || index + 1}
+                          </span>
+                          <span className="flex-1 font-medium text-slate-900">{module.title}</span>
+                          <ChevronDown size={18} className={`shrink-0 text-slate-400 transition duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+                        </button>
+                        <div className={`grid transition-[grid-template-rows] duration-500 ease-out ${isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'}`}>
+                          <div className="overflow-hidden">
+                            <ul className="space-y-2 px-5 pb-5 pl-[4.75rem]">
+                              {module.topics?.map((topic, t) => (
+                                <li key={t} className="flex gap-2.5 text-slate-600"><Check size={16} className="mt-1 shrink-0 text-[#031e41]" />{topic}</li>
+                              ))}
+                            </ul>
+                          </div>
                         </div>
-                        <div className="flex-1">
-                          <h3 className="text-sm md:text-base font-bold text-gray-900 mb-2">{module.title}</h3>
-                          <ul className="space-y-1">
-                            {module.topics && module.topics.map((topic: string, topicIndex: number) => (
-                              <li key={topicIndex} className="flex items-start gap-2 text-gray-600 text-xs md:text-sm">
-                                <span className="text-gray-400 flex-shrink-0 mt-0.5">•</span>
-                                <span>{topic}</span>
-                              </li>
+                      </li>
+                    );
+                  })}
+                </ol>
+              </div>
+            )}
+
+            {(course.methodology || course.finalProject) && (
+              <div className="grid gap-4 sm:grid-cols-2">
+                {[
+                  { icon: Lightbulb, title: 'Metodología', text: course.methodology },
+                  { icon: Rocket, title: 'Proyecto final', text: course.finalProject },
+                ].filter((b) => b.text).map(({ icon: Icon, title, text }) => (
+                  <div key={title} className="reveal rounded-[1.75rem] border border-slate-200 p-7">
+                    <span className="flex size-11 items-center justify-center rounded-xl bg-[#eef3f9] text-[#031e41]"><Icon size={20} /></span>
+                    <h3 className="mt-5 text-lg font-semibold text-slate-900">{title}</h3>
+                    <p className="mt-2 leading-relaxed text-slate-600">{text}</p>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {course.teachers && course.teachers.length > 0 ? (
+              <div className="reveal">
+                <h2 className="text-3xl font-semibold tracking-tight text-slate-900">Docente{course.teachers.length > 1 ? 's' : ''}</h2>
+                <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                  {course.teachers.map((teacher, index) => {
+                    const socials = [
+                      teacher.linkedin && { href: teacher.linkedin, label: 'LinkedIn', icon: Linkedin },
+                      teacher.whatsapp && { href: `https://wa.me/${teacher.whatsapp}?text=${encodeURIComponent('Hola profe!')}`, label: 'WhatsApp', icon: MessageCircle },
+                      teacher.instagram && { href: teacher.instagram, label: 'Instagram', icon: Instagram },
+                      teacher.tiktok && { href: teacher.tiktok, label: 'TikTok', icon: Music2 },
+                      teacher.youtube && { href: teacher.youtube, label: 'YouTube', icon: Youtube },
+                    ].filter(Boolean) as { href: string; label: string; icon: typeof Instagram }[];
+                    return (
+                      <div key={index} className="group rounded-[1.75rem] border border-slate-200 bg-white p-6 transition hover:-translate-y-1 hover:shadow-[0_20px_40px_-20px_rgb(3_30_65/0.3)]">
+                        <div className="flex items-center gap-4">
+                          <div className="relative size-16 shrink-0 overflow-hidden rounded-2xl bg-slate-100">
+                            {teacher.photo && <Image src={teacher.photo} alt={teacher.name} fill sizes="64px" className="object-cover" />}
+                          </div>
+                          <h3 className="text-lg font-semibold text-slate-900">{teacher.name}</h3>
+                        </div>
+                        {teacher.description && <p className="mt-4 text-sm leading-relaxed text-slate-600">{teacher.description}</p>}
+                        {socials.length > 0 && (
+                          <div className="mt-4 flex gap-2">
+                            {socials.map(({ href, label, icon: Icon }) => (
+                              <a key={label} href={href} target="_blank" rel="noopener noreferrer" aria-label={`${label} de ${teacher.name}`} className="flex size-9 items-center justify-center rounded-full bg-slate-100 text-[#031e41] transition hover:bg-[#031e41] hover:text-white">
+                                <Icon size={16} />
+                              </a>
                             ))}
-                          </ul>
-                        </div>
+                          </div>
+                        )}
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               </div>
-
-              {!modulesExpanded && course.modules && course.modules.length > 0 && (
-                <div className="bg-gray-50 rounded-xl p-4 border border-gray-200">
-                  <p className="text-sm text-gray-600">
-                    Este curso incluye{' '}
-                    <span className="font-bold" style={{ color: '#031e41' }}>{course.modules.length} unidades</span>{' '}
-                    de contenido. Tocá el botón para ver el programa completo.
-                  </p>
-                </div>
-              )}
-            </div>
-
-            {/* Metodología y Proyecto Final */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-8">
-              <div className="p-4 md:p-5 bg-gray-50 rounded-xl border border-gray-100">
-                <h3 className="text-sm md:text-base font-bold mb-2" style={{ color: '#031e41' }}>
-                  Metodología
-                </h3>
-                <p className="text-xs md:text-sm text-gray-600 leading-relaxed">
-                  {course.methodology}
-                </p>
-              </div>
-              <div className="p-4 md:p-5 bg-gray-50 rounded-xl border border-gray-100">
-                <h3 className="text-sm md:text-base font-bold mb-2" style={{ color: '#031e41' }}>
-                  Proyecto Final
-                </h3>
-                <p className="text-xs md:text-sm text-gray-600 leading-relaxed">
-                  {course.finalProject}
-                </p>
-              </div>
-            </div>
-
-            {/* Docentes */}
-            {course.teachers && course.teachers.length > 0 && (
-              <div className="mb-8">
-                <h2 className="text-xl md:text-2xl font-bold mb-4 md:mb-6" style={{ color: '#031e41' }}>
-                  Docente{course.teachers.length > 1 ? 's' : ''}
-                </h2>
-                <div className="space-y-4">
-                  {course.teachers.map((teacher, index) => (
-                    <div
-                      key={index}
-                      className="flex items-start gap-4 p-4 md:p-5 rounded-xl border border-gray-200 bg-white hover:shadow-md transition-shadow duration-300"
-                    >
-                      <div
-                        className="relative w-16 h-16 md:w-20 md:h-20 rounded-full overflow-hidden flex-shrink-0 border-2"
-                        style={{ borderColor: '#9cbadb' }}
-                      >
-                        <Image
-                          src={teacher.photo || '/placeholder-teacher.jpg'}
-                          alt={teacher.name}
-                          fill
-                          className="object-cover object-center"
-                        />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="text-base md:text-lg font-bold text-gray-900">{teacher.name}</h3>
-                        <p className="text-xs md:text-sm text-gray-600 mt-1 leading-relaxed">{teacher.description}</p>
-                        <div className="flex items-center gap-3 mt-3">
-                          {teacher.linkedin && (
-                            <a
-                              href={teacher.linkedin}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="transition-all duration-300 hover:scale-110"
-                              title="Ver perfil de LinkedIn"
-                            >
-                              <Image src="/linkedin.png" alt="LinkedIn" width={24} height={24} />
-                            </a>
-                          )}
-                          {teacher.whatsapp && (
-                            <a
-                              href={`https://wa.me/${teacher.whatsapp}?text=${encodeURIComponent('Hola profe!')}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="transition-all duration-300 hover:scale-110"
-                              title="Contactar por WhatsApp"
-                            >
-                              <Image src="/whatsapp.png" alt="WhatsApp" width={24} height={24} />
-                            </a>
-                          )}
-                          {teacher.instagram && (
-                            <a
-                              href={teacher.instagram}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="transition-all duration-300 hover:scale-110 text-[#E4405F]"
-                              title="Ver perfil de Instagram"
-                            >
-                              <Instagram size={24} />
-                            </a>
-                          )}
-                          {teacher.tiktok && (
-                            <a
-                              href={teacher.tiktok}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="transition-all duration-300 hover:scale-110 text-gray-900"
-                              title="Ver perfil de TikTok"
-                            >
-                              <Music2 size={24} />
-                            </a>
-                          )}
-                          {teacher.youtube && (
-                            <a
-                              href={teacher.youtube}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="transition-all duration-300 hover:scale-110 text-[#FF0000]"
-                              title="Ver canal de YouTube"
-                            >
-                              <Youtube size={24} />
-                            </a>
-                          )}
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Docente básico fallback */}
-            {(!course.teachers || course.teachers.length === 0) && course.teacher && (
-              <div className="mb-8 p-4 md:p-5 rounded-xl border border-gray-200 flex items-center gap-4">
-                <div className="w-14 h-14 rounded-full bg-gray-100 flex items-center justify-center flex-shrink-0 text-xl font-bold text-gray-500">
-                  {course.teacher.charAt(0)}
-                </div>
+            ) : course.teacher ? (
+              <div className="reveal flex items-center gap-4 rounded-[1.75rem] border border-slate-200 p-6">
+                <span className="flex size-14 items-center justify-center rounded-2xl bg-slate-100 text-xl font-semibold text-slate-500">{course.teacher.charAt(0)}</span>
                 <div>
-                  <h3 className="text-base md:text-lg font-bold text-gray-900">{course.teacher}</h3>
-                  <p className="text-xs md:text-sm text-gray-500">Docente del curso</p>
+                  <h3 className="text-lg font-semibold text-slate-900">{course.teacher}</h3>
+                  <p className="text-sm text-slate-500">Docente del curso</p>
                 </div>
               </div>
-            )}
+            ) : null}
           </div>
 
-          {/* Columna derecha — Info box sticky solo en desktop */}
-          <div className="hidden lg:block w-80 xl:w-96 flex-shrink-0">
-            <div className="sticky top-24">
+          <aside className="hidden w-[380px] shrink-0 lg:block">
+            <div className="sticky top-28">
               <InfoBox />
             </div>
-          </div>
-
+          </aside>
         </div>
       </section>
     </div>

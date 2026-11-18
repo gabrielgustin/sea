@@ -5,18 +5,19 @@ import { useSiteSettings } from '@/context/SiteSettingsContext';
 
 export default function WhatsAppButton() {
   const { settings } = useSiteSettings();
-  const whatsappLink = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage)}`;
+  if (!settings.whatsappNumber) return null;
+  const href = `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage)}`;
 
   return (
     <a
-      href={whatsappLink}
+      href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed bottom-4 right-4 z-50 flex items-center justify-center rounded-full shadow-lg hover:shadow-xl transition-all hover:scale-110"
-      style={{ backgroundColor: '#25D366', width: '60px', height: '60px' }}
       aria-label="Contactar por WhatsApp"
+      className="group fixed bottom-5 right-5 z-40 flex size-14 items-center justify-center rounded-full bg-[#25D366] text-white shadow-[0_10px_30px_-5px_rgb(37_211_102/0.6)] transition hover:scale-110"
     >
-      <MessageCircle size={32} className="text-white" />
+      <span className="absolute inset-0 rounded-full bg-[#25D366] opacity-60 motion-safe:animate-ping [animation-duration:2.5s]" aria-hidden />
+      <MessageCircle size={26} className="relative" />
     </a>
   );
 }

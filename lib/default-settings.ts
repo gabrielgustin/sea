@@ -18,12 +18,12 @@ export const defaultFAQs: FAQ[] = [
   {
     id: 3,
     question: '¿Otorgan certificados?',
-    answer: 'Sí, todos nuestros cursos otorgan certificado oficial de la Secretaría de Extensión Académica del ITS Savio al completar satisfactoriamente el programa.',
+    answer: 'Sí, todos nuestros cursos otorgan certificado oficial de la Secretaría de Extensión Académica al completar satisfactoriamente el programa.',
     order: 3,
   },
   {
     id: 4,
-    question: '¿Puedo tomar cursos si no soy estudiante del ITS Savio?',
+    question: '¿Puedo tomar cursos si no soy estudiante del instituto?',
     answer: 'Sí, nuestros cursos están abiertos a toda la comunidad. No es necesario ser estudiante del instituto para inscribirse.',
     order: 4,
   },

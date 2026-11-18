@@ -113,7 +113,7 @@ export default function FormacionesPage() {
 
       {/* Hero Section */}
       <section
-        className="w-full pt-24 md:pt-16 pb-8 md:pb-16 md:min-h-[70vh] flex items-center justify-center px-4"
+        className="aurora relative -mt-[76px] w-full pt-40 pb-20 md:min-h-[70vh] flex items-center justify-center px-4"
         style={{ background: 'linear-gradient(135deg, #031e41 0%, #1a4d7a 100%)' }}
       >
         <div className="w-full text-center text-white max-w-4xl mx-auto">
