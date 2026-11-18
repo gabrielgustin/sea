@@ -6,6 +6,8 @@ export type TenantConfig = {
   seaLogo?: string
   seaLogoAlt?: string
   footerAddress?: string
+  // true: la barra superior es siempre blanca (no cambia de color según la sección)
+  navLight?: boolean
   enrollmentWebhook?: string // Google Apps Script que recibe las inscripciones
 }
 

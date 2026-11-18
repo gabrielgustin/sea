@@ -57,7 +57,7 @@ export default function SiteNav() {
   ];
   const isActive = (href: string) => (href === base ? pathname === base : pathname.startsWith(href));
   const account = () => (isAuthenticated ? router.push(`${base}/admin`) : setLoginOpen(true));
-  const light = !dark && !open;
+  const light = (tenant.config.navLight || !dark) && !open;
   // Los logos son PNG de color: sobre fondo oscuro se muestran en blanco.
   const logoTone = light ? '' : 'brightness-0 invert';
 
