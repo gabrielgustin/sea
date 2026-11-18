@@ -40,8 +40,8 @@ export function UpcomingCourses({ courses, base }: { courses: Course[]; base: st
           <h2 className={`max-w-xl text-4xl font-extrabold tracking-tight sm:text-6xl ${D}`}>Próximas formaciones</h2>
           <p className="mt-3 text-lg text-slate-600">Inscripciones abiertas. Tocá una para ver horarios y cupos.</p>
         </div>
-        <Link href={`${base}/catalogo-formaciones`} className="inline-flex items-center gap-2 self-start rounded-full border-2 border-[#031e41] bg-white px-5 py-3 font-bold transition hover:bg-[var(--accent)] hover:text-[var(--accent-ink)] sm:self-auto">
-          Ver catálogo completo <ArrowRight size={17} />
+        <Link href={`${base}/catalogo-formaciones`} className="hidden items-center gap-2 self-start sm:inline-flex rounded-full border-2 border-[#031e41] bg-white px-5 py-3 font-bold transition hover:bg-[var(--accent)] hover:text-[var(--accent-ink)] sm:self-auto">
+          Ver todas las formaciones <ArrowRight size={17} />
         </Link>
       </div>
       {/* Celular: carrusel que se desliza de a una. Desde sm: grilla. */}
@@ -51,15 +51,25 @@ export function UpcomingCourses({ courses, base }: { courses: Course[]; base: st
             <CourseCard course={c} href={`${base}/cursos/${c.slug || c.id}`} priority={i < 3} index={i} />
           </li>
         ))}
+        {/* Celular: última tarjeta del carrusel, para llegar al catálogo sin volver a subir */}
+        <li className="flex w-[80%] shrink-0 snap-center sm:hidden">
+          <Link href={`${base}/catalogo-formaciones`} className="flex w-full flex-col items-center justify-center gap-3 rounded-[28px] border-2 border-dashed border-[#031e41] bg-white p-6 text-center font-extrabold">
+            <span className="flex size-12 items-center justify-center rounded-full border-2 border-[#031e41] bg-[var(--accent)] text-[var(--accent-ink)]"><ArrowRight size={22} /></span>
+            Ver todas las formaciones
+          </Link>
+        </li>
       </ul>
       {courses.length > 1 && <p className="text-center text-sm font-medium text-slate-500 sm:hidden">Deslizá para ver más</p>}
+      <Link href={`${base}/catalogo-formaciones`} className="mt-4 flex items-center justify-center gap-2 rounded-full border-2 border-[#031e41] bg-[var(--accent)] py-3.5 font-bold text-[var(--accent-ink)] shadow-[4px_4px_0_#031e41] active:translate-y-px active:shadow-none sm:hidden">
+        Ver todas las formaciones <ArrowRight size={18} />
+      </Link>
     </section>
   );
 }
 
 export function QuickLinks({ base }: { base: string }) {
   const small = [
-    { href: `${base}/catalogo-formaciones`, icon: BookOpen, title: 'Nuestras formaciones', text: 'Explorá el catálogo completo y encontrá la que mejor se adapte a vos.', bg: '#FF6FA8' },
+    { href: `${base}/catalogo-formaciones`, icon: BookOpen, title: 'Nuestras formaciones', text: 'Explorá todas las formaciones y encontrá la que mejor se adapte a vos.', bg: '#FF6FA8' },
     { href: `${base}/trabaja-con-nosotros`, icon: GraduationCap, title: 'Trabajá con nosotros', text: '¿Sos graduado/a o estudiante avanzado/a? Postulate para dictar cursos o sumarte a nuestros proyectos.', bg: '#2FD3A0' },
   ];
   return (

@@ -20,7 +20,7 @@ export default async function Home({ params }: { params: Promise<{ tenant: strin
         slides={slides as unknown as Slide[]}
         schoolName={tenant.name}
         catalogHref={`${base}/catalogo-formaciones`}
-        courses={courses.filter((c) => c.showOnHome).map((c) => ({ title: c.title, image: c.image, href: `${base}/cursos/${c.slug || c.id}` }))}
+        courseCount={courses.filter((c) => c.showOnHome).length}
       />
       <Marquee items={courses.filter((c) => c.showOnHome).map((c) => c.title)} />
       <UpcomingCourses courses={courses.filter((c) => c.showOnHome)} base={base} />

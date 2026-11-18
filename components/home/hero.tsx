@@ -6,8 +6,6 @@ import Link from 'next/link';
 import { ArrowRight, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
 import { useSiteSettings } from '@/context/SiteSettingsContext';
 
-export type HeroCourse = { title: string; image?: string; href: string };
-
 export interface Slide {
   id: number;
   title: string;
@@ -45,7 +43,7 @@ function place(offset: number): React.CSSProperties {
   return { transform: 'translate(0, 6%) rotate(3deg) scale(.82)', zIndex: 0, opacity: 0 };
 }
 
-export default function Hero({ slides, schoolName, catalogHref, courses = [] }: { slides: Slide[]; schoolName: string; catalogHref: string; courses?: HeroCourse[] }) {
+export default function Hero({ slides, schoolName, catalogHref, courseCount = 0 }: { slides: Slide[]; schoolName: string; catalogHref: string; courseCount?: number }) {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
   const [tick, setTick] = useState(0); // reinicia la cuenta del autoplay al navegar a mano
@@ -69,7 +67,7 @@ export default function Hero({ slides, schoolName, catalogHref, courses = [] }: 
             Formaciones que te llevan a hacer
           </h1>
           <Link href={catalogHref} className="rise mt-10 inline-flex items-center gap-2 rounded-full border-2 border-[#031e41] bg-[var(--accent)] px-7 py-4 font-bold text-[var(--accent-ink)] shadow-[4px_4px_0_#031e41]" style={{ animationDelay: '.16s' }}>
-            Ver formaciones <ArrowRight size={18} />
+            Ver todas las formaciones <ArrowRight size={18} />
           </Link>
         </div>
       </section>
@@ -85,10 +83,8 @@ export default function Hero({ slides, schoolName, catalogHref, courses = [] }: 
       style={pegboard}
       aria-roledescription="carrusel"
       aria-label={`Formaciones de ${schoolName}`}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
     >
-      <MobileIntro schoolName={schoolName} catalogHref={catalogHref} courses={courses} />
+      <MobileIntro schoolName={schoolName} catalogHref={catalogHref} courseCount={courseCount} />
 
       {/* Escritorio: texto a la izquierda y pila de polaroids a la derecha */}
       <div className="mx-auto hidden w-full max-w-7xl items-center gap-12 lg:grid lg:grid-cols-[1fr_1.05fr] lg:gap-10">
@@ -118,7 +114,7 @@ export default function Hero({ slides, schoolName, catalogHref, courses = [] }: 
               </Link>
             )}
             <Link href={catalogHref} className="inline-flex items-center rounded-full border-2 border-[#031e41] bg-white px-7 py-4 font-bold transition hover:bg-[#031e41] hover:text-white">
-              Todas las formaciones
+              Ver todas las formaciones
             </Link>
           </div>
         </div>
@@ -127,6 +123,9 @@ export default function Hero({ slides, schoolName, catalogHref, courses = [] }: 
         <div className="order-1 lg:order-2">
           <div
             className="relative mx-auto aspect-[5/4] w-[86%] max-w-[560px] touch-pan-y select-none"
+            // Pausa solo con el mouse sobre las fotos: el inicio ocupa toda la pantalla y frenaba siempre.
+            onMouseEnter={() => setPaused(true)}
+            onMouseLeave={() => setPaused(false)}
             onPointerDown={(e) => { swipe.current = e.clientX; }}
             onPointerUp={(e) => {
               if (swipe.current === null) return;
@@ -187,14 +186,13 @@ export default function Hero({ slides, schoolName, catalogHref, courses = [] }: 
 
 // Celular y tablet: primero presenta la propuesta (quiénes somos y por qué cursar acá);
 // los cursos se ven enseguida en "Próximas formaciones". En escritorio sigue la pila de fotos.
-function MobileIntro({ schoolName, catalogHref, courses }: { schoolName: string; catalogHref: string; courses: HeroCourse[] }) {
+function MobileIntro({ schoolName, catalogHref, courseCount }: { schoolName: string; catalogHref: string; courseCount: number }) {
   const { settings } = useSiteSettings();
   const whatsapp = settings.whatsappNumber
     ? `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage)}`
     : null;
-  const pics = courses.filter((c) => c.image).slice(0, 4);
   const chips = [
-    courses.length > 0 && `${courses.length} ${courses.length === 1 ? 'formación' : 'formaciones'}`,
+    courseCount > 0 && `${courseCount} ${courseCount === 1 ? 'formación' : 'formaciones'}`,
     'Certificado oficial',
     'Plataforma incluida',
   ].filter(Boolean) as string[];
@@ -213,33 +211,21 @@ function MobileIntro({ schoolName, catalogHref, courses }: { schoolName: string;
       </p>
       <ul className="rise mt-5 flex flex-wrap gap-2" style={{ animationDelay: '.15s' }}>
         {chips.map((c, i) => (
-          <li key={c} className="rounded-full border-2 border-[#031e41] px-3 py-1 text-sm font-bold" style={{ background: i === 0 ? 'var(--accent)' : '#fff', color: i === 0 ? 'var(--accent-ink)' : undefined }}>{c}</li>
+          <li key={c} className="rounded-full border-2 border-[#031e41] text-sm font-bold" style={{ background: i === 0 ? 'var(--accent)' : '#fff', color: i === 0 ? 'var(--accent-ink)' : undefined }}>
+            {i === 0 && courseCount > 0 ? <Link href={catalogHref} className="flex items-center gap-1 px-3 py-1">{c} <ArrowRight size={14} /></Link> : <span className="block px-3 py-1">{c}</span>}
+          </li>
         ))}
       </ul>
       <div className="rise mt-5 grid gap-2.5" style={{ animationDelay: '.2s' }}>
-        <a href={courses.length > 0 ? '#formaciones' : catalogHref} className="flex items-center justify-center gap-2 rounded-full border-2 border-[#031e41] bg-[#031e41] py-3.5 font-bold text-white shadow-[4px_4px_0_var(--accent)] active:translate-y-px active:shadow-none">
-          Ver formaciones <ArrowRight size={18} />
-        </a>
+        <Link href={catalogHref} className="flex items-center justify-center gap-2 rounded-full border-2 border-[#031e41] bg-[#031e41] py-3.5 font-bold text-white shadow-[4px_4px_0_var(--accent)] active:translate-y-px active:shadow-none">
+          Ver todas las formaciones <ArrowRight size={18} />
+        </Link>
         {whatsapp && (
           <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-full border-2 border-[#031e41] bg-white py-3.5 font-bold active:bg-[#EAF2FB]">
             <MessageCircle size={18} className="text-[#1da851]" /> Consultar por WhatsApp
           </a>
         )}
       </div>
-      {/* Tira de fotos: muestra la variedad de cursos sin competir con el mensaje */}
-      {pics.length > 0 && (
-        <ul className="rise mt-6 flex justify-center -space-x-3" style={{ animationDelay: '.28s' }} aria-label="Algunas formaciones">
-          {pics.map((c, i) => (
-            <li key={c.href} style={{ transform: `rotate(${[-6, 4, -3, 7][i]}deg)`, zIndex: i }}>
-              <Link href={c.href} aria-label={c.title} className="block w-[25vw] max-w-[120px] rounded-xl border-2 border-[#031e41] bg-white p-1 shadow-[3px_3px_0_#031e41]">
-                <span className="relative block aspect-square overflow-hidden rounded-lg bg-[#EAF2FB]">
-                  <Image src={c.image!} alt="" fill sizes="120px" className="object-cover" />
-                </span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      )}
     </div>
   );
 }
