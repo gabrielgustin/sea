@@ -34,7 +34,7 @@ export function Marquee({ items }: { items: string[] }) {
 export function UpcomingCourses({ courses, base }: { courses: Course[]; base: string }) {
   if (courses.length === 0) return null;
   return (
-    <section className="mx-auto max-w-7xl px-5 pt-24 sm:px-8 sm:pt-32">
+    <section id="formaciones" className="mx-auto max-w-7xl scroll-mt-20 px-5 pt-24 sm:px-8 sm:pt-32">
       <div className="flex flex-col justify-between gap-6 sm:flex-row sm:items-end">
         <div>
           <h2 className={`max-w-xl text-4xl font-extrabold tracking-tight sm:text-6xl ${D}`}>Próximas formaciones</h2>

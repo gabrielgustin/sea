@@ -5,6 +5,7 @@ import { tenantDb } from '@/lib/tenants/db';
 import { listSlides } from '@/lib/data/carousel';
 import { listCourses } from '@/lib/data/courses';
 import type { Course } from '@/context/CoursesContext';
+import { PlatformSection } from '@/components/platform-section';
 
 export default async function Home({ params }: { params: Promise<{ tenant: string }> }) {
   const { tenant: slug } = await params;
@@ -15,9 +16,16 @@ export default async function Home({ params }: { params: Promise<{ tenant: strin
 
   return (
     <>
-      <Hero slides={slides as unknown as Slide[]} schoolName={tenant.name} catalogHref={`${base}/catalogo-formaciones`} />
+      <Hero
+        slides={slides as unknown as Slide[]}
+        schoolName={tenant.name}
+        catalogHref={`${base}/catalogo-formaciones`}
+        courses={courses.filter((c) => c.showOnHome).map((c) => ({ title: c.title, image: c.image, href: `${base}/cursos/${c.slug || c.id}` }))}
+      />
       <Marquee items={courses.filter((c) => c.showOnHome).map((c) => c.title)} />
       <UpcomingCourses courses={courses.filter((c) => c.showOnHome)} base={base} />
+      {/* Carta de presentación para estudiantes y familias: se inscriben desde esta página */}
+      <PlatformSection audience="alumnos" />
       <QuickLinks base={base} />
       <Benefits schoolName={tenant.name} />
       <Journey />

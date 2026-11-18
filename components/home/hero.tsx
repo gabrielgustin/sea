@@ -3,7 +3,10 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, ChevronLeft, ChevronRight, MessageCircle } from 'lucide-react';
+import { useSiteSettings } from '@/context/SiteSettingsContext';
+
+export type HeroCourse = { title: string; image?: string; href: string };
 
 export interface Slide {
   id: number;
@@ -42,7 +45,7 @@ function place(offset: number): React.CSSProperties {
   return { transform: 'translate(0, 6%) rotate(3deg) scale(.82)', zIndex: 0, opacity: 0 };
 }
 
-export default function Hero({ slides, schoolName, catalogHref }: { slides: Slide[]; schoolName: string; catalogHref: string }) {
+export default function Hero({ slides, schoolName, catalogHref, courses = [] }: { slides: Slide[]; schoolName: string; catalogHref: string; courses?: HeroCourse[] }) {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
   const [tick, setTick] = useState(0); // reinicia la cuenta del autoplay al navegar a mano
@@ -78,14 +81,17 @@ export default function Hero({ slides, schoolName, catalogHref }: { slides: Slid
 
   return (
     <section
-      className="relative -mt-[76px] overflow-hidden bg-[#EAF2FB] px-5 pb-16 pt-32 sm:px-8 lg:flex lg:min-h-[100svh] lg:items-center lg:pb-20 lg:pt-28"
+      className="relative -mt-[76px] overflow-hidden bg-[#EAF2FB] px-5 pb-10 pt-28 sm:px-8 sm:pb-16 sm:pt-32 lg:flex lg:min-h-[100svh] lg:items-center lg:pb-20 lg:pt-28"
       style={pegboard}
       aria-roledescription="carrusel"
       aria-label={`Formaciones de ${schoolName}`}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
     >
-      <div className="mx-auto grid w-full max-w-7xl items-center gap-12 lg:grid-cols-[1fr_1.05fr] lg:gap-10">
+      <MobileIntro schoolName={schoolName} catalogHref={catalogHref} courses={courses} />
+
+      {/* Escritorio: texto a la izquierda y pila de polaroids a la derecha */}
+      <div className="mx-auto hidden w-full max-w-7xl items-center gap-12 lg:grid lg:grid-cols-[1fr_1.05fr] lg:gap-10">
         {/* Texto del slide: se vuelve a montar al cambiar y repite la entrada */}
         <div key={slide.id} className="order-2 lg:order-1">
           <p className="rise inline-flex items-center gap-2.5 rounded-full border-2 border-[#031e41] bg-white px-4 py-2 text-sm font-semibold">
@@ -176,5 +182,64 @@ export default function Hero({ slides, schoolName, catalogHref }: { slides: Slid
         </div>
       </div>
     </section>
+  );
+}
+
+// Celular y tablet: primero presenta la propuesta (quiénes somos y por qué cursar acá);
+// los cursos se ven enseguida en "Próximas formaciones". En escritorio sigue la pila de fotos.
+function MobileIntro({ schoolName, catalogHref, courses }: { schoolName: string; catalogHref: string; courses: HeroCourse[] }) {
+  const { settings } = useSiteSettings();
+  const whatsapp = settings.whatsappNumber
+    ? `https://wa.me/${settings.whatsappNumber}?text=${encodeURIComponent(settings.whatsappMessage)}`
+    : null;
+  const pics = courses.filter((c) => c.image).slice(0, 4);
+  const chips = [
+    courses.length > 0 && `${courses.length} ${courses.length === 1 ? 'formación' : 'formaciones'}`,
+    'Certificado oficial',
+    'Plataforma incluida',
+  ].filter(Boolean) as string[];
+
+  return (
+    <div className="lg:hidden">
+      <p className="rise inline-flex max-w-full items-center gap-2 rounded-full border-2 border-[#031e41] bg-white px-3.5 py-1.5 text-[13px] font-semibold">
+        <span className="size-2 shrink-0 rounded-full bg-[var(--accent)] ring-2 ring-[#031e41]" />
+        <span className="truncate">{schoolName}</span>
+      </p>
+      <h1 className={`rise mt-5 text-balance text-[clamp(2.5rem,11vw,3.6rem)] font-extrabold leading-[0.95] tracking-[-0.04em] ${D}`} style={{ animationDelay: '.05s' }}>
+        Formaciones para aprender haciendo
+      </h1>
+      <p className="rise mt-4 text-[17px] leading-relaxed text-[#031e41]/75" style={{ animationDelay: '.1s' }}>
+        Cursos prácticos para estudiantes y la comunidad, con docentes de la industria, certificación oficial y nuestra plataforma de aprendizaje.
+      </p>
+      <ul className="rise mt-5 flex flex-wrap gap-2" style={{ animationDelay: '.15s' }}>
+        {chips.map((c, i) => (
+          <li key={c} className="rounded-full border-2 border-[#031e41] px-3 py-1 text-sm font-bold" style={{ background: i === 0 ? 'var(--accent)' : '#fff', color: i === 0 ? 'var(--accent-ink)' : undefined }}>{c}</li>
+        ))}
+      </ul>
+      <div className="rise mt-5 grid gap-2.5" style={{ animationDelay: '.2s' }}>
+        <a href={courses.length > 0 ? '#formaciones' : catalogHref} className="flex items-center justify-center gap-2 rounded-full border-2 border-[#031e41] bg-[#031e41] py-3.5 font-bold text-white shadow-[4px_4px_0_var(--accent)] active:translate-y-px active:shadow-none">
+          Ver formaciones <ArrowRight size={18} />
+        </a>
+        {whatsapp && (
+          <a href={whatsapp} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2 rounded-full border-2 border-[#031e41] bg-white py-3.5 font-bold active:bg-[#EAF2FB]">
+            <MessageCircle size={18} className="text-[#1da851]" /> Consultar por WhatsApp
+          </a>
+        )}
+      </div>
+      {/* Tira de fotos: muestra la variedad de cursos sin competir con el mensaje */}
+      {pics.length > 0 && (
+        <ul className="rise mt-6 flex justify-center -space-x-3" style={{ animationDelay: '.28s' }} aria-label="Algunas formaciones">
+          {pics.map((c, i) => (
+            <li key={c.href} style={{ transform: `rotate(${[-6, 4, -3, 7][i]}deg)`, zIndex: i }}>
+              <Link href={c.href} aria-label={c.title} className="block w-[25vw] max-w-[120px] rounded-xl border-2 border-[#031e41] bg-white p-1 shadow-[3px_3px_0_#031e41]">
+                <span className="relative block aspect-square overflow-hidden rounded-lg bg-[#EAF2FB]">
+                  <Image src={c.image!} alt="" fill sizes="120px" className="object-cover" />
+                </span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
   );
 }

@@ -4,7 +4,7 @@ import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { ArrowRight, Check, ChevronDown, ChevronRight, Instagram, Lightbulb, Linkedin, MapPin, MessageCircle, Music2, Rocket, Target, Youtube } from 'lucide-react';
+import { ArrowRight, Check, ChevronDown, ChevronRight, Instagram, Lightbulb, Linkedin, MapPin, MessageCircle, MonitorPlay, Music2, Rocket, Target, Youtube } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { useSchool } from '@/context/SchoolContext';
 
@@ -332,6 +332,14 @@ export default function CourseDetailClient({ course }: { course: Course }) {
         /* Inscripciones cerradas: formulario de interés */
         <InterestForm />
       )}
+      {/* Lo que suma cursar con SEA (abierto o "Me interesa"): la plataforma de aprendizaje propia */}
+      <Link href={`/${schoolId}#plataforma`} className="flex items-start gap-3 border-t-2 border-[#031e41] bg-[#2FD3A0]/25 px-5 py-4 transition hover:bg-[#2FD3A0]/40">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl border-2 border-[#031e41] bg-[#2FD3A0]"><MonitorPlay size={18} aria-hidden /></span>
+        <span className="text-sm leading-snug">
+          <strong className="block">Incluye nuestra plataforma de aprendizaje</strong>
+          Clases, tareas, material de estudio y seguimiento durante toda la cursada.
+        </span>
+      </Link>
     </div>
   );
 
