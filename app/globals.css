@@ -473,8 +473,10 @@ html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
 }
 /* Sin soporte de scroll-driven (o con movimiento reducido) las chispas y la onda no se ven; el resto queda quieto y visible. */
 .boom-spark, .boom-ring { opacity: 0; }
+.boom-fill { display: none; }
 @keyframes reveal-up { from { opacity: 0; transform: translateY(32px) scale(.98); } to { opacity: 1; transform: none; } }
 @keyframes grow-x { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes grow-y { from { transform: scaleY(0); } to { transform: scaleY(1); } }
 @keyframes parallax { from { transform: translateY(-6%) scale(1.12); } to { transform: translateY(6%) scale(1.12); } }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -491,13 +493,17 @@ html { scroll-behavior: smooth; scroll-padding-top: 6rem; }
   .boom-ready .boom-step:not(.is-on) .boom-text { opacity: 0; }
   .boom-ready:not(.is-on) .boom-line { transform: scaleX(0); }
   .boom-line { transform-origin: left; }
-  .boom-step { --d: calc(var(--i) * .2s); }
+  .boom-step { --d: 0s; }
   @media (min-width: 1024px) { .boom-step { --d: calc(var(--i) * .3s); } }
   .is-on .boom-line { animation: grow-x 1.2s cubic-bezier(.3,.7,.3,1) both; }
   .boom-step.is-on .boom-num { animation: boom .6s cubic-bezier(.2,.8,.3,1) var(--d) both; }
   .boom-step.is-on .boom-ring { animation: boom-ring .7s ease-out calc(var(--d) + .25s) both; }
   .boom-step.is-on .boom-spark { animation: boom-spark .75s ease-out calc(var(--d) + .25s) both; }
   .boom-step.is-on .boom-text { animation: reveal-up .5s ease-out calc(var(--d) + .3s) both; }
+  /* Celular: la línea entre pasos se llena al cruzar el 70% de la pantalla, la misma marca que dispara cada paso (BoomObserver). */
+  @supports (animation-timeline: view()) {
+    .boom-fill { display: block; transform-origin: top; animation: grow-y linear both; animation-timeline: view(block 0% 30%); animation-range: entry 0% entry 100%; }
+  }
 }
 @keyframes kenburns { from { transform: scale(1.14); } to { transform: scale(1); } }
 @keyframes rise { from { opacity: 0; transform: translateY(24px); filter: blur(6px); } to { opacity: 1; transform: none; filter: none; } }

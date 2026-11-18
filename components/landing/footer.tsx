@@ -2,6 +2,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { Mail, MessageCircle } from 'lucide-react';
 import { EMAIL, JOIN } from '@/lib/landing';
+import { CreatedBy } from '@/components/created-by';
 
 export function LandingFooter({ schools }: { schools: { slug: string; name: string; color: { bg: string } }[] }) {
   return (
@@ -27,7 +28,10 @@ export function LandingFooter({ schools }: { schools: { slug: string; name: stri
           </ul>
         </div>
       </div>
-      <p className="mx-auto max-w-7xl border-t border-white/10 px-5 py-6 text-xs text-white/40 sm:px-8">© {new Date().getFullYear()} Portal SEA · Secretaría de Extensión Académica</p>
+      <div className="mx-auto max-w-7xl px-5 sm:px-8">
+        <p className="pb-6 text-xs text-white/40">© {new Date().getFullYear()} Portal SEA · Secretaría de Extensión Académica</p>
+        <div className="flex justify-center border-t border-white/10 py-6"><CreatedBy /></div>
+      </div>
     </footer>
   );
 }

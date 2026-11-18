@@ -1,4 +1,4 @@
-import { NextResponse } from 'next/server'
+import { after, NextResponse } from 'next/server'
 import { route } from '@/lib/auth/guard'
 import { commissionCounts, createEnrollment, listEnrollments, CommissionFullError } from '@/lib/data/enrollments'
 import { notifyEnrollment } from '@/lib/enrollment-webhook'
@@ -20,7 +20,8 @@ export const POST = route(async (req, { db, tenant }) => {
   if (required.some((k) => !String(b[k] ?? '').trim())) return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
   try {
     const id = await createEnrollment(db, b)
-    await notifyEnrollment(tenant, b) // best-effort: no falla la inscripción si Google Sheets no responde
+    // La planilla de Google tarda segundos: se avisa después de responder, sin hacer esperar al alumno.
+    after(() => notifyEnrollment(tenant, b))
     return NextResponse.json({ success: true, id })
   } catch (e) {
     if (e instanceof CommissionFullError) return NextResponse.json({ error: 'commission_full', message: 'Esta comisión ya no tiene lugares disponibles.' }, { status: 409 })

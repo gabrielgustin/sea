@@ -145,8 +145,8 @@ export function Journey() {
           <span aria-hidden className="boom-line absolute left-8 right-8 top-8 hidden border-t-[3px] border-dashed border-[#031e41]/25 lg:block" />
           {steps.map(({ icon: Icon, title, text }, i) => (
             <li key={title} className="boom-step relative flex items-start gap-5 sm:block" style={{ ['--i' as string]: i }}>
-              {/* Celular: tramo de línea hasta el paso siguiente */}
-              {i < steps.length - 1 && <span aria-hidden className="absolute -bottom-7 left-8 top-16 border-l-[3px] border-dashed border-[#031e41]/25 sm:hidden" />}
+              {/* Celular: tramo de línea hasta el paso siguiente; el relleno avanza con el scroll */}
+              {i < steps.length - 1 && <span aria-hidden className="absolute -bottom-7 left-8 top-16 border-l-[3px] border-dashed border-[#031e41]/25 sm:hidden"><span className="boom-fill absolute -left-[3px] top-0 h-full w-[3px] rounded-full bg-[#031e41]" /></span>}
               <span className="relative block size-16 shrink-0">
                 <span aria-hidden className="boom-ring absolute inset-0 rounded-full border-4" style={{ borderColor: i % 2 ? COLORS[i] : 'var(--accent)' }} />
                 {SPARKS.map((a, k) => (

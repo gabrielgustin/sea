@@ -70,9 +70,10 @@ export function CoursesProvider({ children, schoolId, initialCourses }: { childr
   const [loading, setLoading] = useState(false);
   const api = `/api/${schoolId}/courses`;
 
-  const fetchCourses = async () => {
+  // quiet: refresco en segundo plano, sin mostrar "cargando" (después de guardar).
+  const fetchCourses = async (quiet = false) => {
     try {
-      setLoading(true);
+      if (!quiet) setLoading(true);
       const res = await fetch(api);
       if (res.ok) {
         const data = await res.json();
@@ -98,10 +99,12 @@ export function CoursesProvider({ children, schoolId, initialCourses }: { childr
       const error = await res.json();
       throw new Error(error.error || 'Failed to add course');
     }
-    await fetchCourses();
+    await fetchCourses(true); // el curso nuevo trae datos que arma el servidor (id, slug)
   };
 
+  // Optimista: la lista se actualiza al instante y después se sincroniza con el servidor.
   const updateCourse = async (id: string, updatedData: Partial<Course>) => {
+    setCourses(prev => prev.map(c => (c.id === id ? { ...c, ...updatedData } : c)));
     const res = await fetch(api, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
@@ -109,12 +112,14 @@ export function CoursesProvider({ children, schoolId, initialCourses }: { childr
     });
     const resData = await res.json();
     if (!res.ok) {
+      fetchCourses(true);
       throw new Error(resData.error || 'Failed to update course');
     }
-    await fetchCourses();
+    fetchCourses(true);
   };
 
   const deleteCourse = async (id: string) => {
+    setCourses(prev => prev.filter(c => c.id !== id));
     const res = await fetch(api, {
       method: 'DELETE',
       headers: { 'Content-Type': 'application/json' },
@@ -122,9 +127,9 @@ export function CoursesProvider({ children, schoolId, initialCourses }: { childr
     });
     if (!res.ok) {
       const error = await res.json();
+      await fetchCourses(true); // vuelve a mostrar el curso si no se pudo borrar
       throw new Error(error.error || 'Failed to delete course');
     }
-    await fetchCourses();
   };
 
   const getCourseById = (id: string) => {
@@ -144,13 +149,13 @@ export function CoursesProvider({ children, schoolId, initialCourses }: { childr
     });
     if (!res.ok) {
       // Rollback on error
-      await fetchCourses();
+      await fetchCourses(true);
       throw new Error('Failed to reorder courses');
     }
   };
 
   return (
-    <CoursesContext.Provider value={{ courses, loading, schoolId, addCourse, updateCourse, deleteCourse, getCourseById, refreshCourses: fetchCourses, reorderCourses }}>
+    <CoursesContext.Provider value={{ courses, loading, schoolId, addCourse, updateCourse, deleteCourse, getCourseById, refreshCourses: () => fetchCourses(), reorderCourses }}>
       {children}
     </CoursesContext.Provider>
   );

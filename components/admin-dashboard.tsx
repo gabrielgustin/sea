@@ -42,8 +42,7 @@ export default function AdminDashboard() {
 
   const handleDelete = (courseId: string) => {
     if (window.confirm('¿Estás seguro de que deseas eliminar este curso?')) {
-      deleteCourse(courseId);
-      setTimeout(() => window.location.reload(), 500);
+      deleteCourse(courseId).catch((err) => alert('No se pudo eliminar el curso: ' + (err instanceof Error ? err.message : 'Error desconocido')));
     }
   };
 
@@ -59,8 +58,7 @@ export default function AdminDashboard() {
       } else {
         await addCourse(courseData);
       }
-      // Forzar recarga de la página para refrescar los datos
-      setTimeout(() => window.location.reload(), 500);
+      handleCancel(); // vuelve a la lista, que ya tiene los datos nuevos (sin recargar la página)
     } catch (err) {
       console.error('[v0] handleSave error:', err);
       alert('Error al guardar el curso: ' + (err instanceof Error ? err.message : 'Error desconocido'));

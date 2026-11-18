@@ -76,15 +76,20 @@ export default function SiteNav() {
             : 'bg-[#031e41]/55 text-white shadow-[inset_0_0_0_1px_rgb(255_255_255/0.14)]'
         }`}
       >
-        <Link href={base} className="mr-auto flex shrink-0 items-center gap-3" aria-label={`Inicio — ${tenant.name}`}>
-          {tenant.config.seaLogo ? (
-            <Image src={tenant.config.seaLogo} alt={tenant.config.seaLogoAlt ?? 'SEA'} width={96} height={48} priority className={`h-8 w-auto object-contain transition duration-500 ${logoTone}`} />
-          ) : (
-            <Image src={light ? '/logo-sea.svg' : '/logo-sea-dark.svg'} alt="SEA" width={40} height={40} priority className="size-10" />
-          )}
+        <div className="mr-auto flex shrink-0 items-center gap-3">
+          {/* El sello SEA lleva a la página madre (portalsea.com.ar); el logo de la escuela, a su inicio. */}
+          <Link href="/" aria-label="Portal SEA, página principal">
+            {tenant.config.seaLogo ? (
+              <Image src={tenant.config.seaLogo} alt={tenant.config.seaLogoAlt ?? 'SEA'} width={96} height={48} priority className={`h-8 w-auto object-contain transition duration-500 ${logoTone}`} />
+            ) : (
+              <Image src={light ? '/logo-sea.svg' : '/logo-sea-dark.svg'} alt="SEA" width={40} height={40} priority className="size-10 transition hover:scale-105" />
+            )}
+          </Link>
           <span className={`h-6 w-px transition-colors duration-500 ${light ? 'bg-slate-300' : 'bg-white/30'}`} aria-hidden />
-          <Image src={tenant.config.logo} alt={tenant.config.logoAlt} width={120} height={48} priority className={`h-8 w-auto object-contain transition duration-500 ${logoTone}`} />
-        </Link>
+          <Link href={base} aria-label={`Inicio — ${tenant.name}`}>
+            <Image src={tenant.config.logo} alt={tenant.config.logoAlt} width={120} height={48} priority className={`h-8 w-auto object-contain transition duration-500 ${logoTone}`} />
+          </Link>
+        </div>
 
         <nav aria-label="Principal" className="hidden gap-1.5 lg:flex">
           {links.map((l) => (

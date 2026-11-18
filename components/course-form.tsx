@@ -10,6 +10,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { ChevronUp, ChevronDown, Plus, Trash2, Upload, X } from 'lucide-react';
 import Image from 'next/image';
 import { DatePicker } from '@/components/date-picker';
+import { shrinkImage } from '@/lib/shrink-image';
 
 interface CourseFormProps {
   course?: Course;
@@ -178,8 +179,8 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
       return;
     }
 
-    if (file.size > 8 * 1024 * 1024) {
-      alert('La imagen no debe exceder 8MB');
+    if (file.size > 25 * 1024 * 1024) { // se achica antes de subir; esto solo frena archivos enormes
+      alert('La imagen no debe exceder 25MB');
       return;
     }
 
@@ -192,7 +193,7 @@ export default function CourseForm({ course, onSave, onCancel }: CourseFormProps
 
       // Upload via FormData to avoid JSON body size limits
       const fd = new FormData();
-      fd.append('file', file);
+      fd.append('file', await shrinkImage(file));
       fd.append('folder', `courses/${schoolId}`);
 
       const res = await fetch(`/api/${schoolId}/upload-image`, { method: 'POST', body: fd });

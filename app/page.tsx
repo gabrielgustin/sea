@@ -180,8 +180,8 @@ export default async function LandingPage() {
             {STEPS.map((s, i) => (
               <li key={s.title} className="boom-step relative flex items-start gap-5 sm:block" style={{ ['--i' as string]: i }}>
                 {/* Número con onda expansiva y chispas (animaciones en globals.css, atadas al scroll) */}
-                {/* Celular: tramo de línea hasta el paso siguiente */}
-                {i < STEPS.length - 1 && <span aria-hidden className="absolute -bottom-7 left-8 top-16 border-l-[3px] border-dashed border-[#031e41]/25 sm:hidden" />}
+                {/* Celular: tramo de línea hasta el paso siguiente; el relleno avanza con el scroll */}
+                {i < STEPS.length - 1 && <span aria-hidden className="absolute -bottom-7 left-8 top-16 border-l-[3px] border-dashed border-[#031e41]/25 sm:hidden"><span className="boom-fill absolute -left-[3px] top-0 h-full w-[3px] rounded-full bg-[#031e41]" /></span>}
                 <span className="relative block size-16 shrink-0">
                   <span aria-hidden className="boom-ring absolute inset-0 rounded-full border-4" style={{ borderColor: s.bg }} />
                   {SPARKS.map((a, k) => (

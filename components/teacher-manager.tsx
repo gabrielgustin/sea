@@ -7,6 +7,7 @@ import { Textarea } from '@/components/ui/textarea'
 import { Trash2, Edit2, Plus, AlertCircle, Upload, X } from 'lucide-react'
 import Image from 'next/image'
 import { useSchool } from '@/context/SchoolContext'
+import { shrinkImage } from '@/lib/shrink-image'
 
 interface Course {
   id: string
@@ -99,7 +100,7 @@ export function TeacherManager() {
     setError('')
     try {
       const fd = new FormData()
-      fd.append('file', file)
+      fd.append('file', await shrinkImage(file))
       fd.append('folder', 'teachers')
       const res = await fetch(`/api/${schoolId}/upload-image`, { method: 'POST', body: fd })
       const data = await res.json()

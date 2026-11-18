@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { CreatedBy } from '@/components/created-by';
 import Link from 'next/link';
 import { Instagram, Mail, MapPin, MessageCircle } from 'lucide-react';
 import { useSchool } from '@/context/SchoolContext';
@@ -81,10 +82,11 @@ export default function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-14 flex flex-col gap-2 border-t border-white/10 pt-6 text-xs text-white/40 sm:flex-row sm:justify-between">
+        <div className="mt-14 space-y-1 text-xs text-white/40">
           <p>© {new Date().getFullYear()} {tenant.name}</p>
           <p>Portal SEA · Secretaría de Extensión Académica</p>
         </div>
+        <div className="mt-6 flex justify-center border-t border-white/10 pt-6"><CreatedBy /></div>
       </div>
     </footer>
   );

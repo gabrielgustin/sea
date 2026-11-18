@@ -6,6 +6,7 @@ import { Input } from '@/components/ui/input'
 import { Plus, Trash2, Edit2, Upload, X, AlertCircle, ImageIcon, ChevronUp, ChevronDown, Eye, EyeOff, ChevronDown as ChevronDownIcon } from 'lucide-react'
 import Image from 'next/image'
 import { useSchool } from '@/context/SchoolContext'
+import { shrinkImage } from '@/lib/shrink-image'
 
 interface Slide {
   id: string
@@ -102,8 +103,8 @@ export function CarouselManager() {
       setError('El archivo debe ser una imagen (JPG, PNG, WEBP, etc.)')
       return
     }
-    if (file.size > 8 * 1024 * 1024) {
-      setError('La imagen no debe superar los 8MB')
+    if (file.size > 25 * 1024 * 1024) { // se achica antes de subir; esto solo frena archivos enormes
+      setError('La imagen no debe superar los 25MB')
       return
     }
     const localUrl = URL.createObjectURL(file)
@@ -112,7 +113,7 @@ export function CarouselManager() {
     setUploading(true)
     try {
       const fd = new FormData()
-      fd.append('file', file)
+      fd.append('file', await shrinkImage(file))
       fd.append('folder', `carousel/${schoolId}`)
       const res = await fetch(`/api/${schoolId}/upload-image`, { method: 'POST', body: fd })
       const data = await res.json()

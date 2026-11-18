@@ -142,8 +142,8 @@ export default function EnrollmentFlow({ course }: EnrollmentFlowProps) {
         await fetchEnrollmentCounts();
         return; // se queda en el paso de revisión: antes mostraba "éxito" aunque fallara
       }
-      await fetchEnrollmentCounts();
       setCurrentStep(totalSteps);
+      fetchEnrollmentCounts(); // cupos actualizados en segundo plano: el éxito se muestra ya
     } catch (err) {
       console.error('Error submitting enrollment:', err);
       setSubmitError('Error de conexión. Intentá de nuevo.');
