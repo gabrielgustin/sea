@@ -1,4 +1,5 @@
 // Datos y estilo compartidos por la landing madre (/) y las páginas de cada capacitación.
+import { unstable_cache } from 'next/cache';
 import { listTenants, toPublic } from '@/lib/tenants/registry';
 import { clientFor } from '@/lib/tenants/db';
 import { brandOf } from '@/lib/brand';
@@ -52,7 +53,7 @@ function modulesOf(v: unknown): Module[] {
 }
 
 // Catálogo general: un curso que dan varias escuelas aparece una vez, con la versión más completa de sus textos.
-export async function loadCatalog() {
+async function buildCatalog() {
   const tenants = await listTenants();
   const schools = await Promise.all(
     tenants.map(async (t) => {
@@ -95,3 +96,6 @@ export async function loadCatalog() {
     catalog,
   };
 }
+
+// La portada y las fichas leen las bases de todas las escuelas: se guarda 5 min para que cada visita (o bot) no despierte Neon.
+export const loadCatalog = unstable_cache(buildCatalog, ['landing-catalog'], { revalidate: 300 });
